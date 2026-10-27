@@ -1066,6 +1066,24 @@ function updateAgents(dt) {
 }
 
 // ================= 비행기 (히든맵) =================
+function apache() {
+  const g = new THREE.Group(), od = MAT.col(0x4b5320, .7), dk = MAT.col(0x2f3418, .7), gl = MAT.col(0x1b2833, .1, .3), bl = MAT.col(0x222222, .6);
+  mesh(BOX(1.2, 1.3, 4.6), od, 0, 2, 0, g);
+  mesh(BOX(.9, .7, 1.4), gl, 0, 2.9, 1.3, g); mesh(BOX(.9, .6, 1.1), gl, 0, 2.8, -.1, g);
+  mesh(BOX(.6, .6, .6), dk, 0, 1.6, 2.55, g);
+  mesh(BOX(.5, .5, 4.6), od, 0, 2.3, -4.4, g); mesh(BOX(.12, 1.5, .9), od, 0, 3, -6.5, g); mesh(BOX(1.8, .1, .6), od, 0, 2.3, -6.3, g);
+  for (const sd of [-1, 1]) {
+    mesh(BOX(.7, .6, 1.8), dk, sd * .85, 2.8, -.6, g); mesh(BOX(1.4, .12, .7), od, sd * 1.2, 1.9, -.2, g); mesh(BOX(.35, .35, 1.1), dk, sd * 1.75, 1.65, -.2, g);
+    mesh(BOX(.15, .5, .15), MAT.metal(0x333333), sd * .6, .5, 1.2, g); mesh(BOX(.25, .4, .4), MAT.col(0x111111, .8), sd * .6, .2, 1.2, g);
+  }
+  mesh(BOX(.15, .4, .15), MAT.metal(0x333333), 0, .5, -6, g);
+  mesh(BOX(.25, .5, .25), dk, 0, 3.15, -.3, g);
+  const rotor = new THREE.Group(); rotor.position.set(0, 3.45, -.3); g.add(rotor);
+  for (let k = 0; k < 2; k++) mesh(BOX(.28, .05, 7.2), bl, 0, 0, 0, rotor).rotation.y = k * Math.PI / 2;
+  const tail = new THREE.Group(); tail.position.set(.15, 3.1, -6.6); g.add(tail);
+  for (let k = 0; k < 2; k++) mesh(BOX(.04, 1.6, .15), bl, 0, 0, 0, tail).rotation.x = k * Math.PI / 2;
+  world.add(g); return { g, rotor, tail };
+}
 function bigPlane(livery) {
   const g = new THREE.Group(), white = MAT.col(0xf4f4f2, .35), dark = MAT.col(0x223344, .1, .2), liv = MAT.col(livery, .4);
   mesh(BOX(28, 4, 4), white, 0, 3.6, 0, g);
@@ -1500,7 +1518,7 @@ const LEVELS = [
       const bow = mesh(BOX(14, 4, 14), MAT.col(0xf2f2f0, .45), -L.w / 2 - 2, -2.05, 0); bow.rotation.y = Math.PI / 4; bow.scale.set(1, 1, .75);
       walls(L, 'fence');
       solid(25, 0, 10, 12, 6, MAT.col(0xf7f7f5, .4));
-      mesh(BOX(10.04, .9, 12.04), MAT.col(0x223344, .1, .2), 25, 4.6, 0);
+      mesh(BOX(10.2, .9, 12.2), MAT.col(0x223344, .1, .2), 25, 4.6, 0);
       mesh(BOX(6, 3, 8), MAT.col(0xf7f7f5, .4), 26, 7.5, 0);
       mesh(CYL(1.3, 1.5, 4), MAT.col(0xc0392b, .5), 27, 11, 0);
       mesh(CYL(.25, .25, 14), MAT.metal(0xdddddd), -28, 7, 0);
@@ -1597,6 +1615,10 @@ const LEVELS = [
       // 관제탑
       solid(-32, 20, 4, 4, 14, MAT.col(0xe8e4dc, .5)); mesh(BOX(6, 3, 6), MAT.glass(), -32, 15.5, 20); mesh(BOX(6.4, .4, 6.4), MAT.col(0x13335a, .5), -32, 17.2, 20);
       sign('🗼 관제탑', -32, 19, 20, .8);
+      for (const [cx, cz, look] of [[-33, 19.2, 'pilot'], [-31, 21, 'crew']]) {
+        const c = makePerson(look); c.g.position.set(cx, 14, cz); world.add(c.g); c.arms[0].rotation.x = -2.2;
+        const t = textSprite('🎧 관제사', { h: .3 }); t.position.y = 2.5; c.g.add(t); towerCtl.push(c);
+      }
       // 주기된 큰 비행기
       const pk = bigPlane(0x1f5fa8); pk.position.set(18, 0, 18);
       addCol(18, 18, 31, 4, null, { topY: 6 }); for (const sd of [-1, 1]) addCol(20.5, 18 + sd * 6, 4, 1.6, null, { topY: 2.8 });
@@ -1605,7 +1627,7 @@ const LEVELS = [
       for (const x of [-22, -12]) bench(x, 14);
       sign('🛋 탐지견 쉼터', -17, 3, 14, .6);
       // 탐지견 훈련센터: 건물 + 어질리티 코스 + 냄새 훈련장
-      solid(-36, -24, 10, 6, 4, MAT.col(0xe8e4dc, .5)); mesh(BOX(10.04, .8, 6.04), MAT.col(0x13335a, .5), -36, 3.58, -24);
+      solid(-36, -24, 10, 6, 3.2, MAT.col(0xe8e4dc, .5)).topY = 4; mesh(BOX(10, .8, 6), MAT.col(0x13335a, .5), -36, 3.6, -24);
       mesh(BOX(2, 2.6, .1), MAT.col(0x5a4632, .6), -36, 1.3, -20.95); mesh(BOX(6, .8, .05), MAT.col(0x223344, .1, .2), -36, 2.4, -20.97);
       sign('🐕 탐지견 훈련센터 K9 TRAINING CENTER', -36, 5.5, -24, .7);
       for (let i = 0; i < 3; i++) { const x = -26 + i * 4; for (const sd of [-.8, .8]) mesh(BOX(.12, .9, .12), MAT.col(0xf4f4f2, .4), x, .45, -18 + sd); mesh(BOX(.1, .1, 1.6), MAT.col(0xd63031, .5), x, .6, -18); addCol(x, -18, .3, 1.6, null, { topY: .65 }); }
@@ -1616,6 +1638,14 @@ const LEVELS = [
       for (let k = 0; k < 5; k++) { const b = mesh(BOX(.5, .5, .5), MAT.col(0x8d6e63, .7), -30 + k * 1.4, .25, -27.5); addCol(-30 + k * 1.4, -27.5, .5, .5, b, { topY: .5 }); }
       sign('🏃 어질리티 코스 (허들·터널·폴·오르막)', -18, 2.8, -19.5, .45); sign('🎯 냄새 훈련장', -27, 1.6, -27.5, .45);
       flyer = { g: bigPlane(0xc0392b), t: rr(0, 20), ph: '' };
+      // 헬기장 + 군용 공격 헬기 (주기 1대, 비행 1대)
+      const pad = new THREE.Mesh(new THREE.CircleGeometry(4, 32), MAT.col(0x3a3d40, .9)); pad.rotation.x = -Math.PI / 2; pad.position.set(36, .02, 5); pad.receiveShadow = true; world.add(pad);
+      const pr = new THREE.Mesh(new THREE.RingGeometry(3.3, 3.7, 32), MAT.col(0xf1c40f, .6)); pr.rotation.x = -Math.PI / 2; pr.position.set(36, .03, 5); world.add(pr);
+      floorPlane(.45, 2.4, MAT.col(0xffffff, .6), 35.2, 5, .035); floorPlane(.45, 2.4, MAT.col(0xffffff, .6), 36.8, 5, .035); floorPlane(1.6, .45, MAT.col(0xffffff, .6), 36, 5, .035);
+      const hp = apache(); hp.g.position.set(36, 0, 5); hp.g.rotation.y = -Math.PI / 2;
+      addCol(38.5, 5, 9.6, 1.4, null, { topY: 3 }); addCol(36.2, 5, 1, 4.2, null, { topY: 2.2 });
+      sign('🚁 헬기장 HELIPAD', 36, 4.6, 5, .55);
+      helis.push({ ...hp, fly: false }, { ...apache(), fly: true, a: rr(0, 6) });
       makePals([[[-40, 8], [-14, 8], [-14, 27], [-40, 27]], [[-6, -15], [40, -15], [40, -27], [-6, -27]], [[-30, 4], [-30, 26]], [[-26, 18]], [[0, -17], [40, -22]]]);
       L.search = [];
     },
@@ -1630,7 +1660,7 @@ $('btnMode').onclick = () => {
   $('btnMode').classList.toggle('alt', !twoP);
   if (twoP && isMobile) toast('👥 2인 모드는 키보드 2명용이에요 (PC 권장)');
 };
-let pals = [], flyer = null, bombs = [], bombT = 4, bossT = 0;
+let pals = [], flyer = null, helis = [], towerCtl = [], bombs = [], bombT = 4, bossT = 0;
 function updateBombs(dt) {
   const boss = people.find(p => p.kind === 'boss' && !p.arrested && !p.dead);
   if (boss) {
@@ -1702,6 +1732,13 @@ function updatePals(dt) {
   }
 }
 function updateFlyer(dt) {
+  for (const H of helis) {
+    H.rotor.rotation.y += dt * (H.fly ? 26 : 3); H.tail.rotation.x += dt * (H.fly ? 32 : 4);
+    if (!H.fly) continue;
+    H.a += dt * .18; const R = 26, x = Math.cos(H.a) * R, z = -5 + Math.sin(H.a) * R * .7;
+    H.g.position.set(x, 13 + Math.sin(time * .8) * 1.2, z); H.g.rotation.y = Math.atan2(-Math.sin(H.a) * R, Math.cos(H.a) * R * .7); H.g.rotation.z = -.15;
+    if (Math.hypot(x - dog.x, z - dog.z) < 45 && Math.random() < dt * 9) noise(.06, .06, 95);
+  }
   if (!flyer) return;
   flyer.t = (flyer.t + dt) % 40; const t = flyer.t; let x, y = 0, pitch = 0;
   if (t < 12) { const u = t / 12; x = -220 + 190 * u; y = 30 * Math.pow(1 - u, 1.6); pitch = .06; }
@@ -1709,7 +1746,8 @@ function updateFlyer(dt) {
   else if (t < 24) x = 40;
   else { const u = (t - 24) / 16; x = -70 + 300 * u * u; y = Math.max(0, x - 15) * .2; pitch = y > 0 ? .14 : 0; }
   const ph = t < 12 ? 'land' : t < 24 ? 'taxi' : 'up';
-  if (ph !== flyer.ph) { flyer.ph = ph; if (ph === 'land') toast('🛬 비행기가 착륙하고 있어요!'); if (ph === 'up') toast('🛫 비행기 이륙!'); }
+  if (ph !== flyer.ph) { flyer.ph = ph; if (ph === 'land') { toast('🛬 비행기가 착륙하고 있어요!'); floatText('🎧 착륙 허가!', -32, 18.4, 20, { h: .6 }); } if (ph === 'up') { toast('🛫 비행기 이륙!'); floatText('🎧 이륙 허가! 🛫', -32, 18.4, 20, { h: .6 }); } }
+  for (const c of towerCtl) { c.g.rotation.y = Math.atan2(flyer.g.position.x - c.g.position.x, flyer.g.position.z - c.g.position.z); c.arms[1].rotation.x = Math.sin(time * 2 + c.g.position.x) * .3 - .3; }
   flyer.g.position.set(x, y, -6); flyer.g.rotation.z = pitch;
   if (Math.hypot(x - dog.x, -6 - dog.z) < 45 && Math.random() < dt * 4) noise(.4, .05, 180);
   if (y < 3 && Math.abs(dog.z + 6) < 2.6 && Math.abs(dog.x - x) < 16) { dog.z = -6 + (dog.z + 6 < 0 ? -7 : 7); if (!flyer.warn || time - flyer.warn > 3) { flyer.warn = time; toast('✈ 활주로는 위험해요! 비행기가 지나가요'); } }
@@ -1825,7 +1863,7 @@ const getProg = () => store.get(progKey(), { unlocked: 0, best: {} });
 function clearWorld() {
   world.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map?.dispose(); o.material.dispose(); } });
   scene.remove(world); world = new THREE.Group(); scene.add(world);
-  colliders = []; people.length = 0; vehicles.length = 0; agents.length = 0; pals = []; flyer = null; bombs = []; bombT = 4; bossT = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
+  colliders = []; people.length = 0; vehicles.length = 0; agents.length = 0; pals = []; flyer = null; helis = []; towerCtl = []; bombs = []; bombT = 4; bossT = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
   clearEffects(); clearParticles();
 }
 function loadLevel(i) {
