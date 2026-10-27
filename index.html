@@ -57,7 +57,7 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 #breeds{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
 .breed{border:3px solid #d6cdb8;border-radius:12px;background:#fff;padding:8px 4px;cursor:pointer;font-family:inherit;font-size:13px;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:4px}
 .breed.on{border-color:var(--navy);background:#eaf2fb;font-weight:700}
-.breed i{display:block;width:34px;height:22px;border-radius:8px}
+.breed img{display:block;width:100%;max-width:96px;height:auto;border-radius:8px;background:linear-gradient(#dfeaf5,#f7f3ea)}
 @media (max-width:640px){#breeds{grid-template-columns:repeat(2,1fr)}}
 #pid,#ppw,#dname{font-size:20px;padding:10px 14px;border-radius:12px;border:2px solid #c9bfa8;width:100%;box-sizing:border-box;font-family:inherit;background:#fff;color:var(--ink)}
 #pidErr{color:#c0392b;font-size:13px;min-height:18px;margin-top:4px}
@@ -132,6 +132,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <input id="dname" maxlength="8" placeholder="예: 보리, 번개, 레오 (1~8자)" autocomplete="off">
  <div style="font-weight:700;color:var(--navy);margin-top:10px">견종 선택</div>
  <div id="breeds" role="radiogroup" aria-label="견종 선택"></div>
+ <div id="breedInfo" class="notice" style="margin-top:8px;font-size:13px;line-height:1.7"></div>
  <div id="pidErr"></div>
  <div class="row"><button class="big" id="btnLogin">접속하기</button></div>
  <h2 style="margin-top:16px">🏆 TOP 랭킹</h2>
@@ -570,27 +571,27 @@ function setMusic(on) {
 // ================= 라브라도 리트리버 =================
 const LAB = 0xe2b778;
 const BREEDS = {
-  malinois: { name: '말리노이즈', fur: 0xc8945a, saddle: 0xa8743e, mask: 0x2a1d14, earCol: 0x2a1d14, chest: 0xd9ae78, ear: 'up', tail: 'straight', scale: 1 },
-  shepherd: { name: '저먼 셰퍼드', fur: 0xb8783a, saddle: 0x1d1712, mask: 0x1d1712, earCol: 0x1d1712, chest: 0xc98e4f, ear: 'up', tail: 'bushy', scale: 1.06 },
-  labrador: { name: '라브라도 리트리버', fur: 0xe2b778, saddle: 0xe2b778, mask: 0xe2b778, earCol: 0xc99a5e, chest: 0xedcb94, ear: 'floppy', tail: 'otter', scale: 1 },
-  beagle: { name: '비글', fur: 0xf4efe6, saddle: 0x231a14, mask: 0xf4efe6, head: 0xc07a3a, earCol: 0xa8622a, chest: 0xf4efe6, ear: 'long', tail: 'up', scale: .82, blaze: true },
-  pointer: { name: '포인터', fur: 0xf4efe6, saddle: 0xf4efe6, mask: 0x7a4a2a, head: 0x7a4a2a, earCol: 0x7a4a2a, chest: 0xf4efe6, ear: 'floppy', tail: 'thin', scale: 1, spots: 0x7a4a2a, blaze: true },
-  springer: { name: '스프링거 스패니얼', fur: 0xf4efe6, saddle: 0x5a2f1c, mask: 0xf4efe6, head: 0x5a2f1c, earCol: 0x5a2f1c, chest: 0xf4efe6, ear: 'long', tail: 'straight', scale: .92, blaze: true },
+  malinois: { stat: { spd: 5, nose: 3, sta: 4, bark: 4, jump: 5 }, desc: '가장 빠르고 민첩해요. 점프력 최고! 밀수범 추격에 강해요.', name: '말리노이즈', fur: 0xc8945a, saddle: 0xa8743e, mask: 0x2a1d14, earCol: 0x2a1d14, chest: 0xd9ae78, ear: 'up', tail: 'straight', scale: 1 },
+  shepherd: { stat: { spd: 4, nose: 4, sta: 4, bark: 5, jump: 3 }, desc: '짖는 소리가 가장 위협적이에요. 왕왕 공격 범위가 넓어요.', name: '저먼 셰퍼드', fur: 0xb8783a, saddle: 0x1d1712, mask: 0x1d1712, earCol: 0x1d1712, chest: 0xc98e4f, ear: 'up', tail: 'bushy', scale: 1.06 },
+  labrador: { stat: { spd: 3, nose: 5, sta: 5, bark: 3, jump: 3 }, desc: '세관 대표 탐지견! 후각과 지구력이 뛰어나요.', name: '라브라도 리트리버', fur: 0xe2b778, saddle: 0xe2b778, mask: 0xe2b778, earCol: 0xc99a5e, chest: 0xedcb94, ear: 'floppy', tail: 'otter', scale: 1 },
+  beagle: { stat: { spd: 3, nose: 5, sta: 3, bark: 3, jump: 2 }, desc: '공항 수하물 탐지의 달인. 작지만 후각이 최고예요.', name: '비글', fur: 0xf4efe6, saddle: 0x231a14, mask: 0xf4efe6, head: 0xc07a3a, earCol: 0xa8622a, chest: 0xf4efe6, ear: 'long', tail: 'up', scale: .82, blaze: true },
+  pointer: { stat: { spd: 5, nose: 4, sta: 3, bark: 2, jump: 4 }, desc: '넓은 곳을 빠르게 수색해요. 야외 맵에 유리해요.', name: '포인터', fur: 0xf4efe6, saddle: 0xf4efe6, mask: 0x7a4a2a, head: 0x7a4a2a, earCol: 0x7a4a2a, chest: 0xf4efe6, ear: 'floppy', tail: 'thin', scale: 1, spots: 0x7a4a2a, blaze: true },
+  springer: { stat: { spd: 4, nose: 4, sta: 5, bark: 3, jump: 4 }, desc: '지치지 않는 활동가! 오래 달리고 상자 위도 잘 올라가요.', name: '스프링거 스패니얼', fur: 0xf4efe6, saddle: 0x5a2f1c, mask: 0xf4efe6, head: 0x5a2f1c, earCol: 0x5a2f1c, chest: 0xf4efe6, ear: 'long', tail: 'straight', scale: .92, blaze: true },
 };
-function makeDog(b, name) {
+function makeDog(b, name, tags = true) {
   const g = new THREE.Group(), fur = MAT.fur(b.fur), dark = MAT.col(0x1d1410, .4), headM = MAT.fur(b.head ?? b.fur), earM = MAT.fur(b.earCol);
   const body = mesh(CAPS(.25, .62), fur, 0, .66, 0, g); body.rotation.x = Math.PI / 2; body.scale.set(1.05, 1, 1.05);
   mesh(SPH(.29), fur, 0, .68, .34, g).scale.set(1, 1.05, 1);
   mesh(SPH(.27), fur, 0, .7, -.33, g);
   mesh(SPH(.2), MAT.fur(b.chest), 0, .55, .42, g).scale.set(1, 1, .8);
-  if (b.saddle !== b.fur) mesh(RBOX(.57, .22, .8, .08), MAT.fur(b.saddle), 0, .86, -.12, g);
+  if (b.saddle !== b.fur) mesh(RBOX(.5, .08, .3, .03), MAT.fur(b.saddle), 0, .96, -.4, g);
   if (b.spots) for (const [x, y, z] of [[.27, .7, -.25], [-.27, .62, .1], [.27, .6, .25], [-.27, .75, -.35]]) mesh(BOX(.04, .16, .2), MAT.fur(b.spots), x, y, z, g);
   const neck = mesh(CAPS(.15, .2), fur, 0, .88, .5, g); neck.rotation.x = -.85;
   // 세관 조끼 + 이름
   mesh(RBOX(.6, .3, .58, .1), MAT.col(0x1f4e8c, .7), 0, .82, .02, g);
   mesh(RBOX(.61, .07, .6, .03), MAT.col(0xf4c542, .5), 0, .7, .02, g);
-  const vest = textSprite(name, { h: .14, bg: 'rgba(31,78,140,1)', color: '#f4c542' }); vest.position.set(0, 1.08, .02); g.add(vest);
-  const tag = textSprite('🐕 ' + name + ' · ' + b.name, { h: .3 }); tag.position.set(0, 1.75, 0); g.add(tag);
+  if (tags) { const vest = textSprite(name, { h: .14, bg: 'rgba(31,78,140,1)', color: '#f4c542' }); vest.position.set(0, 1.08, .02); g.add(vest);
+  const tag = textSprite('🐕 ' + name + ' · ' + b.name, { h: .3 }); tag.position.set(0, 1.75, 0); g.add(tag); }
   const collar = mesh(TOR(.15, .03), MAT.col(0xc0392b, .5), 0, .9, .52, g); collar.rotation.x = -.85 + Math.PI / 2;
   // 머리
   const head = new THREE.Group(); head.position.set(0, 1.03, .66); g.add(head);
@@ -627,6 +628,7 @@ const hairs = [0x2b1d14, 0x5a3a1a, 0x111111, 0xb08850, 0x777777];
 const bagColors = [0xc0392b, 0x2e86c1, 0x27ae60, 0xd4ac0d, 0x8e44ad, 0x17a589, 0xd35400, 0x2c3e50, 0xe6739f, 0xbdc3c7];
 let dogName = '관세청 탐지견', dogBreed = 'labrador';
 let dogM = makeDog(BREEDS.labrador, dogName); scene.add(dogM.g);
+const ST = () => BREEDS[dogBreed].stat;
 function setDog(breed, name) {
   dogBreed = BREEDS[breed] ? breed : 'labrador'; dogName = name;
   dogM.g.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map.dispose(); o.material.dispose(); } });
@@ -968,7 +970,7 @@ function palletBox(x, z) {
   mesh(BOX(1.2, .14, 1.2), MAT.wood(), 0, .07, 0, g);
   const n = rnd() < .5 ? 1 : 2; let y = .14;
   for (let i = 0; i < n; i++) { const bh = rr(.45, .6); mesh(BOX(1.1, bh, 1.1), MAT.cardboard(), 0, y + bh / 2, 0, g).rotation.y = (rnd() - .5) * .15; y += bh; }
-  return addCol(x, z, 1.2, 1.2, g, { pushable: true, kind: 'crate', search: true, topY: y, childY: y + .6 });
+  return addCol(x, z, 1.2, 1.2, g, { pushable: true, kind: 'crate', search: true, topY: y, childY: y + .6, label: '팔레트 화물' });
 }
 function parcel(x, z) {
   const s = rr(.45, .7), g = new THREE.Group(); g.position.set(x, 0, z); world.add(g);
@@ -981,6 +983,58 @@ function scatter(L, n, maker, w, d) {
   return out;
 }
 
+// ================= 은닉 물품 (실제 적발 사례 기반) =================
+function pushGroup(x, z, w, d, h, label) {
+  const g = new THREE.Group(); g.position.set(x, 0, z); world.add(g);
+  return [g, addCol(x, z, w, d, g, { pushable: true, kind: 'item', search: true, topY: h, childY: h + .6, label })];
+}
+const ITEMS = {
+  backpack: [.5, .4, (x, z) => { const [g, c] = pushGroup(x, z, .5, .4, .6, '배낭'), col = pick(bagColors); mesh(RBOX(.46, .56, .3, .1), MAT.fabric(col), 0, .3, 0, g); mesh(RBOX(.34, .22, .1, .05), MAT.fabric(col), 0, .22, .18, g); return c; }],
+  golfBag: [.5, .5, (x, z) => { const [g, c] = pushGroup(x, z, .5, .5, 1.25, '골프백'); mesh(CYL(.21, .21, 1), MAT.shell(pick([0x1d2433, 0xf4f4f2, 0xc0392b])), 0, .5, 0, g); for (let i = 0; i < 4; i++) mesh(BOX(.05, .32, .05), MAT.metal(), -.09 + .06 * i, 1.12, 0, g); return c; }],
+  guitarCase: [1.1, .45, (x, z) => { const [g, c] = pushGroup(x, z, 1.1, .45, .25, '기타 케이스'); mesh(RBOX(1.05, .2, .42, .09), MAT.col(0x222222, .4), 0, .11, 0, g); mesh(BOX(.1, .21, .06), MAT.metal(0xd4ac0d), .1, .11, .2, g); return c; }],
+  dutyBag: [.5, .3, (x, z) => { const [g, c] = pushGroup(x, z, .5, .3, .55, '면세점 쇼핑백'); mesh(BOX(.46, .5, .22), MAT.col(0xf4f1ea, .7), 0, .25, 0, g); mesh(BOX(.47, .1, .23), MAT.col(0xb03a2e, .5), 0, .38, 0, g); mesh(TOR(.1, .015), MAT.col(0x222222, .5), 0, .55, 0, g); return c; }],
+  coffeeSack: [.8, .6, (x, z) => { const [g, c] = pushGroup(x, z, .8, .6, .6, '커피 원두 자루'); mesh(RBOX(.78, .58, .56, .22), MAT.fabric(0xb59a6a), 0, .3, 0, g); mesh(BOX(.3, .2, .02), MAT.col(0x3a2a1a, .8), 0, .35, .29, g); return c; }],
+  tireStack: [.85, .85, (x, z) => { const [g, c] = pushGroup(x, z, .85, .85, .78, '타이어 더미'); for (let i = 0; i < 3; i++) mesh(CYL(.42, .42, .25), MAT.col(0x161616, .9), 0, .13 + i * .26, 0, g); return c; }],
+  speaker: [.6, .5, (x, z) => { const [g, c] = pushGroup(x, z, .6, .5, 1, '대형 스피커'); mesh(RBOX(.6, 1, .5, .05), MAT.col(0x1a1a1a, .6), 0, .5, 0, g); for (const y of [.3, .72]) { const k = mesh(CYL(.16, .16, .04), MAT.col(0x444444, .3, .4), 0, y, .26, g); k.rotation.x = Math.PI / 2; } return c; }],
+  teddy: [.7, .6, (x, z) => { const [g, c] = pushGroup(x, z, .7, .6, 1, '대형 곰인형'); const b = MAT.fur(0x9b6b3f); mesh(SPH(.32), b, 0, .32, 0, g); mesh(SPH(.22), b, 0, .8, 0, g); for (const sx of [-.16, .16]) mesh(SPH(.08), b, sx, 1, 0, g); mesh(SPH(.08), MAT.fur(0xe8c9a0), 0, .76, .2, g); return c; }],
+  cooler: [.8, .5, (x, z) => { const [g, c] = pushGroup(x, z, .8, .5, .55, '아이스박스'); mesh(RBOX(.8, .42, .5, .06), MAT.shell(0x2e86c1), 0, .21, 0, g); mesh(RBOX(.82, .12, .52, .05), MAT.shell(0xf4f4f2), 0, .48, 0, g); return c; }],
+  fruitBox: [.7, .5, (x, z) => { const [g, c] = pushGroup(x, z, .7, .5, .55, '바나나 상자'); mesh(BOX(.7, .4, .5), MAT.cardboard(), 0, .2, 0, g); for (let i = 0; i < 3; i++) mesh(RBOX(.5, .1, .12, .04), MAT.col(0xf1c40f, .5), 0, .45, -.14 + i * .14, g); return c; }],
+  drum: [.7, .7, (x, z) => { const [g, c] = pushGroup(x, z, .7, .7, .95, '드럼통'); mesh(CYL(.33, .33, .92), MAT.col(pick([0x1f5fa8, 0x2e7d32, 0xb03a2e]), .45, .5), 0, .46, 0, g); for (const y of [.3, .62]) mesh(CYL(.34, .34, .03), MAT.metal(0x777777), 0, y, 0, g); return c; }],
+  statue: [.7, .7, (x, z) => { const [g, c] = pushGroup(x, z, .7, .7, 1.5, '석고상'); mesh(BOX(.7, .3, .7), MAT.col(0xbdb8ad, .9), 0, .15, 0, g); mesh(RBOX(.45, .8, .35, .12), MAT.col(0xe8e4dc, .8), 0, .7, 0, g); mesh(SPH(.18), MAT.col(0xe8e4dc, .8), 0, 1.28, 0, g); return c; }],
+  cosmetics: [.5, .5, (x, z) => { const [g, c] = pushGroup(x, z, .5, .5, .35, '화장품 택배'); mesh(BOX(.48, .34, .48), MAT.col(0xf3b8c8, .7), 0, .17, 0, g); mesh(BOX(.49, .06, .1), MAT.col(0xffffff, .5), 0, .3, 0, g); return c; }],
+  shoeBox: [.55, .35, (x, z) => { const [g, c] = pushGroup(x, z, .55, .35, .45, '운동화 상자'); mesh(BOX(.55, .2, .35), MAT.col(0xe67e22, .6), 0, .1, 0, g); mesh(BOX(.55, .2, .35), MAT.col(0x2c3e50, .6), 0, .32, 0, g); return c; }],
+  wine: [.6, .45, (x, z) => { const [g, c] = pushGroup(x, z, .6, .45, .55, '와인 상자'); mesh(BOX(.6, .35, .45), MAT.wood(), 0, .17, 0, g); for (let i = 0; i < 3; i++) mesh(CYL(.04, .04, .22), MAT.col(0x2d5a27, .2, .1), -.16 + i * .16, .45, 0, g); return c; }],
+  machine: [.9, .7, (x, z) => { const [g, c] = pushGroup(x, z, .9, .7, .7, '기계 부품 상자'); mesh(RBOX(.9, .6, .7, .04), MAT.metal(0x7f8c8d, .5), 0, .3, 0, g); for (const sx of [-.3, .3]) mesh(CYL(.06, .06, .12), MAT.metal(0x444444), sx, .64, 0, g); return c; }],
+};
+// ================= 지형지물 =================
+function staticGroup(x, z, w, d, h) { const g = new THREE.Group(); g.position.set(x, 0, z); world.add(g); addCol(x, z, w, d, g, { topY: h }); return g; }
+const DECOR = {
+  plant: [1, 1, (x, z) => { const g = staticGroup(x, z, .9, .9, 1.8); mesh(CYL(.4, .3, .6), MAT.col(0x8d5a3b, .7), 0, .3, 0, g); mesh(SPH(.55), MAT.col(0x3f8f3a, .8), 0, 1.2, 0, g); mesh(SPH(.35), MAT.col(0x4fa848, .8), .2, 1.6, .1, g); }],
+  infoDesk: [3.2, 1.4, (x, z) => { const g = staticGroup(x, z, 3, 1.2, 1.1); mesh(RBOX(3, 1.1, 1.2, .1), MAT.col(0xf4f4f2, .4), 0, .55, 0, g); mesh(BOX(3.02, .12, 1.22), MAT.col(0x1f5fa8, .5), 0, 1.05, 0, g); const t = textSprite('ℹ 안내 INFORMATION', { h: .45 }); t.position.y = 2; g.add(t); }],
+  dutyFree: [3.4, 1.2, (x, z) => { const g = staticGroup(x, z, 3.2, 1, 2); mesh(BOX(3.2, 2, 1), MAT.wood(), 0, 1, 0, g); for (let r = 0; r < 3; r++) for (let i = 0; i < 7; i++) mesh(CYL(.08, .08, .3), MAT.col(pick([0xc0392b, 0xd4ac0d, 0x2e86c1, 0x8e44ad, 0x27ae60]), .2, .2), -1.35 + i * .45, .5 + r * .6, .52, g); const t = textSprite('🛍 면세점 DUTY FREE', { h: .5 }); t.position.y = 2.6; g.add(t); }],
+  weighScale: [3.2, 3.2, (x, z) => { const g = new THREE.Group(); g.position.set(x, 0, z); world.add(g); mesh(BOX(3, .15, 3), MAT.metal(0x8a959c, .5), 0, .075, 0, g); addCol(x, z, 3, 3, g, { topY: .15 }); mesh(BOX(.2, 1.6, .2), MAT.metal(0x333333), 1.7, .8, 0, g); const t = textSprite('⚖ 계근대 SCALE', { h: .45 }); t.position.y = 2; g.add(t); }],
+  cafeSet: [1.8, 1.8, (x, z) => { const g = staticGroup(x, z, 1.6, 1.6, .8); mesh(CYL(.5, .5, .06), MAT.col(0xf4f4f2, .4), 0, .78, 0, g); mesh(CYL(.06, .06, .78), MAT.metal(), 0, .39, 0, g); for (const sx of [-.7, .7]) mesh(RBOX(.4, .45, .4, .05), MAT.col(0x2e86c1, .5), sx, .23, 0, g); }],
+  lifeRing: [.6, .6, (x, z) => { const g = staticGroup(x, z, .4, .4, 1.4); mesh(BOX(.12, 1.4, .12), MAT.metal(0xdddddd), 0, .7, 0, g); mesh(new THREE.TorusGeometry(.32, .08, 10, 20), MAT.col(0xff5a1f, .5), 0, 1.1, .1, g); }],
+  lightTower: [.8, .8, (x, z) => { const g = staticGroup(x, z, .6, .6, 9); mesh(CYL(.12, .2, 9), MAT.metal(0x9aa3ab), 0, 4.5, 0, g); const l = mesh(BOX(1.4, .4, .4), M('lamp2', () => std(0xffffff, .3, 0, { emissive: 0xfff2cc, emissiveIntensity: 1.2 })), 0, 9, 0, g); l.castShadow = false; }],
+  guardBooth: [2.4, 2.4, (x, z) => { const g = staticGroup(x, z, 2.2, 2.2, 2.7); mesh(RBOX(2.2, 2.6, 2.2, .1), MAT.col(0xf4f4f2, .4), 0, 1.3, 0, g); mesh(BOX(2.22, .7, 2.22), MAT.col(0x223344, .1, .2), 0, 1.7, 0, g); mesh(BOX(2.4, .15, 2.4), MAT.col(0x1f5fa8, .5), 0, 2.67, 0, g); const t = textSprite('🛂 세관 검문소', { h: .45 }); t.position.y = 3.3; g.add(t); }],
+  mailCart: [1.2, .8, (x, z) => { const g = staticGroup(x, z, 1.1, .7, 1.1); mesh(BOX(1.1, .7, .7), MAT.col(0x1f7a5a, .5), 0, .65, 0, g); for (let i = 0; i < 3; i++) mesh(BOX(.3, .25, .3), MAT.cardboard(), -.35 + i * .35, 1.1, 0, g); }],
+  sealedCage: [4.2, 3.2, (x, z) => { const g = staticGroup(x, z, 4, 3, 2.4); mesh(BOX(4, 2.4, 3), M('cage', () => std(0x8a959c, .4, .8, { wireframe: true })), 0, 1.2, 0, g); for (let i = 0; i < 4; i++) mesh(BOX(.7, .5, .6), MAT.cardboard(), -1.2 + i * .8, .25, 0, g); const t = textSprite('🔒 압수물품 보관', { h: .45, bg: 'rgba(150,30,30,.9)' }); t.position.y = 3; g.add(t); }],
+};
+function customsGate(x, z, red) {
+  const col = red ? 0xc0392b : 0x27ae60;
+  for (const sx of [-1.6, 1.6]) { mesh(BOX(.25, 2.8, .25), MAT.col(col, .5), x + sx, 1.4, z); addCol(x + sx, z, .3, .3, null, { topY: 2.8 }); }
+  mesh(BOX(3.5, .5, .3), MAT.col(col, .5), x, 2.9, z);
+  sign(red ? '🔴 신고물품 있음 GOODS TO DECLARE' : '🟢 신고물품 없음 NOTHING TO DECLARE', x, 3.7, z, .5, red ? 'rgba(150,30,30,.92)' : 'rgba(25,110,55,.92)');
+}
+function applyExtras(L) {
+  const ex = L.extras || {};
+  for (const [x, z, red] of ex.gates || []) customsGate(x, z, red);
+  for (const [k, n] of ex.decor || []) { const [w, d, mk] = DECOR[k]; for (let i = 0; i < n; i++) { const p = placeFree(L.bounds, w, d, 1, L.avoid); if (p) mk(p.x, p.z); } }
+  for (const [k, n] of ex.items || []) { const [w, d, mk] = ITEMS[k]; for (let i = 0; i < n; i++) { const p = placeFree(L.bounds, w, d, .8, L.avoid); if (p) L.search.push(mk(p.x, p.z)); } }
+}
+const PLACE_NAME = { bag: '여행가방', crate: '나무상자', parcel: '택배 상자', container: '컨테이너', cage: '우편 롤 케이지', sack: '우편 자루', hatch: '화물칸' };
+const placeOf = c => c.label || PLACE_NAME[c.kind] || '물건';
+
 // ================= 6개 맵 =================
 const ITEM = {
   drug: { emoji: '💊', name: '마약', color: new THREE.Color(0x66ff99), pts: 100, bg: 'rgba(30,120,70,.92)' },
@@ -988,7 +1042,7 @@ const ITEM = {
 };
 const LEVELS = [
   {
-    diff: { stars: 1, speed: .85, flee: .85, hp: 1, bossHp: 5, sniff: 30, vehicle: 1 }, name: '공항 입국장', icon: '✈', w: 56, d: 42, outdoor: false, bg: 0xdfe7ec, music: 1,
+    diff: { stars: 1, speed: .85, flee: .85, hp: 1, bossHp: 5, sniff: 30, vehicle: 1 }, extras: { gates: [[-14, 18.5, false], [14, 18.5, true]], decor: [['plant', 6], ['infoDesk', 1], ['dutyFree', 2]], items: [['backpack', 4], ['golfBag', 2], ['guitarCase', 1], ['dutyBag', 3]] }, name: '공항 입국장', icon: '✈', w: 56, d: 42, outdoor: false, bg: 0xdfe7ec, music: 1,
     staff: [
       { kind: 'customs', route: [[-20, 3], [20, 3]], wait: 2.5 },
       { kind: 'customs', route: [[-4, -3], [4, -3], [4, -13], [-4, -13]], wait: 1.5 },
@@ -1020,11 +1074,11 @@ const LEVELS = [
       for (const x of [-18, -6, 6, 18]) bench(x, -16);
       for (const x of [-22, -9, 9, 22]) for (const z of [-1, 15]) pillar(x, z);
       sign('✈ 국제공항 입국장 ARRIVALS', 0, 5.5, L.d / 2 - .5, 1.1);
-      L.search = scatter(L, 22, luggage, 1, 1);
+      L.search = scatter(L, 15, luggage, 1, 1);
     },
   },
   {
-    diff: { stars: 2, speed: .95, flee: .95, hp: 2, bossHp: 5, sniff: 27, vehicle: 1 }, name: '공항 화물터미널', icon: '📦', w: 60, d: 44, outdoor: false, bg: 0xc9cdd0, music: 2,
+    diff: { stars: 2, speed: .95, flee: .95, hp: 2, bossHp: 5, sniff: 27, vehicle: 1 }, extras: { decor: [['weighScale', 1]], items: [['coffeeSack', 4], ['tireStack', 3], ['speaker', 2], ['machine', 3]] }, name: '공항 화물터미널', icon: '📦', w: 60, d: 44, outdoor: false, bg: 0xc9cdd0, music: 2,
     staff: [
       { kind: 'handler', route: [[-20, 7], [20, 7]], wait: 1.5 },
       { kind: 'handler', route: [[22, 7.5], [-22, 7.5]], wait: 1.5 },
@@ -1057,12 +1111,12 @@ const LEVELS = [
         addCol(x, z + .3, 1.4, 2.8, g, { topY: 2.6 });
       }
       sign('📦 항공 화물터미널 AIR CARGO', 0, 5.5, L.d / 2 - .5, 1.1);
-      L.search = scatter(L, 20, palletBox, 1.3, 1.3);
+      L.search = scatter(L, 11, palletBox, 1.3, 1.3);
       L.search.push(...colliders.filter(c => c.kind === 'container'));
     },
   },
   {
-    diff: { stars: 2, speed: 1.05, flee: 1, hp: 2, bossHp: 5, sniff: 25, vehicle: 1 }, name: '국제우편·특송센터', icon: '✉', w: 54, d: 40, outdoor: false, bg: 0xd8dde0, music: 3,
+    diff: { stars: 2, speed: 1.05, flee: 1, hp: 2, bossHp: 5, sniff: 25, vehicle: 1 }, extras: { decor: [['mailCart', 3], ['plant', 2]], items: [['cosmetics', 5], ['shoeBox', 3], ['teddy', 2], ['wine', 2]] }, name: '국제우편·특송센터', icon: '✉', w: 54, d: 40, outdoor: false, bg: 0xd8dde0, music: 3,
     staff: [
       { kind: 'postal', route: [[-20, -6.5], [8, -6.5]], wait: 1.2 },
       { kind: 'postal', route: [[8, 2.5], [-20, 2.5]], wait: 1.2 },
@@ -1101,12 +1155,12 @@ const LEVELS = [
         addCol(x, z, 1, .8, s, { kind: 'sack', search: true, topY: .9, childY: .9 });
       }
       sign('✉ 국제우편·특송센터 INTL MAIL', 0, 5.5, L.d / 2 - .5, 1.1);
-      L.search = scatter(L, 26, parcel, .8, .8);
+      L.search = scatter(L, 16, parcel, .8, .8);
       L.search.push(...colliders.filter(c => c.kind === 'cage' || c.kind === 'sack'));
     },
   },
   {
-    diff: { stars: 3, speed: 1.12, flee: 1.1, hp: 2, bossHp: 5, sniff: 23, vehicle: 1 }, name: '국제 여객선', icon: '⛴', w: 64, d: 30, outdoor: true, ship: true, bg: 0xcfe3ef, music: 4,
+    diff: { stars: 3, speed: 1.12, flee: 1.1, hp: 2, bossHp: 5, sniff: 23, vehicle: 1 }, extras: { decor: [['cafeSet', 3], ['lifeRing', 4]], items: [['backpack', 4], ['cooler', 3], ['guitarCase', 1], ['golfBag', 1]] }, name: '국제 여객선', icon: '⛴', w: 64, d: 30, outdoor: true, ship: true, bg: 0xcfe3ef, music: 4,
     staff: [
       { kind: 'crew', route: [[-26, 10.5], [10, 10.5]], wait: 1.5 },
       { kind: 'crew', route: [[10, -10.5], [-26, -10.5]], wait: 1.5 },
@@ -1135,12 +1189,12 @@ const LEVELS = [
       for (const x of [-22, -10, 2]) bench(x, -7);
       sign('⛴ 국제 여객선 KOREA FERRY', 25, 9, 0, 1.1);
       sign('화물칸 HATCH', -8, 2, 0, .5);
-      L.search = scatter(L, 16, luggage, 1, 1);
+      L.search = scatter(L, 10, luggage, 1, 1);
       L.search.push(...colliders.filter(c => c.kind === 'hatch'));
     },
   },
   {
-    diff: { stars: 4, speed: 1.2, flee: 1.2, hp: 3, bossHp: 5, sniff: 21, vehicle: 1.25 }, name: '부두 컨테이너 야적장', icon: '⚓', w: 66, d: 48, outdoor: true, bg: 0xcfe3ef, music: 5,
+    diff: { stars: 4, speed: 1.2, flee: 1.2, hp: 3, bossHp: 5, sniff: 21, vehicle: 1.25 }, extras: { decor: [['lightTower', 3], ['guardBooth', 1]], items: [['fruitBox', 4], ['tireStack', 3], ['drum', 4], ['machine', 2]] }, name: '부두 컨테이너 야적장', icon: '⚓', w: 66, d: 48, outdoor: true, bg: 0xcfe3ef, music: 5,
     staff: [
       { kind: 'handler', route: [[8.5, -10], [8.5, 0]], wait: 2 },
       { kind: 'handler', route: [[-4.5, -10], [-4.5, 0]], wait: 2 },
@@ -1162,12 +1216,12 @@ const LEVELS = [
       }
       crane(-6, -L.d / 2 + 2.2, 14);
       sign('⚓ 부두 컨테이너 야적장 CY', 0, 6, L.d / 2 - .5, 1.1);
-      L.search = scatter(L, 22, crate, 1.3, 1.3);
+      L.search = scatter(L, 13, crate, 1.3, 1.3);
       L.search.push(...colliders.filter(c => c.kind === 'container'));
     },
   },
   {
-    diff: { stars: 5, speed: 1.3, flee: 1.3, hp: 3, bossHp: 7, sniff: 19, vehicle: 1.2 }, name: '보세창고 (보스전)', icon: '🏭', w: 56, d: 42, outdoor: false, bg: 0x7b8086, dim: true, music: 6,
+    diff: { stars: 5, speed: 1.3, flee: 1.3, hp: 3, bossHp: 7, sniff: 19, vehicle: 1.2 }, extras: { decor: [['sealedCage', 1], ['weighScale', 1]], items: [['statue', 2], ['wine', 3], ['speaker', 2], ['drum', 3], ['teddy', 1]] }, name: '보세창고 (보스전)', icon: '🏭', w: 56, d: 42, outdoor: false, bg: 0x7b8086, dim: true, music: 6,
     staff: [{ kind: 'handler', route: [[-24, -2], [24, -2]], wait: 1.5 }],
     vehicles: [{ type: 'forklift', route: [[-8, 1], [8, 1], [8, -10], [-8, -10]] }],
     people: { worker: 1, smuggler: 4, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 3, boss: 1 },
@@ -1181,7 +1235,7 @@ const LEVELS = [
       for (let x = -20; x <= 20; x += 10) { const l = mesh(BOX(3, .15, .4), M('lamp', () => std(0xffffff, .3, 0, { emissive: 0xfff2cc, emissiveIntensity: 1.5 })), x, 6, 0); l.castShadow = false; }
       for (const x of [-14, 14]) { mesh(BOX(6, 4.4, .1), MAT.ribs(0x8a9096), x, 2.2, L.d / 2 - .25); }
       sign('🏭 보세창고 BONDED WAREHOUSE', 0, 5.2, L.d / 2 - .5, 1.1);
-      L.search = scatter(L, 16, crate, 1.3, 1.3).concat(scatter(L, 10, palletBox, 1.3, 1.3));
+      L.search = scatter(L, 9, crate, 1.3, 1.3).concat(scatter(L, 6, palletBox, 1.3, 1.3));
     },
   },
 ];
@@ -1216,6 +1270,7 @@ function loadLevel(i) {
     for (let k = 0; k < pts.length; k++) { const [ax, az] = pts[k], [bx, bz] = pts[(k + 1) % pts.length], L2 = Math.hypot(bx - ax, bz - az); for (let t = 0; t <= L2; t += 1.5) level.avoid.push({ x: ax + (bx - ax) * t / (L2 || 1), z: az + (bz - az) * t / (L2 || 1), r: rad }); }
   }
   def.build(level);
+  applyExtras(level);
   // 담당 반장
   const off = new Person('officer', spawn.x + 2.6, spawn.z + 1); addCol(off.x, off.z, .8, .8, null);
   const ol = textSprite('👮 ' + def.who.split(' (')[0], { h: .42 }); ol.position.set(0, 2.5, 0); off.g.add(ol);
@@ -1401,8 +1456,28 @@ $('btnRestartMap').onclick = restartLevel;
 $('tbHelp').onclick = () => { if (state === 'play') showHowto(null); };
 $('tbRestart').onclick = () => { if (state === 'play') restartLevel(); };
 let playerPw = '', runToken = null, pickBreed = 'labrador';
+const breedThumbs = {};
+function makeBreedThumbs() {
+  try {
+    const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+    r.setPixelRatio(2); r.setSize(120, 90); r.toneMapping = renderer.toneMapping;
+    const sc = new THREE.Scene(); sc.environment = envRoom;
+    sc.add(new THREE.HemisphereLight(0xffffff, 0x8a7a60, 1.1)); const dl = new THREE.DirectionalLight(0xffffff, 1.5); dl.position.set(2, 4, 3); sc.add(dl);
+    const cam = new THREE.PerspectiveCamera(30, 4 / 3, .1, 20); cam.position.set(2.1, 1.3, 1.6); cam.lookAt(0, .72, .1);
+    for (const [k, b] of Object.entries(BREEDS)) {
+      const d = makeDog(b, '', false); d.g.position.y = -.05; sc.add(d.g); r.render(sc, cam);
+      breedThumbs[k] = r.domElement.toDataURL('image/png');
+      sc.remove(d.g); d.g.traverse(o => o.geometry && o.geometry.dispose());
+    }
+    r.dispose(); r.forceContextLoss();
+  } catch { }
+}
+const STAT_NAMES = [['spd', '🏃 속도', '이동·달리기 속도'], ['nose', '👃 후각', '냄새 맡는 거리'], ['sta', '💪 지구력', '달리기 기력 소모·회복'], ['bark', '📢 짖기', '왕왕 공격·멈춤 범위'], ['jump', '🦘 점프', '점프 높이']];
 function renderBreeds() {
-  $('breeds').innerHTML = Object.entries(BREEDS).map(([k, b]) => `<button type="button" class="breed ${k === pickBreed ? 'on' : ''}" role="radio" aria-checked="${k === pickBreed}" data-k="${k}"><i style="background:linear-gradient(90deg,#${new THREE.Color(b.head ?? b.fur).getHexString()} 0 50%,#${new THREE.Color(b.saddle !== b.fur ? b.saddle : b.earCol).getHexString()} 50%)"></i>${b.name}</button>`).join('');
+  if (!Object.keys(breedThumbs).length) makeBreedThumbs();
+  const sb = BREEDS[pickBreed];
+  $('breedInfo').innerHTML = `<b>${sb.name}</b> — ${sb.desc}<br>` + STAT_NAMES.map(([k, n, t]) => `<span title="${t}" style="display:inline-block;min-width:150px">${n} <span style="color:#c98a00;letter-spacing:1px">${'★'.repeat(sb.stat[k])}${'☆'.repeat(5 - sb.stat[k])}</span></span>`).join(' ');
+  $('breeds').innerHTML = Object.entries(BREEDS).map(([k, b]) => `<button type="button" class="breed ${k === pickBreed ? 'on' : ''}" role="radio" aria-checked="${k === pickBreed}" data-k="${k}">${breedThumbs[k] ? `<img src="${breedThumbs[k]}" alt="" width="96" height="72">` : ""}${b.name}<small style="color:#56708a">${STAT_NAMES.filter(([k]) => b.stat[k] === 5).map(([, n]) => n.split(" ")[1] + " 최고").join(" · ") || "균형형"}</small></button>`).join('');
 }
 $('breeds').addEventListener('click', e => { const t = e.target.closest('.breed'); if (!t) return; pickBreed = t.dataset.k; renderBreeds(); });
 function loadSavedDog(id) { const d = store.get('k9dog:' + id, null) || store.get('k9dog:last', null); if (d) { $('dname').value = d.name; pickBreed = d.breed; } renderBreeds(); }
@@ -1444,10 +1519,10 @@ $('tbRank').onclick = () => { if (state === 'play') openRank(); };
 // ================= 상호작용 =================
 function reveal(c) {
   c.revealed = true; const p = center(c), info = ITEM[c.hidden];
-  const s = textSprite(`${info.emoji} ${info.name} 발견!`, { bg: info.bg, h: .7 });
+  const s = textSprite(`${info.emoji} ${placeOf(c)} 속 ${info.name} 발견!`, { bg: info.bg, h: .6 });
   s.position.set(p.x, c.topY + 1.1, p.z); scene.add(s);
   effects.push({ kind: 'reveal', s, t: 0, c });
-  SFX.found(); toast(`${info.emoji} ${info.name} 적발! 폐기 처리 중…`);
+  SFX.found(); toast(`${info.emoji} ${placeOf(c)} 속 ${info.name} 적발! 폐기 처리 중…`);
   burst(p.x, c.topY, p.z, [info.color, WHITE], 30, 3);
 }
 function destroyItem(c) {
@@ -1468,6 +1543,7 @@ function arrest(p) {
   lvStats[p.kind]++; checkQuest();
 }
 function bark() {
+  const BR = .8 + .06 * ST().bark;
   dog.barkCd = .375; dog.barkAnim = .22; SFX.bark();
   const hx = dog.x + Math.sin(dog.dir) * .9, hz = dog.z + Math.cos(dog.dir) * .9;
   floatText('왕왕!', hx, dog.y + 1.8, hz, { h: .55 });
@@ -1475,7 +1551,7 @@ function bark() {
   for (const p of people) {
     if (p.dead || p.arrested || p.kind === 'officer') continue;
     const d = Math.hypot(p.x - dog.x, p.z - dog.z);
-    if (p.villain && d < 4.5) { if (d < 4 && !(p.barkHit > time)) { p.barkHit = time + 1.0; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
+    if (p.villain && d < 4.5 * BR) { if (d < 4 * BR && !(p.barkHit > time)) { p.barkHit = time + 1.0; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
     else if (!p.villain && d < 3) p.stun = Math.max(p.stun, .3);
   }
   let best = null, bd = 1.8;
@@ -1483,7 +1559,7 @@ function bark() {
   if (best) return reveal(best);
   for (const c of colliders) {
     if (!c.search || c.checked || c.revealed) continue;
-    if (distToBox(dog.x, dog.z, c) < 1.1) { c.checked = true; addScore(-10); totals.mistakes++; toast('🤔 깨끗한 물건이에요! 오탐으로 부상 (-10)'); SFX.error(); damage(); break; }
+    if (distToBox(dog.x, dog.z, c) < 1.1) { c.checked = true; addScore(-10); totals.mistakes++; toast(`🤔 깨끗한 물건(${placeOf(c)})이에요! 오탐으로 부상 (-10)`); SFX.error(); damage(); break; }
   }
 }
 
@@ -1545,9 +1621,9 @@ function updateDog(dt) {
   const len = Math.hypot(mx, mz); if (len > 1) { mx /= len; mz /= len; }
   dog.sniffing = !!(keys.KeyE || touchIn.sniff) && dog.grounded;
   const sprint = (keys.ShiftLeft || keys.ShiftRight || touchIn.run) && dog.stamina > 3 && len > .1 && !dog.sniffing;
-  dog.stamina = clamp(dog.stamina + (sprint ? -24 : 14) * dt, 0, 100);
+  dog.stamina = clamp(dog.stamina + (sprint ? -24 * (1.4 - .1 * ST().sta) : 14 * (.7 + .1 * ST().sta)) * dt, 0, 100);
   dog.boost -= dt; dog.hurt -= dt;
-  const maxSp = (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1);
+  const maxSp = (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (.85 + .06 * ST().spd);
   const k = 1 - Math.exp(-dt * (dog.grounded ? 10 : 3));
   dog.vx = lerp(dog.vx, mx * maxSp, k); dog.vz = lerp(dog.vz, mz * maxSp, k);
   const pushed = moveCircle(dog, dog.vx * dt, dog.vz * dt, .5, true, dog.y);
@@ -1556,7 +1632,7 @@ function updateDog(dt) {
   if (dog.speed > .3) dog.dir += angDiff(dog.dir, Math.atan2(dog.vx, dog.vz)) * Math.min(1, dt * 12);
 
   // 점프 / 중력
-  if (jumpQ && dog.grounded) { dog.vy = 7.4; dog.grounded = false; SFX.jump(); }
+  if (jumpQ && dog.grounded) { dog.vy = 7.4 * (.85 + .05 * ST().jump); dog.grounded = false; SFX.jump(); }
   jumpQ = false;
   dog.vy -= 22 * dt; dog.y += dog.vy * dt;
   const gnd = groundAt(dog.x, dog.z, .5, Math.max(dog.y, 0));
@@ -1583,12 +1659,13 @@ function updateDog(dt) {
   let strength = 0;
   if (dog.sniffing) {
     dog.sniffTick -= dt; if (dog.sniffTick <= 0) { dog.sniffTick = .45; SFX.sniff(); }
+    const SN = level.diff.sniff * (.8 + .08 * ST().nose);
     const near = hidden.filter(c => !c.revealed).map(c => { const p = center(c); return { c, p, d: Math.hypot(p.x - dog.x, p.z - dog.z) }; })
-      .filter(o => o.d < level.diff.sniff).sort((a, b) => a.d - b.d).slice(0, 3);
+      .filter(o => o.d < SN).sort((a, b) => a.d - b.d).slice(0, 3);
     for (const o of near) {
-      o.c.ping = 3; strength = Math.max(strength, 1 - o.d / level.diff.sniff);
+      o.c.ping = 3; strength = Math.max(strength, 1 - o.d / SN);
       const col = ITEM[o.c.hidden].color, ux = (o.p.x - dog.x) / o.d, uz = (o.p.z - dog.z) / o.d;
-      const n = 1 + Math.floor((1 - o.d / level.diff.sniff) * 3);
+      const n = 1 + Math.floor((1 - o.d / SN) * 3);
       for (let i = 0; i < n; i++) { if (Math.random() > .6) continue; const t = mr(.6, Math.min(o.d, 7)); spawnP(dog.x + ux * t + mr(-.3, .3), dog.y + mr(.35, .9), dog.z + uz * t + mr(-.3, .3), ux * 2, .5, uz * 2, col, .9); }
       if (o.d < 9 && Math.random() < .5) spawnP(o.p.x + mr(-.5, .5), o.c.topY + mr(0, .3), o.p.z + mr(-.5, .5), mr(-.3, .3), 1.2, mr(-.3, .3), col, 1.1);
     }
