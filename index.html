@@ -639,10 +639,10 @@ function makeBone() {
 }
 function throwBone() {
   if (handler.boneCd > 0) return;
-  handler.boneCd = 1.2; handler.throwT = .35;
+  handler.boneCd = 1.0; handler.throwT = .3;
   // 탐지견이 바라보는 방향으로 똑바로 던진다 (자동 조준 없음)
   const fx = Math.sin(dog.dir), fz = Math.cos(dog.dir);
-  bones.push({ m: makeBone(), x: dog.x + fx * .6, z: dog.z + fz * .6, fx, fz, t: 0, range: 6, speed: 12 });
+  bones.push({ m: makeBone(), x: dog.x + fx * .6, z: dog.z + fz * .6, fx, fz, t: 0, range: 6, speed: 14.4 });
   tone(520, .12, 'triangle', .1, 300);
 }
 function updateBones(dt) {
@@ -1428,14 +1428,14 @@ function arrest(p) {
   lvStats[p.kind]++; checkQuest();
 }
 function bark() {
-  dog.barkCd = .45; dog.barkAnim = .25; SFX.bark();
+  dog.barkCd = .375; dog.barkAnim = .22; SFX.bark();
   const hx = dog.x + Math.sin(dog.dir) * .9, hz = dog.z + Math.cos(dog.dir) * .9;
   floatText('왕왕!', hx, dog.y + 1.8, hz, { h: .55 });
   for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; spawnP(hx, dog.y + 1, hz, Math.cos(a) * 5, .6, Math.sin(a) * 5, WHITE, .35); }
   for (const p of people) {
     if (p.dead || p.arrested || p.kind === 'officer') continue;
     const d = Math.hypot(p.x - dog.x, p.z - dog.z);
-    if (p.villain && d < 4.5) { if (d < 4 && !(p.barkHit > time)) { p.barkHit = time + 1.2; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
+    if (p.villain && d < 4.5) { if (d < 4 && !(p.barkHit > time)) { p.barkHit = time + 1.0; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
     else if (!p.villain && d < 3) p.stun = Math.max(p.stun, .3);
   }
   let best = null, bd = 1.8;
