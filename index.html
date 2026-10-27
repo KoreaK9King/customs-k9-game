@@ -204,7 +204,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div class="row"><button class="big" id="btnHowtoOk">알겠어요! 출동!</button></div>
 </div></div>
 <div id="dlg" class="overlay hidden"><div class="card">
- <div class="drow"><div class="face" id="dface">👮</div><div style="flex:1;min-width:0"><div class="who" id="dwho"></div><div class="txt" id="dtxt"></div></div></div>
+ <div class="drow"><div class="face" id="dface">🎖</div><div style="flex:1;min-width:0"><div class="who" id="dwho"></div><div class="txt" id="dtxt"></div></div></div>
  <div class="row" style="justify-content:flex-end"><button class="big" id="dok">알겠어요! 멍!</button></div>
 </div></div>
 
@@ -739,7 +739,7 @@ function updateBones(dt) {
     const u = Math.min(1, b.t * b.speed / b.range), y = 1.5 + Math.sin(Math.PI * u) * .6 - u * .9;
     b.m.position.set(b.x, y, b.z); b.m.rotation.y += dt * 14; b.m.rotation.z += dt * 9;
     let hit = null;
-    for (const p of people) { if (p.dead || p.arrested || p.kind === 'officer') continue; if (Math.hypot(p.x - b.x, p.z - b.z) < 1.17) { hit = p; break; } }
+    for (const p of people) { if (p.dead || p.arrested || p.vip) continue; if (Math.hypot(p.x - b.x, p.z - b.z) < 1.17) { hit = p; break; } }
     const wall = colliders.some(c => !c.disabled && c.topY > y && distToBox(b.x, b.z, c) < .15);
     const box = !hit && colliders.find(c => c.search && !c.disabled && !c.revealed && !c.boned && distToBox(b.x, b.z, c) < .35);
     if (!hit && !wall && !box && u < 1) continue;
@@ -799,8 +799,8 @@ function makePerson(kind) {
   H(BOX(.14, .04, .02), MAT.col(new THREE.Color(skinHex).multiplyScalar(.7).getHex(), .5), 0, -.12, .232);
   if (kind === 'smuggler' || kind === 'boss') H(BOX(.42, .08, .03), MAT.col(0x0a0a0a, .1, .3), 0, .03, .245);
   if (kind === 'boss') { H(BOX(.62, .04, .62), MAT.col(0x111111, .6), 0, .25, 0); H(BOX(.42, .2, .42), MAT.col(0x111111, .6), 0, .37, 0); mesh(BOX(.3, .05, .03), gold, 0, 1.4, .145, body); }
-  if (kind === 'officer' || kind === 'customs') { const cap = MAT.col(0x10233f, .6); H(BOX(.5, .12, .5), cap, 0, .29, 0); H(BOX(.5, .03, .16), cap, 0, .24, .3); H(BOX(.07, .07, .02), gold, 0, .3, .255); }
-  if (kind === 'customs') { const b2 = textSprite('세관', { h: .12, bg: 'rgba(244,197,66,1)', color: '#10233f' }); b2.position.set(0, 1.35, .17); body.add(b2); }
+  if (kind === 'officer' || kind === 'customs' || kind === 'chief') { const cap = MAT.col(0x10233f, .6); H(BOX(.5, .12, .5), cap, 0, .29, 0); H(BOX(.5, .03, .16), cap, 0, .24, .3); H(BOX(.07, .07, .02), gold, 0, .3, .255); }
+  if (kind === 'chief') { H(BOX(.52, .05, .52), gold, 0, .25, 0); for (const sd of [-1, 1]) mesh(BOX(.2, .05, .22), gold, sd * .37, 1.52, 0, body); mesh(BOX(.1, .12, .03), MAT.col(0xc0392b, .5), -.13, 1.32, .14, body); mesh(BOX(.08, .08, .03), gold, -.13, 1.22, .14, body); }
   if (kind === 'pilot') { H(BOX(.5, .12, .5), MAT.col(0x111111, .5), 0, .29, 0); H(BOX(.5, .03, .16), MAT.col(0x111111, .5), 0, .24, .3); H(BOX(.52, .04, .52), gold, 0, .25, 0); for (const sd of [-1, 1]) mesh(BOX(.2, .04, .22), gold, sd * .37, 1.52, 0, body); }
   if (kind === 'attendant') { H(BOX(.24, .12, .24), MAT.col(0x8a1f35, .5), .06, .29, 0); mesh(BOX(.24, .06, .04), MAT.col(0xf4c542, .5), 0, 1.48, .14, body); }
   if (kind === 'pilot' || kind === 'attendant') mesh(BOX(.32, .46, .18), MAT.shell(0x1d2433), .45, .3, -.32, body);
@@ -821,6 +821,7 @@ const LINES = {
   worker: ['오늘 물량 엄청 많네', '지게차 지나가요!', '점심 뭐 먹지?', '이 화물은 3번 구역으로!', '허리 아프다…'],
   handler: ['안전 제일!', '팔레트 하나 더!', '이쪽으로 옮겨 주세요', '수고하십니다!'],
   customs: ['신고할 물품 있으세요?', '탐지견 수고 많아!', '가방 좀 열어 주시겠어요?', '이쪽으로 오세요', '검사 협조 감사합니다'],
+  chief: ['수고 많다, 탐지견!', '이 구역 철저히 검색해!', '밀수범을 놓치지 마라!', '오늘도 안전한 국경을 위해!', '좋아, 잘하고 있어!', '수상한 냄새가 나면 바로 짖어!'],
   pilot: ['다음 비행은 3시간 후야', '오늘 기류가 좋았어 ✈', '착륙 깔끔했지?'],
   attendant: ['안녕히 가세요~', '짐 찾는 곳은 저쪽이에요', '즐거운 여행 되세요!'],
   crew: ['곧 입항합니다 ⚓', '갑판이 미끄러워요!', '구명조끼 위치 확인하세요'],
@@ -835,7 +836,7 @@ class Person {
   constructor(kind, x, z, look) {
     Object.assign(this, makePerson(look || kind)); this.look = look;
     this.kind = kind; this.x = x; this.z = z;
-    this.villain = kind === 'smuggler' || kind === 'boss';
+    this.villain = kind === 'smuggler' || kind === 'boss'; this.vip = kind === 'officer' || kind === 'chief';
     this.hp = kind === 'boss' ? level.diff.bossHp : kind === 'smuggler' ? level.diff.hp : 1;
     this.stun = 0; this.glow = 0; this.target = null; this.wait = mr(0, 2); this.dir = mr(0, 6);
     this.phase = mr(0, 6); this.blocked = 0; this.turn = 0; this.turnT = 0; this.alerted = false;
@@ -915,7 +916,7 @@ class Person {
     this.arms[0].rotation.x = -Math.sin(this.phase) * .5 * k; this.arms[1].rotation.x = Math.sin(this.phase) * .5 * k;
     if (this.wait > 0 && this.act === 'phone') this.arms[1].rotation.x = -2.6;
     if (this.wait > 0 && this.act === 'talk') this.arms[0].rotation.x = -.5 + Math.sin(time * 5 + this.phase) * .4;
-    if (!this.bubble && Math.random() < dt * .012) this.say(pick2(this.lines()));
+    if (!this.bubble && Math.random() < dt * (this.kind === 'chief' ? .22 : .015)) this.say(pick2(this.lines()));
     this.g.position.set(this.x, Math.abs(Math.sin(this.phase)) * .05 * k, this.z);
     this.g.rotation.y = this.dir;
   }
@@ -1206,7 +1207,7 @@ const LEVELS = [
       { kind: 'attendant', route: [[-25, 18], [-25, -18], [-25, 18], [-5, 18]], wait: .3 },
     ],
     people: { civ: 8, smuggler: 2 }, hide: { drug: 3, gun: 1 }, need: { drug: 2, smuggler: 1 },
-    who: '김 반장 (공항 세관)', short: '여행가방 근처에서 냄새를 맡아 마약 2개를 찾고, 밀수범 1명을 체포하세요.',
+    who: '강민준 공항세관장', short: '여행가방 근처에서 냄새를 맡아 마약 2개를 찾고, 밀수범 1명을 체포하세요.',
     intro: '관세청 탐지견, 첫 순찰이다!\n입국장 수하물에 마약이 섞여 들어왔다는 첩보가 있어.\n\n냄새를 맡으면 숨은 물건 쪽으로 냄새 입자가 흘러가.\n수상한 가방 바로 옆에서 짖으면 적발이야.\n여행객 틈에 숨은 밀수범도 1명 잡아줘!',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .25, 0, { map: TEX.tile('marble', '#cfc8bb', '#a9a193', 6, [L.w / 8, L.d / 8]) }));
@@ -1228,7 +1229,7 @@ const LEVELS = [
       sign('입국 심사 IMMIGRATION', 0, 3.6, 8, .7);
       for (const x of [-18, -6, 6, 18]) bench(x, -16);
       for (const x of [-22, -9, 9, 22]) for (const z of [-1, 15]) pillar(x, z);
-      sign('✈ 국제공항 입국장 ARRIVALS', 0, 5.5, L.d / 2 - .5, 1.1);
+      sign('✈ 국제공항 입국장 ARRIVALS', 0, 5.5, -L.d / 2 + 1.5, 1.1);
       L.search = scatter(L, 15, luggage, 1, 1);
     },
   },
@@ -1241,7 +1242,7 @@ const LEVELS = [
     ],
     vehicles: [{ type: 'forklift', route: [[-22, -3], [22, -3], [22, 3], [-22, 3]], start: 0 }, { type: 'forklift', route: [[-22, -3], [22, -3], [22, 3], [-22, 3]], start: 2 }],
     people: { worker: 3, smuggler: 2 }, hide: { drug: 4, gun: 2 }, need: { drug: 3, gun: 1 },
-    who: '이 계장 (항공화물 검사)', short: '팔레트 상자와 항공 컨테이너(ULD)에서 마약 3개, 총기 1개를 찾으세요. 지게차를 조심하세요!',
+    who: '이서연 화물터미널세관장', short: '팔레트 상자와 항공 컨테이너(ULD)에서 마약 3개, 총기 1개를 찾으세요. 지게차를 조심하세요!',
     intro: '여기는 항공 화물터미널이다.\n해외 직구 화물 사이에 마약과 총기가 숨겨져 들어왔어.\n\n팔레트 위 상자는 몸으로 밀어 옮길 수 있고,\n은색 항공 컨테이너(ULD) 앞에서도 냄새를 맡아봐.\n노란 조끼 직원들은 진짜 작업자니까 조심!',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .85, 0, { map: TEX.concrete('cargo', '#9fa1a0', [L.w / 6, L.d / 6]) }));
@@ -1265,7 +1266,7 @@ const LEVELS = [
         for (const sx of [-.6, .6]) for (const sz of [-.7, .6]) mesh(CYL(.28, .28, .22, 16), MAT.col(0x111111, .8), sx, .28, sz, g).rotation.z = Math.PI / 2;
         addCol(x, z + .3, 1.4, 2.8, g, { topY: 2.6 });
       }
-      sign('📦 항공 화물터미널 AIR CARGO', 0, 5.5, L.d / 2 - .5, 1.1);
+      sign('📦 항공 화물터미널 AIR CARGO', 0, 5.5, -L.d / 2 + 1.5, 1.1);
       L.search = scatter(L, 11, palletBox, 1.3, 1.3);
       L.search.push(...colliders.filter(c => c.kind === 'container'));
     },
@@ -1279,7 +1280,7 @@ const LEVELS = [
       { kind: 'customs', route: [[12, 1.6], [12.4, 1.6]], wait: 3 },
     ],
     people: { worker: 2, civ: 1, smuggler: 3 }, hide: { drug: 5, gun: 1 }, need: { drug: 3, smuggler: 2 },
-    who: '정 주무관 (우편물 검사)', short: '작은 택배 상자와 우편 자루 속 마약 3개를 찾고, 밀수범 2명을 잡으세요. 컨베이어 위로 점프!',
+    who: '정우진 국제우편세관장', short: '작은 택배 상자와 우편 자루 속 마약 3개를 찾고, 밀수범 2명을 잡으세요. 컨베이어 위로 점프!',
     intro: '국제우편·특송센터에 온 걸 환영해!\n해외에서 온 소포에 마약을 숨겨 보내는 수법이 늘고 있어.\n\n점프해서 컨베이어 벨트 위로 올라갈 수도 있어.\n벨트 위에 서면 몸이 같이 움직이니 조심하고!\n마약 3개, 밀수범 2명을 부탁해.',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .5, 0, { map: TEX.tile('epoxy', '#a9b4ad', '#98a39c', 4, [L.w / 10, L.d / 10]) }));
@@ -1309,7 +1310,7 @@ const LEVELS = [
         mesh(CYL(.08, .2, .3, 8), MAT.fabric(0x8d8f7a), x, .95, z);
         addCol(x, z, 1, .8, s, { kind: 'sack', search: true, topY: .9, childY: .9 });
       }
-      sign('✉ 국제우편·특송센터 INTL MAIL', 0, 5.5, L.d / 2 - .5, 1.1);
+      sign('✉ 국제우편·특송센터 INTL MAIL', 0, 5.5, -L.d / 2 + 1.5, 1.1);
       L.search = scatter(L, 16, parcel, .8, .8);
       L.search.push(...colliders.filter(c => c.kind === 'cage' || c.kind === 'sack'));
     },
@@ -1323,7 +1324,7 @@ const LEVELS = [
       { kind: 'customs', route: [[-14, 4], [-14, -4]], wait: 2.5 },
     ],
     people: { civ: 8, smuggler: 3 }, hide: { drug: 3, gun: 2 }, need: { drug: 2, gun: 1, smuggler: 2 },
-    who: '최 반장 (여객선 검색팀)', short: '흔들리는 갑판에서 마약 2개, 총기 1개를 찾고 밀수범 2명을 체포하세요.',
+    who: '최하늘 여객선세관장', short: '흔들리는 갑판에서 마약 2개, 총기 1개를 찾고 밀수범 2명을 체포하세요.',
     intro: '입항 직전의 국제 여객선에 올랐다!\n승객 짐과 화물칸 덮개 속에 밀수품이 숨겨져 있다는 제보야.\n\n배가 흔들리니까 중심 잘 잡고,\n난간 안쪽에서 꼼꼼히 수색해.\n밀수범은 왕왕 짖고 뼈다귀로 붙잡자!',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .8, 0, { map: TEX.deck([L.w / 3, L.d / 3]) }));
@@ -1357,7 +1358,7 @@ const LEVELS = [
     ],
     vehicles: [{ type: 'truck', route: [[-17.5, -1], [21.5, -1], [21.5, 9], [-17.5, 9]], start: 0 }, { type: 'truck', route: [[-17.5, -1], [21.5, -1], [21.5, 9], [-17.5, 9]], start: 2 }],
     people: { worker: 3, smuggler: 3 }, hide: { drug: 4, gun: 3 }, need: { drug: 3, gun: 2, smuggler: 1 },
-    who: '박 주무관 (부두 감시과)', short: '컨테이너와 나무상자를 수색해 마약 3개, 총기 2개를 찾고 밀수범 1명을 잡으세요. 트럭이 빨라요!',
+    who: '박도윤 항만세관장', short: '컨테이너와 나무상자를 수색해 마약 3개, 총기 2개를 찾고 밀수범 1명을 잡으세요. 트럭이 빨라요!',
     intro: '부두 컨테이너 야적장이다.\n수출입 화물 컨테이너 사이에 밀수품이 숨겨져 있어.\n\n나무상자는 밀거나 점프해서 올라갈 수 있고,\n컨테이너 문 앞에서도 냄새를 맡아봐!\n마약 3개, 총기 2개, 밀수범 1명이면 작전 성공이야.\n트럭이 빠르게 다니니까 길을 건널 때 조심해!',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .92, 0, { map: TEX.asphalt([L.w / 8, L.d / 8]) }));
@@ -1370,7 +1371,7 @@ const LEVELS = [
         containerBox(cx, cz, 10, pick(cols), 1 + Math.floor(rnd() * 3));
       }
       crane(-6, -L.d / 2 + 2.2, 14);
-      sign('⚓ 부두 컨테이너 야적장 CY', 0, 6, L.d / 2 - .5, 1.1);
+      sign('⚓ 부두 컨테이너 야적장 CY', 0, 6, -L.d / 2 + 1.5, 1.1);
       L.search = scatter(L, 13, crate, 1.3, 1.3);
       L.search.push(...colliders.filter(c => c.kind === 'container'));
     },
@@ -1380,7 +1381,7 @@ const LEVELS = [
     staff: [{ kind: 'handler', route: [[-24, -2], [24, -2]], wait: 1.5 }],
     vehicles: [{ type: 'forklift', route: [[-8, 1], [8, 1], [8, -10], [-8, -10]] }],
     people: { worker: 1, smuggler: 4, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 3, boss: 1 },
-    who: '김 반장 (세관 단속팀)', short: '어두운 창고에서 부하 3명과 보스(체력 7)를 체포하세요! 왕왕 짖기와 뼈다귀로 공격!',
+    who: '한지호 보세구역세관장', short: '어두운 창고에서 부하 3명과 보스(체력 7)를 체포하세요! 왕왕 짖기와 뼈다귀로 공격!',
     intro: '🚨 마지막 작전이다!\n밀수 조직 보스가 보세창고에 숨어 있다는 첩보가 들어왔어.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n왕왕 짖어 멈추게 하고, 뼈다귀를 여러 번 맞혀!\n부하 3명도 함께 체포하면 작전 끝이다!',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .8, 0, { map: TEX.concrete('wh', '#8d8f8c', [L.w / 6, L.d / 6]) }));
@@ -1389,7 +1390,7 @@ const LEVELS = [
       for (const x of [-20, 20]) for (const z of [6, 12]) rack(x, z, 8);
       for (let x = -20; x <= 20; x += 10) { const l = mesh(BOX(3, .15, .4), M('lamp', () => std(0xffffff, .3, 0, { emissive: 0xfff2cc, emissiveIntensity: 1.5 })), x, 6, 0); l.castShadow = false; }
       for (const x of [-14, 14]) { mesh(BOX(6, 4.4, .1), MAT.ribs(0x8a9096), x, 2.2, L.d / 2 - .25); }
-      sign('🏭 보세창고 BONDED WAREHOUSE', 0, 5.2, L.d / 2 - .5, 1.1);
+      sign('🏭 보세창고 BONDED WAREHOUSE', 0, 5.2, -L.d / 2 + 1.5, 1.1);
       L.search = scatter(L, 9, crate, 1.3, 1.3).concat(scatter(L, 6, palletBox, 1.3, 1.3));
     },
   },
@@ -1533,8 +1534,8 @@ function loadLevel(i) {
   def.build(level);
   applyExtras(level);
   // 담당 반장
-  const off = new Person('officer', spawn.x + 2.6, spawn.z + 1); addCol(off.x, off.z, .8, .8, null);
-  const ol = textSprite('👮 ' + def.who.split(' (')[0], { h: .42 }); ol.position.set(0, 2.5, 0); off.g.add(ol);
+  const off = new Person('chief', spawn.x + 2.6, spawn.z + 1); off.wait = 1.5;
+  const ol = textSprite('🎖 ' + def.who, { h: .38 }); ol.position.set(0, 2.5, 0); off.g.add(ol);
   for (const [kind, n] of Object.entries(def.people)) for (let k = 0; k < n; k++) {
     const far = kind === 'boss' ? [{ ...spawn, r: 22 }] : level.avoid;
     const p = placeFree(level.bounds, 1, 1, .5, far); if (p) {
@@ -1786,7 +1787,9 @@ $('tbMusic').onclick = () => { ac(); setMusic(!musicOn); };
 $('tbRank').onclick = () => { if (state === 'play') openRank(); };
 
 // ================= 상호작용 =================
+function chiefSay(t) { const c = people.find(p => p.kind === 'chief'); if (c) c.say(t); }
 function reveal(c) {
+  chiefSay(pick2(['잘했어! 👍', '역시 우리 탐지견!', '훌륭한 코다!']));
   c.revealed = true; const p = center(c), info = ITEM[c.hidden];
   const s = textSprite(`${info.emoji} ${placeOf(c)} 속 ${info.name} 발견!`, { bg: info.bg, h: .6 });
   s.position.set(p.x, c.topY + 1.1, p.z); scene.add(s);
@@ -1806,7 +1809,7 @@ function destroyItem(c) {
 }
 function arrest(p) {
   p.arrested = true; p.arrestT = 2.2; p.ring.visible = false; p.stars.visible = false;
-  SFX.arrest();
+  SFX.arrest(); chiefSay(pick2(['체포 성공! 👏', '멋지다, 팀워크 최고!']));
   const pts = (p.kind === 'boss' ? 600 : 200) * comboHit(); addScore(pts); totals.arrests++; if (p.kind === 'boss') ach.boss++; else ach.arrest++; checkBadges();
   floatText(`🚔 체포! +${pts}`, p.x, 3, p.z, { color: '#7dd3ff' });
   toast(p.kind === 'boss' ? '👑 밀수 조직 보스 체포!!' : '🚔 밀수범 체포 성공!');
@@ -1820,7 +1823,7 @@ function bark() {
   floatText('왕왕!', hx, dog.y + 1.8, hz, { h: .55 });
   for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; spawnP(hx, dog.y + 1, hz, Math.cos(a) * 5, .6, Math.sin(a) * 5, WHITE, .35); }
   for (const p of people) {
-    if (p.dead || p.arrested || p.kind === 'officer') continue;
+    if (p.dead || p.arrested || p.vip) continue;
     const d = Math.hypot(p.x - dog.x, p.z - dog.z);
     if (p.villain && d < 4.5 * BR) { if (d < 4 * BR && !(p.barkHit > time)) { p.barkHit = time + 1.0 * AS; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
     else if (!p.villain && d < 3) p.stun = Math.max(p.stun, .3);
@@ -2118,7 +2121,7 @@ function drawMinimap() {
   for (const p of people) {
     if (p.dead || p.arrested) continue;
     const [x, y] = P(p.x, p.z);
-    if (p.kind === 'officer') g.fillStyle = '#1f6fd1';
+    if (p.vip) g.fillStyle = '#1f6fd1';
     else if (p.villain && (p.glow > 0 || p.kind === 'boss')) g.fillStyle = '#ff2b2b';
     else continue;
     g.beginPath(); g.arc(x, y, p.kind === 'boss' ? 6 : 4, 0, 7); g.fill();
