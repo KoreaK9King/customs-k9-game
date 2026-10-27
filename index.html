@@ -301,6 +301,7 @@ const TEX = {
   fabric: (hex) => pixTex('fab' + hex, 8, (x, y) => jit(shade(hex, (x + y) % 2 ? 1 : .9), .05)),
   fur: (hex) => pixTex('fur' + hex, 8, () => jit(hex, .14)),
   belt: () => pixTex('belt', 16, (x) => x % 4 === 0 ? '#3a3e42' : jit('#26292c', .1)),
+  deck: (rep) => pixTex('deck', 16, (x, y) => y % 4 === 0 ? '#6b4a2b' : jit('#a77a4c', .1), rep),
   water: () => pixTex('water', 16, () => jit('#2f6fd0', .18)),
 };
 TEX.belt();
@@ -506,13 +507,13 @@ const SFX = {
 let musicOn = store.get('k9music', true);
 const SCALES = { major: [0, 2, 4, 5, 7, 9, 11], minor: [0, 2, 3, 5, 7, 8, 10] };
 const TRACKS = [
-  { bpm: 100, root: 60, scale: 'major', prog: [0, 5, 3, 4], lead: 'triangle', drums: .6 },  // 메뉴
-  { bpm: 108, root: 62, scale: 'major', prog: [0, 4, 5, 3], lead: 'triangle', drums: .8 },  // 공항 입국장
-  { bpm: 114, root: 57, scale: 'minor', prog: [0, 5, 2, 6], lead: 'square', drums: 1 },     // 화물터미널
-  { bpm: 120, root: 64, scale: 'major', prog: [0, 3, 4, 0], lead: 'triangle', drums: 1 },   // 우편센터
-  { bpm: 98, root: 65, scale: 'major', prog: [0, 5, 3, 4], lead: 'sine', drums: .7 },       // 여객선 터미널
-  { bpm: 118, root: 55, scale: 'minor', prog: [0, 6, 5, 4], lead: 'square', drums: 1 },     // 컨테이너 야적장
-  { bpm: 136, root: 52, scale: 'minor', prog: [0, 0, 5, 6], lead: 'sawtooth', drums: 1.2 }, // 보세창고 (보스)
+  { bpm: 96, root: 60, scale: 'major', prog: [0, 5, 3, 4], lead: 'triangle', drums: .5, bass: [0, 8], hat: 2 },                                // 메뉴
+  { bpm: 110, root: 62, scale: 'major', prog: [0, 4, 5, 3], lead: 'triangle', drums: .9, bass: [0, 6, 8, 14], hat: 2 },                        // 공항 입국장: 밝은 팝
+  { bpm: 100, root: 57, scale: 'minor', prog: [0, 0, 3, 4], lead: 'square', drums: 1.1, bass: [0, 3, 6, 10, 12], hat: 1, clap: true },         // 화물터미널: 펑키 공장
+  { bpm: 132, root: 64, scale: 'major', prog: [0, 3, 4, 4], lead: 'square', drums: .8, bass: [0, 4, 8, 12], hat: 4, arp: true },              // 우편센터: 통통 튀는
+  { bpm: 88, root: 65, scale: 'major', prog: [0, 3, 4, 0], lead: 'sine', drums: .6, bass: [0, 10], hat: 4, arp: true, swing: .35 },           // 여객선: 바다 노래
+  { bpm: 128, root: 55, scale: 'minor', prog: [0, 6, 5, 4], lead: 'sawtooth', drums: 1.2, bass: [0, 2, 4, 6, 8, 10, 12, 14], hat: 1 },         // 야적장: 액션
+  { bpm: 146, root: 52, scale: 'minor', prog: [0, 1, 0, 6], lead: 'sawtooth', drums: 1.3, bass: [0, 3, 6, 8, 11, 14], hat: 1, arp: true, clap: true }, // 보세창고: 보스전
 ];
 const bgm = { track: -1, step: 0, next: 0, melody: [], timer: null };
 const midi = n => 440 * Math.pow(2, (n - 69) / 12);
@@ -534,21 +535,21 @@ function schedule() {
 }
 function playStep(tr, step, t, sx) {
   if (!musicOn) return;
+  if (tr.swing && step % 2) t += sx * tr.swing;
   const bar = Math.floor(step / 16) % 4, s = step % 16, chord = tr.prog[bar];
-  const o = bgmGain, a = actx;
+  const o = bgmGain, a = actx, d = tr.drums;
   const voice = (freq, dur, type, vol, attack = .01) => {
     const os = a.createOscillator(), g = a.createGain(); os.type = type; os.frequency.value = freq;
     g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + attack); g.gain.exponentialRampToValueAtTime(.0008, t + dur);
     os.connect(g).connect(o); os.start(t); os.stop(t + dur + .05);
   };
-  if (s === 0) for (const k of [0, 2, 4]) voice(midi(noteOf(tr, chord + k, -1)), sx * 16, 'sine', .045, .25);
-  if (s === 0 || s === 8 || s === 11) voice(midi(noteOf(tr, chord, -2)), sx * 3, 'triangle', .16);
-  if (tr.drums > 0) {
-    if (s % 8 === 0) { const os = a.createOscillator(), g = a.createGain(); os.frequency.setValueAtTime(140, t); os.frequency.exponentialRampToValueAtTime(45, t + .15); g.gain.setValueAtTime(.35 * tr.drums, t); g.gain.exponentialRampToValueAtTime(.001, t + .2); os.connect(g).connect(o); os.start(t); os.stop(t + .22); }
-    if (s % 8 === 4) noise(.14, .12 * tr.drums, 1800, t, o);
-    if (s % 2 === 0) noise(.03, .035 * tr.drums, 8000, t, o, 'highpass');
-  }
-  const m = bgm.melody[(step % 64)];
+  if (s === 0) for (const k of [0, 2, 4]) voice(midi(noteOf(tr, chord + k, -1)), sx * 16, 'sine', .04, .25);
+  if (tr.bass.includes(s)) voice(midi(noteOf(tr, chord + (s % 8 === 6 ? 4 : 0), -2)), sx * 2.5, 'triangle', .16);
+  if (tr.arp && s % 2 === 0) voice(midi(noteOf(tr, chord + [0, 2, 4, 7][(s / 2) % 4], 0)), sx * 1.5, 'triangle', .035);
+  if (s % (tr.bpm > 140 ? 4 : 8) === 0) { const os = a.createOscillator(), g = a.createGain(); os.frequency.setValueAtTime(140, t); os.frequency.exponentialRampToValueAtTime(45, t + .15); g.gain.setValueAtTime(.35 * d, t); g.gain.exponentialRampToValueAtTime(.001, t + .2); os.connect(g).connect(o); os.start(t); os.stop(t + .22); }
+  if (s % 8 === 4) noise(.14, .12 * d, tr.clap ? 1200 : 1800, t, o);
+  if (s % tr.hat === 0) noise(.03, .035 * d, 8000, t, o, 'highpass');
+  const m = bgm.melody[step % 64];
   if (m !== null && m !== undefined) voice(midi(noteOf(tr, chord + m, 1)), sx * 2.2, tr.lead, tr.lead === 'sawtooth' ? .035 : .06);
 }
 function setMusic(on) {
@@ -601,7 +602,9 @@ const hairs = [0x2b1d14, 0x5a3a1a, 0x111111, 0xb08850, 0x777777];
 const bagColors = [0xc0392b, 0x2e86c1, 0x27ae60, 0xd4ac0d, 0x8e44ad, 0x17a589, 0xd35400, 0x2c3e50, 0xe6739f, 0xbdc3c7];
 const dogM = makeDog(); scene.add(dogM.g);
 const handlerM = makePerson('customs'); scene.add(handlerM.g);
-{ const t = textSprite('🧑‍✈️ 핸들러', { h: .34 }); t.position.y = 2.45; handlerM.g.add(t); handlerM.ring.visible = false; }
+let handlerLabel = null;
+function setHandlerLabel(name) { if (handlerLabel) disposeSprite(handlerLabel); handlerLabel = textSprite('🧑‍✈️ ' + name + ' 핸들러', { h: .34 }); handlerLabel.position.y = 2.45; handlerM.g.add(handlerLabel); }
+setHandlerLabel('나의'); handlerM.ring.visible = false;
 const handler = { x: 0, z: 2, dir: Math.PI, phase: 0, throwT: 0, boneCd: 0 };
 const leashPts = Array.from({ length: 10 }, () => new THREE.Vector3());
 const leash = new THREE.Line(new THREE.BufferGeometry().setFromPoints(leashPts), new THREE.LineBasicMaterial({ color: 0xd63031 }));
@@ -649,7 +652,7 @@ function updateBones(dt) {
     const u = Math.min(1, b.t * b.speed / b.range), y = 1.5 + Math.sin(Math.PI * u) * .6 - u * .9;
     b.m.position.set(b.x, y, b.z); b.m.rotation.y += dt * 14; b.m.rotation.z += dt * 9;
     let hit = null;
-    for (const p of people) { if (p.dead || p.arrested || p.kind === 'officer') continue; if (Math.hypot(p.x - b.x, p.z - b.z) < .9) { hit = p; break; } }
+    for (const p of people) { if (p.dead || p.arrested || p.kind === 'officer') continue; if (Math.hypot(p.x - b.x, p.z - b.z) < 1.17) { hit = p; break; } }
     const wall = colliders.some(c => !c.disabled && c.topY > y && distToBox(b.x, b.z, c) < .15);
     if (!hit && !wall && u < 1) continue;
     scene.remove(b.m); bones.splice(i, 1);
@@ -723,7 +726,7 @@ class Person {
     Object.assign(this, makePerson(kind));
     this.kind = kind; this.x = x; this.z = z;
     this.villain = kind === 'smuggler' || kind === 'boss';
-    this.hp = kind === 'boss' ? 5 : kind === 'smuggler' ? 2 : 1;
+    this.hp = kind === 'boss' ? level.diff.bossHp : kind === 'smuggler' ? level.diff.hp : 1;
     this.stun = 0; this.glow = 0; this.target = null; this.wait = mr(0, 2); this.dir = mr(0, 6);
     this.phase = mr(0, 6); this.blocked = 0; this.turn = 0; this.turnT = 0; this.alerted = false;
     this.arrested = false; this.dead = false; this.r = kind === 'boss' ? .5 : .4;
@@ -746,14 +749,14 @@ class Person {
     const dx = this.x - dog.x, dz = this.z - dog.z, d = Math.hypot(dx, dz) || .01;
     if (this.kind === 'officer') { this.dir += angDiff(this.dir, Math.atan2(-dx, -dz)) * Math.min(1, dt * 3); this.g.rotation.y = this.dir; return; }
     let vx = 0, vz = 0, sp = 0, flee = false;
-    const fleeR = this.kind === 'boss' ? 13 : 7.5;
+    const fleeR = (this.kind === 'boss' ? 13 : 7.5) * level.diff.flee;
     if (this.villain && d < fleeR) {
       flee = true;
       if (!this.alerted) { this.alerted = true; floatText('!?', this.x, 2.6, this.z, { color: '#ff6b6b' }); }
       let ax = dx / d, az = dz / d;
       if (this.blocked > .25) { this.turn = Math.random() < .5 ? 1 : -1; this.turnT = .8; this.blocked = 0; }
       if (this.turnT > 0) { this.turnT -= dt; const a = this.turn * 1.3, c = Math.cos(a), s = Math.sin(a); [ax, az] = [ax * c - az * s, ax * s + az * c]; }
-      sp = this.kind === 'boss' ? 6.6 : 5.0; vx = ax * sp; vz = az * sp;
+      sp = (this.kind === 'boss' ? 6.6 : 5.0) * level.diff.speed; vx = ax * sp; vz = az * sp;
     } else {
       if (d > fleeR + 4) this.alerted = false;
       if (this.wait > 0) this.wait -= dt;
@@ -788,7 +791,7 @@ class Vehicle {
     this.type = type; this.route = route; this.ri = start % route.length;
     [this.x, this.z] = route[this.ri];
     const nx = route[(this.ri + 1) % route.length]; this.dir = Math.atan2(nx[0] - this.x, nx[1] - this.z);
-    this.speed = type === 'truck' ? 4.6 : 3; this.cur = 0; this.honk = 0;
+    this.speed = (type === 'truck' ? 4.6 : 3) * (level.diff.vehicle || 1); this.cur = 0; this.honk = 0;
     const g = this.g = new THREE.Group(); world.add(g);
     if (type === 'forklift') {
       this.len = 3; this.wid = 1.5;
@@ -954,7 +957,7 @@ const ITEM = {
 };
 const LEVELS = [
   {
-    name: '공항 입국장', icon: '✈', w: 56, d: 42, outdoor: false, bg: 0xdfe7ec, music: 1,
+    diff: { stars: 1, speed: .85, flee: .85, hp: 1, bossHp: 5, sniff: 30, vehicle: 1 }, name: '공항 입국장', icon: '✈', w: 56, d: 42, outdoor: false, bg: 0xdfe7ec, music: 1,
     staff: [
       { kind: 'customs', route: [[-20, 3], [20, 3]], wait: 2.5 },
       { kind: 'customs', route: [[-4, -3], [4, -3], [4, -13], [-4, -13]], wait: 1.5 },
@@ -990,15 +993,15 @@ const LEVELS = [
     },
   },
   {
-    name: '공항 화물터미널', icon: '📦', w: 60, d: 44, outdoor: false, bg: 0xc9cdd0, music: 2,
+    diff: { stars: 2, speed: .95, flee: .95, hp: 2, bossHp: 5, sniff: 27, vehicle: 1 }, name: '공항 화물터미널', icon: '📦', w: 60, d: 44, outdoor: false, bg: 0xc9cdd0, music: 2,
     staff: [
       { kind: 'handler', route: [[-20, 7], [20, 7]], wait: 1.5 },
       { kind: 'handler', route: [[22, 7.5], [-22, 7.5]], wait: 1.5 },
       { kind: 'customs', route: [[-24, 9.6], [24, 9.6]], wait: 3 },
     ],
     vehicles: [{ type: 'forklift', route: [[-22, -3], [22, -3], [22, 3], [-22, 3]], start: 0 }, { type: 'forklift', route: [[-22, -3], [22, -3], [22, 3], [-22, 3]], start: 2 }],
-    people: { worker: 3, smuggler: 2 }, hide: { drug: 3, gun: 2 }, need: { drug: 2, gun: 1 },
-    who: '이 계장 (항공화물 검사)', short: '팔레트 상자와 항공 컨테이너(ULD)에서 마약 2개, 총기 1개를 찾으세요.',
+    people: { worker: 3, smuggler: 2 }, hide: { drug: 4, gun: 2 }, need: { drug: 3, gun: 1 },
+    who: '이 계장 (항공화물 검사)', short: '팔레트 상자와 항공 컨테이너(ULD)에서 마약 3개, 총기 1개를 찾으세요. 지게차를 조심하세요!',
     intro: '여기는 항공 화물터미널이다.\n해외 직구 화물 사이에 마약과 총기가 숨겨져 들어왔어.\n\n팔레트 위 상자는 몸으로 밀어 옮길 수 있고,\n은색 항공 컨테이너(ULD) 앞에서도 냄새를 맡아봐.\n노란 조끼 직원들은 진짜 작업자니까 조심!',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .85, 0, { map: TEX.concrete('cargo', '#9fa1a0', [L.w / 6, L.d / 6]) }));
@@ -1028,16 +1031,16 @@ const LEVELS = [
     },
   },
   {
-    name: '국제우편·특송센터', icon: '✉', w: 54, d: 40, outdoor: false, bg: 0xd8dde0, music: 3,
+    diff: { stars: 2, speed: 1.05, flee: 1, hp: 2, bossHp: 5, sniff: 25, vehicle: 1 }, name: '국제우편·특송센터', icon: '✉', w: 54, d: 40, outdoor: false, bg: 0xd8dde0, music: 3,
     staff: [
       { kind: 'postal', route: [[-20, -6.5], [8, -6.5]], wait: 1.2 },
       { kind: 'postal', route: [[8, 2.5], [-20, 2.5]], wait: 1.2 },
       { kind: 'postal', route: [[15, -15], [15, 10]], wait: 2 },
       { kind: 'customs', route: [[12, 1.6], [12.4, 1.6]], wait: 3 },
     ],
-    people: { worker: 2, civ: 1, smuggler: 2 }, hide: { drug: 4, gun: 1 }, need: { drug: 3, smuggler: 1 },
-    who: '정 주무관 (우편물 검사)', short: '작은 택배 상자와 우편 자루 속 마약 3개를 찾고, 밀수범 1명을 잡으세요.',
-    intro: '국제우편·특송센터에 온 걸 환영해!\n해외에서 온 소포에 마약을 숨겨 보내는 수법이 늘고 있어.\n\n점프해서 컨베이어 벨트 위로 올라갈 수도 있어.\n벨트 위에 서면 몸이 같이 움직이니 조심하고!\n마약 3개, 밀수범 1명을 부탁해.',
+    people: { worker: 2, civ: 1, smuggler: 3 }, hide: { drug: 5, gun: 1 }, need: { drug: 3, smuggler: 2 },
+    who: '정 주무관 (우편물 검사)', short: '작은 택배 상자와 우편 자루 속 마약 3개를 찾고, 밀수범 2명을 잡으세요. 컨베이어 위로 점프!',
+    intro: '국제우편·특송센터에 온 걸 환영해!\n해외에서 온 소포에 마약을 숨겨 보내는 수법이 늘고 있어.\n\n점프해서 컨베이어 벨트 위로 올라갈 수도 있어.\n벨트 위에 서면 몸이 같이 움직이니 조심하고!\n마약 3개, 밀수범 2명을 부탁해.',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .5, 0, { map: TEX.tile('epoxy', '#a9b4ad', '#98a39c', 4, [L.w / 10, L.d / 10]) }));
       walls(L, 'solid');
@@ -1072,44 +1075,50 @@ const LEVELS = [
     },
   },
   {
-    name: '여객선 터미널', icon: '⛴', w: 60, d: 46, outdoor: true, bg: 0xcfe3ef, music: 4,
+    diff: { stars: 3, speed: 1.12, flee: 1.1, hp: 2, bossHp: 5, sniff: 23, vehicle: 1 }, name: '국제 여객선', icon: '⛴', w: 64, d: 30, outdoor: true, ship: true, bg: 0xcfe3ef, music: 4,
     staff: [
-      { kind: 'crew', route: [[13.5, -20], [13.5, -12], [13.5, -4], [13.5, -12]], wait: .8 },
-      { kind: 'crew', route: [[-26, -16], [26, -16]], wait: 1.5 },
-      { kind: 'customs', route: [[-13.5, -4], [-13.5, -15]], wait: 2.5 },
-      { kind: 'attendant', route: [[-24, 9], [24, 9]], wait: 1 },
+      { kind: 'crew', route: [[-26, 10.5], [10, 10.5]], wait: 1.5 },
+      { kind: 'crew', route: [[10, -10.5], [-26, -10.5]], wait: 1.5 },
+      { kind: 'pilot', route: [[18, 5], [18, -5]], wait: 3 },
+      { kind: 'customs', route: [[-14, 4], [-14, -4]], wait: 2.5 },
     ],
-    people: { civ: 9, smuggler: 3 }, hide: { gun: 2, drug: 2 }, need: { gun: 1, smuggler: 2 },
-    who: '최 반장 (여객선 터미널)', short: '여행객 짐에서 불법 총기 1개를 찾고, 밀수범 2명을 체포하세요.',
-    intro: '국제 여객선이 막 도착했다!\n승객 짐 속에 불법 총기가 숨겨져 있다는 제보야.\n\n대합실과 선착장을 오가며 냄새를 맡아봐.\n왕왕 짖으면 밀수범이 놀라 멈추니까\n그때 내가 뼈다귀를 던져 맞히면 체포야!',
+    people: { civ: 8, smuggler: 3 }, hide: { drug: 3, gun: 2 }, need: { drug: 2, gun: 1, smuggler: 2 },
+    who: '최 반장 (여객선 검색팀)', short: '흔들리는 갑판에서 마약 2개, 총기 1개를 찾고 밀수범 2명을 체포하세요.',
+    intro: '입항 직전의 국제 여객선에 올랐다!\n승객 짐과 화물칸 덮개 속에 밀수품이 숨겨져 있다는 제보야.\n\n배가 흔들리니까 중심 잘 잡고,\n난간 안쪽에서 꼼꼼히 수색해.\n밀수범은 왕왕 짖고 뼈다귀로 붙잡자!',
     build(L) {
-      floorPlane(L.w, L.d / 2 + 9, std(0xffffff, .3, 0, { map: TEX.tile('ferry', '#d9d3c7', '#bdb5a6', 6, [L.w / 8, (L.d / 2 + 9) / 8]) }), 0, (L.d / 2 - 9) / 2 + 4.5 - 4.5 + (9 / 2) - 4.5 + .0, .0);
-      floorPlane(L.w, L.d / 2 - 9, std(0xffffff, .9, 0, { map: TEX.concrete('quay', '#a8a59c', [L.w / 6, (L.d / 2 - 9) / 6]) }), 0, -L.d / 2 + (L.d / 2 - 9) / 2, .005);
-      walls(L, 'fence', true);
-      water(L, -L.d / 2);
-      for (const [x, w] of [[-23, 14], [0, 22], [23, 14]]) { const c = solid(x, -9, w, .3, 3, MAT.glass()); c.mesh.castShadow = false; mesh(BOX(w, .12, .34), MAT.metal(0x8a959c), x, 3, -9); }
-      for (const x of [-20, -8, 8, 20]) bench(x, 4);
-      for (let x = -18; x <= 18; x += 12) { solid(x, 14, 4, 1.2, 1.1, MAT.col(0x2f5d8a, .45, .2)); mesh(BOX(4, .05, 1.3), MAT.col(0xe8e4dc, .4), x, 1.13, 14); }
-      sign('🎫 매표·출국 수속', 0, 3.2, 14, .7);
-      for (const x of [-12, 12]) pillar(x, -2, 5);
-      const gw = new THREE.Group(); gw.position.set(14, 0, -L.d / 2 - 3); world.add(gw);
-      mesh(BOX(2.4, .2, 7), MAT.metal(0x9aa3ab), 0, 1.2, 0, gw); for (const s of [-1, 1]) mesh(BOX(.06, 1, 7), MAT.metal(0xd0d4d6), s * 1.2, 1.7, 0, gw);
-      ship(4, -L.d / 2 - 11);
-      sign('⛴ 국제여객선 터미널 FERRY', 0, 5.5, L.d / 2 - .5, 1.1);
-      L.search = scatter(L, 20, luggage, 1, 1);
+      floorPlane(L.w, L.d, std(0xffffff, .8, 0, { map: TEX.deck([L.w / 3, L.d / 3]) }));
+      const sea = TEX.water(); sea.repeat.set(60, 60);
+      const wm = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), std(0xffffff, .3, 0, { map: sea, transparent: true, opacity: .9 }));
+      wm.rotation.x = -Math.PI / 2; wm.position.y = -4; world.add(wm); waterMesh = wm;
+      mesh(BOX(L.w + 2, 4, L.d + 2), MAT.col(0xf2f2f0, .45), 0, -2.05, 0);
+      mesh(BOX(L.w + 2.04, .8, L.d + 2.04), MAT.col(0x1f4e8c, .45), 0, -3.3, 0);
+      const bow = mesh(BOX(14, 4, 14), MAT.col(0xf2f2f0, .45), -L.w / 2 - 2, -2.05, 0); bow.rotation.y = Math.PI / 4; bow.scale.set(1, 1, .75);
+      walls(L, 'fence');
+      solid(25, 0, 10, 12, 6, MAT.col(0xf7f7f5, .4));
+      mesh(BOX(10.04, .9, 12.04), MAT.col(0x223344, .1, .2), 25, 4.6, 0);
+      mesh(BOX(6, 3, 8), MAT.col(0xf7f7f5, .4), 26, 7.5, 0);
+      mesh(CYL(1.3, 1.5, 4), MAT.col(0xc0392b, .5), 27, 11, 0);
+      mesh(CYL(.25, .25, 14), MAT.metal(0xdddddd), -28, 7, 0);
+      for (const z of [-13.2, 13.2]) for (let x = -24; x <= 12; x += 12) { solid(x, z, 5, 1.4, 1.3, MAT.col(0xff6a00, .5)); mesh(BOX(.15, 2.4, .15), MAT.metal(0xdddddd), x - 2, 1.2, z); mesh(BOX(.15, 2.4, .15), MAT.metal(0xdddddd), x + 2, 1.2, z); }
+      for (const x of [-20, -8, 4]) { const c = solid(x, 0, 5, 4, .7, MAT.col(0x2e7d4f, .5), { kind: 'hatch', search: true }); mesh(BOX(5.02, .06, .2), MAT.col(0xf1c40f, .5), x, .72, 0); c.childY = .9; }
+      for (const x of [-22, -10, 2]) bench(x, -7);
+      sign('⛴ 국제 여객선 KOREA FERRY', 25, 9, 0, 1.1);
+      sign('화물칸 HATCH', -8, 2, 0, .5);
+      L.search = scatter(L, 16, luggage, 1, 1);
+      L.search.push(...colliders.filter(c => c.kind === 'hatch'));
     },
   },
   {
-    name: '부두 컨테이너 야적장', icon: '⚓', w: 66, d: 48, outdoor: true, bg: 0xcfe3ef, music: 5,
+    diff: { stars: 4, speed: 1.2, flee: 1.2, hp: 3, bossHp: 5, sniff: 21, vehicle: 1.25 }, name: '부두 컨테이너 야적장', icon: '⚓', w: 66, d: 48, outdoor: true, bg: 0xcfe3ef, music: 5,
     staff: [
       { kind: 'handler', route: [[8.5, -10], [8.5, 0]], wait: 2 },
       { kind: 'handler', route: [[-4.5, -10], [-4.5, 0]], wait: 2 },
       { kind: 'customs', route: [[-29, 20], [29, 20]], wait: 2.5 },
     ],
     vehicles: [{ type: 'truck', route: [[-17.5, -1], [21.5, -1], [21.5, 9], [-17.5, 9]], start: 0 }, { type: 'truck', route: [[-17.5, -1], [21.5, -1], [21.5, 9], [-17.5, 9]], start: 2 }],
-    people: { worker: 3, smuggler: 2 }, hide: { drug: 3, gun: 3 }, need: { drug: 2, gun: 2 },
-    who: '박 주무관 (부두 감시과)', short: '컨테이너와 나무상자를 수색해 마약 2개, 총기 2개를 찾으세요.',
-    intro: '부두 컨테이너 야적장이다.\n수출입 화물 컨테이너 사이에 밀수품이 숨겨져 있어.\n\n나무상자는 밀거나 점프해서 올라갈 수 있고,\n컨테이너 문 앞에서도 냄새를 맡아봐!\n마약 2개, 총기 2개를 찾으면 작전 성공이야.',
+    people: { worker: 3, smuggler: 3 }, hide: { drug: 4, gun: 3 }, need: { drug: 3, gun: 2, smuggler: 1 },
+    who: '박 주무관 (부두 감시과)', short: '컨테이너와 나무상자를 수색해 마약 3개, 총기 2개를 찾고 밀수범 1명을 잡으세요. 트럭이 빨라요!',
+    intro: '부두 컨테이너 야적장이다.\n수출입 화물 컨테이너 사이에 밀수품이 숨겨져 있어.\n\n나무상자는 밀거나 점프해서 올라갈 수 있고,\n컨테이너 문 앞에서도 냄새를 맡아봐!\n마약 3개, 총기 2개, 밀수범 1명이면 작전 성공이야.\n트럭이 빠르게 다니니까 길을 건널 때 조심해!',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .92, 0, { map: TEX.asphalt([L.w / 8, L.d / 8]) }));
       for (const z of [-2, 9]) floorPlane(L.w - 6, .18, MAT.col(0xf0f0f0, .7), 0, z, .012);
@@ -1127,12 +1136,12 @@ const LEVELS = [
     },
   },
   {
-    name: '보세창고 (보스전)', icon: '🏭', w: 56, d: 42, outdoor: false, bg: 0x7b8086, dim: true, music: 6,
+    diff: { stars: 5, speed: 1.3, flee: 1.3, hp: 3, bossHp: 7, sniff: 19, vehicle: 1.2 }, name: '보세창고 (보스전)', icon: '🏭', w: 56, d: 42, outdoor: false, bg: 0x7b8086, dim: true, music: 6,
     staff: [{ kind: 'handler', route: [[-24, -2], [24, -2]], wait: 1.5 }],
     vehicles: [{ type: 'forklift', route: [[-8, 1], [8, 1], [8, -10], [-8, -10]] }],
-    people: { worker: 1, smuggler: 3, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 2, boss: 1 },
-    who: '김 반장 (세관 단속팀)', short: '보스는 빠르고 튼튼해요(체력 5). 왕왕 짖기와 뼈다귀로 여러 번 공격하세요!',
-    intro: '🚨 마지막 작전이다!\n밀수 조직 보스가 보세창고에 숨어 있다는 첩보가 들어왔어.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n왕왕 짖어 멈추게 하고, 뼈다귀를 여러 번 맞혀!\n부하 2명도 함께 체포하면 작전 끝이다!',
+    people: { worker: 1, smuggler: 4, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 3, boss: 1 },
+    who: '김 반장 (세관 단속팀)', short: '어두운 창고에서 부하 3명과 보스(체력 7)를 체포하세요! 왕왕 짖기와 뼈다귀로 공격!',
+    intro: '🚨 마지막 작전이다!\n밀수 조직 보스가 보세창고에 숨어 있다는 첩보가 들어왔어.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n왕왕 짖어 멈추게 하고, 뼈다귀를 여러 번 맞혀!\n부하 3명도 함께 체포하면 작전 끝이다!',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .8, 0, { map: TEX.concrete('wh', '#8d8f8c', [L.w / 6, L.d / 6]) }));
       walls(L, 'solid');
@@ -1342,7 +1351,7 @@ function showMaps(paused = false) {
     const locked = i > prog.unlocked, cleared = prog.best[i] !== undefined;
     const cur = pausedGame && i === levelIdx;
     const st = cur ? '▶ 진행 중 · 눌러서 돌아가기' : locked ? '🔒 이전 맵을 클리어하세요' : cleared ? `✅ 최고 기록 ${fmtTime(prog.best[i])}` : '도전 가능';
-    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.icon}</span><span class="no">MAP ${i + 1}</span><span class="nm">${L.name}</span><span class="st">${st}</span></button>`;
+    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.icon}</span><span class="no">MAP ${i + 1}</span><span class="nm">${L.name}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">난이도 ${'★'.repeat(L.diff.stars)}${'☆'.repeat(5 - L.diff.stars)}</span></button>`;
   }).join('');
   $('pauseRow').classList.toggle('hidden', !pausedGame);
   $('maps').classList.remove('hidden');
@@ -1375,7 +1384,7 @@ async function login() {
   if (res === 'bad') return loginErr('비밀번호가 틀렸어요. 5번 틀리면 5분간 잠겨요.');
   if (res === 'locked') return loginErr('비밀번호를 여러 번 틀려서 5분간 잠겼어요. 잠시 후 다시 시도하세요.');
   loginErr('');
-  playerId = v; playerPw = res === 'offline' ? '' : pw; store.set('k9id', v); runScore = 0; runNext = 0;
+  playerId = v; setHandlerLabel(v); playerPw = res === 'offline' ? '' : pw; store.set('k9id', v); runScore = 0; runNext = 0;
   if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
   if (res === 'offline') toast('📡 랭킹 서버에 연결하지 못해 이 기기에만 기록돼요');
   showMaps();
@@ -1535,11 +1544,11 @@ function updateDog(dt) {
   if (dog.sniffing) {
     dog.sniffTick -= dt; if (dog.sniffTick <= 0) { dog.sniffTick = .45; SFX.sniff(); }
     const near = hidden.filter(c => !c.revealed).map(c => { const p = center(c); return { c, p, d: Math.hypot(p.x - dog.x, p.z - dog.z) }; })
-      .filter(o => o.d < 28).sort((a, b) => a.d - b.d).slice(0, 3);
+      .filter(o => o.d < level.diff.sniff).sort((a, b) => a.d - b.d).slice(0, 3);
     for (const o of near) {
-      o.c.ping = 3; strength = Math.max(strength, 1 - o.d / 28);
+      o.c.ping = 3; strength = Math.max(strength, 1 - o.d / level.diff.sniff);
       const col = ITEM[o.c.hidden].color, ux = (o.p.x - dog.x) / o.d, uz = (o.p.z - dog.z) / o.d;
-      const n = 1 + Math.floor((1 - o.d / 28) * 3);
+      const n = 1 + Math.floor((1 - o.d / level.diff.sniff) * 3);
       for (let i = 0; i < n; i++) { if (Math.random() > .6) continue; const t = mr(.6, Math.min(o.d, 7)); spawnP(dog.x + ux * t + mr(-.3, .3), dog.y + mr(.35, .9), dog.z + uz * t + mr(-.3, .3), ux * 2, .5, uz * 2, col, .9); }
       if (o.d < 9 && Math.random() < .5) spawnP(o.p.x + mr(-.5, .5), o.c.topY + mr(0, .3), o.p.z + mr(-.5, .5), mr(-.3, .3), 1.2, mr(-.3, .3), col, 1.1);
     }
@@ -1572,6 +1581,7 @@ function updateCamera(dt) {
   camera.position.copy(camPos);
   if (shake > 0) { shake -= dt; camera.position.x += mr(-1, 1) * shake * .5; camera.position.y += mr(-1, 1) * shake * .5; }
   camera.lookAt(tx, ty, tz);
+  if (level && level.ship) camera.rotateZ(Math.sin(time * .7) * .03);
   sun.position.set(tx + 22, 45, tz + 16); sun.target.position.set(tx, 0, tz);
 }
 
