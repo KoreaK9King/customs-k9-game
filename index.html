@@ -170,7 +170,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div class="ctl">
   <kbd>W A S D</kbd><span>이동 (가방·상자에 부딪히면 밀려나요)</span>
   <kbd>Shift</kbd><span>달리기 (기력이 줄어요)</span>
-  <kbd>Space</kbd><span>점프 — 상자나 컨베이어 위로 올라가기</span>
+  <kbd>Space</kbd><span>점프 — 공중에서 한 번 더 누르면 2단 점프! 핸들러도 같이 뛰어요</span>
   <kbd>E 꾹 누르기</kbd><span>냄새 맡기 — 숨은 물건 쪽으로 냄새 입자가 흐르고, 밀수범 발밑에 빨간 원이 떠요</span>
   <kbd>F</kbd><span>🐕 왕왕 짖기 — 수상한 물건 옆이면 적발! 가까운 밀수범은 놀라 멈추고 체력 -1, +30점</span>
   <kbd>Q</kbd><span>🦴 핸들러가 뼈다귀를 앞으로 가까이(6m) 던지기 — 정면의 밀수범을 맞히면 체력 -1, +30점</span>
@@ -634,19 +634,26 @@ const handlerM = makePerson('customs'); scene.add(handlerM.g);
 let handlerLabel = null;
 function setHandlerLabel(name) { if (handlerLabel) disposeSprite(handlerLabel); handlerLabel = textSprite('🧑‍✈️ ' + name + ' 핸들러', { h: .34 }); handlerLabel.position.y = 2.45; handlerM.g.add(handlerLabel); }
 setHandlerLabel('나의'); handlerM.ring.visible = false;
-const handler = { x: 0, z: 2, dir: Math.PI, phase: 0, throwT: 0, boneCd: 0 };
+const handler = { x: 0, z: 2, y: 0, vy: 0, dir: Math.PI, phase: 0, throwT: 0, boneCd: 0 };
 const leashPts = Array.from({ length: 10 }, () => new THREE.Vector3());
 const leash = new THREE.Line(new THREE.BufferGeometry().setFromPoints(leashPts), new THREE.LineBasicMaterial({ color: 0xd63031 }));
 leash.frustumCulled = false; scene.add(leash);
 function updateHandler(dt) {
-  const bx = dog.x - Math.sin(dog.dir) * 1.3 + Math.cos(dog.dir) * 1.4, bz = dog.z - Math.cos(dog.dir) * 1.3 - Math.sin(dog.dir) * 1.4;
+  // 탐지견이 올라간 높이까지 핸들러도 뛰어 올라간다
+  const gh = groundAt(handler.x, handler.z, .4, Math.max(dog.y, 0) + .05).h;
+  if (handler.y < gh - .05 && handler.vy <= 0) handler.vy = 6.5;
+  handler.vy -= 22 * dt; handler.y += handler.vy * dt;
+  if (handler.y <= gh && handler.vy <= 0) { handler.y = gh; handler.vy = 0; }
+  const up = dog.y > .3, back = up ? .8 : 1.3, side = up ? .25 : 1.4;
+  const bx = dog.x - Math.sin(dog.dir) * back + Math.cos(dog.dir) * side, bz = dog.z - Math.cos(dog.dir) * back - Math.sin(dog.dir) * side;
   let dx = bx - handler.x, dz = bz - handler.z; const d = dog.idleMode ? 0 : Math.hypot(dx, dz);
   if (d > 9) { handler.x = bx; handler.z = bz; }
   const sp = d > .3 ? Math.min(d * 3, 10) : 0;
   if (sp > 0) { handler.x += dx / d * sp * dt; handler.z += dz / d * sp * dt; handler.dir += angDiff(handler.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 8); }
   else handler.dir += angDiff(handler.dir, Math.atan2(dog.x - handler.x, dog.z - handler.z)) * Math.min(1, dt * 4);
   handler.phase += dt * sp * 3; const k = Math.min(1, sp / 2);
-  const h = handlerM; h.g.position.set(handler.x, Math.abs(Math.sin(handler.phase)) * .05 * k, handler.z); h.g.rotation.y = handler.dir;
+  const h = handlerM; h.g.position.set(handler.x, handler.y + Math.abs(Math.sin(handler.phase)) * .05 * k, handler.z);
+  if (handler.y > .05) { h.legs[0].rotation.x = -.8; h.legs[1].rotation.x = .4; } h.g.rotation.y = handler.dir;
   h.legs[0].rotation.x = Math.sin(handler.phase) * .6 * k; h.legs[1].rotation.x = -Math.sin(handler.phase) * .6 * k;
   handler.throwT -= dt; handler.boneCd -= dt;
   h.arms[1].rotation.x = handler.throwT > 0 ? -2.6 + (1 - handler.throwT / .35) * 2.2 : -.5;
@@ -656,7 +663,7 @@ function updateHandler(dt) {
   // 목줄: 핸들러 오른손 → 강아지 목줄 (살짝 처지게)
   const hx = handler.x + Math.cos(handler.dir) * -.32 + Math.sin(handler.dir) * .25, hz = handler.z - Math.sin(handler.dir) * -.32 + Math.cos(handler.dir) * .25;
   const cx = dog.x + Math.sin(dog.dir) * .5, cz = dog.z + Math.cos(dog.dir) * .5, cy = dog.y + .9;
-  for (let i = 0; i < 10; i++) { const t = i / 9; leashPts[i].set(lerp(hx, cx, t), lerp(1.05, cy, t) - Math.sin(Math.PI * t) * .35, lerp(hz, cz, t)); }
+  for (let i = 0; i < 10; i++) { const t = i / 9; leashPts[i].set(lerp(hx, cx, t), lerp(1.05 + handler.y, cy, t) - Math.sin(Math.PI * t) * .35, lerp(hz, cz, t)); }
   leash.geometry.setFromPoints(leashPts);
 }
 
@@ -1003,6 +1010,10 @@ const ITEMS = {
   shoeBox: [.55, .35, (x, z) => { const [g, c] = pushGroup(x, z, .55, .35, .45, '운동화 상자'); mesh(BOX(.55, .2, .35), MAT.col(0xe67e22, .6), 0, .1, 0, g); mesh(BOX(.55, .2, .35), MAT.col(0x2c3e50, .6), 0, .32, 0, g); return c; }],
   wine: [.6, .45, (x, z) => { const [g, c] = pushGroup(x, z, .6, .45, .55, '와인 상자'); mesh(BOX(.6, .35, .45), MAT.wood(), 0, .17, 0, g); for (let i = 0; i < 3; i++) mesh(CYL(.04, .04, .22), MAT.col(0x2d5a27, .2, .1), -.16 + i * .16, .45, 0, g); return c; }],
   machine: [.9, .7, (x, z) => { const [g, c] = pushGroup(x, z, .9, .7, .7, '기계 부품 상자'); mesh(RBOX(.9, .6, .7, .04), MAT.metal(0x7f8c8d, .5), 0, .3, 0, g); for (const sx of [-.3, .3]) mesh(CYL(.06, .06, .12), MAT.metal(0x444444), sx, .64, 0, g); return c; }],
+  tvBox: [1, .4, (x, z) => { const [g, c] = pushGroup(x, z, 1, .4, .7, '가전제품(TV) 상자'); mesh(BOX(1, .66, .36), MAT.cardboard(), 0, .33, 0, g); mesh(BOX(.6, .36, .02), MAT.col(0x111111, .3), 0, .36, .19, g); return c; }],
+  fishBox: [.8, .5, (x, z) => { const [g, c] = pushGroup(x, z, .8, .5, .4, '냉동 수산물 박스'); mesh(BOX(.8, .36, .5), MAT.col(0xf4f4f2, .6), 0, .18, 0, g); mesh(BOX(.81, .06, .51), MAT.col(0x2e86c1, .5), 0, .3, 0, g); return c; }],
+  vase: [.6, .6, (x, z) => { const [g, c] = pushGroup(x, z, .6, .6, .9, '도자기 화분'); mesh(BOX(.4, .1, .4), MAT.col(0x8d5a3b, .6), 0, .05, 0, g); mesh(BOX(.56, .6, .56), MAT.col(0x3d7ab8, .3), 0, .4, 0, g); mesh(BOX(.36, .2, .36), MAT.col(0x3d7ab8, .3), 0, .8, 0, g); return c; }],
+  vitamin: [.5, .4, (x, z) => { const [g, c] = pushGroup(x, z, .5, .4, .4, '건강보조식품 택배'); mesh(BOX(.5, .38, .4), MAT.cardboard(), 0, .19, 0, g); for (let i = 0; i < 3; i++) mesh(BOX(.1, .14, .1), MAT.col(0xffffff, .4), -.15 + i * .15, .45, 0, g); return c; }],
 };
 // ================= 지형지물 =================
 function staticGroup(x, z, w, d, h) { const g = new THREE.Group(); g.position.set(x, 0, z); world.add(g); addCol(x, z, w, d, g, { topY: h }); return g; }
@@ -1028,7 +1039,10 @@ function applyExtras(L) {
   const ex = L.extras || {};
   for (const [x, z, red] of ex.gates || []) customsGate(x, z, red);
   for (const [k, n] of ex.decor || []) { const [w, d, mk] = DECOR[k]; for (let i = 0; i < n; i++) { const p = placeFree(L.bounds, w, d, 1, L.avoid); if (p) mk(p.x, p.z); } }
-  for (const [k, n] of ex.items || []) { const [w, d, mk] = ITEMS[k]; for (let i = 0; i < n; i++) { const p = placeFree(L.bounds, w, d, .8, L.avoid); if (p) L.search.push(mk(p.x, p.z)); } }
+  // 은닉 물품 20종 중 무작위: 맵 대표 물품 2종 + 나머지 중 4종, 종류마다 2~3개
+  const theme = (ex.items || []).map(i => i[0]).sort(() => rnd() - .5).slice(0, 2);
+  const kinds = theme.concat(Object.keys(ITEMS).filter(k => !theme.includes(k)).sort(() => rnd() - .5).slice(0, 4));
+  for (const k of kinds) { const [w, d, mk] = ITEMS[k], n = 2 + Math.floor(rnd() * 2); for (let i = 0; i < n; i++) { const p = placeFree(L.bounds, w, d, .8, L.avoid); if (p) L.search.push(mk(p.x, p.z)); } }
 }
 const PLACE_NAME = { bag: '여행가방', crate: '나무상자', parcel: '택배 상자', container: '컨테이너', cage: '우편 롤 케이지', sack: '우편 자루', hatch: '화물칸' };
 const placeOf = c => c.label || PLACE_NAME[c.kind] || '물건';
@@ -1259,7 +1273,7 @@ function loadLevel(i) {
   const spawn = { x: 0, z: def.d / 2 - 6 };
   level.spawn = spawn;
   level.avoid = [{ ...spawn, r: 5 }];
-  setSeed(1000 + i * 97);
+  setSeed((Math.random() * 1e9) | 0); // 시작할 때마다 배치·은닉 위치가 달라진다
   // 환경 / 조명
   if (def.outdoor) { scene.background = new THREE.Color(0x8ec5ff); scene.environment = envSky; hemi.intensity = .55; sun.intensity = 1.25; for (let k = 0; k < 16; k++) { const cl = mesh(BOX(rr(6, 16), 1.6, rr(4, 10)), MAT.col(0xffffff, 1), rr(-90, 90), rr(32, 40), rr(-110, 40)); cl.castShadow = false; } sun.color.set(0xfff1d6); scene.fog = new THREE.Fog(0x8ec5ff, 80, 220); renderer.toneMappingExposure = .95; }
   else { scene.remove(sky); scene.background = new THREE.Color(def.bg); scene.environment = envRoom; hemi.intensity = def.dim ? .45 : .6; sun.intensity = def.dim ? .8 : 1.0; sun.color.set(def.dim ? 0xffe2b0 : 0xffffff); scene.fog = new THREE.Fog(def.bg, 45, 110); renderer.toneMappingExposure = def.dim ? .85 : .82; }
@@ -1286,8 +1300,8 @@ function loadLevel(i) {
   for (const [type, n] of Object.entries(def.hide)) for (let k = 0; k < n && pool.length; k++) { const c = pool.pop(); c.hidden = type; hidden.push(c); }
   // 초기화
   lvStats = { drug: 0, gun: 0, smuggler: 0, boss: 0 };
-  Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: 3, boost: 0, hurt: 0 });
-  Object.assign(handler, { x: spawn.x, z: spawn.z + 1.9, dir: Math.PI, boneCd: 0 });
+  Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: 3, boost: 0, hurt: 0, fetch: null, idleT: 0, jumps: 0 });
+  Object.assign(handler, { x: spawn.x, z: spawn.z + 1.9, y: 0, vy: 0, dir: Math.PI, boneCd: 0 });
   for (const b of bones) scene.remove(b.m); bones.length = 0;
   balls = []; for (let k = 0; k < 3; k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
   yaw = 0; camPos.set(spawn.x, 6, spawn.z + 9);
@@ -1470,11 +1484,11 @@ function makeBreedThumbs() {
     r.dispose(); r.forceContextLoss();
   } catch { }
 }
-const STAT_NAMES = [['spd', '🏃 속도', '이동·달리기 속도'], ['nose', '👃 후각', '냄새 맡는 거리'], ['sta', '💪 지구력', '달리기 기력 소모·회복'], ['bark', '📢 짖기', '왕왕 공격·멈춤 범위'], ['jump', '🦘 점프', '점프 높이']];
+const STAT_NAMES = [['spd', '🏃 속도', '이동·달리기 속도'], ['nose', '👃 후각', '냄새 맡는 거리'], ['sta', '💪 지구력', '달리기 기력 소모·회복'], ['bark', '📢 짖기', '왕왕 공격 범위와 공격 속도'], ['jump', '🦘 점프', '점프 높이']];
 function renderBreeds() {
   if (!Object.keys(breedThumbs).length) makeBreedThumbs();
   const sb = BREEDS[pickBreed];
-  $('breedInfo').innerHTML = `<b>${sb.name}</b> — ${sb.desc}<br>` + STAT_NAMES.map(([k, n, t]) => `<span title="${t}" style="display:inline-block;min-width:150px">${n} <span style="color:#c98a00;letter-spacing:1px">${'★'.repeat(sb.stat[k])}${'☆'.repeat(5 - sb.stat[k])}</span></span>`).join(' ');
+  $('breedInfo').innerHTML = `<b>${sb.name}</b> — ${sb.desc}<br>` + STAT_NAMES.map(([k, n, t]) => `<span title="${t}" style="display:inline-block;min-width:150px">${n} <span style="color:#c98a00;letter-spacing:1px">${'★'.repeat(sb.stat[k])}${'☆'.repeat(5 - sb.stat[k])}</span></span>`).join(' ') + `<br><small style="color:#56708a">실제 효과: 이동 속도 ×${(.85 + .06 * sb.stat.spd).toFixed(2)} · 냄새 거리 ×${(.8 + .08 * sb.stat.nose).toFixed(2)} · 기력 소모 ×${(1.4 - .1 * sb.stat.sta).toFixed(2)} · 왕왕 범위 ×${(.8 + .06 * sb.stat.bark).toFixed(2)} · 왕왕 공격 간격 ×${(1.3 - .06 * sb.stat.bark).toFixed(2)} · 점프 ×${(.85 + .05 * sb.stat.jump).toFixed(2)}</small>`;
   $('breeds').innerHTML = Object.entries(BREEDS).map(([k, b]) => `<button type="button" class="breed ${k === pickBreed ? 'on' : ''}" role="radio" aria-checked="${k === pickBreed}" data-k="${k}">${breedThumbs[k] ? `<img src="${breedThumbs[k]}" alt="" width="96" height="72">` : ""}${b.name}<small style="color:#56708a">${STAT_NAMES.filter(([k]) => b.stat[k] === 5).map(([, n]) => n.split(" ")[1] + " 최고").join(" · ") || "균형형"}</small></button>`).join('');
 }
 $('breeds').addEventListener('click', e => { const t = e.target.closest('.breed'); if (!t) return; pickBreed = t.dataset.k; renderBreeds(); });
@@ -1542,14 +1556,15 @@ function arrest(p) {
 }
 function bark() {
   const BR = .8 + .06 * ST().bark;
-  dog.barkCd = .375; dog.barkAnim = .22; SFX.bark();
+  const AS = 1.3 - .06 * ST().bark; // 짖기 능력치가 높을수록 공격 간격이 짧다
+  dog.barkCd = .375 * AS; dog.barkAnim = .22; SFX.bark();
   const hx = dog.x + Math.sin(dog.dir) * .9, hz = dog.z + Math.cos(dog.dir) * .9;
   floatText('왕왕!', hx, dog.y + 1.8, hz, { h: .55 });
   for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; spawnP(hx, dog.y + 1, hz, Math.cos(a) * 5, .6, Math.sin(a) * 5, WHITE, .35); }
   for (const p of people) {
     if (p.dead || p.arrested || p.kind === 'officer') continue;
     const d = Math.hypot(p.x - dog.x, p.z - dog.z);
-    if (p.villain && d < 4.5 * BR) { if (d < 4 * BR && !(p.barkHit > time)) { p.barkHit = time + 1.0; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
+    if (p.villain && d < 4.5 * BR) { if (d < 4 * BR && !(p.barkHit > time)) { p.barkHit = time + 1.0 * AS; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
     else if (!p.villain && d < 3) p.stun = Math.max(p.stun, .3);
   }
   let best = null, bd = 1.8;
@@ -1630,13 +1645,19 @@ function updateDog(dt) {
   if (dog.speed > .3) dog.dir += angDiff(dog.dir, Math.atan2(dog.vx, dog.vz)) * Math.min(1, dt * 12);
 
   // 점프 / 중력
-  if (jumpQ && dog.grounded) { dog.vy = 7.4 * (.85 + .05 * ST().jump); dog.grounded = false; SFX.jump(); }
+  // 2단 점프: 공중에서 한 번 더. 핸들러도 함께 뛴다
+  if (jumpQ && (dog.grounded || (dog.jumps || 0) < 2)) {
+    const air = !dog.grounded;
+    dog.vy = 7.4 * (.85 + .05 * ST().jump) * (air ? .9 : 1); dog.grounded = false; dog.jumps = air ? 2 : 1; SFX.jump();
+    if (air) { burst(dog.x, dog.y + .3, dog.z, [WHITE], 12, 2); tone(600, .12, "sine", .1, 300); }
+    handler.vy = air ? 6 : 6.5;
+  }
   jumpQ = false;
   dog.vy -= 22 * dt; dog.y += dog.vy * dt;
   const gnd = groundAt(dog.x, dog.z, .5, Math.max(dog.y, 0));
   if (dog.y <= gnd.h) {
     if (!dog.grounded && dog.vy < -5) { SFX.land(); for (let i = 0; i < 8; i++) spawnP(dog.x, gnd.h + .1, dog.z, mr(-2, 2), .5, mr(-2, 2), DUST, .5); }
-    dog.y = gnd.h; dog.vy = 0; dog.grounded = true;
+    dog.y = gnd.h; dog.vy = 0; dog.grounded = true; dog.jumps = 0;
     if (gnd.on && gnd.on.belt) moveCircle(dog, gnd.on.belt * dt, 0, .5, false, dog.y);
   } else dog.grounded = false;
 
@@ -1685,9 +1706,10 @@ function updateDog(dt) {
   m.head.position.y = lerp(m.head.position.y, 1.03 - sn * .2, Math.min(1, dt * 10));
   m.tail.rotation.y = Math.sin(time * (dog.speed > .5 ? 16 : 9)) * .6;
   m.tongue.visible = sprint || dog.stamina < 40;
-  const active = len > .05 || dog.sniffing || !dog.grounded;
+  const active = len > .05 || dog.sniffing || dog.vy > .5;
   dog.idleT = active ? 0 : (dog.idleT || 0) + dt;
-  dog.idleMode = dog.idleT > 4 ? ['sit', 'spin', 'play'][Math.floor((dog.idleT - 4) / 6) % 3] : null;
+  dog.idleMode = dog.idleT > 4 ? ['sit', 'ball', 'spin', 'play'][Math.floor((dog.idleT - 4) / 7) % 4] : null;
+  if (dog.idleMode !== 'ball' && dog.fetch) { world.remove(dog.fetch.m); dog.fetch = null; }
   if (dog.idleMode === 'sit') {
     m.g.rotation.x = -.32; m.g.position.y = dog.y - .1;
     m.legs[2].rotation.x = m.legs[3].rotation.x = -1.25; m.legs[0].rotation.x = m.legs[1].rotation.x = .3;
@@ -1701,6 +1723,31 @@ function updateDog(dt) {
     m.g.rotation.y = dog.dir; m.g.position.y = dog.y + Math.max(0, Math.sin(time * 6)) * .35; m.g.rotation.x = -.3;
     m.legs[0].rotation.x = m.legs[1].rotation.x = -1; m.head.rotation.y = 0; m.tongue.visible = true;
     if (Math.random() < dt * 1.5) floatText('💕', dog.x, dog.y + 1.5, dog.z, { h: .4 });
+  } else if (dog.idleMode === 'ball') {
+    // 공놀이: 핸들러가 던지고, 탐지견이 물어 와서 돌려준다
+    let F = dog.fetch;
+    if (!F) {
+      const a = handler.dir + mr(-1, 1), d = mr(4, 6), b = level.bounds;
+      F = dog.fetch = { phase: 'throw', t: 0, sx: handler.x, sz: handler.z, bx: clamp(handler.x + Math.sin(a) * d, b.minX + 1, b.maxX - 1), bz: clamp(handler.z + Math.cos(a) * d, b.minZ + 1, b.maxZ - 1), m: mesh(BOX(.22, .22, .22), MAT.col(0xc8e632, .5), 0, -5, 0) };
+      handler.throwT = .35; floatText('🎾 가져와!', handler.x, 2.5, handler.z, { h: .4 });
+    }
+    F.t += dt; m.head.rotation.y = 0;
+    if (F.phase === 'throw') {
+      const u = Math.min(1, F.t / .8);
+      F.m.position.set(lerp(F.sx, F.bx, u), 1.5 * (1 - u) + Math.sin(Math.PI * u) * 1.8 + .12, lerp(F.sz, F.bz, u));
+      if (u >= 1) F.phase = 'chase';
+    } else {
+      const tx = F.phase === 'chase' ? F.bx : handler.x, tz = F.phase === 'chase' ? F.bz : handler.z;
+      const dx = tx - dog.x, dz = tz - dog.z, d = Math.hypot(dx, dz) || .01;
+      if (d > (F.phase === 'chase' ? .7 : 1.5)) {
+        moveCircle(dog, dx / d * 5 * dt, dz / d * 5 * dt, .5, false, dog.y);
+        dog.dir += angDiff(dog.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 10);
+        m.legs.forEach((l, i) => l.rotation.x = Math.sin(time * 14 + [0, Math.PI, Math.PI, 0][i]) * .7);
+        m.g.position.set(dog.x, dog.y + Math.abs(Math.sin(time * 14)) * .06, dog.z); m.g.rotation.y = dog.dir;
+      } else if (F.phase === 'chase') { F.phase = 'return'; tone(700, .08, 'triangle', .08); }
+      else { world.remove(F.m); dog.fetch = null; floatText('💕 착하다!', handler.x, 2.5, handler.z, { h: .4 }); }
+      if (dog.fetch && F.phase === 'return') { m.tongue.visible = false; F.m.position.set(dog.x + Math.sin(dog.dir) * .95, dog.y + .93, dog.z + Math.cos(dog.dir) * .95); }
+    }
   } else m.head.rotation.y = lerp(m.head.rotation.y, 0, Math.min(1, dt * 5));
 }
 
