@@ -162,8 +162,8 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
   <kbd>Shift</kbd><span>달리기 (기력이 줄어요)</span>
   <kbd>Space</kbd><span>점프 — 상자나 컨베이어 위로 올라가기</span>
   <kbd>E 꾹 누르기</kbd><span>냄새 맡기 — 숨은 물건 쪽으로 냄새 입자가 흐르고, 밀수범 발밑에 빨간 원이 떠요</span>
-  <kbd>F</kbd><span>🐕 왕왕 짖기 — 수상한 물건 옆이면 적발! 가까운 밀수범은 놀라 멈추고 체력이 1 줄어요</span>
-  <kbd>Q</kbd><span>🦴 핸들러가 뼈다귀를 앞으로 던지기 — 밀수범을 정면에 두고 던져 맞히면 체력 -1</span>
+  <kbd>F</kbd><span>🐕 왕왕 짖기 — 수상한 물건 옆이면 적발! 가까운 밀수범은 놀라 멈추고 체력 -1, +30점</span>
+  <kbd>Q</kbd><span>🦴 핸들러가 뼈다귀를 앞으로 가까이(6m) 던지기 — 정면의 밀수범을 맞히면 체력 -1, +30점</span>
   <kbd>마우스 드래그</kbd><span>카메라 회전 (휠: 줌) · 🗺 일시정지 · 🔄 다시 시작</span>
  </div>
  <div class="ctl touchonly">
@@ -639,7 +639,7 @@ function throwBone() {
   handler.boneCd = 1.2; handler.throwT = .35;
   // 탐지견이 바라보는 방향으로 똑바로 던진다 (자동 조준 없음)
   const fx = Math.sin(dog.dir), fz = Math.cos(dog.dir);
-  bones.push({ m: makeBone(), x: dog.x + fx * .6, z: dog.z + fz * .6, fx, fz, t: 0, range: 14, speed: 18 });
+  bones.push({ m: makeBone(), x: dog.x + fx * .6, z: dog.z + fz * .6, fx, fz, t: 0, range: 6, speed: 12 });
   tone(520, .12, 'triangle', .1, 300);
 }
 function updateBones(dt) {
@@ -660,9 +660,9 @@ function updateBones(dt) {
   }
 }
 function hitVillain(p, label) {
-  p.hp--; p.stun = Math.max(p.stun, p.kind === 'boss' ? 1.1 : 1.6); p.glow = 4; shake = .2; SFX.hit();
+  p.hp--; p.stun = Math.max(p.stun, p.kind === "boss" ? 1.1 : 1.6); p.glow = 4; shake = .2; SFX.hit(); addScore(30);
   burst(p.x, 1.2, p.z, [WHITE, new THREE.Color(0xffd54f)], 20, 4);
-  if (p.hp <= 0) arrest(p); else floatText(`${label} 남은 체력 ${p.hp}`, p.x, 2.8, p.z, { h: .5, color: '#ffd54f' });
+  if (p.hp <= 0) arrest(p); else floatText(`${label} +30 · 남은 체력 ${p.hp}`, p.x, 2.8, p.z, { h: .5, color: '#ffd54f' });
 }
 const dog = { x: 0, z: 0, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, phase: 0, speed: 0, barkCd: 0, tackleCd: 0, sniffing: false, sniffTick: 0, barkAnim: 0, hp: 3, boost: 0, hurt: 0 };
 
