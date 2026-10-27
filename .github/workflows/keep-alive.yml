@@ -1,0 +1,14 @@
+# 무료 Supabase 서버가 1주일 미접속으로 일시정지되지 않도록 3일마다 접속
+name: keep-ranking-server-awake
+on:
+  schedule:
+    - cron: '0 3 */3 * *'
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -sf -X POST "https://mkwxsndybojvjuwlmeit.supabase.co/rest/v1/rpc/ping" \
+            -H "apikey: sb_publishable_zrEEb7TYXK775uMWXZIbLQ_sdpvOBvv" \
+            -H "Content-Type: application/json" -d '{}'

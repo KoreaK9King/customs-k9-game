@@ -26,7 +26,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 #mmwrap{top:calc(12px + var(--st));right:calc(12px + var(--sr));background:var(--panel);border-radius:12px;padding:6px;border:2px solid rgba(255,255,255,.15)}
 #mm{display:block;width:170px;height:124px;border-radius:8px}
 #info{display:flex;justify-content:space-between;font-size:13px;padding:4px 2px 0;font-weight:700;font-variant-numeric:tabular-nums}
-#topbar{position:fixed;z-index:6;top:calc(10px + var(--st));left:50%;transform:translateX(-50%);display:flex;gap:6px}
+#topbar{position:fixed;z-index:6;top:calc(186px + var(--st));right:calc(12px + var(--sr));display:flex;flex-direction:column;gap:6px}
+@media (max-width:1000px){#keys{display:none}}
 #topbar button{pointer-events:auto;border:none;border-radius:10px;background:var(--panel);color:#fff;font-size:18px;width:40px;height:36px;cursor:pointer}
 #bars{bottom:calc(16px + var(--sb));left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;background:var(--panel);padding:8px 14px;border-radius:12px}
 .bar{width:120px;height:10px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden}
@@ -39,7 +40,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 #keys b{background:#fff;color:#123;border-radius:4px;padding:0 5px;font-size:11px}
 .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,18,28,.72);z-index:20;padding:16px;box-sizing:border-box}
 .hidden{display:none!important}
-.card{background:var(--card);color:var(--ink);border-radius:22px;padding:24px 26px;max-width:620px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.45);max-height:calc(100% - 8px);overflow:auto;box-sizing:border-box}
+.card{background:var(--card);color:var(--ink);border-radius:18px;border:4px solid #1b2b3c;padding:24px 26px;max-width:620px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.45);max-height:calc(100% - 8px);overflow:auto;box-sizing:border-box}
 .card h1{font-family:Jua,sans-serif;font-weight:400;font-size:32px;margin:0 0 4px;color:var(--navy);text-wrap:balance}
 .card h2{font-family:Jua,sans-serif;font-weight:400;font-size:24px;margin:0 0 8px;color:var(--navy)}
 .card p{line-height:1.6;margin:8px 0}
@@ -48,12 +49,12 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 .ctl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px;background:#f1ead9;padding:12px;border-radius:12px;margin:12px 0}
 .ctl kbd{background:var(--navy);color:#fff;border-radius:6px;padding:1px 8px;font-family:inherit;font-size:13px;white-space:nowrap}
 .ctl.touchonly{display:none}body.touch .ctl.touchonly{display:grid}body.touch .ctl:not(.touchonly){display:none}
-button.big{font-family:Jua,sans-serif;font-size:21px;background:var(--gold);color:var(--navy);border:none;border-radius:14px;padding:11px 26px;cursor:pointer;box-shadow:0 4px 0 #b88a10}
+button.big{font-family:Jua,sans-serif;font-size:21px;background:var(--gold);color:var(--navy);border:3px solid #1b2b3c;border-radius:12px;padding:10px 24px;cursor:pointer;box-shadow:0 4px 0 #b88a10}
 button.big:active{transform:translateY(3px);box-shadow:0 1px 0 #b88a10}
 button.big.alt{background:#dfe7ef;box-shadow:0 4px 0 #9fb0c0}
 button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{outline:3px solid #2e86c1;outline-offset:2px}
 .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
-#pid{font-size:20px;padding:10px 14px;border-radius:12px;border:2px solid #c9bfa8;width:100%;box-sizing:border-box;font-family:inherit;background:#fff;color:var(--ink)}
+#pid,#ppw{font-size:20px;padding:10px 14px;border-radius:12px;border:2px solid #c9bfa8;width:100%;box-sizing:border-box;font-family:inherit;background:#fff;color:var(--ink)}
 #pidErr{color:#c0392b;font-size:13px;min-height:18px;margin-top:4px}
 .rank{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
 .rank th{font-size:12px;color:var(--muted);text-align:left;padding:4px 6px;border-bottom:1px solid #e3d9c3}
@@ -62,7 +63,7 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 .rankwrap{max-height:260px;overflow:auto;margin-top:6px}
 .srv{font-size:12px;color:var(--muted);margin-top:6px}
 #mapGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-.mapcard{border:none;border-radius:14px;padding:12px 8px;background:#eef3f8;color:var(--navy);cursor:pointer;text-align:center;font-family:inherit;display:flex;flex-direction:column;gap:2px;align-items:center}
+.mapcard{border:3px solid #9fb0c0;border-radius:12px;padding:12px 8px;background:#eef3f8;color:var(--navy);cursor:pointer;text-align:center;font-family:inherit;display:flex;flex-direction:column;gap:2px;align-items:center}
 .mapcard .ic{font-size:30px}.mapcard .no{font-size:11px;font-weight:700;color:#b07a00;letter-spacing:.06em}
 .mapcard .nm{font-family:Jua,sans-serif;font-size:16px}.mapcard .st{font-size:11.5px;color:#56708a}
 .mapcard.locked{opacity:.45;cursor:not-allowed}.mapcard.cleared{background:#e3f6e8}
@@ -84,7 +85,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  #mm{width:120px;height:88px}
  #quest{width:calc(100vw - 160px);padding:8px 10px}
  #qdesc{display:none}#qtitle{font-size:16px}.goal{font-size:12px}
- .bar{width:70px}#topbar{top:auto;bottom:calc(46px + var(--sb))}
+ .bar{width:70px}#topbar{top:calc(140px + var(--st))}
  #toast{font-size:17px;top:calc(140px + var(--st))}
  #mapGrid{grid-template-columns:repeat(2,1fr)}
  .card{padding:18px}.card h1{font-size:26px}
@@ -98,8 +99,8 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
 
 <div id="quest" class="hud"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><p id="qdesc"></p><div id="qgoals"></div></div>
 <div id="mmwrap" class="hud"><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span></div></div>
-<div id="topbar" class="hidden"><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button></div>
-<div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
+<div id="topbar" class="hidden"><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
+<div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div>
 <div id="keys" class="hud"><b>WASD</b> 이동 · <b>Shift</b> 달리기 · <b>Space</b> 점프 · <b>E</b>(꾹) 냄새 · <b>F</b> 짖기<br>마우스 드래그 / <b>←→</b> 시점 회전 · 휠 줌</div>
 
@@ -118,6 +119,8 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <p>라브라도 리트리버 <b>'관세청 탐지견'</b>이 되어 공항부터 보세창고까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
  <label for="pid" style="font-weight:700;color:var(--navy)">플레이어 아이디</label>
  <input id="pid" maxlength="12" placeholder="한글·영문·숫자 2~12자" autocomplete="off">
+ <label for="ppw" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">비밀번호</label>
+ <input id="ppw" type="password" maxlength="32" placeholder="4자 이상 · 처음 접속이면 지금 정한 비밀번호로 가입돼요" autocomplete="off">
  <div id="pidErr"></div>
  <div class="row"><button class="big" id="btnLogin">접속하기</button></div>
  <h2 style="margin-top:16px">🏆 TOP 랭킹</h2>
@@ -143,6 +146,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
   <kbd>점프</kbd><span>상자 위로 뛰어오르기</span><kbd>킁킁</kbd><span>꾹 눌러 냄새 맡기</span>
   <kbd>멍!</kbd><span>짖어서 적발 / 밀수범 멈추기</span><kbd>화면 드래그</kbd><span>카메라 회전</span>
  </div>
+ <div class="row" id="pauseRow"><button class="big" id="btnResume">▶ 게임으로 돌아가기</button><button class="big alt" id="btnRestartMap">🔄 이 맵 다시 시작</button></div>
  <div class="row"><button class="big alt" id="btnRankOpen">🏆 랭킹 보기</button><button class="big alt" id="btnLogout">아이디 변경</button></div>
 </div></div>
 
@@ -212,7 +216,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.5 : 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMapping = THREE.NoToneMapping;
 renderer.toneMappingExposure = 1.05;
 $('game').appendChild(renderer.domElement);
 const maxAniso = renderer.capabilities.getMaxAnisotropy();
@@ -260,80 +264,27 @@ function blotches(g, s, n, rgb, aMax) {
     g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2);
   }
 }
+function pixTex(key, n, fn, repeat) { return canvasTex(key, n, (g, sz) => { for (let y = 0; y < sz; y++) for (let x = 0; x < sz; x++) { g.fillStyle = fn(x, y); g.fillRect(x, y, 1, 1); } }, repeat); }
+const shade = (hex, v) => '#' + new THREE.Color(hex).multiplyScalar(v).getHexString();
+const jit = (hex, a = .12) => shade(hex, 1 - a / 8 + Math.random() * a / 4);
 const TEX = {
-  tile: (key, base, grout, n, rep) => canvasTex('tile' + key, 512, (g, s) => {
-    const t = s / n;
-    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
-      const v = (Math.random() - .5) * 14; const c = new THREE.Color(base).offsetHSL(0, 0, v / 255);
-      g.fillStyle = '#' + c.getHexString(); g.fillRect(i * t, j * t, t, t);
-    }
-    blotches(g, s, 18, '255,255,255', .08); speckle(g, s, 2500, '90,80,70', .12, 2);
-    g.strokeStyle = grout; g.lineWidth = 3;
-    for (let i = 0; i <= n; i++) { g.beginPath(); g.moveTo(i * t, 0); g.lineTo(i * t, s); g.moveTo(0, i * t); g.lineTo(s, i * t); g.stroke(); }
-  }, rep),
-  concrete: (key, base, rep) => canvasTex('conc' + key, 512, (g, s) => {
-    g.fillStyle = base; g.fillRect(0, 0, s, s);
-    blotches(g, s, 40, '0,0,0', .07); blotches(g, s, 20, '255,255,255', .06);
-    speckle(g, s, 9000, '0,0,0', .18, 2); speckle(g, s, 4000, '255,255,255', .12, 2);
-    g.strokeStyle = 'rgba(0,0,0,.25)'; g.lineWidth = 2; g.strokeRect(0, 0, s, s);
-  }, rep),
-  asphalt: (rep) => canvasTex('asph', 512, (g, s) => {
-    g.fillStyle = '#4a4c50'; g.fillRect(0, 0, s, s);
-    speckle(g, s, 22000, '0,0,0', .3, 2); speckle(g, s, 9000, '200,200,200', .18, 2); blotches(g, s, 30, '0,0,0', .12);
-  }, rep),
-  wood: () => canvasTex('wood', 256, (g, s) => {
-    g.fillStyle = '#b48650'; g.fillRect(0, 0, s, s);
-    for (let p = 0; p < 4; p++) {
-      const y0 = p * s / 4;
-      g.fillStyle = `rgba(${120 + Math.random() * 40},${80 + Math.random() * 30},40,.35)`; g.fillRect(0, y0, s, s / 4);
-      g.strokeStyle = 'rgba(70,40,15,.35)'; g.lineWidth = 1.5;
-      for (let k = 0; k < 7; k++) { g.beginPath(); const yy = y0 + 4 + k * (s / 4 - 8) / 7; g.moveTo(0, yy); for (let x = 0; x <= s; x += 16) g.lineTo(x, yy + Math.sin(x * .05 + k + p) * 2); g.stroke(); }
-      g.fillStyle = 'rgba(50,30,10,.6)'; g.fillRect(0, y0, s, 3);
-    }
-    g.strokeStyle = 'rgba(60,35,12,.8)'; g.lineWidth = 14; g.strokeRect(7, 7, s - 14, s - 14);
-    g.beginPath(); g.moveTo(14, 14); g.lineTo(s - 14, s - 14); g.stroke();
-  }),
-  ribs: (hex) => canvasTex('rib' + hex, 256, (g, s) => {
-    const c = new THREE.Color(hex);
-    for (let x = 0; x < s; x += 16) {
-      g.fillStyle = '#' + c.clone().multiplyScalar(1.08).getHexString(); g.fillRect(x, 0, 8, s);
-      g.fillStyle = '#' + c.clone().multiplyScalar(.78).getHexString(); g.fillRect(x + 8, 0, 8, s);
-    }
-    speckle(g, s, 900, '120,60,20', .35, 3); blotches(g, s, 10, '90,50,20', .2); blotches(g, s, 6, '255,255,255', .08);
-    g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(0, 0, s, 6); g.fillRect(0, s - 6, s, 6);
-  }),
-  cardboard: () => canvasTex('cardb', 256, (g, s) => {
-    g.fillStyle = '#c49a64'; g.fillRect(0, 0, s, s); speckle(g, s, 3000, '90,60,30', .15, 2);
-    g.fillStyle = 'rgba(210,190,150,.85)'; g.fillRect(s * .42, 0, s * .16, s);
-    g.fillStyle = 'rgba(40,30,20,.7)'; g.font = 'bold 26px sans-serif'; g.fillText('⬆ FRAGILE', 18, s - 24);
-  }),
-  fabric: (hex) => canvasTex('fab' + hex, 128, (g, s) => {
-    g.fillStyle = '#' + new THREE.Color(hex).getHexString(); g.fillRect(0, 0, s, s);
-    for (let i = 0; i < s; i += 3) { g.fillStyle = 'rgba(0,0,0,.08)'; g.fillRect(i, 0, 1, s); g.fillStyle = 'rgba(255,255,255,.05)'; g.fillRect(0, i, s, 1); }
-  }),
-  fur: (hex) => canvasTex('fur' + hex, 256, (g, s) => {
-    g.fillStyle = '#' + new THREE.Color(hex).getHexString(); g.fillRect(0, 0, s, s);
-    for (let i = 0; i < 6000; i++) {
-      const x = Math.random() * s, y = Math.random() * s, l = 3 + Math.random() * 6;
-      g.strokeStyle = Math.random() < .5 ? 'rgba(255,240,210,.18)' : 'rgba(110,70,30,.16)';
-      g.beginPath(); g.moveTo(x, y); g.lineTo(x + l * .3, y + l); g.stroke();
-    }
-  }),
-  belt: () => canvasTex('belt', 128, (g, s) => {
-    g.fillStyle = '#26292c'; g.fillRect(0, 0, s, s);
-    for (let x = 0; x < s; x += 16) { g.fillStyle = '#3a3e42'; g.fillRect(x, 0, 3, s); }
-    speckle(g, s, 400, '255,255,255', .06, 2);
-  }),
-  water: () => canvasTex('water', 256, (g, s) => {
-    g.fillStyle = '#808080'; g.fillRect(0, 0, s, s);
-    for (let i = 0; i < 400; i++) { g.strokeStyle = `rgba(255,255,255,${Math.random() * .25})`; g.lineWidth = 1 + Math.random() * 2; const x = Math.random() * s, y = Math.random() * s; g.beginPath(); g.ellipse(x, y, 6 + Math.random() * 18, 2 + Math.random() * 3, 0, 0, Math.PI * 2); g.stroke(); }
-  }),
+  tile: (key, base, grout, n, rep) => pixTex('tile' + key, 16, (x, y) => (x % 8 === 0 || y % 8 === 0) ? grout : jit(base, .08), rep),
+  concrete: (key, base, rep) => pixTex('conc' + key, 16, () => jit(base, .18), rep),
+  asphalt: (rep) => pixTex('asph', 16, () => jit('#4a4c50', .3), rep),
+  wood: () => pixTex('wood', 16, (x, y) => (x === 0 || y === 0 || x === 15 || y === 15) ? '#5c3d1c' : (y % 4 === 0) ? '#7a5226' : jit('#b48650', .15)),
+  ribs: (hex) => pixTex('rib' + hex, 16, (x, y) => (y < 1 || y > 14) ? shade(hex, .55) : jit(shade(hex, x % 4 < 2 ? 1.05 : .8), .06)),
+  cardboard: () => pixTex('cardb', 16, (x, y) => (x === 0 || y === 0 || x === 15 || y === 15) ? '#8a6a3e' : (x >= 6 && x <= 9) ? jit('#d8c39a', .05) : jit('#c49a64', .1)),
+  fabric: (hex) => pixTex('fab' + hex, 8, (x, y) => jit(shade(hex, (x + y) % 2 ? 1 : .9), .05)),
+  fur: (hex) => pixTex('fur' + hex, 8, () => jit(hex, .14)),
+  belt: () => pixTex('belt', 16, (x) => x % 4 === 0 ? '#3a3e42' : jit('#26292c', .1)),
+  water: () => pixTex('water', 16, () => jit('#2f6fd0', .18)),
 };
+TEX.belt();
 
 // ================= 재질 =================
 const matCache = {};
 const M = (key, make) => matCache[key] || (matCache[key] = make());
-const std = (color, rough = .8, metal = 0, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal, ...extra });
+const std = (color, rough = .8, metal = 0, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: Math.min(rough, .5), metalness: metal, ...extra });
 const MAT = {
   col: (c, r = .75, m = 0) => M(`c${c}_${r}_${m}`, () => std(c, r, m)),
   metal: (c = 0x9aa3ab, r = .35) => M('m' + c + r, () => std(c, r, .85)),
@@ -350,13 +301,17 @@ const MAT = {
 // ================= 지오메트리 헬퍼 =================
 let world = new THREE.Group(); scene.add(world);
 const BOX = (w, h, d) => new THREE.BoxGeometry(w, h, d);
-const RBOX = (w, h, d, r = .06) => new RoundedBoxGeometry(w, h, d, 2, Math.min(r, w / 2 - .001, h / 2 - .001, d / 2 - .001));
+const RBOX = (w, h, d, r = .06) => new RoundedBoxGeometry(w, h, d, 3, Math.min(r, w / 2 - .001, h / 2 - .001, d / 2 - .001));
+const CAPS = (r, len) => RBOX(r * 2, len + r * 2, r * 2, r * .45);
+const SPH = (r, ws, hs, p0, p1, t0, tl) => tl !== undefined ? BOX(r * 2, r, r * 2).translate(0, r / 2, 0) : RBOX(r * 2, r * 2, r * 2, r * .4);
+const CYL = (rt, rb, h) => new THREE.CylinderGeometry(rt, rb, h, 18);
+const TOR = (R, t) => BOX(R * 2 + t * 2, t * 2, t * 2);
 function mesh(geo, mat, x = 0, y = 0, z = 0, parent = world) {
   const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
 }
 function textSprite(text, { bg = 'rgba(10,25,40,.85)', color = '#fff', h = 0.6, font = 56 } = {}) {
   const cv = document.createElement('canvas'); const g = cv.getContext('2d');
-  const f = `bold ${font}px "Noto Sans KR","Segoe UI Emoji","Apple Color Emoji",sans-serif`;
+  const f = `${font}px Jua,"Noto Sans KR","Segoe UI Emoji","Apple Color Emoji",sans-serif`;
   g.font = f; const w = Math.ceil(g.measureText(text).width) + font;
   cv.width = w; cv.height = Math.ceil(font * 1.5); g.font = f;
   if (bg) { g.fillStyle = bg; g.beginPath(); g.roundRect(0, 0, cv.width, cv.height, font * .45); g.fill(); }
@@ -582,24 +537,24 @@ function setMusic(on) {
 const LAB = 0xe2b778;
 function makeDog() {
   const g = new THREE.Group(), fur = MAT.fur(LAB), dark = MAT.col(0x1d1410, .4), furLight = MAT.fur(0xedcb94);
-  const body = mesh(new THREE.CapsuleGeometry(.25, .62, 8, 16), fur, 0, .66, 0, g); body.rotation.x = Math.PI / 2; body.scale.set(1.05, 1, 1.05);
-  mesh(new THREE.SphereGeometry(.29, 20, 16), fur, 0, .68, .34, g).scale.set(1, 1.05, 1);
-  mesh(new THREE.SphereGeometry(.27, 20, 16), fur, 0, .7, -.33, g);
-  mesh(new THREE.SphereGeometry(.2, 16, 12), furLight, 0, .55, .42, g).scale.set(1, 1, .8);
-  const neck = mesh(new THREE.CapsuleGeometry(.15, .2, 6, 12), fur, 0, .88, .5, g); neck.rotation.x = -.85;
+  const body = mesh(CAPS(.25, .62, 8, 16), fur, 0, .66, 0, g); body.rotation.x = Math.PI / 2; body.scale.set(1.05, 1, 1.05);
+  mesh(SPH(.29, 20, 16), fur, 0, .68, .34, g).scale.set(1, 1.05, 1);
+  mesh(SPH(.27, 20, 16), fur, 0, .7, -.33, g);
+  mesh(SPH(.2, 16, 12), furLight, 0, .55, .42, g).scale.set(1, 1, .8);
+  const neck = mesh(CAPS(.15, .2, 6, 12), fur, 0, .88, .5, g); neck.rotation.x = -.85;
   // 세관 조끼
   mesh(RBOX(.6, .3, .58, .1), MAT.col(0x1f4e8c, .7), 0, .82, .02, g);
   mesh(RBOX(.61, .07, .6, .03), MAT.col(0xf4c542, .5), 0, .7, .02, g);
   const vest = textSprite('관세청 탐지견', { h: .13, bg: 'rgba(31,78,140,1)', color: '#f4c542' }); vest.position.set(0, 1.08, .02); g.add(vest);
-  const collar = mesh(new THREE.TorusGeometry(.15, .03, 8, 20), MAT.col(0xc0392b, .5), 0, .9, .52, g); collar.rotation.x = -.85 + Math.PI / 2;
+  const collar = mesh(TOR(.15, .03, 8, 20), MAT.col(0xc0392b, .5), 0, .9, .52, g); collar.rotation.x = -.85 + Math.PI / 2;
   // 머리
   const head = new THREE.Group(); head.position.set(0, 1.03, .66); g.add(head);
-  mesh(new THREE.SphereGeometry(.19, 20, 16), fur, 0, 0, 0, head).scale.set(1.05, .95, 1.1);
-  const muzzle = mesh(new THREE.CapsuleGeometry(.1, .14, 6, 12), fur, 0, -.06, .19, head); muzzle.rotation.x = Math.PI / 2; muzzle.scale.set(1.05, .9, 1);
-  mesh(new THREE.SphereGeometry(.05, 12, 10), dark, 0, -.03, .33, head).scale.set(1.2, .85, 1);
+  mesh(SPH(.19, 20, 16), fur, 0, 0, 0, head).scale.set(1.05, .95, 1.1);
+  const muzzle = mesh(CAPS(.1, .14, 6, 12), fur, 0, -.06, .19, head); muzzle.rotation.x = Math.PI / 2; muzzle.scale.set(1.05, .9, 1);
+  mesh(SPH(.05, 12, 10), dark, 0, -.03, .33, head).scale.set(1.2, .85, 1);
   for (const s of [-1, 1]) {
-    mesh(new THREE.SphereGeometry(.03, 10, 8), dark, s * .085, .05, .16, head);
-    mesh(new THREE.SphereGeometry(.035, 10, 8), MAT.col(0xffffff, .2), s * .085, .062, .15, head).scale.set(.4, .4, .4);
+    mesh(SPH(.03, 10, 8), dark, s * .085, .05, .16, head);
+    mesh(SPH(.035, 10, 8), MAT.col(0xffffff, .2), s * .085, .062, .15, head).scale.set(.4, .4, .4);
     const ear = mesh(RBOX(.05, .2, .14, .025), MAT.fur(0xc99a5e), s * .175, -.06, -.02, head); ear.rotation.z = s * .18;
   }
   const tongue = mesh(RBOX(.07, .02, .1, .01), MAT.col(0xe86a7a, .5), 0, -.14, .27, head); tongue.visible = false;
@@ -607,13 +562,13 @@ function makeDog() {
   const legs = [];
   for (const [x, z] of [[-.15, .36], [.15, .36], [-.15, -.34], [.15, -.34]]) {
     const pv = new THREE.Group(); pv.position.set(x, .52, z); g.add(pv);
-    mesh(new THREE.CapsuleGeometry(.068, .36, 6, 10), fur, 0, -.24, 0, pv);
-    mesh(new THREE.SphereGeometry(.075, 10, 8), fur, 0, -.47, .03, pv).scale.set(1, .6, 1.25);
+    mesh(CAPS(.068, .36, 6, 10), fur, 0, -.24, 0, pv);
+    mesh(SPH(.075, 10, 8), fur, 0, -.47, .03, pv).scale.set(1, .6, 1.25);
     legs.push(pv);
   }
   // 수달 꼬리
   const tail = new THREE.Group(); tail.position.set(0, .78, -.58); g.add(tail);
-  const tm = mesh(new THREE.CylinderGeometry(.025, .075, .5, 10), fur, 0, -.04, -.22, tail); tm.rotation.x = -1.15;
+  const tm = mesh(CYL(.025, .075, .5, 10), fur, 0, -.04, -.22, tail); tm.rotation.x = -1.15;
   g.traverse(o => { if (o.isMesh) o.castShadow = true; });
   return { g, head, legs, tail, tongue };
 }
@@ -630,6 +585,12 @@ function makePerson(kind) {
   let shirt, pants = 0x34495e;
   if (kind === 'civ') shirt = pick([0x3b6ea5, 0x4f8a5b, 0x7d5a9e, 0xd4ac0d, 0x2f8f83, 0xe8e4dc, 0xc46a2c, 0xd47a9c]);
   else if (kind === 'worker') { shirt = 0x3d4c5c; pants = 0x2c3e50; }
+  else if (kind === 'customs') { shirt = 0x1f3b6b; pants = 0x1f2a3a; }
+  else if (kind === 'attendant') { shirt = 0x8a1f35; pants = 0x2a1a22; }
+  else if (kind === 'pilot') { shirt = 0xf4f4f2; pants = 0x1a1d2a; }
+  else if (kind === 'handler') { shirt = 0xff7a1a; pants = 0x2c3e50; }
+  else if (kind === 'postal') { shirt = 0x1f7a5a; pants = 0x22313f; }
+  else if (kind === 'crew') { shirt = 0xf4f4f2; pants = 0xe8e8e4; }
   else if (kind === 'smuggler') { shirt = pick([0x2c2c34, 0x4a3b2a, 0x3d4a3d, 0x5d4037]); pants = 0x222222; }
   else if (kind === 'boss') { shirt = 0x4b2370; pants = 0x1a1a1a; }
   else { shirt = 0x1f3b6b; pants = 0x1f2a3a; }
@@ -637,23 +598,30 @@ function makePerson(kind) {
   const legs = [], arms = [];
   for (const s of [-1, 1]) {
     const lp = new THREE.Group(); lp.position.set(s * .11, .9, 0); body.add(lp);
-    mesh(new THREE.CapsuleGeometry(.085, .66, 6, 10), pantsM, 0, -.42, 0, lp);
+    mesh(CAPS(.085, .66, 6, 10), pantsM, 0, -.42, 0, lp);
     mesh(RBOX(.13, .08, .26, .03), MAT.col(0x222222, .5), 0, -.84, .05, lp);
     legs.push(lp);
     const ap = new THREE.Group(); ap.position.set(s * .29, 1.48, 0); body.add(ap);
-    mesh(new THREE.CapsuleGeometry(.06, .5, 6, 10), shirtM, 0, -.28, 0, ap);
-    mesh(new THREE.SphereGeometry(.06, 10, 8), skin, 0, -.6, 0, ap);
+    mesh(CAPS(.06, .5, 6, 10), shirtM, 0, -.28, 0, ap);
+    mesh(SPH(.06, 10, 8), skin, 0, -.6, 0, ap);
     arms.push(ap);
   }
-  const torso = mesh(new THREE.CapsuleGeometry(.2, .36, 8, 14), shirtM, 0, 1.22, 0, body); torso.scale.set(1.18, 1, .72);
-  mesh(new THREE.CylinderGeometry(.06, .07, .1, 10), skin, 0, 1.58, 0, body);
-  mesh(new THREE.SphereGeometry(.14, 18, 14), skin, 0, 1.74, 0, body).scale.set(1, 1.1, 1);
-  mesh(new THREE.SphereGeometry(.148, 18, 12, 0, Math.PI * 2, 0, Math.PI * .55), MAT.col(pick(hairs), .9), 0, 1.76, -.01, body);
-  for (const s of [-1, 1]) mesh(new THREE.SphereGeometry(.018, 8, 6), MAT.col(0x111111, .3), s * .05, 1.77, .13, body);
+  const torso = mesh(CAPS(.2, .36, 8, 14), shirtM, 0, 1.22, 0, body); torso.scale.set(1.18, 1, .72);
+  mesh(CYL(.06, .07, .1, 10), skin, 0, 1.58, 0, body);
+  mesh(SPH(.14, 18, 14), skin, 0, 1.74, 0, body).scale.set(1, 1.1, 1);
+  mesh(SPH(.148, 18, 12, 0, Math.PI * 2, 0, Math.PI * .55), MAT.col(pick(hairs), .9), 0, 1.84, -.03, body);
+  for (const s of [-1, 1]) mesh(SPH(.018, 8, 6), MAT.col(0x111111, .3), s * .05, 1.77, .13, body);
   if (kind === 'smuggler' || kind === 'boss') mesh(RBOX(.22, .05, .02, .01), MAT.col(0x0a0a0a, .1, .3), 0, 1.77, .145, body);
-  if (kind === 'boss') { mesh(new THREE.CylinderGeometry(.28, .28, .03, 20), MAT.col(0x111111, .6), 0, 1.9, 0, body); mesh(new THREE.CylinderGeometry(.15, .16, .18, 16), MAT.col(0x111111, .6), 0, 2.0, 0, body); mesh(new THREE.TorusGeometry(.12, .015, 6, 16), MAT.metal(0xf1c40f, .25), 0, 1.5, .09, body); }
-  if (kind === 'worker') { mesh(new THREE.SphereGeometry(.17, 16, 10, 0, Math.PI * 2, 0, Math.PI * .5), MAT.shell(0xf1c40f), 0, 1.8, 0, body); const v = mesh(new THREE.CapsuleGeometry(.21, .3, 6, 12), MAT.col(0xd8f53a, .6), 0, 1.24, 0, body); v.scale.set(1.2, 1, .76); }
-  if (kind === 'officer') { mesh(new THREE.CylinderGeometry(.16, .16, .1, 16), MAT.col(0x10233f, .6), 0, 1.9, 0, body); mesh(RBOX(.3, .02, .14, .01), MAT.col(0x10233f, .5), 0, 1.86, .14, body); mesh(new THREE.SphereGeometry(.025, 8, 6), MAT.metal(0xf4c542, .3), 0, 1.9, .16, body); }
+  if (kind === 'boss') { mesh(CYL(.28, .28, .03, 20), MAT.col(0x111111, .6), 0, 1.9, 0, body); mesh(CYL(.15, .16, .18, 16), MAT.col(0x111111, .6), 0, 2.0, 0, body); mesh(TOR(.12, .015, 6, 16), MAT.metal(0xf1c40f, .25), 0, 1.5, .09, body); }
+  if (kind === 'worker') { mesh(SPH(.17, 16, 10, 0, Math.PI * 2, 0, Math.PI * .5), MAT.shell(0xf1c40f), 0, 1.8, 0, body); const v = mesh(CAPS(.21, .3, 6, 12), MAT.col(0xd8f53a, .6), 0, 1.24, 0, body); v.scale.set(1.2, 1, .76); }
+  if (kind === 'officer' || kind === 'customs') { mesh(CYL(.16, .16, .1, 16), MAT.col(0x10233f, .6), 0, 1.9, 0, body); mesh(RBOX(.3, .02, .14, .01), MAT.col(0x10233f, .5), 0, 1.86, .14, body); mesh(SPH(.025, 8, 6), MAT.metal(0xf4c542, .3), 0, 1.9, .16, body); }
+  if (kind === 'customs') { const b = textSprite('세관', { h: .12, bg: 'rgba(244,197,66,1)', color: '#10233f' }); b.position.set(0, 1.35, .2); body.add(b); }
+  if (kind === 'pilot') { mesh(CYL(.16, .16, .1), MAT.col(0x111111, .5), 0, 1.9, 0, body); mesh(RBOX(.3, .02, .14), MAT.col(0x111111, .5), 0, 1.86, .14, body); mesh(BOX(.33, .03, .33), MAT.metal(0xf4c542, .3), 0, 1.87, 0, body); for (const sx of [-1, 1]) mesh(BOX(.12, .03, .14), MAT.metal(0xf4c542, .3), sx * .22, 1.5, 0, body); }
+  if (kind === 'attendant') { mesh(CYL(.09, .11, .1), MAT.col(0x8a1f35, .5), .04, 1.93, 0, body); mesh(BOX(.2, .06, .05), MAT.col(0xf4c542, .5), 0, 1.57, .1, body); }
+  if (kind === 'pilot' || kind === 'attendant') mesh(RBOX(.34, .5, .2, .04), MAT.shell(0x1d2433), .32, .32, -.3, body);
+  if (kind === 'crew') { mesh(CYL(.17, .15, .08), MAT.col(0xffffff, .5), 0, 1.9, 0, body); mesh(BOX(.35, .04, .35), MAT.col(0x1f3b6b, .5), 0, 1.87, 0, body); }
+  if (kind === 'handler') { mesh(SPH(.17, 16, 10, 0, Math.PI * 2, 0, Math.PI * .5), MAT.shell(0xffffff), 0, 1.8, 0, body); mesh(BOX(.5, .05, .32), MAT.col(0xe8ff6a, .3), 0, 1.15, 0, body); }
+  if (kind === 'postal') { mesh(CYL(.15, .15, .08), MAT.col(0x1f7a5a, .5), 0, 1.9, 0, body); mesh(BOX(.4, .3, .3), MAT.cardboard(), 0, 1.15, .3, body); }
   if (kind === 'smuggler' || kind === 'boss' || (kind === 'civ' && rnd() < .4)) mesh(RBOX(.1, .3, .4, .03), kind === 'civ' ? MAT.shell(pick(bagColors)) : MAT.col(0x5a3a1a, .45), .38, .78, 0, body);
   if (kind === 'boss') g.scale.setScalar(1.22);
   const ring = new THREE.Mesh(new THREE.RingGeometry(.55, .8, 28), new THREE.MeshBasicMaterial({ color: 0xff3030, transparent: true, opacity: .8, side: THREE.DoubleSide, depthWrite: false, toneMapped: false }));
@@ -702,9 +670,10 @@ class Person {
       if (d > fleeR + 4) this.alerted = false;
       if (this.wait > 0) this.wait -= dt;
       else {
+        if (!this.target && this.route) { this.ri = (this.ri + 1) % this.route.length; this.target = { x: this.route[this.ri][0], z: this.route[this.ri][1] }; }
         if (!this.target) { const b = level.bounds; this.target = { x: mr(b.minX + 2, b.maxX - 2), z: mr(b.minZ + 2, b.maxZ - 2) }; }
         const tx = this.target.x - this.x, tz = this.target.z - this.z, td = Math.hypot(tx, tz);
-        if (td < .6) { this.target = null; this.wait = mr(.5, 3); }
+        if (td < .6) { this.target = null; this.wait = this.route ? this.waitAt : mr(.5, 3); }
         else { sp = 1.4; vx = tx / td * sp; vz = tz / td * sp; }
       }
     }
@@ -724,9 +693,62 @@ class Person {
   }
 }
 
+// ================= 차량 =================
+const vehicles = [];
+class Vehicle {
+  constructor(type, route, start = 0) {
+    this.type = type; this.route = route; this.ri = start % route.length;
+    [this.x, this.z] = route[this.ri];
+    const nx = route[(this.ri + 1) % route.length]; this.dir = Math.atan2(nx[0] - this.x, nx[1] - this.z);
+    this.speed = type === 'truck' ? 4.6 : 3; this.cur = 0; this.honk = 0;
+    const g = this.g = new THREE.Group(); world.add(g);
+    if (type === 'forklift') {
+      this.len = 3; this.wid = 1.5;
+      mesh(RBOX(1.4, 1, 2, .12), MAT.col(0xf1b90f, .5), 0, .75, -.2, g);
+      mesh(RBOX(1.3, .5, .6, .1), MAT.col(0x333333, .6), 0, 1.4, -.9, g);
+      for (const sx of [-.6, .6]) for (const sz of [-.75, .55]) mesh(BOX(.08, 1.4, .08), MAT.metal(0x333333), sx, 1.9, sz, g);
+      mesh(BOX(1.4, .08, 1.5), MAT.metal(0x333333), 0, 2.6, -.1, g);
+      mesh(BOX(1.1, 2.4, .12), MAT.metal(0x2a2a2a), 0, 1.3, .9, g);
+      for (const sx of [-.35, .35]) mesh(BOX(.12, .06, 1.1), MAT.metal(0x2a2a2a), sx, .25, 1.5, g);
+      mesh(BOX(1.1, .14, 1.1), MAT.wood(), 0, .35, 1.5, g); mesh(BOX(1, .7, 1), MAT.cardboard(), 0, .77, 1.5, g);
+      for (const sx of [-.66, .66]) for (const sz of [-.8, .5]) mesh(CYL(.3, .3, .24), MAT.col(0x111111, .8), sx, .3, sz, g).rotation.z = Math.PI / 2;
+      const d = makePerson('handler'); d.g.scale.setScalar(.85); d.g.position.set(0, .35, -.3); for (const l of d.legs) l.rotation.x = -1.4; g.add(d.g);
+    } else {
+      this.len = 8.4; this.wid = 2.5;
+      mesh(RBOX(2.4, 2.3, 2, .2), MAT.col(pick([0x2e86c1, 0xc0392b, 0xf4f4f2]), .4), 0, 1.75, 3, g);
+      mesh(BOX(2.2, .9, .05), MAT.col(0x1b2833, .1, .3), 0, 2.3, 4.01, g);
+      mesh(BOX(2.3, .4, 8), MAT.metal(0x333333), 0, .7, -.6, g);
+      mesh(BOX(2.45, 2.5, 5.8), MAT.ribs(pick([0xb03a2e, 0x2471a3, 0x1e8449, 0xca6f1e])), 0, 2.15, -1.6, g);
+      for (const sz of [3, -1, -3.6]) for (const sx of [-1.15, 1.15]) mesh(CYL(.45, .45, .35), MAT.col(0x111111, .8), sx, .45, sz, g).rotation.z = Math.PI / 2;
+    }
+    g.traverse(o => { if (o.isMesh) o.castShadow = true; });
+    vehicles.push(this);
+  }
+  update(dt) {
+    const n = this.route.length, [tx, tz] = this.route[(this.ri + 1) % n];
+    let dx = tx - this.x, dz = tz - this.z; const d = Math.hypot(dx, dz);
+    if (d < .4) { this.ri = (this.ri + 1) % n; return; }
+    this.dir += angDiff(this.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 2.5);
+    const fx = Math.sin(this.dir), fz = Math.cos(this.dir);
+    const ox = dog.x - this.x, oz = dog.z - this.z, ahead = ox * fx + oz * fz, side = ox * fz - oz * fx;
+    const blocked = dog.y < 2 && ahead > 0 && ahead < this.len / 2 + 3.5 && Math.abs(side) < this.wid / 2 + .7;
+    this.cur = lerp(this.cur, blocked ? 0 : this.speed, Math.min(1, dt * (blocked ? 6 : 1.5)));
+    this.honk -= dt;
+    if (blocked && this.honk <= 0) { this.honk = 2.5; tone(392, .18, 'square', .08); tone(392, .18, 'square', .08, 0, .25); floatText('빵빵!', this.x, 3.2, this.z, { h: .5, color: '#ffd54f' }); }
+    this.x += fx * this.cur * dt; this.z += fz * this.cur * dt;
+    this.g.position.set(this.x, 0, this.z); this.g.rotation.y = this.dir;
+    if (dog.y < 1.6 && Math.abs(ahead) < this.len / 2 && Math.abs(side) < this.wid / 2 + .45) {
+      const sgn = side >= 0 ? 1 : -1;
+      moveCircle(dog, fz * sgn * .6, -fx * sgn * .6, .5, false, dog.y);
+      if (dog.hurt <= 0 && this.cur > .5) { toast(this.type === 'truck' ? '🚚 트럭에 부딪혔어요! 차량을 조심하세요' : '🚜 지게차에 부딪혔어요! 조심!'); damage(); }
+    }
+  }
+}
+
 // ================= 맵 공통 구조물 =================
 let belts = [], beltDecor = [], waterMesh = null, balls = [];
 function floorPlane(w, d, mat, x = 0, z = 0, y = 0) {
+  if (mat.map) { mat.color.setScalar(.66); mat.roughness = .85; mat.envMapIntensity = .35; }
   const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat); m.rotation.x = -Math.PI / 2; m.position.set(x, y, z); m.receiveShadow = true; world.add(m); return m;
 }
 function walls(L, kind, skipNorth = false) {
@@ -736,7 +758,7 @@ function walls(L, kind, skipNorth = false) {
     if (kind === 'fence') {
       addCol(x, z, sw, sd, null, { topY: 2 });
       const len = Math.max(sw, sd), along = sw > sd;
-      for (let t = -len / 2; t <= len / 2; t += 3) mesh(new THREE.CylinderGeometry(.05, .05, 2, 8), mat, x + (along ? t : 0), 1, z + (along ? 0 : t));
+      for (let t = -len / 2; t <= len / 2; t += 3) mesh(CYL(.05, .05, 2, 8), mat, x + (along ? t : 0), 1, z + (along ? 0 : t));
       for (const y of [.1, 1, 1.95]) mesh(BOX(along ? sw : .06, .05, along ? .06 : sd), mat, x, y, z);
       const net = mesh(BOX(along ? sw : .02, 1.8, along ? .02 : sd), M('net', () => std(0x9aa5aa, .6, .6, { transparent: true, opacity: .25 })), x, 1, z); net.castShadow = false;
     } else {
@@ -749,13 +771,13 @@ function walls(L, kind, skipNorth = false) {
 }
 function water(L, edgeZ) {
   const tex = TEX.water(); tex.repeat.set(30, 12);
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(260, 120), std(0x1c5670, .1, .2, { bumpMap: tex, bumpScale: .4 }));
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(260, 120), std(0xffffff, .3, 0, { map: tex, transparent: true, opacity: .88 }));
   m.rotation.x = -Math.PI / 2; m.position.set(0, -.6, edgeZ - 60); world.add(m); waterMesh = m;
   mesh(BOX(L.w + 1, .7, .8), MAT.col(0x8c8a84, .9), 0, -.25, edgeZ - .2);
   addCol(0, edgeZ - .4, L.w + 2, .8, null, { topY: 99 });
-  for (let x = -L.w / 2 + 4; x < L.w / 2; x += 8) { const c = mesh(new THREE.CylinderGeometry(.22, .28, .6, 12), MAT.metal(0x2a2a2a, .6), x, .3, edgeZ + .5); addCol(x, edgeZ + .5, .6, .6, c, { topY: .6 }); }
+  for (let x = -L.w / 2 + 4; x < L.w / 2; x += 8) { const c = mesh(CYL(.22, .28, .6, 12), MAT.metal(0x2a2a2a, .6), x, .3, edgeZ + .5); addCol(x, edgeZ + .5, .6, .6, c, { topY: .6 }); }
 }
-function pillar(x, z, h = 6) { mesh(new THREE.CylinderGeometry(.6, .6, h, 20), MAT.col(0xe9e5dc, .4), x, h / 2, z); addCol(x, z, 1.2, 1.2, null, { topY: h }); }
+function pillar(x, z, h = 6) { mesh(CYL(.6, .6, h, 20), MAT.col(0xe9e5dc, .4), x, h / 2, z); addCol(x, z, 1.2, 1.2, null, { topY: h }); }
 function bench(x, z) {
   const g = new THREE.Group(); g.position.set(x, 0, z); world.add(g);
   for (let i = -2; i <= 2; i++) { mesh(RBOX(.9, .08, .55, .03), MAT.col(0x3b6c9a, .4, .3), i, .5, 0, g); mesh(RBOX(.9, .5, .06, .03), MAT.col(0x3b6c9a, .4, .3), i, .8, -.27, g); }
@@ -797,7 +819,7 @@ function ship(x, z, len = 56) {
   mesh(BOX(len * .6 + .02, .8, 10.02), MAT.col(0x223344, .1, .2), -4, 5.4, 0, g);
   mesh(BOX(len * .35, 2.8, 8), MAT.col(0xf7f7f5, .4), -4, 8.3, 0, g);
   mesh(BOX(len * .35 + .02, .7, 8.02), MAT.col(0x223344, .1, .2), -4, 8.4, 0, g);
-  mesh(new THREE.CylinderGeometry(1.2, 1.4, 4, 16), MAT.col(0xc0392b, .5), 10, 10.5, 0, g);
+  mesh(CYL(1.2, 1.4, 4, 16), MAT.col(0xc0392b, .5), 10, 10.5, 0, g);
   const nm = textSprite('KOREA FERRY', { h: 1.2, bg: null, color: '#1f4e8c' }); nm.position.set(0, 2.4, 6.4); g.add(nm);
   return g;
 }
@@ -811,7 +833,7 @@ function luggage(x, z) {
   if (!soft) mesh(RBOX(w + .01, .03, d + .01, .01), MAT.col(0x222222, .5), 0, h * .55, 0, g);
   for (const s of [-1, 1]) mesh(BOX(.02, .3, .02), MAT.metal(0x555555), rot ? 0 : s * .12, h + .2, rot ? s * .12 : 0, g);
   mesh(BOX(rot ? .04 : .28, .04, rot ? .28 : .04), MAT.col(0x222222, .5), 0, h + .35, 0, g);
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) mesh(new THREE.CylinderGeometry(.035, .035, .04, 10), MAT.col(0x111111, .6), sx * (w / 2 - .06), .035, sz * (d / 2 - .06), g).rotation.z = Math.PI / 2;
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) mesh(CYL(.035, .035, .04, 10), MAT.col(0x111111, .6), sx * (w / 2 - .06), .035, sz * (d / 2 - .06), g).rotation.z = Math.PI / 2;
   return addCol(x, z, w, d, g, { pushable: true, kind: 'bag', search: true, topY: h + .07, childY: 1.4 });
 }
 function crate(x, z, s = 1.15) {
@@ -845,6 +867,13 @@ const ITEM = {
 const LEVELS = [
   {
     name: '공항 입국장', icon: '✈', w: 56, d: 42, outdoor: false, bg: 0xdfe7ec, music: 1,
+    staff: [
+      { kind: 'customs', route: [[-20, 3], [20, 3]], wait: 2.5 },
+      { kind: 'customs', route: [[-4, -3], [4, -3], [4, -13], [-4, -13]], wait: 1.5 },
+      { kind: 'pilot', route: [[24.5, -18], [24.5, 17], [4, 17], [24.5, 17]], wait: .3 },
+      { kind: 'attendant', route: [[25.5, -17], [25.5, 18], [5, 18], [25.5, 18]], wait: .3 },
+      { kind: 'attendant', route: [[-25, 18], [-25, -18], [-25, 18], [-5, 18]], wait: .3 },
+    ],
     people: { civ: 8, smuggler: 2 }, hide: { drug: 3, gun: 1 }, need: { drug: 2, smuggler: 1 },
     who: '김 반장 (공항 세관)', short: '여행가방 근처에서 냄새를 맡아 마약 2개를 찾고, 밀수범 1명을 체포하세요.',
     intro: '관세청 탐지견, 첫 순찰이다!\n입국장 수하물에 마약이 섞여 들어왔다는 첩보가 있어.\n\n냄새를 맡으면 숨은 물건 쪽으로 냄새 입자가 흘러가.\n수상한 가방 바로 옆에서 짖으면 적발이야.\n여행객 틈에 숨은 밀수범도 1명 잡아줘!',
@@ -867,14 +896,20 @@ const LEVELS = [
       }
       sign('입국 심사 IMMIGRATION', 0, 3.6, 8, .7);
       for (const x of [-18, -6, 6, 18]) bench(x, -16);
-      for (const x of [-22, 0, 22]) for (const z of [-1, 15]) pillar(x, z);
+      for (const x of [-22, -9, 9, 22]) for (const z of [-1, 15]) pillar(x, z);
       sign('✈ 국제공항 입국장 ARRIVALS', 0, 5.5, L.d / 2 - .5, 1.1);
       L.search = scatter(L, 22, luggage, 1, 1);
     },
   },
   {
     name: '공항 화물터미널', icon: '📦', w: 60, d: 44, outdoor: false, bg: 0xc9cdd0, music: 2,
-    people: { worker: 5, smuggler: 2 }, hide: { drug: 3, gun: 2 }, need: { drug: 2, gun: 1 },
+    staff: [
+      { kind: 'handler', route: [[-20, 7], [20, 7]], wait: 1.5 },
+      { kind: 'handler', route: [[22, 7.5], [-22, 7.5]], wait: 1.5 },
+      { kind: 'customs', route: [[-24, 9.6], [24, 9.6]], wait: 3 },
+    ],
+    vehicles: [{ type: 'forklift', route: [[-22, -3], [22, -3], [22, 3], [-22, 3]], start: 0 }, { type: 'forklift', route: [[-22, -3], [22, -3], [22, 3], [-22, 3]], start: 2 }],
+    people: { worker: 3, smuggler: 2 }, hide: { drug: 3, gun: 2 }, need: { drug: 2, gun: 1 },
     who: '이 계장 (항공화물 검사)', short: '팔레트 상자와 항공 컨테이너(ULD)에서 마약 2개, 총기 1개를 찾으세요.',
     intro: '여기는 항공 화물터미널이다.\n해외 직구 화물 사이에 마약과 총기가 숨겨져 들어왔어.\n\n팔레트 위 상자는 몸으로 밀어 옮길 수 있고,\n은색 항공 컨테이너(ULD) 앞에서도 냄새를 맡아봐.\n노란 조끼 직원들은 진짜 작업자니까 조심!',
     build(L) {
@@ -896,7 +931,7 @@ const LEVELS = [
         mesh(BOX(1.2, .8, 1), MAT.glass(), 0, 1.6, -.3, g);
         mesh(BOX(1.2, 2.6, .12), MAT.metal(0x333333), 0, 1.3, 1.2, g);
         for (const s of [-.4, .4]) mesh(BOX(.12, .06, 1.1), MAT.metal(0x333333), s, .1, 1.75, g);
-        for (const sx of [-.6, .6]) for (const sz of [-.7, .6]) mesh(new THREE.CylinderGeometry(.28, .28, .22, 16), MAT.col(0x111111, .8), sx, .28, sz, g).rotation.z = Math.PI / 2;
+        for (const sx of [-.6, .6]) for (const sz of [-.7, .6]) mesh(CYL(.28, .28, .22, 16), MAT.col(0x111111, .8), sx, .28, sz, g).rotation.z = Math.PI / 2;
         addCol(x, z + .3, 1.4, 2.8, g, { topY: 2.6 });
       }
       sign('📦 항공 화물터미널 AIR CARGO', 0, 5.5, L.d / 2 - .5, 1.1);
@@ -906,7 +941,13 @@ const LEVELS = [
   },
   {
     name: '국제우편·특송센터', icon: '✉', w: 54, d: 40, outdoor: false, bg: 0xd8dde0, music: 3,
-    people: { worker: 4, civ: 1, smuggler: 2 }, hide: { drug: 4, gun: 1 }, need: { drug: 3, smuggler: 1 },
+    staff: [
+      { kind: 'postal', route: [[-20, -6.5], [8, -6.5]], wait: 1.2 },
+      { kind: 'postal', route: [[8, 2.5], [-20, 2.5]], wait: 1.2 },
+      { kind: 'postal', route: [[15, -15], [15, 10]], wait: 2 },
+      { kind: 'customs', route: [[12, 1.6], [12.4, 1.6]], wait: 3 },
+    ],
+    people: { worker: 2, civ: 1, smuggler: 2 }, hide: { drug: 4, gun: 1 }, need: { drug: 3, smuggler: 1 },
     who: '정 주무관 (우편물 검사)', short: '작은 택배 상자와 우편 자루 속 마약 3개를 찾고, 밀수범 1명을 잡으세요.',
     intro: '국제우편·특송센터에 온 걸 환영해!\n해외에서 온 소포에 마약을 숨겨 보내는 수법이 늘고 있어.\n\n점프해서 컨베이어 벨트 위로 올라갈 수도 있어.\n벨트 위에 서면 몸이 같이 움직이니 조심하고!\n마약 3개, 밀수범 1명을 부탁해.',
     build(L) {
@@ -933,8 +974,8 @@ const LEVELS = [
       }
       for (let i = 0; i < 6; i++) {
         const x = -22 + i * 3.2, z = 14;
-        const s = mesh(new THREE.SphereGeometry(.5, 14, 10), MAT.fabric(0x8d8f7a), x, .45, z); s.scale.set(1, .9, .8);
-        mesh(new THREE.CylinderGeometry(.08, .2, .3, 8), MAT.fabric(0x8d8f7a), x, .95, z);
+        const s = mesh(SPH(.5, 14, 10), MAT.fabric(0x8d8f7a), x, .45, z); s.scale.set(1, .9, .8);
+        mesh(CYL(.08, .2, .3, 8), MAT.fabric(0x8d8f7a), x, .95, z);
         addCol(x, z, 1, .8, s, { kind: 'sack', search: true, topY: .9, childY: .9 });
       }
       sign('✉ 국제우편·특송센터 INTL MAIL', 0, 5.5, L.d / 2 - .5, 1.1);
@@ -944,6 +985,12 @@ const LEVELS = [
   },
   {
     name: '여객선 터미널', icon: '⛴', w: 60, d: 46, outdoor: true, bg: 0xcfe3ef, music: 4,
+    staff: [
+      { kind: 'crew', route: [[13.5, -20], [13.5, -12], [13.5, -4], [13.5, -12]], wait: .8 },
+      { kind: 'crew', route: [[-26, -16], [26, -16]], wait: 1.5 },
+      { kind: 'customs', route: [[-13.5, -4], [-13.5, -15]], wait: 2.5 },
+      { kind: 'attendant', route: [[-24, 9], [24, 9]], wait: 1 },
+    ],
     people: { civ: 9, smuggler: 3 }, hide: { gun: 2, drug: 2 }, need: { gun: 1, smuggler: 2 },
     who: '최 반장 (여객선 터미널)', short: '여행객 짐에서 불법 총기 1개를 찾고, 밀수범 2명을 체포하세요.',
     intro: '국제 여객선이 막 도착했다!\n승객 짐 속에 불법 총기가 숨겨져 있다는 제보야.\n\n대합실과 선착장을 오가며 냄새를 맡아봐.\n짖으면 밀수범이 깜짝 놀라 멈추니까\n그때 달려가서 박치기로 붙잡는 거야!',
@@ -966,7 +1013,13 @@ const LEVELS = [
   },
   {
     name: '부두 컨테이너 야적장', icon: '⚓', w: 66, d: 48, outdoor: true, bg: 0xcfe3ef, music: 5,
-    people: { worker: 5, smuggler: 2 }, hide: { drug: 3, gun: 3 }, need: { drug: 2, gun: 2 },
+    staff: [
+      { kind: 'handler', route: [[8.5, -10], [8.5, 0]], wait: 2 },
+      { kind: 'handler', route: [[-4.5, -10], [-4.5, 0]], wait: 2 },
+      { kind: 'customs', route: [[-29, 20], [29, 20]], wait: 2.5 },
+    ],
+    vehicles: [{ type: 'truck', route: [[-17.5, -1], [21.5, -1], [21.5, 9], [-17.5, 9]], start: 0 }, { type: 'truck', route: [[-17.5, -1], [21.5, -1], [21.5, 9], [-17.5, 9]], start: 2 }],
+    people: { worker: 3, smuggler: 2 }, hide: { drug: 3, gun: 3 }, need: { drug: 2, gun: 2 },
     who: '박 주무관 (부두 감시과)', short: '컨테이너와 나무상자를 수색해 마약 2개, 총기 2개를 찾으세요.',
     intro: '부두 컨테이너 야적장이다.\n수출입 화물 컨테이너 사이에 밀수품이 숨겨져 있어.\n\n나무상자는 밀거나 점프해서 올라갈 수 있고,\n컨테이너 문 앞에서도 냄새를 맡아봐!\n마약 2개, 총기 2개를 찾으면 작전 성공이야.',
     build(L) {
@@ -987,7 +1040,9 @@ const LEVELS = [
   },
   {
     name: '보세창고 (보스전)', icon: '🏭', w: 56, d: 42, outdoor: false, bg: 0x7b8086, dim: true, music: 6,
-    people: { worker: 2, smuggler: 3, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 2, boss: 1 },
+    staff: [{ kind: 'handler', route: [[-24, -2], [24, -2]], wait: 1.5 }],
+    vehicles: [{ type: 'forklift', route: [[-8, 1], [8, 1], [8, -10], [-8, -10]] }],
+    people: { worker: 1, smuggler: 3, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 2, boss: 1 },
     who: '김 반장 (세관 단속팀)', short: '보스는 빠르고 튼튼해요(체력 5). 짖어서 멈추고 여러 번 박치기하세요!',
     intro: '🚨 마지막 작전이다!\n밀수 조직 보스가 보세창고에 숨어 있다는 첩보가 들어왔어.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n짖어서 멈추게 하고 여러 번 박치기해!\n부하 2명도 함께 체포하면 작전 끝이다!',
     build(L) {
@@ -1014,7 +1069,7 @@ const getProg = () => store.get(progKey(), { unlocked: 0, best: {} });
 function clearWorld() {
   world.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map?.dispose(); o.material.dispose(); } });
   scene.remove(world); world = new THREE.Group(); scene.add(world);
-  colliders = []; people.length = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
+  colliders = []; people.length = 0; vehicles.length = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
   clearEffects(); clearParticles();
 }
 function loadLevel(i) {
@@ -1026,8 +1081,12 @@ function loadLevel(i) {
   level.avoid = [{ ...spawn, r: 5 }];
   setSeed(1000 + i * 97);
   // 환경 / 조명
-  if (def.outdoor) { scene.add(sky); scene.background = null; scene.environment = envSky; hemi.intensity = .55; sun.intensity = 2.8; sun.color.set(0xfff1d6); scene.fog = new THREE.Fog(def.bg, 70, 200); renderer.toneMappingExposure = .95; }
-  else { scene.remove(sky); scene.background = new THREE.Color(def.bg); scene.environment = envRoom; hemi.intensity = def.dim ? .35 : .65; sun.intensity = def.dim ? 1.2 : 1.9; sun.color.set(def.dim ? 0xffe2b0 : 0xffffff); scene.fog = new THREE.Fog(def.bg, 45, 110); renderer.toneMappingExposure = def.dim ? .85 : .82; }
+  if (def.outdoor) { scene.background = new THREE.Color(0x8ec5ff); scene.environment = envSky; hemi.intensity = .55; sun.intensity = 1.25; for (let k = 0; k < 16; k++) { const cl = mesh(BOX(rr(6, 16), 1.6, rr(4, 10)), MAT.col(0xffffff, 1), rr(-90, 90), rr(32, 40), rr(-110, 40)); cl.castShadow = false; } sun.color.set(0xfff1d6); scene.fog = new THREE.Fog(0x8ec5ff, 80, 220); renderer.toneMappingExposure = .95; }
+  else { scene.remove(sky); scene.background = new THREE.Color(def.bg); scene.environment = envRoom; hemi.intensity = def.dim ? .45 : .6; sun.intensity = def.dim ? .8 : 1.0; sun.color.set(def.dim ? 0xffe2b0 : 0xffffff); scene.fog = new THREE.Fog(def.bg, 45, 110); renderer.toneMappingExposure = def.dim ? .85 : .82; }
+  for (const r of [...(def.staff || []).map(o => [o.route, 1.1]), ...(def.vehicles || []).map(o => [o.route, 2.4])]) {
+    const [pts, rad] = r;
+    for (let k = 0; k < pts.length; k++) { const [ax, az] = pts[k], [bx, bz] = pts[(k + 1) % pts.length], L2 = Math.hypot(bx - ax, bz - az); for (let t = 0; t <= L2; t += 1.5) level.avoid.push({ x: ax + (bx - ax) * t / (L2 || 1), z: az + (bz - az) * t / (L2 || 1), r: rad }); }
+  }
   def.build(level);
   // 담당 반장
   const off = new Person('officer', spawn.x + 2.6, spawn.z + 1); addCol(off.x, off.z, .8, .8, null);
@@ -1039,20 +1098,22 @@ function loadLevel(i) {
       if (kind === 'boss') { const lb = textSprite('👑 밀수 조직 보스', { h: .38, bg: 'rgba(120,20,40,.9)' }); lb.position.y = 2.75; per.g.add(lb); }
     }
   }
+  for (const o of def.staff || []) { const p = new Person(o.kind, o.route[0][0], o.route[0][1]); p.route = o.route; p.ri = 0; p.waitAt = o.wait ?? .4; p.target = null; p.wait = mr(0, 1.5); }
+  for (const o of def.vehicles || []) new Vehicle(o.type, o.route, o.start || 0);
   // 밀수품 숨기기
   const pool = [...level.search].sort(() => rnd() - .5);
   for (const [type, n] of Object.entries(def.hide)) for (let k = 0; k < n && pool.length; k++) { const c = pool.pop(); c.hidden = type; hidden.push(c); }
   // 초기화
   lvStats = { drug: 0, gun: 0, smuggler: 0, boss: 0 };
   Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: 3, boost: 0, hurt: 0 });
-  balls = []; for (let k = 0; k < 3; k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(new THREE.SphereGeometry(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
+  balls = []; for (let k = 0; k < 3; k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
   yaw = 0; camPos.set(spawn.x, 6, spawn.z + 9);
   levelTime = 0; levelScore = 0; keys = {};
   renderQuest(); playMusic(def.music);
 }
 
 function startLevel(i) {
-  if (i !== runNext || i === 0) { runScore = 0; runTime = 0; runStage = 0; totals = { items: 0, arrests: 0, mistakes: 0 }; }
+  if (i !== runNext || i === 0) { runScore = 0; runTime = 0; runStage = 0; totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = startServerRun(i); }
   runNext = i;
   hideAll(); loadLevel(i);
   $('topbar').classList.remove('hidden');
@@ -1104,7 +1165,7 @@ function levelClear() {
   prog.unlocked = Math.max(prog.unlocked, levelIdx + 1);
   if (!prog.best[levelIdx] || levelTime < prog.best[levelIdx]) prog.best[levelIdx] = Math.round(levelTime);
   store.set(progKey(), prog);
-  submitScore(runScore, runStage, Math.round(runTime));
+  reportClear(levelIdx + 1, levelScore, runScore, runStage, Math.round(runTime));
   if (levelIdx === LEVELS.length - 1) return win();
   $('clrSub').textContent = `MAP ${levelIdx + 1} 클리어`;
   $('clrTitle').textContent = `${level.icon} ${level.name} 통과!`;
@@ -1130,17 +1191,25 @@ function updateToast(dt) {
 // ================= 랭킹 =================
 const serverOn = () => !!(RANK_CFG.url && RANK_CFG.key);
 function sbHeaders() { const h = { apikey: RANK_CFG.key, 'Content-Type': 'application/json' }; if (RANK_CFG.key.startsWith('eyJ')) h.Authorization = 'Bearer ' + RANK_CFG.key; return h; }
-async function submitScore(score, stage, secs) {
+function startServerRun(i) {
+  if (!serverOn() || !playerPw) return null;
+  return rpc('start_run', { p_id: playerId, p_pw: playerPw, p_start: i }).then(r => r.ok ? r.json() : null).catch(() => null);
+}
+async function reportClear(stage, stageScore, score, reached, secs) {
   const local = store.get('k9rank', []);
   const me = local.find(r => r.player_id === playerId);
-  if (!me) local.push({ player_id: playerId, score, stage, secs });
-  else if (score > me.score || (score === me.score && secs < me.secs)) Object.assign(me, { score, stage, secs });
+  if (!me) local.push({ player_id: playerId, score, stage: reached, secs });
+  else if (score > me.score || (score === me.score && secs < me.secs)) Object.assign(me, { score, stage: reached, secs });
   store.set('k9rank', local);
-  if (!serverOn()) return;
+  if (!serverOn() || !runToken) return;
   try {
-    const r = await fetch(RANK_CFG.url + '/rest/v1/rpc/submit_score', { method: 'POST', headers: sbHeaders(), body: JSON.stringify({ p_id: playerId, p_score: score, p_stage: stage, p_secs: secs }) });
-    if (!r.ok) throw new Error(r.status);
-  } catch { toast('📡 랭킹 서버에 저장하지 못했어요 (이 기기에는 저장됨)'); }
+    const run = await runToken; if (!run) return;
+    const r = await rpc('clear_stage', { p_run: run, p_stage: stage, p_score: stageScore });
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      toast(e.message === 'too_fast' ? '⏱ 너무 빨리 클리어해서 온라인 랭킹에는 반영되지 않았어요' : '📡 온라인 랭킹 반영 실패 (' + (e.message || r.status) + ')');
+    }
+  } catch { toast('📡 랭킹 서버에 연결하지 못했어요 (이 기기에는 저장됨)'); }
 }
 async function fetchRanking() {
   if (serverOn()) {
@@ -1170,38 +1239,62 @@ async function showLogin() {
   $('login').classList.remove('hidden'); $('pid').value = playerId;
   renderRanking($('rankMini'), await fetchRanking(), 5);
 }
-function showMaps() {
+let pausedGame = false;
+function showMaps(paused = false) {
+  pausedGame = paused && !!level;
   hideAll(); state = 'maps'; $('topbar').classList.add('hidden');
   const prog = getProg();
   $('mapsWho').textContent = `🕵 플레이어: ${playerId} · 누적 ${runScore}점`;
   $('mapGrid').innerHTML = LEVELS.map((L, i) => {
     const locked = i > prog.unlocked, cleared = prog.best[i] !== undefined;
-    const st = locked ? '🔒 이전 맵을 클리어하세요' : cleared ? `✅ 최고 기록 ${fmtTime(prog.best[i])}` : '도전 가능';
-    return `<button class="mapcard ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.icon}</span><span class="no">MAP ${i + 1}</span><span class="nm">${L.name}</span><span class="st">${st}</span></button>`;
+    const cur = pausedGame && i === levelIdx;
+    const st = cur ? '▶ 진행 중 · 눌러서 돌아가기' : locked ? '🔒 이전 맵을 클리어하세요' : cleared ? `✅ 최고 기록 ${fmtTime(prog.best[i])}` : '도전 가능';
+    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.icon}</span><span class="no">MAP ${i + 1}</span><span class="nm">${L.name}</span><span class="st">${st}</span></button>`;
   }).join('');
-  $('mapsWho');
+  $('pauseRow').classList.toggle('hidden', !pausedGame);
   $('maps').classList.remove('hidden');
-  playMusic(0);
+  if (!pausedGame) playMusic(0);
 }
-$('mapGrid').addEventListener('click', e => { const b = e.target.closest('.mapcard'); if (b && !b.disabled) startLevel(+b.dataset.i); });
-function login() {
-  const v = $('pid').value.trim();
-  if (!/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) { $('pidErr').textContent = '아이디는 한글·영문·숫자·_ 로 2~12자여야 해요.'; return; }
-  $('pidErr').textContent = '';
+$('mapGrid').addEventListener('click', e => { const b = e.target.closest('.mapcard'); if (!b || b.disabled) return; if (pausedGame && +b.dataset.i === levelIdx) resumeGame(); else startLevel(+b.dataset.i); });
+function resumeGame() { hideAll(); pausedGame = false; state = 'play'; keys = {}; $('topbar').classList.remove('hidden'); playMusic(level.music); }
+function restartLevel() {
+  if (!level) return;
+  const carry = levelTime; hideAll(); pausedGame = false;
+  loadLevel(levelIdx); levelTime = carry; state = 'play'; $('topbar').classList.remove('hidden');
+  toast('🔄 맵을 다시 시작했어요 (흐른 시간은 이어져요)');
+}
+$('btnResume').onclick = resumeGame;
+$('btnRestartMap').onclick = restartLevel;
+$('tbRestart').onclick = () => { if (state === 'play') restartLevel(); };
+let playerPw = '', runToken = null;
+const rpc = (name, body) => fetch(RANK_CFG.url + '/rest/v1/rpc/' + name, { method: 'POST', headers: sbHeaders(), body: JSON.stringify(body) });
+const loginErr = t => { $('pidErr').textContent = t; };
+async function login() {
+  const v = $('pid').value.trim(), pw = $('ppw').value;
+  if (!/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr('아이디는 한글·영문·숫자·_ 로 2~12자여야 해요.');
+  if (pw.length < 4) return loginErr('비밀번호는 4자 이상이에요.');
   ac(); actx.resume?.(); setMusic(musicOn);
-  playerId = v; store.set('k9id', v); runScore = 0; runNext = 0;
-  if (!bgm.timer) { bgm.track = -1; }
+  $('btnLogin').disabled = true; loginErr('확인 중…');
+  let res = 'offline';
+  if (serverOn()) { try { const r = await rpc('login_player', { p_id: v, p_pw: pw }); if (r.ok) res = await r.json(); } catch { } }
+  $('btnLogin').disabled = false;
+  if (res === 'bad') return loginErr('비밀번호가 틀렸어요. 5번 틀리면 5분간 잠겨요.');
+  if (res === 'locked') return loginErr('비밀번호를 여러 번 틀려서 5분간 잠겼어요. 잠시 후 다시 시도하세요.');
+  loginErr('');
+  playerId = v; playerPw = res === 'offline' ? '' : pw; store.set('k9id', v); runScore = 0; runNext = 0;
+  if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
+  if (res === 'offline') toast('📡 랭킹 서버에 연결하지 못해 이 기기에만 기록돼요');
   showMaps();
 }
 $('btnLogin').onclick = login;
-$('pid').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+for (const id of ['pid', 'ppw']) $(id).addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 $('btnLogout').onclick = showLogin;
 $('btnRankOpen').onclick = openRank;
 $('dok').onclick = closeDialog;
 $('btnNext').onclick = () => startLevel(levelIdx + 1);
 $('btnToMaps').onclick = showMaps;
 $('btnWinMaps').onclick = () => { runNext = 0; showMaps(); };
-$('tbMaps').onclick = () => { if (state === 'play' || state === 'dialog') showMaps(); };
+$('tbMaps').onclick = () => { if (state === 'play' || state === 'dialog') showMaps(true); };
 $('tbMusic').onclick = () => { ac(); setMusic(!musicOn); };
 $('tbRank').onclick = () => { if (state === 'play') openRank(); };
 
@@ -1256,7 +1349,7 @@ let keys = {}, barkQ = false, jumpQ = false, dragging = null;
 let yaw = 0, pitch = .42, camDist = 9;
 const touchIn = { x: 0, y: 0, sniff: false, run: false };
 addEventListener('keydown', e => {
-  if (e.target === $('pid')) return;
+  if (e.target.tagName === 'INPUT') return;
   if (['Space', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault();
   if (state === 'dialog' && (e.code === 'Enter' || e.code === 'Space') && !e.repeat) { closeDialog(); return; }
   keys[e.code] = true;
@@ -1428,6 +1521,8 @@ function drawMinimap() {
     else continue;
     g.beginPath(); g.arc(x, y, p.kind === 'boss' ? 6 : 4, 0, 7); g.fill();
   }
+  g.fillStyle = '#ff9f1a';
+  for (const v of vehicles) { const [x, y] = P(v.x, v.z); g.save(); g.translate(x, y); g.rotate(-v.dir); g.fillRect(-v.wid * S / 2, -v.len * S / 2, v.wid * S, v.len * S); g.restore(); }
   const [dx, dy] = P(dog.x, dog.z);
   g.save(); g.translate(dx, dy); g.rotate(-dog.dir + Math.PI);
   g.fillStyle = '#ffd200'; g.strokeStyle = '#000'; g.lineWidth = 1.5;
@@ -1442,7 +1537,7 @@ function loop() {
   requestAnimationFrame(loop);
   const dt = Math.min(clock.getDelta(), .05); time += dt;
   if (state === 'play') {
-    levelTime += dt; updateDog(dt);
+    levelTime += dt; updateDog(dt); for (const v of vehicles) v.update(dt);
     for (const p of people) p.update(dt);
   } else {
     yaw += dt * .08; dogM.tail.rotation.y = Math.sin(time * 9) * .6;
@@ -1452,7 +1547,7 @@ function loop() {
   beltOffset += dt;
   for (const b of belts) if (b.mesh.material.map) b.mesh.material.map.offset.x = -beltOffset * .6;
   for (const b of beltDecor) { b.m.position.x += b.speed * dt; if (b.m.position.x > b.maxX) b.m.position.x = b.minX; }
-  if (waterMesh) { waterMesh.material.bumpMap.offset.set(time * .01, time * .02); }
+  if (waterMesh) { waterMesh.material.map.offset.set(time * .01, time * .02); }
   updateEffects(dt); updateParticles(dt); updateCamera(dt); updateToast(dt);
   hudTick -= dt;
   if (hudTick <= 0) {
