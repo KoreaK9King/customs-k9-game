@@ -1605,7 +1605,7 @@ const LEVELS = [
       for (const x of [-22, -12]) bench(x, 14);
       sign('🛋 탐지견 쉼터', -17, 3, 14, .6);
       // 탐지견 훈련센터: 건물 + 어질리티 코스 + 냄새 훈련장
-      solid(-36, -24, 10, 6, 4, MAT.col(0xe8e4dc, .5)); mesh(BOX(10.04, .8, 6.04), MAT.col(0x13335a, .5), -36, 3.6, -24);
+      solid(-36, -24, 10, 6, 4, MAT.col(0xe8e4dc, .5)); mesh(BOX(10.04, .8, 6.04), MAT.col(0x13335a, .5), -36, 3.58, -24);
       mesh(BOX(2, 2.6, .1), MAT.col(0x5a4632, .6), -36, 1.3, -20.95); mesh(BOX(6, .8, .05), MAT.col(0x223344, .1, .2), -36, 2.4, -20.97);
       sign('🐕 탐지견 훈련센터 K9 TRAINING CENTER', -36, 5.5, -24, .7);
       for (let i = 0; i < 3; i++) { const x = -26 + i * 4; for (const sd of [-.8, .8]) mesh(BOX(.12, .9, .12), MAT.col(0xf4f4f2, .4), x, .45, -18 + sd); mesh(BOX(.1, .1, 1.6), MAT.col(0xd63031, .5), x, .6, -18); addCol(x, -18, .3, 1.6, null, { topY: .65 }); }
