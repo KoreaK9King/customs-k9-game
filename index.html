@@ -230,7 +230,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div id="wgrade" style="font-family:Jua;font-size:68px;color:#e0a800;line-height:1.1">S</div>
  <div class="stats" id="wstats"></div>
  <div class="rankwrap" id="rankWin"></div>
- <div class="row"><button class="big" id="btnWinMaps">맵 선택으로</button></div>
+ <div class="row"><button class="big" id="btnHidden">🌅 히든맵으로 놀러 가기</button><button class="big alt" id="btnWinMaps">맵 선택으로</button></div>
 </div></div>
 
 <script type="module">
@@ -419,6 +419,23 @@ function moveCircle(ent, dx, dz, r, canPush, elev = 0) {
   ent.z = nz;
   return pushed;
 }
+function unstick(ent, r, elev) {
+  for (let pass = 0; pass < 3; pass++) {
+    let moved = false;
+    for (const c of colliders) {
+      if (c.disabled || c.topY <= elev + STEP) continue;
+      const cx = clamp(ent.x, c.minX, c.maxX), cz = clamp(ent.z, c.minZ, c.maxZ), dx = ent.x - cx, dz = ent.z - cz, d = Math.hypot(dx, dz);
+      if (d >= r - .01) continue;
+      if (d > .001) { ent.x = cx + dx / d * r; ent.z = cz + dz / d * r; }
+      else {
+        const opts = [[c.minX - r - ent.x, 0], [c.maxX + r - ent.x, 0], [0, c.minZ - r - ent.z], [0, c.maxZ + r - ent.z]].sort((a, b) => Math.abs(a[0] + a[1]) - Math.abs(b[0] + b[1]));
+        ent.x += opts[0][0]; ent.z += opts[0][1];
+      }
+      moved = true;
+    }
+    if (!moved) break;
+  }
+}
 function groundAt(x, z, r, elev) {
   let h = 0, on = null;
   for (const c of colliders) {
@@ -544,6 +561,7 @@ const TRACKS = [
   { bpm: 88, root: 65, scale: 'major', prog: [0, 3, 4, 0], lead: 'sine', drums: .6, bass: [0, 10], hat: 4, arp: true, swing: .35 },           // 여객선: 바다 노래
   { bpm: 128, root: 55, scale: 'minor', prog: [0, 6, 5, 4], lead: 'sawtooth', drums: 1.2, bass: [0, 2, 4, 6, 8, 10, 12, 14], hat: 1 },         // 야적장: 액션
   { bpm: 146, root: 52, scale: 'minor', prog: [0, 1, 0, 6], lead: 'sawtooth', drums: 1.3, bass: [0, 3, 6, 8, 11, 14], hat: 1, arp: true, clap: true }, // 보세창고: 보스전
+  { bpm: 80, root: 62, scale: 'major', prog: [0, 3, 4, 3], lead: 'sine', drums: .3, bass: [0, 8], hat: 4, arp: true, swing: .3 },                       // 노을 활주로: 휴식
 ];
 const bgm = { track: -1, step: 0, next: 0, melody: [], timer: null };
 const midi = n => 440 * Math.pow(2, (n - 69) / 12);
@@ -682,6 +700,7 @@ function updateHandler(dt) {
   const sp = d > .3 ? Math.min(d * 3, 10) : 0;
   if (sp > 0) { handler.x += dx / d * sp * dt; handler.z += dz / d * sp * dt; handler.dir += angDiff(handler.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 8); }
   else if (!twoP) handler.dir += angDiff(handler.dir, Math.atan2(dog.x - handler.x, dog.z - handler.z)) * Math.min(1, dt * 4);
+  unstick(handler, .35, handler.y);
   const spA = twoP ? (handler.p2 || 0) : sp; handler.phase += dt * spA * 3; const k = Math.min(1, spA / 2);
   const h = handlerM; h.g.position.set(handler.x, handler.y + Math.abs(Math.sin(handler.phase)) * .05 * k, handler.z);
   if (handler.y > .05) { h.legs[0].rotation.x = -.8; h.legs[1].rotation.x = .4; } h.g.rotation.y = handler.dir;
@@ -823,6 +842,7 @@ const LINES = {
   worker: ['오늘 물량 엄청 많네', '지게차 지나가요!', '점심 뭐 먹지?', '이 화물은 3번 구역으로!', '허리 아프다…'],
   handler: ['안전 제일!', '팔레트 하나 더!', '이쪽으로 옮겨 주세요', '수고하십니다!'],
   customs: ['신고할 물품 있으세요?', '탐지견 수고 많아!', '가방 좀 열어 주시겠어요?', '이쪽으로 오세요', '검사 협조 감사합니다'],
+  trainer: ['허들 넘어 보자!', '좋아, 잘한다!', '터널 통과!', '냄새 훈련 시작!'],
   chief: ['수고 많다, 탐지견!', '이 구역 철저히 검색해!', '밀수범을 놓치지 마라!', '오늘도 안전한 국경을 위해!', '좋아, 잘하고 있어!', '수상한 냄새가 나면 바로 짖어!'],
   pilot: ['다음 비행은 3시간 후야', '오늘 기류가 좋았어 ✈', '착륙 깔끔했지?'],
   attendant: ['안녕히 가세요~', '짐 찾는 곳은 저쪽이에요', '즐거운 여행 되세요!'],
@@ -907,13 +927,19 @@ class Person {
       const ox = this.x, oz = this.z;
       moveCircle(this, vx * dt, vz * dt, this.r, false);
       const moved = Math.hypot(this.x - ox, this.z - oz);
-      if (moved < sp * dt * .3) { this.blocked += dt; if (!flee) { this.target = null; this.wait = .3; } } else this.blocked = 0;
+      if (moved < sp * dt * .3) {
+        this.blocked += dt; this.stuck = (this.stuck || 0) + dt;
+        if (!flee) { this.target = { x: this.x - vx / sp * mr(2, 4) + mr(-2, 2), z: this.z - vz / sp * mr(2, 4) + mr(-2, 2) }; this.wait = .2; }
+        if (this.stuck > 2.5) { const b = level.bounds, p = placeFree({ minX: Math.max(b.minX, this.x - 6), maxX: Math.min(b.maxX, this.x + 6), minZ: Math.max(b.minZ, this.z - 6), maxZ: Math.min(b.maxZ, this.z + 6) }, .9, .9, .2); if (p) { this.x = p.x; this.z = p.z; } this.stuck = 0; this.target = null; }
+      } else { this.blocked = 0; this.stuck = Math.max(0, (this.stuck || 0) - dt); }
       this.dir += angDiff(this.dir, Math.atan2(vx, vz)) * Math.min(1, dt * 10);
     }
     this.phase += dt * sp * 3.2;
     const k = Math.min(1, sp / 2);
     this.legs[0].rotation.x = Math.sin(this.phase) * .6 * k; this.legs[1].rotation.x = -Math.sin(this.phase) * .6 * k;
     this.arms[0].rotation.x = -Math.sin(this.phase) * .5 * k; this.arms[1].rotation.x = Math.sin(this.phase) * .5 * k;
+    unstick(this, this.r, 0);
+    this.x = clamp(this.x, level.bounds.minX, level.bounds.maxX); this.z = clamp(this.z, level.bounds.minZ, level.bounds.maxZ);
     if (this.wait > 0 && this.act === 'phone') this.arms[1].rotation.x = -2.6;
     if (this.wait > 0 && this.act === 'talk') this.arms[0].rotation.x = -.5 + Math.sin(time * 5 + this.phase) * .4;
     if (!this.bubble && Math.random() < dt * (this.kind === 'chief' ? .22 : .015)) this.say(pick2(this.lines()));
@@ -1006,17 +1032,23 @@ function updateAgents(dt) {
       if (A.t > 1.1) {
         if (T.p) { cuff(T.p); SFX.arrest(); floatText('🔗 수갑 채움!', T.p.x, 2.7, T.p.z, { h: .45, color: '#cfe8ff' }); }
         else pickUp(A);
-        A.state = 'leave'; A.t = 0; A.ex = A.x; A.ez = level.bounds.maxZ + 3;
+        A.state = 'leave'; A.t = 0; A.ex = A.x; A.ez = level.bounds.maxZ - .8;
       }
     } else {
       tx = A.ex; tz = A.ez; sp = 2.6;
-      if (Math.hypot(tx - A.x, tz - A.z) < .5 || A.t > 14) {
+      if (Math.hypot(tx - A.x, tz - A.z) < 1.2 || A.t > 12) {
         world.remove(A.m.g); if (A.carry) world.remove(A.carry);
         if (T.p) { world.remove(T.p.g); T.p.dead = true; }
         agents.splice(i, 1); continue;
       }
     }
-    if (sp > 0) { const dx = tx - A.x, dz = tz - A.z, d = Math.hypot(dx, dz) || .01; A.x += dx / d * sp * dt; A.z += dz / d * sp * dt; A.dir += angDiff(A.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 8); A.phase += dt * sp * 3; }
+    if (sp > 0) {
+      let dx = tx - A.x, dz = tz - A.z; const d = Math.hypot(dx, dz) || .01; dx /= d; dz /= d;
+      if (A.sideT > 0) { A.sideT -= dt; const a = A.side * 1.4, c = Math.cos(a), sn = Math.sin(a); [dx, dz] = [dx * c - dz * sn, dx * sn + dz * c]; }
+      const ox = A.x, oz = A.z; moveCircle(A, dx * sp * dt, dz * sp * dt, .4, false); unstick(A, .4, 0);
+      if (Math.hypot(A.x - ox, A.z - oz) < sp * dt * .3) { A.side = Math.random() < .5 ? 1 : -1; A.sideT = .8; }
+      A.dir += angDiff(A.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 8); A.phase += dt * sp * 3;
+    }
     const k = sp > 0 ? 1 : 0, m = A.m, carrying = A.state === 'leave' && !T.p;
     m.legs[0].rotation.x = Math.sin(A.phase) * .6 * k; m.legs[1].rotation.x = -Math.sin(A.phase) * .6 * k;
     m.arms[0].rotation.x = A.state === 'act' || carrying ? -1.3 : -Math.sin(A.phase) * .5 * k;
@@ -1031,6 +1063,22 @@ function updateAgents(dt) {
       } else if (A.carry) A.carry.position.set(A.x + Math.sin(A.dir) * .45, 1.05, A.z + Math.cos(A.dir) * .45);
     }
   }
+}
+
+// ================= 비행기 (히든맵) =================
+function bigPlane(livery) {
+  const g = new THREE.Group(), white = MAT.col(0xf4f4f2, .35), dark = MAT.col(0x223344, .1, .2), liv = MAT.col(livery, .4);
+  mesh(BOX(28, 4, 4), white, 0, 3.6, 0, g);
+  mesh(BOX(3, 3.2, 3.4), white, 15.4, 3.4, 0, g);
+  mesh(BOX(1.4, .8, 3), dark, 15.6, 4.3, 0, g);
+  mesh(BOX(26, .6, 4.02), liv, 0, 2.6, 0, g);
+  for (const sd of [-1, 1]) mesh(BOX(24, .5, .05), dark, -1, 4.4, sd * 2.02, g);
+  mesh(BOX(6, .45, 28), white, 1, 3, 0, g);
+  for (const sd of [-1, 1]) { mesh(BOX(4, 1.6, 1.6), MAT.col(0xbfc5ca, .3, .4), 2.5, 2, sd * 6, g); mesh(BOX(.3, 1.2, 1.2), dark, 4.55, 2, sd * 6, g); }
+  mesh(BOX(4, 6, .4), liv, -12.5, 7, 0, g);
+  mesh(BOX(3.5, .35, 10), white, -12.5, 4.5, 0, g);
+  for (const [wx, wz] of [[11, 0], [1, -2.2], [1, 2.2]]) { mesh(BOX(.25, 1.6, .25), MAT.metal(0x555555), wx, .9, wz, g); mesh(BOX(.8, .8, .5), MAT.col(0x111111, .8), wx, .4, wz, g); }
+  world.add(g); return g;
 }
 
 // ================= 맵 공통 구조물 =================
@@ -1298,6 +1346,7 @@ function applyExtras(L) {
   const ex = L.extras || {};
   for (const [x, z, red] of ex.gates || []) customsGate(x, z, red);
   for (const [k, n] of ex.decor || []) { const [w, d, mk] = DECOR[k]; for (let i = 0; i < n; i++) { const p = placeFree(L.bounds, w, d, 1, L.avoid); if (p) mk(p.x, p.z); } }
+  if (L.relax) return;
   // 은닉 물품 20종 중 무작위: 맵 대표 물품 2종 + 나머지 중 4종, 종류마다 2~3개
   const theme = (ex.items || []).map(i => i[0]).sort(() => rnd() - .5).slice(0, 2);
   const kinds = theme.concat(Object.keys(ITEMS).filter(k => !theme.includes(k)).sort(() => rnd() - .5).slice(0, 4));
@@ -1496,8 +1545,8 @@ const LEVELS = [
     staff: [{ kind: 'handler', route: [[-24, -2], [24, -2]], wait: 1.5 }],
     vehicles: [{ type: 'forklift', route: [[-8, 1], [8, 1], [8, -10], [-8, -10]] }],
     people: { worker: 1, smuggler: 4, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 3, boss: 1 },
-    who: '한지호 보세구역세관장', short: '어두운 창고에서 부하 3명과 보스(체력 7)를 체포하세요! 왕왕 짖기와 뼈다귀로 공격!',
-    intro: '🚨 마지막 작전이다!\n밀수 조직 보스가 보세창고에 숨어 있다는 첩보가 들어왔어.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n왕왕 짖어 멈추게 하고, 뼈다귀를 여러 번 맞혀!\n부하 3명도 함께 체포하면 작전 끝이다!',
+    who: '한지호 보세구역세관장', short: '어두운 창고에서 부하 3명과 보스(체력 7)를 체포하세요! 💣 빨간 원이 뜨면 폭탄이 떨어져요, 피하세요!',
+    intro: '🚨 마지막 작전이다!\n밀수 조직 보스가 보세창고에 숨어 있다는 첩보가 들어왔어.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n왕왕 짖어 멈추게 하고, 뼈다귀를 여러 번 맞혀!\n조심해! 보스가 숨겨 둔 💣 폭탄이 여기저기서 터진다.\n바닥에 빨간 원이 보이면 재빨리 피해!\n부하 3명도 함께 체포하면 작전 끝이다!',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .8, 0, { map: TEX.concrete('wh', '#8d8f8c', [L.w / 6, L.d / 6]) }));
       walls(L, 'solid');
@@ -1507,6 +1556,68 @@ const LEVELS = [
       for (const x of [-14, 14]) { mesh(BOX(6, 4.4, .1), MAT.ribs(0x8a9096), x, 2.2, L.d / 2 - .25); }
       sign('🏭 보세창고 BONDED WAREHOUSE', 0, 5.2, -L.d / 2 + 1.5, 1.1);
       L.search = scatter(L, 9, crate, 1.3, 1.3).concat(scatter(L, 6, palletBox, 1.3, 1.3));
+    },
+  },
+  {
+    hidden: true, relax: true, sunset: true,
+    diff: { stars: 0, speed: 1, flee: 1, hp: 1, bossHp: 5, sniff: 25, vehicle: 1 },
+    name: '노을 활주로', icon: '🌅', w: 90, d: 60, outdoor: true, bg: 0xf0a070, music: 7,
+    staff: [
+      { kind: 'handler', route: [[6, 12.5], [34, 12.5]], wait: 2 },
+      { kind: 'pilot', route: [[32, 24], [10, 24]], wait: 3 },
+      { kind: 'attendant', route: [[34, 23.5], [12, 23.5]], wait: 3 },
+      { kind: 'customs', route: [[-28, -16.3], [-10, -16.3]], wait: 2.5 },
+    ],
+    people: { civ: 4 }, hide: {}, need: {},
+    who: '강민준 공항세관장', short: '보스 체포 보상! 석양 아래 활주로에서 친구 개들과 산책하고, 비행기 이착륙을 구경하며 쉬어요.',
+    intro: '🎉 밀수 조직 보스 체포, 정말 수고했다!\n오늘은 특별히 공항 활주로를 개방했어.\n\n석양 아래에서 친구 탐지견들과 산책하고,\n비행기가 뜨고 내리는 것도 구경하며 푹 쉬어라.\n관세청 탐지견, 넌 최고야! 🐕',
+    build(L) {
+      // 석양 하늘 (그라데이션 돔) + 해 + 분홍 구름
+      const dome = new THREE.SphereGeometry(320, 32, 16), pos = dome.attributes.position, cols = [], c = new THREE.Color(), c2 = new THREE.Color();
+      const stops = [[-1, 0xf6a35f], [0, 0xffc27a], [.08, 0xff9466], [.22, 0xd9667a], [.45, 0x7a4d8f], [1, 0x2b2a6b]];
+      for (let i = 0; i < pos.count; i++) {
+        const t = pos.getY(i) / 320; let a = stops[0], b = stops[stops.length - 1];
+        for (let k = 0; k < stops.length - 1; k++) if (t >= stops[k][0] && t <= stops[k + 1][0]) { a = stops[k]; b = stops[k + 1]; }
+        c.set(a[1]).lerp(c2.set(b[1]), clamp((t - a[0]) / ((b[0] - a[0]) || 1), 0, 1)); cols.push(c.r, c.g, c.b);
+      }
+      dome.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+      world.add(new THREE.Mesh(dome, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false, toneMapped: false })));
+      for (const [r, col, op, off] of [[40, 0xffb070, .35, 0], [22, 0xffd98a, 1, 2]]) { const m = new THREE.Mesh(new THREE.CircleGeometry(r, 32), new THREE.MeshBasicMaterial({ color: col, transparent: op < 1, opacity: op, fog: false, toneMapped: false })); m.position.set(-160 + off, 30, -240 + off); m.lookAt(0, 0, 0); world.add(m); }
+      for (let k = 0; k < 14; k++) { const cl = mesh(BOX(rr(10, 24), 2, rr(5, 10)), MAT.col(0xffb3a0, 1), rr(-140, 140), rr(35, 55), rr(-200, -40)); cl.castShadow = false; }
+      scene.background = new THREE.Color(0xf0a070); scene.fog = new THREE.Fog(0xe89a72, 90, 300);
+      sun.color.set(0xffa060); sun.intensity = 1.4; hemi.color.set(0xffc9a0); hemi.intensity = .65;
+      // 잔디·활주로·계류장
+      floorPlane(600, 600, MAT.col(0x6f9a4a, .9), 0, 0, .004);
+      floorPlane(L.w + 200, 14, std(0xffffff, .9, 0, { map: TEX.asphalt([30, 2]) }), 0, -6, .01);
+      for (let x = -140; x < 140; x += 6) floorPlane(3, .3, MAT.col(0xffffff, .6), x, -6, .015);
+      for (const z of [-12.6, .6]) floorPlane(L.w + 200, .25, MAT.col(0xffffff, .6), 0, z, .015);
+      floorPlane(50, 18, std(0xffffff, .85, 0, { map: TEX.concrete('apron', '#b5b2aa', [8, 3]) }), 18, 18, .012);
+      for (let x = -140; x <= 140; x += 6) for (const z of [-13.2, 1.2]) { const l = mesh(BOX(.25, .25, .25), M('rwl', () => std(0xffe08a, .3, 0, { emissive: 0xffc04a, emissiveIntensity: 2 })), x, .15, z); l.castShadow = false; }
+      walls(L, 'fence');
+      // 관제탑
+      solid(-32, 20, 4, 4, 14, MAT.col(0xe8e4dc, .5)); mesh(BOX(6, 3, 6), MAT.glass(), -32, 15.5, 20); mesh(BOX(6.4, .4, 6.4), MAT.col(0x13335a, .5), -32, 17.2, 20);
+      sign('🗼 관제탑', -32, 19, 20, .8);
+      // 주기된 큰 비행기
+      const pk = bigPlane(0x1f5fa8); pk.position.set(18, 0, 18);
+      addCol(18, 18, 31, 4, null, { topY: 6 }); for (const sd of [-1, 1]) addCol(20.5, 18 + sd * 6, 4, 1.6, null, { topY: 2.8 });
+      sign('✈ K9 AIR', 18, 10, 18, .9);
+      // 쉼터
+      for (const x of [-22, -12]) bench(x, 14);
+      sign('🛋 탐지견 쉼터', -17, 3, 14, .6);
+      // 탐지견 훈련센터: 건물 + 어질리티 코스 + 냄새 훈련장
+      solid(-36, -24, 10, 6, 4, MAT.col(0xe8e4dc, .5)); mesh(BOX(10.04, .8, 6.04), MAT.col(0x13335a, .5), -36, 3.6, -24);
+      mesh(BOX(2, 2.6, .1), MAT.col(0x5a4632, .6), -36, 1.3, -20.95); mesh(BOX(6, .8, .05), MAT.col(0x223344, .1, .2), -36, 2.4, -20.97);
+      sign('🐕 탐지견 훈련센터 K9 TRAINING CENTER', -36, 5.5, -24, .7);
+      for (let i = 0; i < 3; i++) { const x = -26 + i * 4; for (const sd of [-.8, .8]) mesh(BOX(.12, .9, .12), MAT.col(0xf4f4f2, .4), x, .45, -18 + sd); mesh(BOX(.1, .1, 1.6), MAT.col(0xd63031, .5), x, .6, -18); addCol(x, -18, .3, 1.6, null, { topY: .65 }); }
+      for (let k = 0; k < 5; k++) { const x = -24 + k * 1.2; mesh(BOX(1.1, .12, 1.8), MAT.col(0xf1c40f, .5), x, 1.2, -22.5); for (const sd of [-.85, .85]) mesh(BOX(1.1, 1.2, .12), MAT.col(0xf1c40f, .5), x, .6, -22.5 + sd); }
+      addCol(-21.6, -23.4, 6, .2, null, { topY: 1.2 }); addCol(-21.6, -21.6, 6, .2, null, { topY: 1.2 });
+      for (let k = 0; k < 6; k++) { mesh(BOX(.1, 1.1, .1), MAT.col(k % 2 ? 0x2e86c1 : 0xf4f4f2, .5), -14 + k * 1.2, .55, -25.5); addCol(-14 + k * 1.2, -25.5, .15, .15, null, { topY: 1.1 }); }
+      [.3, .6, .9, 1.2, .9, .6, .3].forEach((h, k) => solid(-12 + k * 1.1, -20.5, 1.1, 1.6, h, MAT.col(k % 2 ? 0xc0392b : 0xe67e22, .6)));
+      for (let k = 0; k < 5; k++) { const b = mesh(BOX(.5, .5, .5), MAT.col(0x8d6e63, .7), -30 + k * 1.4, .25, -27.5); addCol(-30 + k * 1.4, -27.5, .5, .5, b, { topY: .5 }); }
+      sign('🏃 어질리티 코스 (허들·터널·폴·오르막)', -18, 2.8, -19.5, .45); sign('🎯 냄새 훈련장', -27, 1.6, -27.5, .45);
+      flyer = { g: bigPlane(0xc0392b), t: rr(0, 20), ph: '' };
+      makePals([[[-40, 8], [-14, 8], [-14, 27], [-40, 27]], [[-6, -15], [40, -15], [40, -27], [-6, -27]], [[-30, 4], [-30, 26]], [[-26, 18]], [[0, -17], [40, -22]]]);
+      L.search = [];
     },
   },
 ];
@@ -1519,6 +1630,90 @@ $('btnMode').onclick = () => {
   $('btnMode').classList.toggle('alt', !twoP);
   if (twoP && isMobile) toast('👥 2인 모드는 키보드 2명용이에요 (PC 권장)');
 };
+let pals = [], flyer = null, bombs = [], bombT = 4, bossT = 0;
+function updateBombs(dt) {
+  const boss = people.find(p => p.kind === 'boss' && !p.arrested && !p.dead);
+  if (boss) {
+    bossT += dt; bombT -= dt;
+    if (bombT <= 0) {
+      bombT = Math.max(1.2, 4 - bossT / 30) * mr(.6, 1.2);
+      const a = Math.random() * Math.PI * 2, r = mr(1, 7), b = level.bounds;
+      const x = clamp(dog.x + Math.cos(a) * r, b.minX + 1, b.maxX - 1), z = clamp(dog.z + Math.sin(a) * r, b.minZ + 1, b.maxZ - 1);
+      const ring = new THREE.Mesh(new THREE.RingGeometry(1.9, 2.2, 32), new THREE.MeshBasicMaterial({ color: 0xff2020, transparent: true, opacity: .8, side: THREE.DoubleSide, depthWrite: false, toneMapped: false }));
+      ring.rotation.x = -Math.PI / 2; ring.position.set(x, .06, z); world.add(ring);
+      const bm = mesh(BOX(.45, .45, .45), MAT.col(0x1a1a1a, .4), x, 6, z); const fuse = textSprite('💣', { bg: null, h: .6 }); fuse.position.y = .5; bm.add(fuse);
+      bombs.push({ x, z, t: 1.5, ring, bm });
+      tone(1200, .06, 'square', .05);
+    }
+  }
+  for (let i = bombs.length - 1; i >= 0; i--) {
+    const B = bombs[i]; B.t -= dt;
+    B.ring.material.opacity = .4 + Math.abs(Math.sin(time * 14)) * .5;
+    B.bm.position.y = Math.max(.25, B.t / 1.5 * 6);
+    if (B.t > 0) continue;
+    world.remove(B.ring); world.remove(B.bm); bombs.splice(i, 1);
+    burst(B.x, .8, B.z, [new THREE.Color(0xff6a00), new THREE.Color(0xffd000), RED, WHITE], 70, 7);
+    noise(.6, .5, 120); tone(70, .5, 'sawtooth', .2, -30); shake = .5;
+    floatText('💥 쾅!', B.x, 2.2, B.z, { h: .8, color: '#ffb347' });
+    const d = Math.hypot(dog.x - B.x, dog.z - B.z);
+    if (d < 2.2 && dog.y < 2) { moveCircle(dog, (dog.x - B.x) / (d || 1) * 1.5, (dog.z - B.z) / (d || 1) * 1.5, .5, false, dog.y); toast('💣 폭탄에 맞았어요! 빨간 원을 피하세요'); damage(); }
+  }
+}
+const PAL_NAMES = ['초코', '두부', '콩이', '몽이', '루비'];
+function makePals(routes) {
+  const keys = Object.keys(BREEDS);
+  routes.forEach((r, i) => {
+    const d = makeDog(BREEDS[keys[(i * 2 + 1) % keys.length]], PAL_NAMES[i]), o = makePerson('civ');
+    world.add(d.g); world.add(o.g); o.g.position.set(r[0][0], 0, r[0][1] + 1.5);
+    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), new THREE.LineBasicMaterial({ color: 0x2e86c1 }));
+    line.frustumCulled = false; world.add(line);
+    pals.push({ d, o, line, route: r, ri: 0, x: r[0][0], z: r[0][1], dir: 0, phase: 0, restT: mr(6, 14), rest: r.length === 1 ? 1e9 : 0, greet: 0 });
+  });
+}
+function updatePals(dt) {
+  for (const p of pals) {
+    p.restT -= dt; p.greet -= dt;
+    const near = Math.hypot(dog.x - p.x, dog.z - p.z) < 3;
+    let moving = false;
+    if (p.rest > 0) p.rest -= dt;
+    else if (p.restT <= 0) { p.rest = 5; p.restT = mr(12, 20); floatText('💤 쉬는 중', p.x, 1.6, p.z, { h: .3 }); }
+    else if (!near && p.route.length > 1) {
+      const [tx, tz] = p.route[(p.ri + 1) % p.route.length], dx = tx - p.x, dz = tz - p.z, dd = Math.hypot(dx, dz) || .01;
+      if (dd < .3) p.ri = (p.ri + 1) % p.route.length;
+      else { p.x += dx / dd * 1.4 * dt; p.z += dz / dd * 1.4 * dt; p.dir += angDiff(p.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 5); moving = true; }
+    }
+    if (near) {
+      p.dir += angDiff(p.dir, Math.atan2(dog.x - p.x, dog.z - p.z)) * Math.min(1, dt * 6);
+      if (p.greet <= 0) { p.greet = 6; floatText(pick2(['🐾 멍멍! 반가워!', '킁킁… 너 냄새 좋다!', '같이 놀자! 🎾', '왈! 오늘 수고했어!', '보스 잡았다며? 멋져!']), p.x, 1.8, p.z, { h: .38 }); tone(520, .08, 'square', .05); }
+    }
+    p.phase += dt * (moving ? 9 : 0);
+    const m = p.d, sit = p.rest > 0;
+    m.g.position.set(p.x, sit ? -.1 : 0, p.z); m.g.rotation.y = p.dir; m.g.rotation.x = sit ? -.32 : 0;
+    m.legs.forEach((l, i) => l.rotation.x = sit ? (i > 1 ? -1.25 : .3) : Math.sin(p.phase + [0, Math.PI, Math.PI, 0][i]) * .6 * (moving ? 1 : 0));
+    m.tail.rotation.y = Math.sin(time * (near ? 18 : 8)) * .6;
+    const o = p.o, ox = p.x - Math.sin(p.dir) * 1.6 + Math.cos(p.dir) * .6, oz = p.z - Math.cos(p.dir) * 1.6 - Math.sin(p.dir) * .6;
+    const odx = ox - o.g.position.x, odz = oz - o.g.position.z, od = Math.hypot(odx, odz);
+    o.g.position.x += odx * Math.min(1, dt * 3); o.g.position.z += odz * Math.min(1, dt * 3);
+    o.g.rotation.y = Math.atan2(p.x - o.g.position.x, p.z - o.g.position.z);
+    const ow = od > .2 ? 1 : 0; o.legs[0].rotation.x = Math.sin(time * 8) * .5 * ow; o.legs[1].rotation.x = -Math.sin(time * 8) * .5 * ow;
+    const pa = p.line.geometry.attributes.position;
+    pa.setXYZ(0, o.g.position.x + Math.sin(o.g.rotation.y) * .3, 1.05, o.g.position.z + Math.cos(o.g.rotation.y) * .3);
+    pa.setXYZ(1, p.x + Math.sin(p.dir) * .5, .9, p.z + Math.cos(p.dir) * .5); pa.needsUpdate = true;
+  }
+}
+function updateFlyer(dt) {
+  if (!flyer) return;
+  flyer.t = (flyer.t + dt) % 40; const t = flyer.t; let x, y = 0, pitch = 0;
+  if (t < 12) { const u = t / 12; x = -220 + 190 * u; y = 30 * Math.pow(1 - u, 1.6); pitch = .06; }
+  else if (t < 20) { const u = (t - 12) / 8; x = -30 + 70 * (1 - (1 - u) * (1 - u)); }
+  else if (t < 24) x = 40;
+  else { const u = (t - 24) / 16; x = -70 + 300 * u * u; y = Math.max(0, x - 15) * .2; pitch = y > 0 ? .14 : 0; }
+  const ph = t < 12 ? 'land' : t < 24 ? 'taxi' : 'up';
+  if (ph !== flyer.ph) { flyer.ph = ph; if (ph === 'land') toast('🛬 비행기가 착륙하고 있어요!'); if (ph === 'up') toast('🛫 비행기 이륙!'); }
+  flyer.g.position.set(x, y, -6); flyer.g.rotation.z = pitch;
+  if (Math.hypot(x - dog.x, -6 - dog.z) < 45 && Math.random() < dt * 4) noise(.4, .05, 180);
+  if (y < 3 && Math.abs(dog.z + 6) < 2.6 && Math.abs(dog.x - x) < 16) { dog.z = -6 + (dog.z + 6 < 0 ? -7 : 7); if (!flyer.warn || time - flyer.warn > 3) { flyer.warn = time; toast('✈ 활주로는 위험해요! 비행기가 지나가요'); } }
+}
 let combo = 0, lastFindT = -99, mission = null, missionCd = 30, lastHurt = -99, ballsGot = 0, dj = 0, xray = null, xrayT = 0;
 function comboHit() {
   combo = time - lastFindT < 10 ? combo + 1 : 1; lastFindT = time;
@@ -1536,6 +1731,8 @@ const MISSIONS = [
 ];
 function endMission() { mission = null; missionCd = mr(35, 55); $('mission').classList.add('hidden'); checkBadges(); }
 function updateFun(dt) {
+  updateBombs(dt);
+  if (level.relax) { updatePals(dt); updateFlyer(dt); }
   if (xray && !xray.got) {
     xray.m.rotation.y += dt * 2; xray.m.position.y = .6 + Math.sin(time * 3) * .15;
     if (Math.hypot(xray.x - dog.x, xray.z - dog.z) < 1.1 && dog.y < 1.3) { xray.got = true; world.remove(xray.m); xrayT = 7; SFX.found(); toast('📡 X-ray 스캐너! 7초 동안 숨긴 물건이 보여요'); }
@@ -1628,7 +1825,7 @@ const getProg = () => store.get(progKey(), { unlocked: 0, best: {} });
 function clearWorld() {
   world.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map?.dispose(); o.material.dispose(); } });
   scene.remove(world); world = new THREE.Group(); scene.add(world);
-  colliders = []; people.length = 0; vehicles.length = 0; agents.length = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
+  colliders = []; people.length = 0; vehicles.length = 0; agents.length = 0; pals = []; flyer = null; bombs = []; bombT = 4; bossT = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
   clearEffects(); clearParticles();
 }
 function loadLevel(i) {
@@ -1640,6 +1837,7 @@ function loadLevel(i) {
   level.avoid = [{ ...spawn, r: 5 }];
   setSeed((Math.random() * 1e9) | 0); // 시작할 때마다 배치·은닉 위치가 달라진다
   // 환경 / 조명
+  hemi.color.set(0xffffff);
   if (def.outdoor) { scene.background = new THREE.Color(0x8ec5ff); scene.environment = envSky; hemi.intensity = .55; sun.intensity = 1.25; for (let k = 0; k < 16; k++) { const cl = mesh(BOX(rr(6, 16), 1.6, rr(4, 10)), MAT.col(0xffffff, 1), rr(-90, 90), rr(32, 40), rr(-110, 40)); cl.castShadow = false; } sun.color.set(0xfff1d6); scene.fog = new THREE.Fog(0x8ec5ff, 80, 220); renderer.toneMappingExposure = .95; }
   else { scene.remove(sky); scene.background = new THREE.Color(def.bg); scene.environment = envRoom; hemi.intensity = def.dim ? .45 : .6; sun.intensity = def.dim ? .8 : 1.0; sun.color.set(def.dim ? 0xffe2b0 : 0xffffff); scene.fog = new THREE.Fog(def.bg, 45, 110); renderer.toneMappingExposure = def.dim ? .85 : .82; }
   for (const r of [...(def.staff || []).map(o => [o.route, 1.1]), ...(def.vehicles || []).map(o => [o.route, 2.4])]) {
@@ -1663,7 +1861,7 @@ function loadLevel(i) {
   for (const o of def.vehicles || []) new Vehicle(o.type, o.route, o.start || 0);
   { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); xray = null;
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
-  xrayT = 0; mission = null; missionCd = mr(25, 40); combo = 0; $('mission').classList.add('hidden');
+  xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
   if (people.some(p => p.look)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
   // 밀수품 숨기기
   const pool = [...level.search].sort(() => rnd() - .5);
@@ -1701,7 +1899,7 @@ function closeDialog() {
 }
 function renderQuest() {
   if (!level) return;
-  $('qzone').textContent = `${level.icon} MAP ${levelIdx + 1}/6 · ${level.name}`;
+  $('qzone').textContent = level.relax ? `🌅 HIDDEN MAP · ${level.name}` : `${level.icon} MAP ${levelIdx + 1}/6 · ${level.name}`;
   $('qtitle').textContent = level.name; $('qdesc').textContent = level.short;
   $('qgoals').innerHTML = Object.entries(level.need).map(([k, n]) => { const v = Math.min(lvStats[k] || 0, n); return `<div class="goal ${v >= n ? 'done' : ''}"><span>${LABEL[k]}</span><b>${v}/${n}</b></div>`; }).join('');
 }
@@ -1721,6 +1919,7 @@ function damage() {
 function checkQuest() {
   if (state !== 'play' || !level) return;
   renderQuest();
+  if (level.relax) return;
   for (const k in level.need) if ((lvStats[k] || 0) < level.need[k]) return;
   levelClear();
 }
@@ -1742,7 +1941,7 @@ function levelClear() {
   $('clear').classList.remove('hidden');
 }
 async function win() {
-  state = 'win';
+  state = 'win'; setTimeout(() => toast('🌅 히든맵 「노을 활주로」가 열렸어요! 맵 선택에서 확인하세요'), 600);
   const grade = runScore >= 5200 ? 'S' : runScore >= 4300 ? 'A' : runScore >= 3400 ? 'B' : 'C';
   $('wgrade').textContent = grade;
   $('wstats').innerHTML = `🕵 ${esc(playerId)} · ⏱ 총 작전 시간 <b>${fmtTime(runTime)}</b><br>⭐ 최종 점수 <b>${runScore}</b><br>🔍 적발·폐기 <b>${totals.items}건</b> · 🚔 체포 <b>${totals.arrests}명</b> · ⚠ 실수 <b>${totals.mistakes}회</b>`;
@@ -1818,10 +2017,10 @@ function showMaps(paused = false) {
   const prog = getProg();
   $('mapsWho').textContent = `🕵 플레이어: ${playerId} · 누적 ${runScore}점`;
   $('mapGrid').innerHTML = LEVELS.map((L, i) => {
-    const locked = i > prog.unlocked, cleared = prog.best[i] !== undefined;
+    const locked = L.hidden ? prog.best[5] === undefined : i > prog.unlocked, cleared = !L.hidden && prog.best[i] !== undefined;
     const cur = pausedGame && i === levelIdx;
-    const st = cur ? '▶ 진행 중 · 눌러서 돌아가기' : locked ? '🔒 이전 맵을 클리어하세요' : cleared ? `✅ 최고 기록 ${fmtTime(prog.best[i])}` : '도전 가능';
-    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.icon}</span><span class="no">MAP ${i + 1}</span><span class="nm">${L.name}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">난이도 ${'★'.repeat(L.diff.stars)}${'☆'.repeat(5 - L.diff.stars)}</span></button>`;
+    const st = cur ? '▶ 진행 중 · 눌러서 돌아가기' : locked ? (L.hidden ? '🔒 6개 맵을 모두 클리어하면 열려요' : '🔒 이전 맵을 클리어하세요') : cleared ? `✅ 최고 기록 ${fmtTime(prog.best[i])}` : '도전 가능';
+    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.hidden && locked ? "❓" : L.icon}</span><span class="no">${L.hidden ? "HIDDEN" : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? "??? 히든맵" : L.name}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? '🌅 휴식 맵' : '난이도 ' + '★'.repeat(L.diff.stars) + '☆'.repeat(5 - L.diff.stars)}</span></button>`;
   }).join('');
   renderBadges(); renderShop();
   $('pauseRow').classList.toggle('hidden', !pausedGame);
@@ -1896,6 +2095,7 @@ $('btnRankOpen').onclick = openRank;
 $('dok').onclick = closeDialog;
 $('btnNext').onclick = () => startLevel(levelIdx + 1);
 $('btnToMaps').onclick = showMaps;
+$('btnHidden').onclick = () => startLevel(LEVELS.length - 1);
 $('btnWinMaps').onclick = () => { runNext = 0; showMaps(); };
 $('tbMaps').onclick = () => { if (state === 'play' || state === 'dialog') showMaps(true); };
 $('tbMusic').onclick = () => { ac(); setMusic(!musicOn); };
@@ -2023,6 +2223,7 @@ function updateDog(dt) {
   if (dog.speed > .3) dog.dir += angDiff(dog.dir, Math.atan2(dog.vx, dog.vz)) * Math.min(1, dt * 12);
 
   // 점프 / 중력
+  unstick(dog, .5, dog.y);
   // 점프로도 맵 밖으로 나갈 수 없다
   dog.x = clamp(dog.x, level.bounds.minX + .3, level.bounds.maxX - .3); dog.z = clamp(dog.z, level.bounds.minZ + .3, level.bounds.maxZ - .3);
   // 2단 점프: 공중에서 한 번 더. 핸들러도 함께 뛴다
@@ -2215,7 +2416,7 @@ function updateCamera(dt) {
   camera.lookAt(tx, ty, tz);
   if (state === 'photo') camera.lookAt((dog.x + handler.x) / 2, dog.y + .9, (dog.z + handler.z) / 2);
   if (level && level.ship) camera.rotateZ(Math.sin(time * .7) * .03);
-  sun.position.set(tx + 22, 45, tz + 16); sun.target.position.set(tx, 0, tz);
+  if (level && level.sunset) sun.position.set(tx - 40, 14, tz - 30); else sun.position.set(tx + 22, 45, tz + 16); sun.target.position.set(tx, 0, tz);
 }
 
 // ================= 미니맵 =================
