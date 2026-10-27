@@ -660,6 +660,7 @@ const leashPts = Array.from({ length: 10 }, () => new THREE.Vector3());
 const leash = new THREE.Line(new THREE.BufferGeometry().setFromPoints(leashPts), new THREE.LineBasicMaterial({ color: 0xd63031 }));
 leash.frustumCulled = false; scene.add(leash);
 function updateHandler(dt) {
+  handler.x = clamp(handler.x, level.bounds.minX + .3, level.bounds.maxX - .3); handler.z = clamp(handler.z, level.bounds.minZ + .3, level.bounds.maxZ - .3);
   // 탐지견이 올라간 높이까지 핸들러도 뛰어 올라간다
   const gh = groundAt(handler.x, handler.z, .4, Math.max(dog.y, 0) + .05).h;
   if (handler.y < gh - .05 && handler.vy <= 0) handler.vy = 6.5;
@@ -2022,6 +2023,8 @@ function updateDog(dt) {
   if (dog.speed > .3) dog.dir += angDiff(dog.dir, Math.atan2(dog.vx, dog.vz)) * Math.min(1, dt * 12);
 
   // 점프 / 중력
+  // 점프로도 맵 밖으로 나갈 수 없다
+  dog.x = clamp(dog.x, level.bounds.minX + .3, level.bounds.maxX - .3); dog.z = clamp(dog.z, level.bounds.minZ + .3, level.bounds.maxZ - .3);
   // 2단 점프: 공중에서 한 번 더. 핸들러도 함께 뛴다
   if (jumpQ && (dog.grounded || (dog.jumps || 0) < 2)) {
     const air = !dog.grounded;
