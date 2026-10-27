@@ -79,6 +79,7 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 #bBark{right:calc(16px + var(--sr));bottom:calc(76px + var(--sb));width:84px;height:84px;font-size:20px;background:rgba(244,197,66,.92)}
 #bJump{right:calc(110px + var(--sr));bottom:calc(60px + var(--sb));background:rgba(255,255,255,.88)}
 #bSniff{right:calc(104px + var(--sr));bottom:calc(142px + var(--sb));background:rgba(125,255,161,.9)}
+#bBone{right:calc(196px + var(--sr));bottom:calc(104px + var(--sb));background:rgba(255,236,200,.95);font-size:28px}
 #bRun{right:calc(22px + var(--sr));bottom:calc(172px + var(--sb));background:rgba(79,195,247,.9)}
 body.touch #bars{bottom:calc(8px + var(--sb))}
 @media (max-width:640px){
@@ -99,17 +100,18 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
 
 <div id="quest" class="hud"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><p id="qdesc"></p><div id="qgoals"></div></div>
 <div id="mmwrap" class="hud"><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span></div></div>
-<div id="topbar" class="hidden"><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
+<div id="topbar" class="hidden"><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div>
-<div id="keys" class="hud"><b>WASD</b> 이동 · <b>Shift</b> 달리기 · <b>Space</b> 점프 · <b>E</b>(꾹) 냄새 · <b>F</b> 짖기<br>마우스 드래그 / <b>←→</b> 시점 회전 · 휠 줌</div>
+<div id="keys" class="hud"><b>WASD</b> 이동 · <b>Shift</b> 달리기 · <b>Space</b> 점프 · <b>E</b>(꾹) 냄새 · <b>F</b> 왕왕 · <b>Q</b> 뼈다귀<br>마우스 드래그 / <b>←→</b> 시점 회전 · 휠 줌</div>
 
 <div id="touch">
  <div id="joy"><div id="knob"></div></div>
- <button class="tbtn" id="bBark">멍!</button>
+ <button class="tbtn" id="bBark">왕왕</button>
  <button class="tbtn" id="bJump">점프</button>
  <button class="tbtn" id="bSniff">킁킁</button>
  <button class="tbtn" id="bRun">달리기</button>
+ <button class="tbtn" id="bBone">🦴</button>
 </div>
 
 <!-- 접속 (아이디 입력) -->
@@ -136,13 +138,14 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div id="mapGrid"></div>
  <div class="ctl">
   <kbd>W A S D</kbd><span>이동 (가방·상자에 부딪히면 밀려나요)</span>
-  <kbd>Shift</kbd><span>달리기 — 밀수범에게 부딪히면 몸통 박치기</span>
+  <kbd>Shift</kbd><span>달리기</span>
+  <kbd>Q</kbd><span>🦴 핸들러가 뼈다귀 던지기</span>
   <kbd>Space</kbd><span>점프 — 상자나 컨베이어 위로 올라갈 수 있어요</span>
   <kbd>E 꾹 누르기</kbd><span>냄새 맡기 — 숨은 물건 쪽으로 냄새 입자가 흘러가요</span>
-  <kbd>F</kbd><span>짖기 — 수상한 물건 옆에서 짖으면 적발, 밀수범은 깜짝 놀라 멈춰요</span>
+  <kbd>F</kbd><span>왕왕 짖기 — 수상한 물건 적발, 밀수범 공격</span>
  </div>
  <div class="ctl touchonly">
-  <kbd>조이스틱</kbd><span>이동</span><kbd>달리기</kbd><span>꾹 누른 채 밀수범에게 부딪히면 박치기</span>
+  <kbd>조이스틱</kbd><span>이동</span><kbd>달리기</kbd><span>꾹 누르고 이동</span><kbd>뼈다귀</kbd><span>핸들러가 뼈다귀 던지기</span>
   <kbd>점프</kbd><span>상자 위로 뛰어오르기</span><kbd>킁킁</kbd><span>꾹 눌러 냄새 맡기</span>
   <kbd>멍!</kbd><span>짖어서 적발 / 밀수범 멈추기</span><kbd>화면 드래그</kbd><span>카메라 회전</span>
  </div>
@@ -150,6 +153,27 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div class="row"><button class="big alt" id="btnRankOpen">🏆 랭킹 보기</button><button class="big alt" id="btnLogout">아이디 변경</button></div>
 </div></div>
 
+<div id="howto" class="overlay hidden"><div class="card">
+ <div class="sub">출동 전 브리핑</div>
+ <h1>🐕‍🦺 조작법 익히기</h1>
+ <p style="margin:4px 0 8px">당신은 <b>탐지견</b>을 조종합니다. 세관 <b>핸들러</b>가 목줄을 잡고 항상 함께 다녀요. 탐지견이 냄새로 찾고, 팀이 함께 밀수범을 잡습니다.</p>
+ <div class="ctl">
+  <kbd>W A S D</kbd><span>이동 (가방·상자에 부딪히면 밀려나요)</span>
+  <kbd>Shift</kbd><span>달리기 (기력이 줄어요)</span>
+  <kbd>Space</kbd><span>점프 — 상자나 컨베이어 위로 올라가기</span>
+  <kbd>E 꾹 누르기</kbd><span>냄새 맡기 — 숨은 물건 쪽으로 냄새 입자가 흐르고, 밀수범 발밑에 빨간 원이 떠요</span>
+  <kbd>F</kbd><span>🐕 왕왕 짖기 — 수상한 물건 옆이면 적발! 가까운 밀수범은 놀라 멈추고 체력이 1 줄어요</span>
+  <kbd>Q</kbd><span>🦴 핸들러가 뼈다귀 던지기 — 바라보는 쪽 밀수범을 맞혀 체력을 1 줄여요</span>
+  <kbd>마우스 드래그</kbd><span>카메라 회전 (휠: 줌) · 🗺 일시정지 · 🔄 다시 시작</span>
+ </div>
+ <div class="ctl touchonly">
+  <kbd>조이스틱</kbd><span>이동</span><kbd>달리기</kbd><span>꾹 누르고 이동</span><kbd>점프</kbd><span>상자 위로 뛰어오르기</span>
+  <kbd>킁킁</kbd><span>꾹 눌러 냄새 맡기</span><kbd>왕왕</kbd><span>짖어서 적발 / 밀수범 공격</span><kbd>뼈다귀</kbd><span>핸들러가 뼈다귀 던지기</span>
+  <kbd>화면 드래그</kbd><span>카메라 회전</span>
+ </div>
+ <p style="font-size:14px;margin:6px 0">❤️ 하트 3개 · 깨끗한 물건을 적발하거나, 시민을 맞히거나, 차량에 부딪히면 하트가 줄어요. 🎾 공을 주우면 회복! 밀수범 체력이 0이 되면 체포됩니다.</p>
+ <div class="row"><button class="big" id="btnHowtoOk">알겠어요! 출동!</button></div>
+</div></div>
 <div id="dlg" class="overlay hidden"><div class="card">
  <div class="drow"><div class="face" id="dface">👮</div><div style="flex:1;min-width:0"><div class="who" id="dwho"></div><div class="txt" id="dtxt"></div></div></div>
  <div class="row" style="justify-content:flex-end"><button class="big" id="dok">알겠어요! 멍!</button></div>
@@ -572,13 +596,85 @@ function makeDog() {
   g.traverse(o => { if (o.isMesh) o.castShadow = true; });
   return { g, head, legs, tail, tongue };
 }
-const dogM = makeDog(); scene.add(dogM.g);
-const dog = { x: 0, z: 0, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, phase: 0, speed: 0, barkCd: 0, tackleCd: 0, sniffing: false, sniffTick: 0, barkAnim: 0, hp: 3, boost: 0, hurt: 0 };
-
-// ================= 사람 =================
 const skins = [0xf1c27d, 0xe0ac69, 0xc68642, 0x8d5524, 0xffdbac];
 const hairs = [0x2b1d14, 0x5a3a1a, 0x111111, 0xb08850, 0x777777];
 const bagColors = [0xc0392b, 0x2e86c1, 0x27ae60, 0xd4ac0d, 0x8e44ad, 0x17a589, 0xd35400, 0x2c3e50, 0xe6739f, 0xbdc3c7];
+const dogM = makeDog(); scene.add(dogM.g);
+const handlerM = makePerson('customs'); scene.add(handlerM.g);
+{ const t = textSprite('🧑‍✈️ 핸들러', { h: .34 }); t.position.y = 2.45; handlerM.g.add(t); handlerM.ring.visible = false; }
+const handler = { x: 0, z: 2, dir: Math.PI, phase: 0, throwT: 0, boneCd: 0 };
+const leashPts = Array.from({ length: 10 }, () => new THREE.Vector3());
+const leash = new THREE.Line(new THREE.BufferGeometry().setFromPoints(leashPts), new THREE.LineBasicMaterial({ color: 0xd63031 }));
+leash.frustumCulled = false; scene.add(leash);
+function updateHandler(dt) {
+  const bx = dog.x - Math.sin(dog.dir) * 1.3 + Math.cos(dog.dir) * 1.4, bz = dog.z - Math.cos(dog.dir) * 1.3 - Math.sin(dog.dir) * 1.4;
+  let dx = bx - handler.x, dz = bz - handler.z; const d = Math.hypot(dx, dz);
+  if (d > 9) { handler.x = bx; handler.z = bz; }
+  const sp = d > .3 ? Math.min(d * 3, 10) : 0;
+  if (sp > 0) { handler.x += dx / d * sp * dt; handler.z += dz / d * sp * dt; handler.dir += angDiff(handler.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 8); }
+  else handler.dir += angDiff(handler.dir, Math.atan2(dog.x - handler.x, dog.z - handler.z)) * Math.min(1, dt * 4);
+  handler.phase += dt * sp * 3; const k = Math.min(1, sp / 2);
+  const h = handlerM; h.g.position.set(handler.x, Math.abs(Math.sin(handler.phase)) * .05 * k, handler.z); h.g.rotation.y = handler.dir;
+  h.legs[0].rotation.x = Math.sin(handler.phase) * .6 * k; h.legs[1].rotation.x = -Math.sin(handler.phase) * .6 * k;
+  handler.throwT -= dt; handler.boneCd -= dt;
+  h.arms[1].rotation.x = handler.throwT > 0 ? -2.6 + (1 - handler.throwT / .35) * 2.2 : -.5;
+  h.arms[0].rotation.x = Math.sin(handler.phase) * .5 * k;
+  // 목줄: 핸들러 오른손 → 강아지 목줄 (살짝 처지게)
+  const hx = handler.x + Math.cos(handler.dir) * -.32 + Math.sin(handler.dir) * .25, hz = handler.z - Math.sin(handler.dir) * -.32 + Math.cos(handler.dir) * .25;
+  const cx = dog.x + Math.sin(dog.dir) * .5, cz = dog.z + Math.cos(dog.dir) * .5, cy = dog.y + .9;
+  for (let i = 0; i < 10; i++) { const t = i / 9; leashPts[i].set(lerp(hx, cx, t), lerp(1.05, cy, t) - Math.sin(Math.PI * t) * .35, lerp(hz, cz, t)); }
+  leash.geometry.setFromPoints(leashPts);
+}
+
+// ---- 뼈다귀 던지기 ----
+const bones = [];
+function makeBone() {
+  const g = new THREE.Group(), w = MAT.col(0xf5efe0, .5);
+  mesh(BOX(.5, .1, .1), w, 0, 0, 0, g);
+  for (const sx of [-.27, .27]) for (const sz of [-.06, .06]) mesh(BOX(.14, .14, .12), w, sx, 0, sz, g);
+  scene.add(g); return g;
+}
+function throwBone() {
+  if (handler.boneCd > 0) return;
+  handler.boneCd = 1.4; handler.throwT = .35;
+  const fx = Math.sin(dog.dir), fz = Math.cos(dog.dir);
+  let best = null, bs = -1e9;
+  for (const p of people) {
+    if (p.dead || p.arrested || p.kind === 'officer' || p.route && p.kind === 'customs') continue;
+    const dx = p.x - handler.x, dz = p.z - handler.z, d = Math.hypot(dx, dz);
+    if (d > 15 || d < .5) continue;
+    const cos = (dx * fx + dz * fz) / d; if (cos < .7) continue;
+    const sc = (p.villain && p.glow > 0 ? 100 : 0) + cos * 10 - d;
+    if (sc > bs) { bs = sc; best = p; }
+  }
+  const tx = best ? best.x : handler.x + fx * 10, tz = best ? best.z : handler.z + fz * 10;
+  bones.push({ m: makeBone(), sx: handler.x, sz: handler.z, tx, tz, t: 0, dur: .55, target: best });
+  tone(520, .12, 'triangle', .1, 300); floatText('🦴 던져!', handler.x, 2.6, handler.z, { h: .45 });
+}
+function updateBones(dt) {
+  for (let i = bones.length - 1; i >= 0; i--) {
+    const b = bones[i]; b.t += dt; const u = Math.min(1, b.t / b.dur);
+    if (b.target && !b.target.arrested && !b.target.dead) { b.tx = b.target.x; b.tz = b.target.z; }
+    b.m.position.set(lerp(b.sx, b.tx, u), lerp(1.6, 1.1, u) + Math.sin(Math.PI * u) * 2.2, lerp(b.sz, b.tz, u));
+    b.m.rotation.y += dt * 14; b.m.rotation.z += dt * 9;
+    if (u < 1) continue;
+    scene.remove(b.m); bones.splice(i, 1);
+    burst(b.tx, .8, b.tz, [new THREE.Color(0xf5efe0), WHITE], 14, 3);
+    const p = b.target;
+    if (p && !p.arrested && !p.dead) {
+      if (p.villain) hitVillain(p, '🦴 명중!');
+      else { p.stun = .8; addScore(-50); totals.mistakes++; toast('😵 일반인을 맞혔어요! 부상 (-50)'); SFX.error(); damage(); }
+    }
+  }
+}
+function hitVillain(p, label) {
+  p.hp--; p.stun = Math.max(p.stun, p.kind === 'boss' ? 1.1 : 1.6); p.glow = 4; shake = .2; SFX.hit();
+  burst(p.x, 1.2, p.z, [WHITE, new THREE.Color(0xffd54f)], 20, 4);
+  if (p.hp <= 0) arrest(p); else floatText(`${label} 남은 체력 ${p.hp}`, p.x, 2.8, p.z, { h: .5, color: '#ffd54f' });
+}
+const dog = { x: 0, z: 0, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, phase: 0, speed: 0, barkCd: 0, tackleCd: 0, sniffing: false, sniffTick: 0, barkAnim: 0, hp: 3, boost: 0, hurt: 0 };
+
+// ================= 사람 =================
 function makePerson(kind) {
   const g = new THREE.Group(), body = new THREE.Group(); g.add(body);
   const skin = MAT.skin(pick(skins));
@@ -993,7 +1089,7 @@ const LEVELS = [
     ],
     people: { civ: 9, smuggler: 3 }, hide: { gun: 2, drug: 2 }, need: { gun: 1, smuggler: 2 },
     who: '최 반장 (여객선 터미널)', short: '여행객 짐에서 불법 총기 1개를 찾고, 밀수범 2명을 체포하세요.',
-    intro: '국제 여객선이 막 도착했다!\n승객 짐 속에 불법 총기가 숨겨져 있다는 제보야.\n\n대합실과 선착장을 오가며 냄새를 맡아봐.\n짖으면 밀수범이 깜짝 놀라 멈추니까\n그때 달려가서 박치기로 붙잡는 거야!',
+    intro: '국제 여객선이 막 도착했다!\n승객 짐 속에 불법 총기가 숨겨져 있다는 제보야.\n\n대합실과 선착장을 오가며 냄새를 맡아봐.\n왕왕 짖으면 밀수범이 놀라 멈추니까\n그때 내가 뼈다귀를 던져 맞히면 체포야!',
     build(L) {
       floorPlane(L.w, L.d / 2 + 9, std(0xffffff, .3, 0, { map: TEX.tile('ferry', '#d9d3c7', '#bdb5a6', 6, [L.w / 8, (L.d / 2 + 9) / 8]) }), 0, (L.d / 2 - 9) / 2 + 4.5 - 4.5 + (9 / 2) - 4.5 + .0, .0);
       floorPlane(L.w, L.d / 2 - 9, std(0xffffff, .9, 0, { map: TEX.concrete('quay', '#a8a59c', [L.w / 6, (L.d / 2 - 9) / 6]) }), 0, -L.d / 2 + (L.d / 2 - 9) / 2, .005);
@@ -1043,8 +1139,8 @@ const LEVELS = [
     staff: [{ kind: 'handler', route: [[-24, -2], [24, -2]], wait: 1.5 }],
     vehicles: [{ type: 'forklift', route: [[-8, 1], [8, 1], [8, -10], [-8, -10]] }],
     people: { worker: 1, smuggler: 3, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 2, boss: 1 },
-    who: '김 반장 (세관 단속팀)', short: '보스는 빠르고 튼튼해요(체력 5). 짖어서 멈추고 여러 번 박치기하세요!',
-    intro: '🚨 마지막 작전이다!\n밀수 조직 보스가 보세창고에 숨어 있다는 첩보가 들어왔어.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n짖어서 멈추게 하고 여러 번 박치기해!\n부하 2명도 함께 체포하면 작전 끝이다!',
+    who: '김 반장 (세관 단속팀)', short: '보스는 빠르고 튼튼해요(체력 5). 왕왕 짖기와 뼈다귀로 여러 번 공격하세요!',
+    intro: '🚨 마지막 작전이다!\n밀수 조직 보스가 보세창고에 숨어 있다는 첩보가 들어왔어.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n왕왕 짖어 멈추게 하고, 뼈다귀를 여러 번 맞혀!\n부하 2명도 함께 체포하면 작전 끝이다!',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .8, 0, { map: TEX.concrete('wh', '#8d8f8c', [L.w / 6, L.d / 6]) }));
       walls(L, 'solid');
@@ -1106,6 +1202,8 @@ function loadLevel(i) {
   // 초기화
   lvStats = { drug: 0, gun: 0, smuggler: 0, boss: 0 };
   Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: 3, boost: 0, hurt: 0 });
+  Object.assign(handler, { x: spawn.x, z: spawn.z + 1.9, dir: Math.PI, boneCd: 0 });
+  for (const b of bones) scene.remove(b.m); bones.length = 0;
   balls = []; for (let k = 0; k < 3; k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
   yaw = 0; camPos.set(spawn.x, 6, spawn.z + 9);
   levelTime = 0; levelScore = 0; keys = {};
@@ -1117,9 +1215,10 @@ function startLevel(i) {
   runNext = i;
   hideAll(); loadLevel(i);
   $('topbar').classList.remove('hidden');
-  showDialog(LEVELS[i].intro, null, LEVELS[i].who);
+  const intro = () => showDialog(LEVELS[i].intro, null, LEVELS[i].who);
+  if (!seenHowto) showHowto(intro); else intro();
 }
-function hideAll() { for (const id of ['login', 'maps', 'dlg', 'clear', 'rank', 'win']) $(id).classList.add('hidden'); }
+function hideAll() { for (const id of ['login', 'maps', 'dlg', 'clear', 'rank', 'win', 'howto']) $(id).classList.add('hidden'); }
 
 let dlgCb = null;
 function showDialog(text, cb, who) {
@@ -1239,7 +1338,9 @@ async function showLogin() {
   $('login').classList.remove('hidden'); $('pid').value = playerId;
   renderRanking($('rankMini'), await fetchRanking(), 5);
 }
-let pausedGame = false;
+let pausedGame = false, seenHowto = false, howtoCb = null;
+function showHowto(cb) { state = 'howto'; howtoCb = cb; $('howto').classList.remove('hidden'); keys = {}; }
+$('btnHowtoOk').onclick = () => { seenHowto = true; $('howto').classList.add('hidden'); const cb = howtoCb; howtoCb = null; if (cb) cb(); else state = 'play'; };
 function showMaps(paused = false) {
   pausedGame = paused && !!level;
   hideAll(); state = 'maps'; $('topbar').classList.add('hidden');
@@ -1265,6 +1366,7 @@ function restartLevel() {
 }
 $('btnResume').onclick = resumeGame;
 $('btnRestartMap').onclick = restartLevel;
+$('tbHelp').onclick = () => { if (state === 'play') showHowto(null); };
 $('tbRestart').onclick = () => { if (state === 'play') restartLevel(); };
 let playerPw = '', runToken = null;
 const rpc = (name, body) => fetch(RANK_CFG.url + '/rest/v1/rpc/' + name, { method: 'POST', headers: sbHeaders(), body: JSON.stringify(body) });
@@ -1327,12 +1429,12 @@ function arrest(p) {
 function bark() {
   dog.barkCd = .45; dog.barkAnim = .25; SFX.bark();
   const hx = dog.x + Math.sin(dog.dir) * .9, hz = dog.z + Math.cos(dog.dir) * .9;
-  floatText('멍!', hx, dog.y + 1.8, hz, { h: .55 });
+  floatText('왕왕!', hx, dog.y + 1.8, hz, { h: .55 });
   for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; spawnP(hx, dog.y + 1, hz, Math.cos(a) * 5, .6, Math.sin(a) * 5, WHITE, .35); }
   for (const p of people) {
     if (p.dead || p.arrested || p.kind === 'officer') continue;
     const d = Math.hypot(p.x - dog.x, p.z - dog.z);
-    if (p.villain && d < 4.5) { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); }
+    if (p.villain && d < 4.5) { if (d < 4 && !(p.barkHit > time)) { p.barkHit = time + 1.2; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
     else if (!p.villain && d < 3) p.stun = Math.max(p.stun, .3);
   }
   let best = null, bd = 1.8;
@@ -1355,6 +1457,7 @@ addEventListener('keydown', e => {
   keys[e.code] = true;
   if (state !== 'play' || e.repeat) return;
   if (e.code === 'KeyF') barkQ = true;
+  if (e.code === 'KeyQ') throwBone();
   if (e.code === 'Space') jumpQ = true;
 });
 addEventListener('keyup', e => { keys[e.code] = false; });
@@ -1386,6 +1489,7 @@ function holdBtn(el, key) {
 }
 holdBtn($('bSniff'), 'sniff'); holdBtn($('bRun'), 'run');
 $('bBark').addEventListener('pointerdown', e => { e.preventDefault(); if (state === 'play') barkQ = true; else if (state === 'dialog') closeDialog(); });
+$('bBone').addEventListener('pointerdown', e => { e.preventDefault(); if (state === 'play') throwBone(); });
 $('bJump').addEventListener('pointerdown', e => { e.preventDefault(); if (state === 'play') jumpQ = true; });
 
 // ================= 강아지 업데이트 =================
@@ -1421,24 +1525,12 @@ function updateDog(dt) {
     if (gnd.on && gnd.on.belt) moveCircle(dog, gnd.on.belt * dt, 0, .5, false, dog.y);
   } else dog.grounded = false;
 
-  // 박치기
+  // 사람과 겹치지 않기
   dog.tackleCd -= dt;
   for (const p of people) {
     if (p.dead || p.arrested) continue;
     const dx = dog.x - p.x, dz = dog.z - p.z, d = Math.hypot(dx, dz) || .01;
     if (dog.y > 1.2) continue;
-    if (p.kind !== 'officer' && d < 1.3 && dog.tackleCd <= 0 && ((sprint && dog.speed > 6) || (p.villain && p.stun > 0 && dog.speed > 2))) {
-      dog.tackleCd = .7; shake = .3; SFX.hit();
-      if (p.villain) {
-        p.hp--; p.stun = Math.max(p.stun, p.kind === 'boss' ? 1.1 : 1.6); p.glow = 4;
-        moveCircle(p, -dx / d * 1.2, -dz / d * 1.2, p.r, false);
-        burst(p.x, 1.2, p.z, [WHITE, new THREE.Color(0xffd54f)], 20, 4);
-        if (p.hp <= 0) arrest(p); else floatText(`박치기! 남은 체력 ${p.hp}`, p.x, 2.8, p.z, { h: .5, color: '#ffd54f' });
-      } else {
-        p.stun = .8; addScore(-50); totals.mistakes++;
-        toast(p.kind === 'worker' ? '😵 작업자예요! 부상 (-50)' : '😵 일반 시민이에요! 부상 (-50)'); SFX.error(); damage();
-      }
-    }
     if (d < .85) moveCircle(dog, dx / d * (.85 - d), dz / d * (.85 - d), .5, false, dog.y);
   }
 
@@ -1537,7 +1629,7 @@ function loop() {
   requestAnimationFrame(loop);
   const dt = Math.min(clock.getDelta(), .05); time += dt;
   if (state === 'play') {
-    levelTime += dt; updateDog(dt); for (const v of vehicles) v.update(dt);
+    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); for (const v of vehicles) v.update(dt);
     for (const p of people) p.update(dt);
   } else {
     yaw += dt * .08; dogM.tail.rotation.y = Math.sin(time * 9) * .6;
