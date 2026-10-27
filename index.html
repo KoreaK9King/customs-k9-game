@@ -54,7 +54,12 @@ button.big:active{transform:translateY(3px);box-shadow:0 1px 0 #b88a10}
 button.big.alt{background:#dfe7ef;box-shadow:0 4px 0 #9fb0c0}
 button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{outline:3px solid #2e86c1;outline-offset:2px}
 .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
-#pid,#ppw{font-size:20px;padding:10px 14px;border-radius:12px;border:2px solid #c9bfa8;width:100%;box-sizing:border-box;font-family:inherit;background:#fff;color:var(--ink)}
+#breeds{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.breed{border:3px solid #d6cdb8;border-radius:12px;background:#fff;padding:8px 4px;cursor:pointer;font-family:inherit;font-size:13px;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:4px}
+.breed.on{border-color:var(--navy);background:#eaf2fb;font-weight:700}
+.breed i{display:block;width:34px;height:22px;border-radius:8px}
+@media (max-width:640px){#breeds{grid-template-columns:repeat(2,1fr)}}
+#pid,#ppw,#dname{font-size:20px;padding:10px 14px;border-radius:12px;border:2px solid #c9bfa8;width:100%;box-sizing:border-box;font-family:inherit;background:#fff;color:var(--ink)}
 #pidErr{color:#c0392b;font-size:13px;min-height:18px;margin-top:4px}
 .rank{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
 .rank th{font-size:12px;color:var(--muted);text-align:left;padding:4px 6px;border-bottom:1px solid #e3d9c3}
@@ -118,11 +123,15 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
 <div id="login" class="overlay"><div class="card">
  <div class="sub">관세청 탐지견 어드벤처 · 비공식 교육용 게임</div>
  <h1>🐕 관세청 탐지견: 6대 관문 대작전</h1>
- <p>라브라도 리트리버 <b>'관세청 탐지견'</b>이 되어 공항부터 보세창고까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
+ <p>나만의 <b>탐지견</b>을 만들어 공항부터 보세창고까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
  <label for="pid" style="font-weight:700;color:var(--navy)">플레이어 아이디</label>
  <input id="pid" maxlength="12" placeholder="한글·영문·숫자 2~12자" autocomplete="off">
  <label for="ppw" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">비밀번호</label>
  <input id="ppw" type="password" maxlength="32" placeholder="4자 이상 · 처음 접속이면 지금 정한 비밀번호로 가입돼요" autocomplete="off">
+ <label for="dname" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">🐕 나만의 탐지견 이름</label>
+ <input id="dname" maxlength="8" placeholder="예: 보리, 번개, 레오 (1~8자)" autocomplete="off">
+ <div style="font-weight:700;color:var(--navy);margin-top:10px">견종 선택</div>
+ <div id="breeds" role="radiogroup" aria-label="견종 선택"></div>
  <div id="pidErr"></div>
  <div class="row"><button class="big" id="btnLogin">접속하기</button></div>
  <h2 style="margin-top:16px">🏆 TOP 랭킹</h2>
@@ -560,47 +569,69 @@ function setMusic(on) {
 
 // ================= 라브라도 리트리버 =================
 const LAB = 0xe2b778;
-function makeDog() {
-  const g = new THREE.Group(), fur = MAT.fur(LAB), dark = MAT.col(0x1d1410, .4), furLight = MAT.fur(0xedcb94);
-  const body = mesh(CAPS(.25, .62, 8, 16), fur, 0, .66, 0, g); body.rotation.x = Math.PI / 2; body.scale.set(1.05, 1, 1.05);
-  mesh(SPH(.29, 20, 16), fur, 0, .68, .34, g).scale.set(1, 1.05, 1);
-  mesh(SPH(.27, 20, 16), fur, 0, .7, -.33, g);
-  mesh(SPH(.2, 16, 12), furLight, 0, .55, .42, g).scale.set(1, 1, .8);
-  const neck = mesh(CAPS(.15, .2, 6, 12), fur, 0, .88, .5, g); neck.rotation.x = -.85;
-  // 세관 조끼
+const BREEDS = {
+  malinois: { name: '말리노이즈', fur: 0xc8945a, saddle: 0xa8743e, mask: 0x2a1d14, earCol: 0x2a1d14, chest: 0xd9ae78, ear: 'up', tail: 'straight', scale: 1 },
+  shepherd: { name: '저먼 셰퍼드', fur: 0xb8783a, saddle: 0x1d1712, mask: 0x1d1712, earCol: 0x1d1712, chest: 0xc98e4f, ear: 'up', tail: 'bushy', scale: 1.06 },
+  labrador: { name: '라브라도 리트리버', fur: 0xe2b778, saddle: 0xe2b778, mask: 0xe2b778, earCol: 0xc99a5e, chest: 0xedcb94, ear: 'floppy', tail: 'otter', scale: 1 },
+  beagle: { name: '비글', fur: 0xf4efe6, saddle: 0x231a14, mask: 0xf4efe6, head: 0xc07a3a, earCol: 0xa8622a, chest: 0xf4efe6, ear: 'long', tail: 'up', scale: .82, blaze: true },
+  pointer: { name: '포인터', fur: 0xf4efe6, saddle: 0xf4efe6, mask: 0x7a4a2a, head: 0x7a4a2a, earCol: 0x7a4a2a, chest: 0xf4efe6, ear: 'floppy', tail: 'thin', scale: 1, spots: 0x7a4a2a, blaze: true },
+  springer: { name: '스프링거 스패니얼', fur: 0xf4efe6, saddle: 0x5a2f1c, mask: 0xf4efe6, head: 0x5a2f1c, earCol: 0x5a2f1c, chest: 0xf4efe6, ear: 'long', tail: 'straight', scale: .92, blaze: true },
+};
+function makeDog(b, name) {
+  const g = new THREE.Group(), fur = MAT.fur(b.fur), dark = MAT.col(0x1d1410, .4), headM = MAT.fur(b.head ?? b.fur), earM = MAT.fur(b.earCol);
+  const body = mesh(CAPS(.25, .62), fur, 0, .66, 0, g); body.rotation.x = Math.PI / 2; body.scale.set(1.05, 1, 1.05);
+  mesh(SPH(.29), fur, 0, .68, .34, g).scale.set(1, 1.05, 1);
+  mesh(SPH(.27), fur, 0, .7, -.33, g);
+  mesh(SPH(.2), MAT.fur(b.chest), 0, .55, .42, g).scale.set(1, 1, .8);
+  if (b.saddle !== b.fur) mesh(RBOX(.57, .22, .8, .08), MAT.fur(b.saddle), 0, .86, -.12, g);
+  if (b.spots) for (const [x, y, z] of [[.27, .7, -.25], [-.27, .62, .1], [.27, .6, .25], [-.27, .75, -.35]]) mesh(BOX(.04, .16, .2), MAT.fur(b.spots), x, y, z, g);
+  const neck = mesh(CAPS(.15, .2), fur, 0, .88, .5, g); neck.rotation.x = -.85;
+  // 세관 조끼 + 이름
   mesh(RBOX(.6, .3, .58, .1), MAT.col(0x1f4e8c, .7), 0, .82, .02, g);
   mesh(RBOX(.61, .07, .6, .03), MAT.col(0xf4c542, .5), 0, .7, .02, g);
-  const vest = textSprite('관세청 탐지견', { h: .13, bg: 'rgba(31,78,140,1)', color: '#f4c542' }); vest.position.set(0, 1.08, .02); g.add(vest);
-  const collar = mesh(TOR(.15, .03, 8, 20), MAT.col(0xc0392b, .5), 0, .9, .52, g); collar.rotation.x = -.85 + Math.PI / 2;
+  const vest = textSprite(name, { h: .14, bg: 'rgba(31,78,140,1)', color: '#f4c542' }); vest.position.set(0, 1.08, .02); g.add(vest);
+  const tag = textSprite('🐕 ' + name + ' · ' + b.name, { h: .3 }); tag.position.set(0, 1.75, 0); g.add(tag);
+  const collar = mesh(TOR(.15, .03), MAT.col(0xc0392b, .5), 0, .9, .52, g); collar.rotation.x = -.85 + Math.PI / 2;
   // 머리
   const head = new THREE.Group(); head.position.set(0, 1.03, .66); g.add(head);
-  mesh(SPH(.19, 20, 16), fur, 0, 0, 0, head).scale.set(1.05, .95, 1.1);
-  const muzzle = mesh(CAPS(.1, .14, 6, 12), fur, 0, -.06, .19, head); muzzle.rotation.x = Math.PI / 2; muzzle.scale.set(1.05, .9, 1);
-  mesh(SPH(.05, 12, 10), dark, 0, -.03, .33, head).scale.set(1.2, .85, 1);
-  for (const s of [-1, 1]) {
-    mesh(SPH(.03, 10, 8), dark, s * .085, .05, .16, head);
-    mesh(SPH(.035, 10, 8), MAT.col(0xffffff, .2), s * .085, .062, .15, head).scale.set(.4, .4, .4);
-    const ear = mesh(RBOX(.05, .2, .14, .025), MAT.fur(0xc99a5e), s * .175, -.06, -.02, head); ear.rotation.z = s * .18;
+  mesh(SPH(.19), headM, 0, 0, 0, head).scale.set(1.05, .95, 1.1);
+  const muzzle = mesh(CAPS(.1, .14), MAT.fur(b.mask === b.fur && b.head ? 0xf4efe6 : b.mask), 0, -.06, .19, head); muzzle.rotation.x = Math.PI / 2; muzzle.scale.set(1.05, .9, 1);
+  if (b.blaze) mesh(BOX(.07, .2, .03), MAT.fur(0xf4efe6), 0, .06, .2, head);
+  mesh(SPH(.05), dark, 0, -.03, .33, head).scale.set(1.2, .85, 1);
+  for (const sd of [-1, 1]) {
+    mesh(SPH(.03), dark, sd * .085, .05, .16, head);
+    if (b.ear === 'up') { const e = mesh(RBOX(.1, .22, .05, .02), earM, sd * .11, .22, -.04, head); e.rotation.z = sd * -.25; }
+    else if (b.ear === 'long') { const e = mesh(RBOX(.05, .34, .16, .03), earM, sd * .185, -.12, -.02, head); e.rotation.z = sd * .12; }
+    else { const e = mesh(RBOX(.05, .2, .14, .025), earM, sd * .175, -.06, -.02, head); e.rotation.z = sd * .18; }
   }
   const tongue = mesh(RBOX(.07, .02, .1, .01), MAT.col(0xe86a7a, .5), 0, -.14, .27, head); tongue.visible = false;
   // 다리
   const legs = [];
   for (const [x, z] of [[-.15, .36], [.15, .36], [-.15, -.34], [.15, -.34]]) {
     const pv = new THREE.Group(); pv.position.set(x, .52, z); g.add(pv);
-    mesh(CAPS(.068, .36, 6, 10), fur, 0, -.24, 0, pv);
-    mesh(SPH(.075, 10, 8), fur, 0, -.47, .03, pv).scale.set(1, .6, 1.25);
+    mesh(CAPS(.068, .36), fur, 0, -.24, 0, pv);
+    mesh(SPH(.075), fur, 0, -.47, .03, pv).scale.set(1, .6, 1.25);
     legs.push(pv);
   }
-  // 수달 꼬리
+  // 꼬리 (견종별)
   const tail = new THREE.Group(); tail.position.set(0, .78, -.58); g.add(tail);
-  const tm = mesh(CYL(.025, .075, .5, 10), fur, 0, -.04, -.22, tail); tm.rotation.x = -1.15;
+  const T = { otter: [.025, .075, .5, -1.15], bushy: [.05, .1, .55, -2.3], straight: [.03, .05, .45, -1.5], thin: [.015, .04, .48, -1.4], up: [.03, .05, .4, -.5] }[b.tail];
+  const tm = mesh(CYL(T[0], T[1], T[2]), b.tail === 'bushy' ? MAT.fur(b.saddle) : fur, 0, -.04, -.2, tail); tm.rotation.x = T[3];
+  if (b.tail === 'up') mesh(SPH(.04), MAT.fur(0xffffff), 0, .14, -.36, tail);
+  g.scale.setScalar(b.scale);
   g.traverse(o => { if (o.isMesh) o.castShadow = true; });
   return { g, head, legs, tail, tongue };
 }
 const skins = [0xf1c27d, 0xe0ac69, 0xc68642, 0x8d5524, 0xffdbac];
 const hairs = [0x2b1d14, 0x5a3a1a, 0x111111, 0xb08850, 0x777777];
 const bagColors = [0xc0392b, 0x2e86c1, 0x27ae60, 0xd4ac0d, 0x8e44ad, 0x17a589, 0xd35400, 0x2c3e50, 0xe6739f, 0xbdc3c7];
-const dogM = makeDog(); scene.add(dogM.g);
+let dogName = '관세청 탐지견', dogBreed = 'labrador';
+let dogM = makeDog(BREEDS.labrador, dogName); scene.add(dogM.g);
+function setDog(breed, name) {
+  dogBreed = BREEDS[breed] ? breed : 'labrador'; dogName = name;
+  dogM.g.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map.dispose(); o.material.dispose(); } });
+  scene.remove(dogM.g); dogM = makeDog(BREEDS[dogBreed], dogName); scene.add(dogM.g);
+}
 const handlerM = makePerson('customs'); scene.add(handlerM.g);
 let handlerLabel = null;
 function setHandlerLabel(name) { if (handlerLabel) disposeSprite(handlerLabel); handlerLabel = textSprite('🧑‍✈️ ' + name + ' 핸들러', { h: .34 }); handlerLabel.position.y = 2.45; handlerM.g.add(handlerLabel); }
@@ -1224,7 +1255,7 @@ function hideAll() { for (const id of ['login', 'maps', 'dlg', 'clear', 'rank', 
 let dlgCb = null;
 function showDialog(text, cb, who) {
   state = 'dialog'; dlgCb = cb;
-  $('dtxt').textContent = text; $('dwho').textContent = who; $('dok').textContent = '알겠어요! 멍!'; $('dlg').classList.remove('hidden'); keys = {};
+  $('dtxt').textContent = text.split('관세청 탐지견').join(dogName); $('dwho').textContent = who; $('dok').textContent = '알겠어요! 멍!'; $('dlg').classList.remove('hidden'); keys = {};
 }
 function closeDialog() {
   if (state !== 'dialog') return;
@@ -1246,7 +1277,7 @@ function damage() {
   state = 'dead'; const carry = levelTime;
   totals.mistakes++;
   setTimeout(() => {
-    showDialog('😢 관세청 탐지견이 작전 중 부상으로 순직했습니다…\n\n잘못된 적발과 시민 충돌은 탐지견을 다치게 해요.\n같은 맵을 처음부터 다시 시작합니다.\n이전 맵 점수는 그대로지만, 흐른 시간은 계속 이어져요.\n\n🎾 공을 주우면 체력을 회복할 수 있어요!', () => { loadLevel(levelIdx); levelTime = carry; }, level.who);
+    showDialog('😢 탐지견 「관세청 탐지견」이(가) 작전 중 부상으로 순직했습니다…\n\n잘못된 적발과 시민 충돌은 탐지견을 다치게 해요.\n같은 맵을 처음부터 다시 시작합니다.\n이전 맵 점수는 그대로지만, 흐른 시간은 계속 이어져요.\n\n🎾 공을 주우면 체력을 회복할 수 있어요!', () => { loadLevel(levelIdx); levelTime = carry; }, level.who);
     $('dok').textContent = '다시 출동! 멍!';
   }, 900);
 }
@@ -1369,13 +1400,22 @@ $('btnResume').onclick = resumeGame;
 $('btnRestartMap').onclick = restartLevel;
 $('tbHelp').onclick = () => { if (state === 'play') showHowto(null); };
 $('tbRestart').onclick = () => { if (state === 'play') restartLevel(); };
-let playerPw = '', runToken = null;
+let playerPw = '', runToken = null, pickBreed = 'labrador';
+function renderBreeds() {
+  $('breeds').innerHTML = Object.entries(BREEDS).map(([k, b]) => `<button type="button" class="breed ${k === pickBreed ? 'on' : ''}" role="radio" aria-checked="${k === pickBreed}" data-k="${k}"><i style="background:linear-gradient(90deg,#${new THREE.Color(b.head ?? b.fur).getHexString()} 0 50%,#${new THREE.Color(b.saddle !== b.fur ? b.saddle : b.earCol).getHexString()} 50%)"></i>${b.name}</button>`).join('');
+}
+$('breeds').addEventListener('click', e => { const t = e.target.closest('.breed'); if (!t) return; pickBreed = t.dataset.k; renderBreeds(); });
+function loadSavedDog(id) { const d = store.get('k9dog:' + id, null) || store.get('k9dog:last', null); if (d) { $('dname').value = d.name; pickBreed = d.breed; } renderBreeds(); }
+loadSavedDog(store.get('k9id', ''));
+$('pid').addEventListener('change', () => { const d = store.get('k9dog:' + $('pid').value.trim(), null); if (d) { $('dname').value = d.name; pickBreed = d.breed; renderBreeds(); } });
 const rpc = (name, body) => fetch(RANK_CFG.url + '/rest/v1/rpc/' + name, { method: 'POST', headers: sbHeaders(), body: JSON.stringify(body) });
 const loginErr = t => { $('pidErr').textContent = t; };
 async function login() {
   const v = $('pid').value.trim(), pw = $('ppw').value;
   if (!/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr('아이디는 한글·영문·숫자·_ 로 2~12자여야 해요.');
   if (pw.length < 4) return loginErr('비밀번호는 4자 이상이에요.');
+  const dn = $('dname').value.trim();
+  if (!/^[가-힣A-Za-z0-9 ]{1,8}$/.test(dn)) return loginErr('탐지견 이름은 한글·영문·숫자 1~8자로 지어주세요.');
   ac(); actx.resume?.(); setMusic(musicOn);
   $('btnLogin').disabled = true; loginErr('확인 중…');
   let res = 'offline';
@@ -1384,13 +1424,13 @@ async function login() {
   if (res === 'bad') return loginErr('비밀번호가 틀렸어요. 5번 틀리면 5분간 잠겨요.');
   if (res === 'locked') return loginErr('비밀번호를 여러 번 틀려서 5분간 잠겼어요. 잠시 후 다시 시도하세요.');
   loginErr('');
-  playerId = v; setHandlerLabel(v); playerPw = res === 'offline' ? '' : pw; store.set('k9id', v); runScore = 0; runNext = 0;
+  playerId = v; setHandlerLabel(v); setDog(pickBreed, dn); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; store.set('k9id', v); runScore = 0; runNext = 0;
   if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
   if (res === 'offline') toast('📡 랭킹 서버에 연결하지 못해 이 기기에만 기록돼요');
   showMaps();
 }
 $('btnLogin').onclick = login;
-for (const id of ['pid', 'ppw']) $(id).addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+for (const id of ['pid', 'ppw', 'dname']) $(id).addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 $('btnLogout').onclick = showLogin;
 $('btnRankOpen').onclick = openRank;
 $('dok').onclick = closeDialog;
