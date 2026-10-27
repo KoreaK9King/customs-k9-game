@@ -2198,6 +2198,9 @@ function updateDog(dt) {
       dog.prop.position.set((mx + hx) / 2, (dog.y + .95 + handler.y + 1.05) / 2, (mz + hz) / 2); dog.prop.lookAt(hx, handler.y + 1.05, hz); dog.prop.scale.z = Math.max(.2, Math.hypot(hx - mx, hz - mz));
     }
   } else m.head.rotation.y = lerp(m.head.rotation.y, 0, Math.min(1, dt * 5));
+  // 자동 이동(산책·공놀이 등) 뒤에도 맵 경계 안으로
+  const bx0 = clamp(dog.x, level.bounds.minX + .3, level.bounds.maxX - .3), bz0 = clamp(dog.z, level.bounds.minZ + .3, level.bounds.maxZ - .3);
+  if (bx0 !== dog.x || bz0 !== dog.z) { dog.x = bx0; dog.z = bz0; m.g.position.x = dog.x; m.g.position.z = dog.z; }
 }
 
 // ================= 카메라 =================
