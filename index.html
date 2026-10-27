@@ -283,7 +283,7 @@ function canvasTex(key, size, draw, repeat) {
     const cv = document.createElement('canvas'); cv.width = cv.height = size;
     draw(cv.getContext('2d'), size);
     const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace;
-    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = maxAniso; texCache[key] = t;
+    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.NearestFilter; t.anisotropy = maxAniso; texCache[key] = t;
   }
   if (!repeat) return texCache[key];
   const t = texCache[key].clone(); t.needsUpdate = true; t.repeat.set(repeat[0], repeat[1]); return t;
@@ -300,7 +300,7 @@ function blotches(g, s, n, rgb, aMax) {
 }
 function pixTex(key, n, fn, repeat) { return canvasTex(key, n, (g, sz) => { for (let y = 0; y < sz; y++) for (let x = 0; x < sz; x++) { g.fillStyle = fn(x, y); g.fillRect(x, y, 1, 1); } }, repeat); }
 const shade = (hex, v) => '#' + new THREE.Color(hex).multiplyScalar(v).getHexString();
-const jit = (hex, a = .12) => shade(hex, 1 - a / 8 + Math.random() * a / 4);
+const jit = (hex, a = .12) => shade(hex, 1 - a / 3 + Math.random() * a / 1.5);
 const TEX = {
   tile: (key, base, grout, n, rep) => pixTex('tile' + key, 16, (x, y) => (x % 8 === 0 || y % 8 === 0) ? grout : jit(base, .08), rep),
   concrete: (key, base, rep) => pixTex('conc' + key, 16, () => jit(base, .18), rep),
@@ -336,10 +336,10 @@ const MAT = {
 // ================= 지오메트리 헬퍼 =================
 let world = new THREE.Group(); scene.add(world);
 const BOX = (w, h, d) => new THREE.BoxGeometry(w, h, d);
-const RBOX = (w, h, d, r = .06) => new RoundedBoxGeometry(w, h, d, 3, Math.min(r, w / 2 - .001, h / 2 - .001, d / 2 - .001));
-const CAPS = (r, len) => RBOX(r * 2, len + r * 2, r * 2, r * .45);
-const SPH = (r, ws, hs, p0, p1, t0, tl) => tl !== undefined ? BOX(r * 2, r, r * 2).translate(0, r / 2, 0) : RBOX(r * 2, r * 2, r * 2, r * .4);
-const CYL = (rt, rb, h) => new THREE.CylinderGeometry(rt, rb, h, 18);
+const RBOX = (w, h, d) => BOX(w, h, d);
+const CAPS = (r, len) => BOX(r * 2, len + r * 2, r * 2);
+const SPH = (r, ws, hs, p0, p1, t0, tl) => tl !== undefined ? BOX(r * 2, r, r * 2).translate(0, r / 2, 0) : BOX(r * 2, r * 2, r * 2);
+const CYL = (rt, rb, h) => BOX(Math.max(rt, rb) * 2, h, Math.max(rt, rb) * 2);
 const TOR = (R, t) => BOX(R * 2 + t * 2, t * 2, t * 2);
 function mesh(geo, mat, x = 0, y = 0, z = 0, parent = world) {
   const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
@@ -579,46 +579,42 @@ const BREEDS = {
   springer: { stat: { spd: 4, nose: 4, sta: 5, bark: 3, jump: 4 }, desc: '지치지 않는 활동가! 오래 달리고 상자 위도 잘 올라가요.', name: '스프링거 스패니얼', fur: 0xf4efe6, saddle: 0x5a2f1c, mask: 0xf4efe6, head: 0x5a2f1c, earCol: 0x5a2f1c, chest: 0xf4efe6, ear: 'long', tail: 'straight', scale: .92, blaze: true },
 };
 function makeDog(b, name, tags = true) {
-  const g = new THREE.Group(), fur = MAT.fur(b.fur), dark = MAT.col(0x1d1410, .4), headM = MAT.fur(b.head ?? b.fur), earM = MAT.fur(b.earCol);
-  const body = mesh(CAPS(.25, .62), fur, 0, .66, 0, g); body.rotation.x = Math.PI / 2; body.scale.set(1.05, 1, 1.05);
-  mesh(SPH(.29), fur, 0, .68, .34, g).scale.set(1, 1.05, 1);
-  mesh(SPH(.27), fur, 0, .7, -.33, g);
-  mesh(SPH(.2), MAT.fur(b.chest), 0, .55, .42, g).scale.set(1, 1, .8);
-  if (b.saddle !== b.fur) mesh(RBOX(.5, .08, .3, .03), MAT.fur(b.saddle), 0, .96, -.4, g);
-  if (b.spots) for (const [x, y, z] of [[.27, .7, -.25], [-.27, .62, .1], [.27, .6, .25], [-.27, .75, -.35]]) mesh(BOX(.04, .16, .2), MAT.fur(b.spots), x, y, z, g);
-  const neck = mesh(CAPS(.15, .2), fur, 0, .88, .5, g); neck.rotation.x = -.85;
-  // 세관 조끼 + 이름
-  mesh(RBOX(.6, .3, .58, .1), MAT.col(0x1f4e8c, .7), 0, .82, .02, g);
-  mesh(RBOX(.61, .07, .6, .03), MAT.col(0xf4c542, .5), 0, .7, .02, g);
-  if (tags) { const vest = textSprite(name, { h: .14, bg: 'rgba(31,78,140,1)', color: '#f4c542' }); vest.position.set(0, 1.08, .02); g.add(vest);
-  const tag = textSprite('🐕 ' + name + ' · ' + b.name, { h: .3 }); tag.position.set(0, 1.75, 0); g.add(tag); }
-  const collar = mesh(TOR(.15, .03), MAT.col(0xc0392b, .5), 0, .9, .52, g); collar.rotation.x = -.85 + Math.PI / 2;
-  // 머리
-  const head = new THREE.Group(); head.position.set(0, 1.03, .66); g.add(head);
-  mesh(SPH(.19), headM, 0, 0, 0, head).scale.set(1.05, .95, 1.1);
-  const muzzle = mesh(CAPS(.1, .14), MAT.fur(b.mask === b.fur && b.head ? 0xf4efe6 : b.mask), 0, -.06, .19, head); muzzle.rotation.x = Math.PI / 2; muzzle.scale.set(1.05, .9, 1);
-  if (b.blaze) mesh(BOX(.07, .2, .03), MAT.fur(0xf4efe6), 0, .06, .2, head);
-  mesh(SPH(.05), dark, 0, -.03, .33, head).scale.set(1.2, .85, 1);
-  for (const sd of [-1, 1]) {
-    mesh(SPH(.03), dark, sd * .085, .05, .16, head);
-    if (b.ear === 'up') { const e = mesh(RBOX(.1, .22, .05, .02), earM, sd * .11, .22, -.04, head); e.rotation.z = sd * -.25; }
-    else if (b.ear === 'long') { const e = mesh(RBOX(.05, .34, .16, .03), earM, sd * .185, -.12, -.02, head); e.rotation.z = sd * .12; }
-    else { const e = mesh(RBOX(.05, .2, .14, .025), earM, sd * .175, -.06, -.02, head); e.rotation.z = sd * .18; }
+  const g = new THREE.Group(), fur = MAT.fur(b.fur), dark = MAT.col(0x1d1410, .5), headM = MAT.fur(b.head ?? b.fur), earM = MAT.fur(b.earCol);
+  mesh(BOX(.42, .42, .8), fur, 0, .72, -.12, g);
+  mesh(BOX(.52, .5, .4), MAT.fur(b.chest), 0, .76, .36, g);
+  if (b.saddle !== b.fur) mesh(BOX(.44, .06, .34), MAT.fur(b.saddle), 0, .95, -.34, g);
+  if (b.spots) for (const [x, y, z] of [[.215, .74, -.3], [-.215, .66, -.05], [.215, .62, .02], [-.215, .78, -.38]]) mesh(BOX(.01, .14, .16), MAT.fur(b.spots), x, y, z, g);
+  mesh(BOX(.47, .3, .44), MAT.col(0x1f4e8c, .7), 0, .8, -.02, g);
+  mesh(BOX(.48, .05, .45), MAT.col(0xf4c542, .5), 0, .68, -.02, g);
+  mesh(BOX(.55, .08, .42), MAT.col(0xc0392b, .5), 0, 1.0, .36, g);
+  if (tags) {
+    const tag = textSprite('🐕 ' + name, { h: .3 }); tag.position.set(0, 1.75, 0); g.add(tag);
   }
-  const tongue = mesh(RBOX(.07, .02, .1, .01), MAT.col(0xe86a7a, .5), 0, -.14, .27, head); tongue.visible = false;
-  // 다리
+  const head = new THREE.Group(); head.position.set(0, 1.02, .62); g.add(head);
+  mesh(BOX(.42, .38, .34), headM, 0, 0, 0, head);
+  mesh(BOX(.22, .16, .22), MAT.fur(b.mask === b.fur && b.head ? 0xf4efe6 : b.mask), 0, -.08, .27, head);
+  mesh(BOX(.1, .07, .04), dark, 0, -.03, .39, head);
+  for (const sd of [-1, 1]) {
+    mesh(BOX(.08, .06, .02), MAT.col(0xffffff, .4), sd * .1, .06, .172, head);
+    mesh(BOX(.04, .06, .025), dark, sd * .12, .06, .174, head);
+    if (b.ear === 'up') mesh(BOX(.12, .13, .07), earM, sd * .13, .25, -.06, head);
+    else if (b.ear === 'long') mesh(BOX(.06, .3, .15), earM, sd * .24, -.08, -.02, head);
+    else mesh(BOX(.06, .18, .13), earM, sd * .24, -.02, -.02, head);
+  }
+  if (b.blaze) mesh(BOX(.08, .2, .02), MAT.fur(0xf4efe6), 0, .08, .172, head);
+  const tongue = mesh(BOX(.08, .02, .1), MAT.col(0xe86a7a, .5), 0, -.17, .3, head); tongue.visible = false;
   const legs = [];
-  for (const [x, z] of [[-.15, .36], [.15, .36], [-.15, -.34], [.15, -.34]]) {
+  for (const [x, z] of [[-.13, .34], [.13, .34], [-.13, -.38], [.13, -.38]]) {
     const pv = new THREE.Group(); pv.position.set(x, .52, z); g.add(pv);
-    mesh(CAPS(.068, .36), fur, 0, -.24, 0, pv);
-    mesh(SPH(.075), fur, 0, -.47, .03, pv).scale.set(1, .6, 1.25);
+    mesh(BOX(.15, .5, .15), fur, 0, -.25, 0, pv);
+    mesh(BOX(.16, .06, .18), MAT.fur(b.chest), 0, -.49, .01, pv);
     legs.push(pv);
   }
-  // 꼬리 (견종별)
-  const tail = new THREE.Group(); tail.position.set(0, .78, -.58); g.add(tail);
-  const T = { otter: [.025, .075, .5, -1.15], bushy: [.05, .1, .55, -2.3], straight: [.03, .05, .45, -1.5], thin: [.015, .04, .48, -1.4], up: [.03, .05, .4, -.5] }[b.tail];
-  const tm = mesh(CYL(T[0], T[1], T[2]), b.tail === 'bushy' ? MAT.fur(b.saddle) : fur, 0, -.04, -.2, tail); tm.rotation.x = T[3];
-  if (b.tail === 'up') mesh(SPH(.04), MAT.fur(0xffffff), 0, .14, -.36, tail);
+  const tail = new THREE.Group(); tail.position.set(0, .86, -.5); g.add(tail);
+  const T = { otter: [.14, -.45], bushy: [.17, -.75], straight: [.11, .15], thin: [.08, -.2], up: [.1, .9] }[b.tail];
+  const tp = new THREE.Group(); tp.rotation.x = T[1]; tail.add(tp);
+  mesh(BOX(T[0], T[0], .48), b.tail === 'bushy' ? MAT.fur(b.saddle) : fur, 0, 0, -.22, tp);
+  if (b.tail === 'up') mesh(BOX(.11, .11, .1), MAT.fur(0xffffff), 0, 0, -.48, tp);
   g.scale.setScalar(b.scale);
   g.traverse(o => { if (o.isMesh) o.castShadow = true; });
   return { g, head, legs, tail, tongue };
@@ -644,7 +640,7 @@ const leash = new THREE.Line(new THREE.BufferGeometry().setFromPoints(leashPts),
 leash.frustumCulled = false; scene.add(leash);
 function updateHandler(dt) {
   const bx = dog.x - Math.sin(dog.dir) * 1.3 + Math.cos(dog.dir) * 1.4, bz = dog.z - Math.cos(dog.dir) * 1.3 - Math.sin(dog.dir) * 1.4;
-  let dx = bx - handler.x, dz = bz - handler.z; const d = Math.hypot(dx, dz);
+  let dx = bx - handler.x, dz = bz - handler.z; const d = dog.idleMode ? 0 : Math.hypot(dx, dz);
   if (d > 9) { handler.x = bx; handler.z = bz; }
   const sp = d > .3 ? Math.min(d * 3, 10) : 0;
   if (sp > 0) { handler.x += dx / d * sp * dt; handler.z += dz / d * sp * dt; handler.dir += angDiff(handler.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 8); }
@@ -655,6 +651,8 @@ function updateHandler(dt) {
   handler.throwT -= dt; handler.boneCd -= dt;
   h.arms[1].rotation.x = handler.throwT > 0 ? -2.6 + (1 - handler.throwT / .35) * 2.2 : -.5;
   h.arms[0].rotation.x = Math.sin(handler.phase) * .5 * k;
+  if (dog.idleMode === 'play') { h.body.rotation.x = .35; h.arms[0].rotation.x = -1.3 + Math.sin(time * 6) * .35; h.arms[1].rotation.x = -1.3 - Math.sin(time * 6) * .35; }
+  else h.body.rotation.x = lerp(h.body.rotation.x, 0, Math.min(1, dt * 6));
   // 목줄: 핸들러 오른손 → 강아지 목줄 (살짝 처지게)
   const hx = handler.x + Math.cos(handler.dir) * -.32 + Math.sin(handler.dir) * .25, hz = handler.z - Math.sin(handler.dir) * -.32 + Math.cos(handler.dir) * .25;
   const cx = dog.x + Math.sin(dog.dir) * .5, cz = dog.z + Math.cos(dog.dir) * .5, cy = dog.y + .9;
@@ -705,7 +703,7 @@ const dog = { x: 0, z: 0, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.P
 // ================= 사람 =================
 function makePerson(kind) {
   const g = new THREE.Group(), body = new THREE.Group(); g.add(body);
-  const skin = MAT.skin(pick(skins));
+  const skinHex = pick(skins), skin = MAT.skin(skinHex);
   let shirt, pants = 0x34495e;
   if (kind === 'civ') shirt = pick([0x3b6ea5, 0x4f8a5b, 0x7d5a9e, 0xd4ac0d, 0x2f8f83, 0xe8e4dc, 0xc46a2c, 0xd47a9c]);
   else if (kind === 'worker') { shirt = 0x3d4c5c; pants = 0x2c3e50; }
@@ -718,38 +716,38 @@ function makePerson(kind) {
   else if (kind === 'smuggler') { shirt = pick([0x2c2c34, 0x4a3b2a, 0x3d4a3d, 0x5d4037]); pants = 0x222222; }
   else if (kind === 'boss') { shirt = 0x4b2370; pants = 0x1a1a1a; }
   else { shirt = 0x1f3b6b; pants = 0x1f2a3a; }
-  const shirtM = MAT.fabric(shirt), pantsM = MAT.fabric(pants);
+  const shirtM = MAT.fabric(shirt), pantsM = MAT.fabric(pants), gold = MAT.metal(0xf4c542, .3);
   const legs = [], arms = [];
-  for (const s of [-1, 1]) {
-    const lp = new THREE.Group(); lp.position.set(s * .11, .9, 0); body.add(lp);
-    mesh(CAPS(.085, .66, 6, 10), pantsM, 0, -.42, 0, lp);
-    mesh(RBOX(.13, .08, .26, .03), MAT.col(0x222222, .5), 0, -.84, .05, lp);
+  for (const sd of [-1, 1]) {
+    const lp = new THREE.Group(); lp.position.set(sd * .125, .78, 0); body.add(lp);
+    mesh(BOX(.24, .66, .24), pantsM, 0, -.33, 0, lp); mesh(BOX(.25, .12, .27), MAT.col(0x2a2a2a, .6), 0, -.72, .015, lp);
     legs.push(lp);
-    const ap = new THREE.Group(); ap.position.set(s * .29, 1.48, 0); body.add(ap);
-    mesh(CAPS(.06, .5, 6, 10), shirtM, 0, -.28, 0, ap);
-    mesh(SPH(.06, 10, 8), skin, 0, -.6, 0, ap);
+    const ap = new THREE.Group(); ap.position.set(sd * .37, 1.5, 0); body.add(ap);
+    mesh(BOX(.22, .52, .22), shirtM, 0, -.22, 0, ap); mesh(BOX(.22, .2, .22), skin, 0, -.58, 0, ap);
     arms.push(ap);
   }
-  const torso = mesh(CAPS(.2, .36, 8, 14), shirtM, 0, 1.22, 0, body); torso.scale.set(1.18, 1, .72);
-  mesh(CYL(.06, .07, .1, 10), skin, 0, 1.58, 0, body);
-  mesh(SPH(.14, 18, 14), skin, 0, 1.74, 0, body).scale.set(1, 1.1, 1);
-  mesh(SPH(.148, 18, 12, 0, Math.PI * 2, 0, Math.PI * .55), MAT.col(pick(hairs), .9), 0, 1.84, -.03, body);
-  for (const s of [-1, 1]) mesh(SPH(.018, 8, 6), MAT.col(0x111111, .3), s * .05, 1.77, .13, body);
-  if (kind === 'smuggler' || kind === 'boss') mesh(RBOX(.22, .05, .02, .01), MAT.col(0x0a0a0a, .1, .3), 0, 1.77, .145, body);
-  if (kind === 'boss') { mesh(CYL(.28, .28, .03, 20), MAT.col(0x111111, .6), 0, 1.9, 0, body); mesh(CYL(.15, .16, .18, 16), MAT.col(0x111111, .6), 0, 2.0, 0, body); mesh(TOR(.12, .015, 6, 16), MAT.metal(0xf1c40f, .25), 0, 1.5, .09, body); }
-  if (kind === 'worker') { mesh(SPH(.17, 16, 10, 0, Math.PI * 2, 0, Math.PI * .5), MAT.shell(0xf1c40f), 0, 1.8, 0, body); const v = mesh(CAPS(.21, .3, 6, 12), MAT.col(0xd8f53a, .6), 0, 1.24, 0, body); v.scale.set(1.2, 1, .76); }
-  if (kind === 'officer' || kind === 'customs') { mesh(CYL(.16, .16, .1, 16), MAT.col(0x10233f, .6), 0, 1.9, 0, body); mesh(RBOX(.3, .02, .14, .01), MAT.col(0x10233f, .5), 0, 1.86, .14, body); mesh(SPH(.025, 8, 6), MAT.metal(0xf4c542, .3), 0, 1.9, .16, body); }
-  if (kind === 'customs') { const b = textSprite('세관', { h: .12, bg: 'rgba(244,197,66,1)', color: '#10233f' }); b.position.set(0, 1.35, .2); body.add(b); }
-  if (kind === 'pilot') { mesh(CYL(.16, .16, .1), MAT.col(0x111111, .5), 0, 1.9, 0, body); mesh(RBOX(.3, .02, .14), MAT.col(0x111111, .5), 0, 1.86, .14, body); mesh(BOX(.33, .03, .33), MAT.metal(0xf4c542, .3), 0, 1.87, 0, body); for (const sx of [-1, 1]) mesh(BOX(.12, .03, .14), MAT.metal(0xf4c542, .3), sx * .22, 1.5, 0, body); }
-  if (kind === 'attendant') { mesh(CYL(.09, .11, .1), MAT.col(0x8a1f35, .5), .04, 1.93, 0, body); mesh(BOX(.2, .06, .05), MAT.col(0xf4c542, .5), 0, 1.57, .1, body); }
-  if (kind === 'pilot' || kind === 'attendant') mesh(RBOX(.34, .5, .2, .04), MAT.shell(0x1d2433), .32, .32, -.3, body);
-  if (kind === 'crew') { mesh(CYL(.17, .15, .08), MAT.col(0xffffff, .5), 0, 1.9, 0, body); mesh(BOX(.35, .04, .35), MAT.col(0x1f3b6b, .5), 0, 1.87, 0, body); }
-  if (kind === 'handler') { mesh(SPH(.17, 16, 10, 0, Math.PI * 2, 0, Math.PI * .5), MAT.shell(0xffffff), 0, 1.8, 0, body); mesh(BOX(.5, .05, .32), MAT.col(0xe8ff6a, .3), 0, 1.15, 0, body); }
-  if (kind === 'postal') { mesh(CYL(.15, .15, .08), MAT.col(0x1f7a5a, .5), 0, 1.9, 0, body); mesh(BOX(.4, .3, .3), MAT.cardboard(), 0, 1.15, .3, body); }
-  if (kind === 'smuggler' || kind === 'boss' || (kind === 'civ' && rnd() < .4)) mesh(RBOX(.1, .3, .4, .03), kind === 'civ' ? MAT.shell(pick(bagColors)) : MAT.col(0x5a3a1a, .45), .38, .78, 0, body);
+  mesh(BOX(.5, .74, .26), shirtM, 0, 1.15, 0, body);
+  const head = new THREE.Group(); head.position.set(0, 1.76, 0); body.add(head);
+  const H = (geo, m, x, y, z) => mesh(geo, m, x, y, z, head);
+  H(BOX(.46, .46, .46), skin, 0, 0, 0);
+  const hairM = MAT.col(pick(hairs), .9);
+  H(BOX(.48, .1, .48), hairM, 0, .2, 0); H(BOX(.48, .32, .08), hairM, 0, .05, -.21);
+  for (const sd of [-1, 1]) { H(BOX(.1, .06, .02), MAT.col(0xffffff, .4), sd * .1, .02, .231); H(BOX(.05, .06, .025), MAT.col(0x2a3a6a, .4), sd * .12, .02, .233); }
+  H(BOX(.14, .04, .02), MAT.col(new THREE.Color(skinHex).multiplyScalar(.7).getHex(), .5), 0, -.12, .232);
+  if (kind === 'smuggler' || kind === 'boss') H(BOX(.42, .08, .03), MAT.col(0x0a0a0a, .1, .3), 0, .03, .245);
+  if (kind === 'boss') { H(BOX(.62, .04, .62), MAT.col(0x111111, .6), 0, .25, 0); H(BOX(.42, .2, .42), MAT.col(0x111111, .6), 0, .37, 0); mesh(BOX(.3, .05, .03), gold, 0, 1.4, .145, body); }
+  if (kind === 'officer' || kind === 'customs') { const cap = MAT.col(0x10233f, .6); H(BOX(.5, .12, .5), cap, 0, .29, 0); H(BOX(.5, .03, .16), cap, 0, .24, .3); H(BOX(.07, .07, .02), gold, 0, .3, .255); }
+  if (kind === 'customs') { const b2 = textSprite('세관', { h: .12, bg: 'rgba(244,197,66,1)', color: '#10233f' }); b2.position.set(0, 1.35, .17); body.add(b2); }
+  if (kind === 'pilot') { H(BOX(.5, .12, .5), MAT.col(0x111111, .5), 0, .29, 0); H(BOX(.5, .03, .16), MAT.col(0x111111, .5), 0, .24, .3); H(BOX(.52, .04, .52), gold, 0, .25, 0); for (const sd of [-1, 1]) mesh(BOX(.2, .04, .22), gold, sd * .37, 1.52, 0, body); }
+  if (kind === 'attendant') { H(BOX(.24, .12, .24), MAT.col(0x8a1f35, .5), .06, .29, 0); mesh(BOX(.24, .06, .04), MAT.col(0xf4c542, .5), 0, 1.48, .14, body); }
+  if (kind === 'pilot' || kind === 'attendant') mesh(BOX(.32, .46, .18), MAT.shell(0x1d2433), .45, .3, -.32, body);
+  if (kind === 'crew') { H(BOX(.5, .1, .5), MAT.col(0xffffff, .5), 0, .28, 0); H(BOX(.52, .04, .52), MAT.col(0x1f3b6b, .5), 0, .24, 0); }
+  if (kind === 'worker' || kind === 'handler') { H(BOX(.52, .14, .52), MAT.shell(kind === 'worker' ? 0xf1c40f : 0xffffff), 0, .3, 0); mesh(BOX(.52, .3, .28), MAT.col(0xd8f53a, .4), 0, 1.22, 0, body); mesh(BOX(.53, .05, .29), MAT.col(0xeeeeee, .2), 0, 1.15, 0, body); }
+  if (kind === 'postal') { H(BOX(.5, .1, .5), MAT.col(0x1f7a5a, .5), 0, .28, 0); mesh(BOX(.36, .28, .28), MAT.cardboard(), 0, 1.12, .3, body); }
+  if (kind === 'smuggler' || kind === 'boss' || (kind === 'civ' && rnd() < .4)) mesh(BOX(.12, .32, .42), kind === 'civ' ? MAT.shell(pick(bagColors)) : MAT.col(0x5a3a1a, .45), .52, .72, 0, body);
   if (kind === 'boss') g.scale.setScalar(1.22);
-  const ring = new THREE.Mesh(new THREE.RingGeometry(.55, .8, 28), new THREE.MeshBasicMaterial({ color: 0xff3030, transparent: true, opacity: .8, side: THREE.DoubleSide, depthWrite: false, toneMapped: false }));
-  ring.rotation.x = -Math.PI / 2; ring.position.y = .05; ring.visible = false; g.add(ring);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(.55, .8, 4), new THREE.MeshBasicMaterial({ color: 0xff3030, transparent: true, opacity: .8, side: THREE.DoubleSide, depthWrite: false, toneMapped: false }));
+  ring.rotation.x = -Math.PI / 2; ring.rotation.z = Math.PI / 4; ring.position.y = .05; ring.visible = false; g.add(ring);
   const stars = textSprite('💫', { bg: null, h: .6 }); stars.position.y = 2.5; stars.visible = false; g.add(stars);
   return { g, body, legs, arms, ring, stars };
 }
@@ -1687,6 +1685,23 @@ function updateDog(dt) {
   m.head.position.y = lerp(m.head.position.y, 1.03 - sn * .2, Math.min(1, dt * 10));
   m.tail.rotation.y = Math.sin(time * (dog.speed > .5 ? 16 : 9)) * .6;
   m.tongue.visible = sprint || dog.stamina < 40;
+  const active = len > .05 || dog.sniffing || !dog.grounded;
+  dog.idleT = active ? 0 : (dog.idleT || 0) + dt;
+  dog.idleMode = dog.idleT > 4 ? ['sit', 'spin', 'play'][Math.floor((dog.idleT - 4) / 6) % 3] : null;
+  if (dog.idleMode === 'sit') {
+    m.g.rotation.x = -.32; m.g.position.y = dog.y - .1;
+    m.legs[2].rotation.x = m.legs[3].rotation.x = -1.25; m.legs[0].rotation.x = m.legs[1].rotation.x = .3;
+    m.head.rotation.y = Math.sin(time * .8) * .5; m.tongue.visible = true;
+  } else if (dog.idleMode === 'spin') {
+    dog.dir += dt * 5; m.g.rotation.y = dog.dir; m.g.position.y = dog.y + Math.abs(Math.sin(time * 8)) * .18;
+    m.legs.forEach((l, i) => l.rotation.x = Math.sin(time * 16 + i) * .6); m.head.rotation.y = .5;
+    if (Math.random() < dt * 1.2) floatText('🐾', dog.x, dog.y + 1.4, dog.z, { h: .35 });
+  } else if (dog.idleMode === 'play') {
+    dog.dir += angDiff(dog.dir, Math.atan2(handler.x - dog.x, handler.z - dog.z)) * Math.min(1, dt * 5);
+    m.g.rotation.y = dog.dir; m.g.position.y = dog.y + Math.max(0, Math.sin(time * 6)) * .35; m.g.rotation.x = -.3;
+    m.legs[0].rotation.x = m.legs[1].rotation.x = -1; m.head.rotation.y = 0; m.tongue.visible = true;
+    if (Math.random() < dt * 1.5) floatText('💕', dog.x, dog.y + 1.5, dog.z, { h: .4 });
+  } else m.head.rotation.y = lerp(m.head.rotation.y, 0, Math.min(1, dt * 5));
 }
 
 // ================= 카메라 =================
