@@ -871,10 +871,8 @@ class Person {
     if (this.dead) return;
     if (this.bubble) { this.bubbleT -= dt; if (this.bubbleT <= 0) { disposeSprite(this.bubble); this.bubble = null; } }
     if (this.arrested) {
-      this.arrestT -= dt; this.g.rotation.y += dt * 6;
-      if (this.arrestT < .6) this.g.scale.multiplyScalar(Math.max(0, 1 - dt * 4));
-      if (Math.random() < .3) spawnP(this.x, 2.6, this.z, mr(-1, 1), 1, mr(-1, 1), Math.random() < .5 ? RED : BLUE, .5);
-      if (this.arrestT <= 0) { world.remove(this.g); this.dead = true; }
+      if (!this.cuffed) { this.body.rotation.z = Math.sin(time * 18) * .1; this.stars.visible = true; }
+      if (Math.random() < .15) spawnP(this.x, 2.6, this.z, mr(-1, 1), 1, mr(-1, 1), Math.random() < .5 ? RED : BLUE, .5);
       return;
     }
     this.glow = Math.max(0, this.glow - dt);
@@ -971,6 +969,65 @@ class Vehicle {
       const sgn = side >= 0 ? 1 : -1;
       moveCircle(dog, fz * sgn * .6, -fx * sgn * .6, .5, false, dog.y);
       if (dog.hurt <= 0 && this.cur > .5) { toast(this.type === 'truck' ? '🚚 트럭에 부딪혔어요! 차량을 조심하세요' : '🚜 지게차에 부딪혔어요! 조심!'); damage(); }
+    }
+  }
+}
+
+// ================= 세관 단속반 (수갑 연행·증거물 회수) =================
+const agents = [];
+function spawnAgent(task) {
+  const tp = task.p ? { x: task.p.x, z: task.p.z } : center(task.c), b = level.bounds, a = Math.random() * Math.PI * 2;
+  const x = clamp(tp.x + Math.cos(a) * 6, b.minX, b.maxX), z = clamp(tp.z + Math.sin(a) * 6, b.minZ, b.maxZ);
+  const m = makePerson('customs'); m.g.position.set(x, 0, z); world.add(m.g);
+  const t = textSprite('🚔 세관 단속반', { h: .3, bg: 'rgba(19,51,90,.92)' }); t.position.y = 2.5; m.g.add(t);
+  burst(x, 1, z, [BLUE, WHITE], 20, 3);
+  agents.push({ m, x, z, dir: Math.atan2(tp.x - x, tp.z - z), phase: 0, task, state: 'go', t: 0 });
+}
+function cuff(p) {
+  p.stars.visible = false; p.body.rotation.z = 0; p.cuffed = true;
+  for (const a of p.arms) a.rotation.x = .5;
+  mesh(BOX(.42, .07, .08), MAT.metal(0xb0b6bb, .3), 0, .95, -.2, p.body);
+}
+function pickUp(A) {
+  const c = A.task.c;
+  if (c.pushable && c.mesh) { c.disabled = true; A.carry = c.mesh; A.carry.scale.setScalar(.6); A.carry.rotation.set(0, 0, 0); }
+  else { const g = new THREE.Group(); world.add(g); mesh(BOX(.5, .4, .4), MAT.cardboard(), 0, 0, 0, g); mesh(BOX(.52, .08, .42), MAT.col(0xc0392b, .5), 0, .05, 0, g); A.carry = g; }
+  floatText('📦 증거물 회수', A.x, 2.6, A.z, { h: .4, color: '#ffd54f' });
+}
+function updateAgents(dt) {
+  for (let i = agents.length - 1; i >= 0; i--) {
+    const A = agents[i], T = A.task; A.t += dt;
+    let tx = A.x, tz = A.z, sp = 0;
+    if (A.state === 'go') {
+      const p = T.p ? T.p : center(T.c); tx = p.x; tz = p.z; sp = 4.5;
+      if (Math.hypot(tx - A.x, tz - A.z) < 1.1 || A.t > 8) { A.state = 'act'; A.t = 0; }
+    } else if (A.state === 'act') {
+      if (A.t > 1.1) {
+        if (T.p) { cuff(T.p); SFX.arrest(); floatText('🔗 수갑 채움!', T.p.x, 2.7, T.p.z, { h: .45, color: '#cfe8ff' }); }
+        else pickUp(A);
+        A.state = 'leave'; A.t = 0; A.ex = A.x; A.ez = level.bounds.maxZ + 3;
+      }
+    } else {
+      tx = A.ex; tz = A.ez; sp = 2.6;
+      if (Math.hypot(tx - A.x, tz - A.z) < .5 || A.t > 14) {
+        world.remove(A.m.g); if (A.carry) world.remove(A.carry);
+        if (T.p) { world.remove(T.p.g); T.p.dead = true; }
+        agents.splice(i, 1); continue;
+      }
+    }
+    if (sp > 0) { const dx = tx - A.x, dz = tz - A.z, d = Math.hypot(dx, dz) || .01; A.x += dx / d * sp * dt; A.z += dz / d * sp * dt; A.dir += angDiff(A.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 8); A.phase += dt * sp * 3; }
+    const k = sp > 0 ? 1 : 0, m = A.m, carrying = A.state === 'leave' && !T.p;
+    m.legs[0].rotation.x = Math.sin(A.phase) * .6 * k; m.legs[1].rotation.x = -Math.sin(A.phase) * .6 * k;
+    m.arms[0].rotation.x = A.state === 'act' || carrying ? -1.3 : -Math.sin(A.phase) * .5 * k;
+    m.arms[1].rotation.x = A.state === 'act' || carrying ? -1.3 : Math.sin(A.phase) * .5 * k;
+    m.body.rotation.x = A.state === 'act' && !T.p ? .5 : 0;
+    m.g.position.set(A.x, 0, A.z); m.g.rotation.y = A.dir;
+    if (A.state === 'leave') {
+      if (T.p) {
+        const p = T.p, bx = A.x - Math.sin(A.dir) * .9, bz = A.z - Math.cos(A.dir) * .9;
+        p.x = bx; p.z = bz; p.phase += dt * sp * 3; p.g.position.set(bx, 0, bz); p.g.rotation.y = A.dir;
+        p.legs[0].rotation.x = Math.sin(p.phase) * .6; p.legs[1].rotation.x = -Math.sin(p.phase) * .6;
+      } else if (A.carry) A.carry.position.set(A.x + Math.sin(A.dir) * .45, 1.05, A.z + Math.cos(A.dir) * .45);
     }
   }
 }
@@ -1150,36 +1207,90 @@ function customsGate(x, z, red) {
     sign('X-RAY 휴대품 검색', xr, 2.2, z - 2.6, .32, 'rgba(19,51,90,.95)');
   }
 }
+// 맵 순서대로 8개씩: 공항 입국장 / 화물터미널 / 우편센터 / 여객선 / 야적장 / 보세창고
 const ADS = [
   ['관세청 공익광고', '마약·총기 밀수 신고는', '☎ 125', '관세청 밀수신고센터 · 24시간'],
-  ['관세청 공익광고', '여행자 휴대품', '자진신고하세요', '면세 한도를 넘는 물품은 세관에 신고'],
-  ['관세청 공익광고', '총기·마약 반입은', '엄격히 금지', '불법 물품은 적발 즉시 압수·폐기'],
-  ['관세청 공익광고', '탐지견이 지키는', '안전한 국경', '세관 탐지견에게 간식을 주지 마세요 🐕'],
-  ['관세청 공익광고', '해외직구 물품도', '통관 확인!', '수입 금지 물품을 꼭 확인하세요'],
-  ['관세청 공익광고', '의심 물품을 보면', '세관에 알려주세요', '여러분의 신고가 국민을 지킵니다'],
+  ['여행자 안내', '여행자 휴대품', '자진신고!', '면세 한도를 넘으면 세관에 신고하세요'],
+  ['여행자 안내', '모르는 사람의 짐', '절대 금지', '대신 들어주다 마약 운반범이 될 수 있어요'],
+  ['여행자 안내', '현금 1만 달러 초과', '신고 필수', '미화 1만 달러를 넘게 가져오면 신고해요'],
+  ['세관 탐지견', '일하는 탐지견을', '만지지 마세요', '탐지견은 지금 근무 중이에요 🐕'],
+  ['여행자 안내', '짝퉁 명품', '반입 금지', '위조 상품은 세관에서 압수됩니다'],
+  ['여행자 안내', '육류·과일', '반입 금지', '해외 가축전염병과 병해충을 막아요'],
+  ['관세청 공익광고', '자진신고하면', '감면 혜택', '스스로 신고하면 세금 부담이 줄어요'],
+
+  ['수출입 안내', '화물 속 마약', 'X-ray 검사 중', '항공화물도 꼼꼼히 들여다봐요'],
+  ['수출입 안내', '수입 화물은', '정직하게 신고', '품명·수량·가격을 정확히 적어요'],
+  ['수출입 안내', '원산지 표시', '꼼꼼히!', '원산지를 속이면 처벌받아요'],
+  ['관세청 공익광고', '총기 부품도', '적발 대상', '분해한 총기 부품도 찾아내요'],
+  ['안전 안내', '지게차 통행', '주의!', '화물터미널에서는 차량을 조심하세요'],
+  ['수출입 안내', '전략물자', '수출 허가 필수', '허가 없이 수출하면 처벌받아요'],
+  ['관세청 공익광고', '밀수 제보', '작은 용기', '작은 제보가 국경을 지킵니다 ☎ 125'],
+  ['세관 탐지견', '오늘도 킁킁', '화물 이상 무!', '탐지견이 항공화물을 지키고 있어요'],
+
+  ['해외직구 안내', '해외직구 전', '통관 확인!', '수입 금지 물품인지 먼저 확인하세요'],
+  ['해외직구 안내', '개인통관고유부호', '꼭 사용하기', '주민등록번호 대신 안전하게'],
+  ['해외직구 안내', '되팔기 목적이면', '면세 안 돼요', '자가사용 물품만 면세 혜택이 있어요'],
+  ['관세청 공익광고', '국제우편 속 마약', '반드시 적발', '소포 속 마약도 X-ray로 찾아내요'],
+  ['해외직구 안내', '의약품 직구', '성분 확인!', '성분에 따라 반입이 금지될 수 있어요'],
+  ['해외직구 안내', '모르는 택배는', '받지 마세요', '내 이름으로 마약이 올 수도 있어요'],
+  ['관세청 공익광고', '짝퉁 직구', '불법이에요', '위조 상품을 사고팔면 처벌받아요'],
+  ['세관 탐지견', '소포도', '킁킁 검사', '탐지견이 우편물을 지켜요 📦'],
+
+  ['여행자 안내', '배로 온 여행객도', '휴대품 신고', '선박 여행자도 자진신고 대상이에요'],
+  ['관세청 공익광고', '바다 위 밀수', '24시간 감시', '항만 감시는 쉬지 않아요'],
+  ['여행자 안내', '멸종위기 동식물', '데려오면 안 돼요', '국제 협약으로 보호되는 생물이에요'],
+  ['여행자 안내', '남의 짐 운반', '거절하세요', '착한 마음이 범죄가 될 수 있어요'],
+  ['안전 안내', '갑판에서는', '뛰지 마세요', '안전한 항해를 위해 협조해 주세요'],
+  ['여행자 안내', '농축산물은', '검역 먼저', '검역 대상인지 꼭 확인하세요'],
+  ['관세청 공익광고', '여객선 밀수 신고', '☎ 125로!', '수상한 짐을 보면 알려주세요'],
+  ['세관 탐지견', '파도 위에서도', '킁킁킁', '바다 위 국경도 탐지견이 지켜요 ⚓'],
+
+  ['수출입 안내', '컨테이너 속 밀수', '대형 X-ray', '컨테이너째로 속을 들여다봐요'],
+  ['관세청 공익광고', '총기·도검 밀수', '엄중 처벌', '불법 무기는 국경을 넘지 못해요'],
+  ['수출입 안내', '신고와 다른 화물', '허위 신고', '신고 내용과 다르면 적발돼요'],
+  ['안전 안내', '트럭 통행로', '조심 또 조심', '야적장에서는 차량을 먼저 살펴요'],
+  ['수출입 안내', '폐기물 불법 수출입', '감시 중', '국경을 넘는 폐기물도 지켜봐요'],
+  ['관세청 공익광고', '마약 없는 항만', '함께 지켜요', '의심 화물은 바로 신고해 주세요'],
+  ['수출입 안내', '관세 납부는', '성실하게', '공정한 무역의 첫걸음이에요'],
+  ['세관 탐지견', '컨테이너도', '킁킁 완료', '탐지견이 항만을 지켜요 🚢'],
+
+  ['보세구역 안내', '보세창고 물품', '무단 반출 금지', '세관 허가 없이 가져갈 수 없어요'],
+  ['관세청 공익광고', '밀수 조직', '끝까지 소탕', '관세청이 국민을 지킵니다'],
+  ['보세구역 안내', '보세구역 출입', '허가자만', '출입할 때는 신분을 확인해요'],
+  ['관세청 공익광고', '압수된 마약은', '안전하게 처리', '법에 따라 폐기돼요'],
+  ['보세구역 안내', 'CCTV', '24시간 감시', '보세창고는 항상 지켜보고 있어요'],
+  ['관세청 공익광고', '마약은', '한 번도 안 돼요', '호기심으로도 절대 금지!'],
+  ['관세청 공익광고', '밀수 신고자', '비밀 보장', '안심하고 ☎ 125로 신고하세요'],
+  ['세관 탐지견', '최고의 파트너', '탐지견 & 핸들러', '오늘도 국경 이상 무! 🐕'],
 ];
 const logoImg = new Image(); logoImg.src = "logo.png";
 function adTexture(ad) {
-  return canvasTex('ad' + ad[2], 512, (g, sz) => {
+  return canvasTex('ad' + ad.join('|'), 512, (g, sz) => {
     const gr = g.createLinearGradient(0, 0, 0, sz); gr.addColorStop(0, '#13335a'); gr.addColorStop(1, '#0b1f38'); g.fillStyle = gr; g.fillRect(0, 0, sz, sz);
     g.fillStyle = '#f4c542'; g.fillRect(0, 0, sz, 70); g.fillStyle = '#13335a'; g.font = '34px Jua, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(ad[0], sz / 2, 37);
-    g.fillStyle = '#ffffff'; g.font = '50px Jua, sans-serif'; g.fillText(ad[1], sz / 2, 170);
-    g.fillStyle = '#f4c542'; g.font = '84px Jua, sans-serif'; g.fillText(ad[2], sz / 2, 280);
-    g.fillStyle = '#cfe0f2'; g.font = '28px Jua, sans-serif'; g.fillText(ad[3], sz / 2, 400);
+    const fit = (t, px, y, col) => { g.font = px + 'px Jua, sans-serif'; const w = g.measureText(t).width; if (w > sz - 40) g.font = Math.floor(px * (sz - 40) / w) + 'px Jua, sans-serif'; g.fillStyle = col; g.fillText(t, sz / 2, y); };
+    fit(ad[1], 50, 170, '#ffffff'); fit(ad[2], 84, 280, '#f4c542'); fit(ad[3], 28, 400, '#cfe0f2');
     if (logoImg.complete && logoImg.naturalWidth) { const lh = 56, lw = lh * logoImg.naturalWidth / logoImg.naturalHeight; g.fillStyle = '#ffffff'; g.fillRect(sz - lw - 28, 84, lw + 16, lh + 12); g.drawImage(logoImg, sz - lw - 20, 90, lw, lh); }
     g.fillStyle = 'rgba(255,255,255,.5)'; g.font = '20px sans-serif'; g.fillText('관세청 일일 특강 교육 게임', sz / 2, 475);
   });
 }
 function billboards(L) {
-  const ads = [...ADS].sort(() => rnd() - .5).slice(0, 2);
-  ads.forEach((ad, i) => {
-    const x = (i ? 1 : -1) * L.w / 4, z = -L.d / 2 + 1, t = adTexture(ad); t.magFilter = THREE.LinearFilter;
-    const panel = mesh(BOX(6.4, 3.4, .2), MAT.col(0x0b1f38, .5), x, 4.4, z); panel.castShadow = false;
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(6, 3), new THREE.MeshBasicMaterial({ map: t, toneMapped: false }));
-    face.position.set(x, 4.4, z + .11); world.add(face);
-    for (const sx of [-2.6, 2.6]) mesh(BOX(.18, 2.7, .18), MAT.metal(0x777777), x + sx, 1.35, z - .05);
-    addCol(x - 2.6, z - .05, .3, .3, null, { topY: 2.7 }); addCol(x + 2.6, z - .05, .3, .3, null, { topY: 2.7 });
-  });
+  // 벽 4면에 2개씩, 맵마다 다른 문구 8개
+  const set = ADS.slice(levelIdx * 8, levelIdx * 8 + 8);
+  const sides = [[0, -L.d / 2 + 1, 0, 'x', L.w], [0, L.d / 2 - 1, Math.PI, 'x', L.w], [-L.w / 2 + 1, 0, Math.PI / 2, 'z', L.d], [L.w / 2 - 1, 0, -Math.PI / 2, 'z', L.d]];
+  let k = 0;
+  for (const [cx, cz, rot, axis, len] of sides) for (const sgn of [-1, 1]) {
+    const ad = set[k++]; if (!ad) continue;
+    const x = axis === 'x' ? sgn * len / 4 : cx, z = axis === 'z' ? sgn * len / 4 : cz;
+    const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot; world.add(g);
+    const panel = mesh(BOX(6.4, 3.4, .2), MAT.col(0x0b1f38, .5), 0, 4.4, 0, g); panel.castShadow = false;
+    const t = adTexture(ad); t.magFilter = THREE.LinearFilter;
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(6, 3), new THREE.MeshBasicMaterial({ map: t, toneMapped: false })); face.position.set(0, 4.4, .11); g.add(face);
+    for (const lx of [-2.6, 2.6]) {
+      mesh(BOX(.18, 2.7, .18), MAT.metal(0x777777), lx, 1.35, -.05, g);
+      addCol(x + Math.cos(rot) * lx + Math.sin(rot) * -.05, z - Math.sin(rot) * lx + Math.cos(rot) * -.05, .3, .3, null, { topY: 2.7 });
+    }
+  }
 }
 function applyExtras(L) {
   billboards(L);
@@ -1509,14 +1620,14 @@ $('btnSnap').onclick = () => {
 let state = 'login', time = 0, levelTime = 0, levelScore = 0, runScore = 0, runTime = 0, runNext = 0, runStage = 0, shake = 0;
 let level = null, levelIdx = 0, hidden = [], lvStats = {}, totals = { items: 0, arrests: 0, mistakes: 0 };
 let playerId = store.get('k9id', '');
-const LABEL = { drug: '💊 마약 폐기', gun: '🔫 총기 폐기', smuggler: '🕶 밀수범 체포', boss: '👑 보스 체포' };
+const LABEL = { drug: '💊 마약 적발', gun: '🔫 총기 적발', smuggler: '🕶 밀수범 체포', boss: '👑 보스 체포' };
 const progKey = () => 'k9prog:' + playerId;
 const getProg = () => store.get(progKey(), { unlocked: 0, best: {} });
 
 function clearWorld() {
   world.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map?.dispose(); o.material.dispose(); } });
   scene.remove(world); world = new THREE.Group(); scene.add(world);
-  colliders = []; people.length = 0; vehicles.length = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
+  colliders = []; people.length = 0; vehicles.length = 0; agents.length = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
   clearEffects(); clearParticles();
 }
 function loadLevel(i) {
@@ -1797,21 +1908,23 @@ function reveal(c) {
   const s = textSprite(`${info.emoji} ${placeOf(c)} 속 ${info.name} 발견!`, { bg: info.bg, h: .6 });
   s.position.set(p.x, c.topY + 1.1, p.z); scene.add(s);
   effects.push({ kind: 'reveal', s, t: 0, c });
-  SFX.found(); toast(`${info.emoji} ${placeOf(c)} 속 ${info.name} 적발! 폐기 처리 중…`);
+  SFX.found(); toast(`${info.emoji} ${placeOf(c)} 속 ${info.name} 적발! 세관 단속반 출동…`);
   burst(p.x, c.topY, p.z, [info.color, WHITE], 30, 3);
 }
 function destroyItem(c) {
   const p = center(c), info = ITEM[c.hidden];
-  SFX.destroy(); shake = .25;
-  burst(p.x, c.topY + .8, p.z, [new THREE.Color(0xff6a00), new THREE.Color(0xffd000), RED], 70, 6);
+  tone(523, .15, 'square', .08); tone(784, .2, 'square', .08, 0, .16);
+  toast('🚨 범인 추적 시작!!'); spawnAgent({ c });
+  const suspect = people.filter(q => q.villain && !q.arrested && !q.dead).sort((a, b) => Math.hypot(a.x - p.x, a.z - p.z) - Math.hypot(b.x - p.x, b.z - p.z))[0];
+  if (suspect) { suspect.glow = 8; floatText('🎯 추적 대상!', suspect.x, 2.9, suspect.z, { h: .45, color: '#ff6b6b' }); }
   const pts = info.pts * comboHit();
-  floatText(`🔥 폐기 완료 +${pts}`, p.x, c.topY + 1.4, p.z, { color: '#ffd54f' });
+  floatText(`🔒 증거물 확보 +${pts}`, p.x, c.topY + 1.4, p.z, { color: '#ffd54f' });
   addScore(pts); totals.items++; lvStats[c.hidden]++; ach[c.hidden]++; checkBadges();
-  if (c.mesh) { const chk = textSprite('✔ 검사완료', { h: .3, bg: 'rgba(30,140,70,.9)' }); chk.position.y = c.childY ?? 1.5; c.mesh.add(chk); }
+  if (c.mesh && !c.pushable) { const chk = textSprite('✔ 검사완료', { h: .3, bg: 'rgba(30,140,70,.9)' }); chk.position.y = c.childY ?? 1.5; c.mesh.add(chk); }
   checkQuest();
 }
 function arrest(p) {
-  p.arrested = true; p.arrestT = 2.2; p.ring.visible = false; p.stars.visible = false;
+  p.arrested = true; p.ring.visible = false; spawnAgent({ p });
   SFX.arrest(); chiefSay(pick2(['체포 성공! 👏', '멋지다, 팀워크 최고!']));
   const pts = (p.kind === 'boss' ? 600 : 200) * comboHit(); addScore(pts); totals.arrests++; if (p.kind === 'boss') ach.boss++; else ach.arrest++; checkBadges();
   floatText(`🚔 체포! +${pts}`, p.x, 3, p.z, { color: '#7dd3ff' });
@@ -2145,7 +2258,7 @@ function loop() {
   requestAnimationFrame(loop);
   const dt = Math.min(clock.getDelta(), .05); time += dt;
   if (state === 'play') {
-    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateFun(dt); for (const v of vehicles) v.update(dt);
+    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
     for (const p of people) p.update(dt);
   } else if (state === 'photo') {
     dog.idleT = photoPose; updateDog(dt); updateHandler(dt);
