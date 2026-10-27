@@ -163,7 +163,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
   <kbd>Space</kbd><span>점프 — 상자나 컨베이어 위로 올라가기</span>
   <kbd>E 꾹 누르기</kbd><span>냄새 맡기 — 숨은 물건 쪽으로 냄새 입자가 흐르고, 밀수범 발밑에 빨간 원이 떠요</span>
   <kbd>F</kbd><span>🐕 왕왕 짖기 — 수상한 물건 옆이면 적발! 가까운 밀수범은 놀라 멈추고 체력이 1 줄어요</span>
-  <kbd>Q</kbd><span>🦴 핸들러가 뼈다귀 던지기 — 바라보는 쪽 밀수범을 맞혀 체력을 1 줄여요</span>
+  <kbd>Q</kbd><span>🦴 핸들러가 뼈다귀를 앞으로 던지기 — 밀수범을 정면에 두고 던져 맞히면 체력 -1</span>
   <kbd>마우스 드래그</kbd><span>카메라 회전 (휠: 줌) · 🗺 일시정지 · 🔄 다시 시작</span>
  </div>
  <div class="ctl touchonly">
@@ -636,35 +636,27 @@ function makeBone() {
 }
 function throwBone() {
   if (handler.boneCd > 0) return;
-  handler.boneCd = 1.4; handler.throwT = .35;
+  handler.boneCd = 1.2; handler.throwT = .35;
+  // 탐지견이 바라보는 방향으로 똑바로 던진다 (자동 조준 없음)
   const fx = Math.sin(dog.dir), fz = Math.cos(dog.dir);
-  let best = null, bs = -1e9;
-  for (const p of people) {
-    if (p.dead || p.arrested || p.kind === 'officer' || p.route && p.kind === 'customs') continue;
-    const dx = p.x - handler.x, dz = p.z - handler.z, d = Math.hypot(dx, dz);
-    if (d > 15 || d < .5) continue;
-    const cos = (dx * fx + dz * fz) / d; if (cos < .7) continue;
-    const sc = (p.villain && p.glow > 0 ? 100 : 0) + cos * 10 - d;
-    if (sc > bs) { bs = sc; best = p; }
-  }
-  const tx = best ? best.x : handler.x + fx * 10, tz = best ? best.z : handler.z + fz * 10;
-  bones.push({ m: makeBone(), sx: handler.x, sz: handler.z, tx, tz, t: 0, dur: .55, target: best });
-  tone(520, .12, 'triangle', .1, 300); floatText('🦴 던져!', handler.x, 2.6, handler.z, { h: .45 });
+  bones.push({ m: makeBone(), x: dog.x + fx * .6, z: dog.z + fz * .6, fx, fz, t: 0, range: 14, speed: 18 });
+  tone(520, .12, 'triangle', .1, 300);
 }
 function updateBones(dt) {
   for (let i = bones.length - 1; i >= 0; i--) {
-    const b = bones[i]; b.t += dt; const u = Math.min(1, b.t / b.dur);
-    if (b.target && !b.target.arrested && !b.target.dead) { b.tx = b.target.x; b.tz = b.target.z; }
-    b.m.position.set(lerp(b.sx, b.tx, u), lerp(1.6, 1.1, u) + Math.sin(Math.PI * u) * 2.2, lerp(b.sz, b.tz, u));
-    b.m.rotation.y += dt * 14; b.m.rotation.z += dt * 9;
-    if (u < 1) continue;
+    const b = bones[i]; b.t += dt;
+    b.x += b.fx * b.speed * dt; b.z += b.fz * b.speed * dt;
+    const u = Math.min(1, b.t * b.speed / b.range), y = 1.5 + Math.sin(Math.PI * u) * .6 - u * .9;
+    b.m.position.set(b.x, y, b.z); b.m.rotation.y += dt * 14; b.m.rotation.z += dt * 9;
+    let hit = null;
+    for (const p of people) { if (p.dead || p.arrested || p.kind === 'officer') continue; if (Math.hypot(p.x - b.x, p.z - b.z) < .9) { hit = p; break; } }
+    const wall = colliders.some(c => !c.disabled && c.topY > y && distToBox(b.x, b.z, c) < .15);
+    if (!hit && !wall && u < 1) continue;
     scene.remove(b.m); bones.splice(i, 1);
-    burst(b.tx, .8, b.tz, [new THREE.Color(0xf5efe0), WHITE], 14, 3);
-    const p = b.target;
-    if (p && !p.arrested && !p.dead) {
-      if (p.villain) hitVillain(p, '🦴 명중!');
-      else { p.stun = .8; addScore(-50); totals.mistakes++; toast('😵 일반인을 맞혔어요! 부상 (-50)'); SFX.error(); damage(); }
-    }
+    burst(b.x, Math.max(.4, y), b.z, [new THREE.Color(0xf5efe0), WHITE], 14, 3);
+    if (!hit) continue;
+    if (hit.villain) hitVillain(hit, '🦴 명중!');
+    else { hit.stun = .8; addScore(-50); totals.mistakes++; toast('😵 일반인을 맞혔어요! 부상 (-50)'); SFX.error(); damage(); }
   }
 }
 function hitVillain(p, label) {
