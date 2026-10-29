@@ -309,7 +309,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030024656';
+const BUILD = '20261030024959';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -2130,9 +2130,9 @@ function reachStacker(x, z, rot = 0) {
   const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot; world.add(g); const c = MAT.col(0xe67e22, .5, .2);
   mesh(BOX(3, 1.6, 6), c, 0, 1.3, 0, g); mesh(BOX(2, 1.6, 2), MAT.col(0x1b2833, .1, .3), -.4, 2.8, -1, g);
   for (const sx of [-1.4, 1.4]) for (const sz of [-2, 2]) mesh(CYL(.7, .7, .5), MAT.col(0x111111, .8), sx, .7, sz, g).rotation.z = Math.PI / 2;
-  const arm = mesh(BOX(.9, .9, 9), c, .6, 4.2, 1.2, g); arm.rotation.x = -.42;
-  mesh(BOX(3.4, .4, 2.6), MAT.col(0xf1c40f, .5), .6, 6.2, 5.6, g); mesh(BOX(10, 2.6, 2.45), MAT.ribs(pick([0x2471a3, 0xb03a2e])), .6, 4.7, 5.6, g).rotation.y = Math.PI / 2;
-  const t = textSprite('🚜 리치스태커', { h: .3 }); t.position.y = 8.5; g.add(t); addCol(x, z, 4, 7, g, { topY: 3 });
+  const arm = mesh(BOX(.9, .9, 7), c, .6, 4, 1.6, g); arm.rotation.x = -.42;
+  mesh(BOX(6, .4, 2.6), MAT.col(0xf1c40f, .5), .6, 5.3, 5.2, g); mesh(BOX(6, 2.6, 2.45), MAT.ribs(pick([0x2471a3, 0xb03a2e])), .6, 3.8, 5.2, g);
+  const t = textSprite('🚜 리치스태커', { h: .3 }); t.position.y = 8; g.add(t); const ca = Math.abs(Math.sin(rot)) > .5; addCol(x + (ca ? Math.sin(rot) * 1.6 : 0), z + (ca ? 0 : Math.cos(rot) * 1.6), ca ? 10 : 6.5, ca ? 6.5 : 10, g, { topY: 3 });
 }
 function cargoShip(x, z, len, dir = 0, speed = 0, range = 0) {
   const g = new THREE.Group(); g.position.set(x, -.6, z); g.rotation.y = dir; world.add(g);
@@ -2646,9 +2646,9 @@ const LEVELS = [
         if (rnd() < .2) continue;
         containerBox(cx, cz, 10, pick(cols), 1 + Math.floor(rnd() * 3));
       }
-      { const z0 = -L.d / 2 + 2.2; quayCrane(-48, z0, 0); quayCrane(-37, z0, 6); quayCrane(0, z0, 3); quayCrane(14, z0, 9); sign('⚓ 안벽(선석) · 배에서 컨테이너를 내려요', -20, 5, z0 + 12, .55); }
+      { const z0 = -L.d / 2 + 2.2; L.mmRoads = (L.mmRoads || []).concat([[-L.w / 2, z0 + 5, L.w / 2, z0 + 5, 13, false, true]]); quayCrane(-48, z0, 0); quayCrane(-37, z0, 6); quayCrane(0, z0, 3); quayCrane(14, z0, 9); sign('⚓ 안벽(선석) · 배에서 컨테이너를 내려요', -20, 5, z0 + 12, .55); }
       rtgCrane(4, -28, 32, 0); rtgCrane(14, -28, 32, 20);
-      reachStacker(-36, 9, Math.PI / 2); reachStacker(40, -2, -Math.PI / 2);
+      for (const rot of [Math.PI / 2, -Math.PI / 2]) { const p = placeFree({ minX: -40, maxX: 40, minZ: -20, maxZ: 20 }, 11, 7, 1.5, L.avoid); if (p) reachStacker(p.x, p.z, rot); }
       { const tex = TEX.water(); tex.repeat.set(80, 30); const sea = new THREE.Mesh(new THREE.PlaneGeometry(900, 360), std(0xffffff, .25, 0, { map: tex, color: 0x5aa9d6 })); sea.rotation.x = -Math.PI / 2; sea.position.set(0, -.7, -L.d / 2 - 180); world.add(sea); }
       cargoShip(-18, -L.d / 2 - 8, 70);
       cargoShip(60, -L.d / 2 - 60, 90, 0, .05, 80);
@@ -3519,7 +3519,7 @@ function mpRecv(p) {
   Object.assign(o, { tx: p.x, tz: p.z, ty: p.y, tdir: p.r, hx: p.hx, hz: p.hz, hr: p.hr, last: time });
 }
 function mpRemove(k) { const o = mp && mp.others.get(k); if (!o) return; world.remove(o.d.g); world.remove(o.h.g); mp.others.delete(k); updateMpCount(); }
-function updateMpCount() { $('mpCount').textContent = mp && level ? (team ? '👥 팀 ' + team.code + ' · ' : '') + t('mp_count').replace('{n}', mp.others.size + 1) + (team ? '/' + team.size : '') : ''; }
+function updateMpCount() { $('mpCount').textContent = mp && level ? (team ? '👥 팀 ' + team.code + ' · ' + (mp.others.size + 1) + '/' + team.size + '명 함께 수색 중' : t('mp_count').replace('{n}', mp.others.size + 1)) : ''; }
 function updateMp(dt) {
   if (!mp) return;
   mp.sendT -= dt;
