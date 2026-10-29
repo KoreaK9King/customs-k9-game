@@ -1062,9 +1062,14 @@ function updateHandler(dt) {
     if (ed > 5) { handler.x = dog.x + ex / ed * 5; handler.z = dog.z + ez / ed * 5; }
   }
   if (d > 9) { handler.x = bx; handler.z = bz; }
-  const sp = d > .3 ? Math.min(d * 3, 10) : 0;
-  if (sp > 0) { handler.x += dx / d * sp * dt; handler.z += dz / d * sp * dt; handler.dir += angDiff(handler.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 8); }
-  else if (!twoP) handler.dir += angDiff(handler.dir, Math.atan2(dog.x - handler.x, dog.z - handler.z)) * Math.min(1, dt * 4);
+  const sp = d > .3 ? Math.min(d * 4.5, 11) : 0;
+  if (sp > 0) { handler.x += dx / d * sp * dt; handler.z += dz / d * sp * dt; }
+  // 바라보는 방향: 멀면 가는 쪽, 탐지견이 걸으면 탐지견과 같은 쪽, 멈추면 탐지견 쪽
+  if (!twoP) {
+    const dogMoving = Math.hypot(dog.vx || 0, dog.vz || 0) > .6;
+    const want = dogMoving ? dog.dir : sp > 0 && d > 1.2 ? Math.atan2(dx, dz) : Math.atan2(dog.x - handler.x, dog.z - handler.z);
+    handler.dir += angDiff(handler.dir, want) * Math.min(1, dt * (dogMoving ? 8 : 4));
+  }
   unstick(handler, .35, handler.y);
   const spA = twoP ? (handler.p2 || 0) : sp; handler.phase += dt * spA * 3; const k = Math.min(1, spA / 2);
   stairHold(handler, .7);
