@@ -195,6 +195,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  #bRun{right:calc(24px + var(--sr));bottom:calc(108px + var(--sb));width:60px;height:60px;font-size:14px}
  body.touch #bBone{right:calc(100px + var(--sr));bottom:calc(92px + var(--sb));width:52px;height:52px;font-size:22px}
 }
+#pvMore{display:block;list-style:none;background:var(--navy);color:#fff!important;border-radius:10px;padding:8px 12px;margin:6px 0;text-align:center;font-size:14px;box-shadow:0 3px 0 #0b1f33}#pvMore::-webkit-details-marker{display:none}#pvMore::before{content:"📖 "}#pvMore::after{content:" (눌러서 읽기) ▼";font-size:12px;opacity:.85}details[open]>#pvMore::after{content:" ▲ 접기"}#pvMore:active{transform:translateY(2px);box-shadow:none}
 @media (prefers-reduced-motion:reduce){#toast{transition:none}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
@@ -377,7 +378,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030034218';
+const BUILD = '20261030034326';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -4585,6 +4586,7 @@ if (isMobile) { for (const id of ['badges', 'shop']) { $(id).classList.add('fold
   const unlock = () => { boxes.forEach(b => b.disabled = false); $('pvHint').textContent = '✅ 안내를 모두 읽었어요. 아래 두 곳에 체크해 주세요'; $('pvHint').style.color = '#2e7d32'; };
   const lock = () => { if (boxes.every(b => b.checked)) { unlock(); $('pvHint').style.display = 'none'; return; } boxes.forEach(b => b.disabled = true); };
   const atEnd = () => body.scrollTop + body.clientHeight >= body.scrollHeight - 6;
+  $('pvMore').addEventListener('click', e => { e.preventDefault(); det.open = !det.open; });
   det.addEventListener('toggle', () => { if (det.open) setTimeout(() => { if (atEnd()) unlock(); }, 300); });
   body.addEventListener('scroll', () => { if (atEnd()) unlock(); });
   for (const b of boxes) b.closest('label').addEventListener('click', e => { if (b.disabled) { e.preventDefault(); det.open = true; body.scrollIntoView({ block: 'nearest' }); toast('📖 개인정보 안내를 끝까지 읽어 주세요'); } });
