@@ -135,7 +135,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
 <div id="game"></div>
 
 <div id="quest" class="hud"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><p id="qdesc"></p><div id="qgoals"></div></div>
-<div id="mmwrap" class="hud"><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span></div></div>
+<div id="mmwrap" class="hud"><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
 <div id="topbar" class="hidden"><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div>
@@ -250,7 +250,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
   <kbd>킁킁</kbd><span>꾹 눌러 냄새 맡기</span><kbd>왕왕</kbd><span>짖어서 적발 / 밀수범 공격</span><kbd>뼈다귀</kbd><span>핸들러가 뼈다귀 던지기</span>
   <kbd>화면 드래그</kbd><span>카메라 회전</span>
  </div>
- <p style="font-size:14px;margin:6px 0">❤️ 하트 3개로 시작해 최대 7개까지 모아요(🎾 공·돌발 미션) · 깨끗한 물건을 적발하거나, 시민을 맞히거나, 차량에 부딪히면 하트가 줄어요. 🎾 공을 주우면 회복! 밀수범 체력이 0이 되면 체포됩니다.</p>
+ <p style="font-size:14px;margin:6px 0">❤️ 하트 3개로 시작해 최대 7개까지 모아요(🎾 공·돌발 미션) · 깨끗한 물건을 적발하거나, 시민을 맞히거나, 차량에 부딪히면 하트가 줄어요. 🎾 공을 주우면 회복! 밀수범 체력이 0이 되면 체포됩니다.<br>🛡 방탄조끼(공격 1번 막기) · 👃 슈퍼 코 간식(냄새 범위 1.5배) · 🦴 뼈다귀 가방(2배 빨리 던지기) · 📡 X-RAY도 주워요!</p>
  <div class="row"><button class="big" id="btnHowtoOk">알겠어요! 출동!</button></div>
 </div></div>
 <div id="dlg" class="overlay hidden"><div class="card">
@@ -551,6 +551,16 @@ const KO = {
 const DICT2 = {"en":{"m":["Post Office","Prison","Seoul Station","Inside the KTX","Bus Terminal","Inside a Plane","Myeongdong","Gyeongbokgung Palace","Hongdae","Lotte World Tower","Dongdaemun","Gwangalli Beach","Sungnyemun Gate","Suwon Hwaseong","Gyeongju","N Seoul Tower","Haeundae","Hallasan, Jeju","Pohang Space Walk","Jeonju Hanok Village","Gwanghwamun Square","Cheong Wa Dae","National Assembly"],"s":["Search counters, parcel desks, P.O. boxes and the conveyor.","Patrol the walls, cell blocks, yard and visiting room.","Old station, glass station, Seoullo 7017 and KTX platforms.","Search under seats and in luggage racks of a 300 km/h train.","Bus bays, waiting hall, ticket office and taxi stand. Mind the buses!","Business and economy seats, galley and restrooms.","Street food stalls, cosmetics shops and Myeongdong Cathedral.","Gwanghwamun, Geunjeongjeon, Gyeonghoeru and Hyangwonjeong.","Busking stage, university gate, playground and Gyeongui Line Forest.","555 m tower, Seokchon Lake, mall and aquarium.","DDP, LED rose garden, Heunginjimun and Cheonggyecheon.","Crescent beach, Gwangan Bridge and a drone show.","National Treasure gate in a busy roundabout and Namdaemun Market.","Fortress gates, watchtowers, pavilions and the dragon train.","Cheomseongdae, royal tombs, Bulguksa, Seokguram and Wolji pond.","Love locks, beacon mounds, pavilion and cable car.","Long beach, skyscrapers, sky capsules and Dongbaek Island.","Climb to Baengnokdam crater. Tangerines, canola flowers, haenyeo.","The 333 m steel walkway, Yeongil Bay and the Hand of Harmony.","Tiled roofs, Pungnammun, Jeondong Cathedral and Gyeonggijeon.","King Sejong and Admiral Yi statues, fountains and Gwanghwamun.","Blue-roofed main hall, guest house, pine garden and Bugaksan.","Green dome, 24 columns, Haetae statues and the Han River."],"ui":{"ls_id":"🔑 ID <small style=\"font-weight:500;color:var(--muted)\">(email address · never shown in the ranking)</small>","ph_id":"e.g. dkslek123@google.com","ls_remember":"Remember my ID <small style=\"font-weight:500;color:var(--muted)\">(next time, password only)</small>","pv_title":"<b>📋 Notice on collecting personal info (email)</b>","pv_more":"Show details","pv_body":"· <b>Items</b>: email (ID), password (stored irreversibly encrypted), handler nickname, dog name, game records (score, time)<br>· <b>Purpose</b>: login, saving records, ranking. Only the <b>nickname and dog name</b> are shown; your email is never public. No marketing email.<br>· <b>Retention</b>: until you delete it. Press <b>🗑 Delete my data</b> to erase everything at once.<br>· <b>Where</b>: game ranking server (Supabase, Seoul region). With “Remember my ID”, the email is also saved in this browser.<br>· <b>Right to refuse</b>: you can still play with <b>👀 Try as guest</b> (no ranking, saved on this device only).<br>· Under 14: Korean law requires <b>a parent or guardian’s consent</b>. Please read this together.","pv_c1":"<b>[Required]</b> I agree to the collection and use of my personal info (email)","pv_c2":"<b>[Required]</b> I am 14 or older · if under 14, my parent/guardian read this and agreed","ls_nick":"🧑‍✈️ Handler nickname <small style=\"font-weight:500;color:var(--muted)\">(shown in game and ranking)</small>","ph_nick":"e.g. Captain Bolt (1–10 chars)","ls_dog":"🐕 Your detector dog’s nickname","ls_edit":"✏ Edit character","b_guest":"👀 Try as guest","b_delme":"🗑 Delete my data","ls_top":"🏆 TOP 100 Ranking","b_rankall":"📋 Full ranking","mp_p":"Clear maps 1–5 in any order! Clearing all five opens the 👑 boss fight (map 6), and catching the boss opens the 🌅 hidden map. Your score adds up during one operation.","st_lockB":"🔒 Clear maps 1–5 first","st_run":"✅ Cleared this run","err_email":"Please enter your email address as your ID (e.g. dkslek123@google.com)","err_consent":"Please read the privacy notice and tick both [Required] boxes. If you don’t agree, use 👀 Try as guest.","err_nick":"Handler nickname must be 1–10 letters or numbers.","del_need":"Enter your ID (email) and password first to delete.","del_fail":"Could not delete. Please check your ID and password.","del_done":"🗑 All your data has been deleted.","del_confirm":"Delete all your data?\nYour email, password, nickname and ranking records will be erased from the server and cannot be restored.","ts_guest":"👀 Guest mode · not ranked, saved on this device only","tod_day":"☀ {city} {time} · Day mission","tod_dusk":"🌇 {city} {time} · Sunset mission","tod_night":"🌙 {city} {time} · Night mission","ts_leak_warn":"⏳ Find contraband in 10 seconds or it slips through customs!","dlg_leak":"🚨 Alert! {item} slipped through customs into the market…\n\nPenalty −200\n\nHurry and search with your dog! More contraband slips out as time passes.","ts_shot":"🔫 You were shot by a smuggler! Dodge sideways or jump","lbl_gate":"Extra gate","lbl_lm":"Landmark","sep_lm":"🇰🇷 Korean landmark patrol · {n} places","sep_note":"(free play · not in the online ranking)","qz_gate":"🛃 Extra gate","qz_lm":"🇰🇷 Landmark patrol","clr_lm_sub":"🇰🇷 Patrol complete","clr_lm_title":"patrol success!","clr_lm_note":"Landmark scores are separate from the online ranking","ts_boss_rank":"ℹ Clear maps 1–5 and the boss in one operation to post your online score","who_fmt":"🕵 {nick} handler · {score} pts","run_fmt":" · this run {n}/6","hd_word":"handler"}},"zh":{"m":["邮局","监狱","首尔站","KTX列车内","巴士客运站","飞机客舱","明洞","景福宫","弘大","乐天世界塔","东大门","广安里海滩","崇礼门","水原华城","庆州","N首尔塔","海云台","济州汉拿山","浦项太空步道","全州韩屋村","光化门广场","青瓦台","国会议事堂"],"s":["搜查柜台、包裹台、邮政信箱和传送带。","巡逻围墙、监舍、操场和会见室。","老站舍、玻璃新站、首尔路7017和KTX站台。","在时速300公里的列车上搜查座位下和行李架。","站台、候车大厅、售票处和出租车站。小心巴士！","商务舱、经济舱、厨房和洗手间。","小吃摊、化妆品店和明洞天主教堂。","光化门、勤政殿、庆会楼和香远亭。","街头表演舞台、大学正门、游乐场和京义线林荫路。","555米高塔、石村湖、商场和水族馆。","DDP、LED玫瑰园、兴仁之门和清溪川。","半月形海滩、广安大桥和无人机表演。","车流环绕的国宝城门和南大门市场。","城门、望楼、亭子和龙头观光车。","瞻星台、古坟、佛国寺、石窟庵和月池。","爱情锁、烽燧台、八角亭和缆车。","长长的沙滩、摩天楼、天空胶囊和冬柏岛。","登上白鹿潭火山口。橘子、油菜花、海女。","333米钢铁步道、迎日湾和相生之手。","瓦片屋顶、丰南门、殿洞圣堂和庆基殿。","世宗大王和李舜臣将军铜像、喷泉和光化门。","蓝瓦本馆、迎宾馆、松树庭园和北岳山。","绿色圆顶、24根柱子、獬豸像和汉江。"],"ui":{"ls_id":"🔑 账号 <small style=\"font-weight:500;color:var(--muted)\">(电子邮箱 · 不会在排行榜公开)</small>","ph_id":"例：dkslek123@google.com","ls_remember":"记住账号 <small style=\"font-weight:500;color:var(--muted)\">(下次只需输入密码)</small>","pv_title":"<b>📋 个人信息（电子邮箱）收集与使用说明</b>","pv_more":"查看详情","pv_body":"· <b>收集项目</b>：电子邮箱（账号）、密码（不可逆加密保存）、训导员昵称、犬名、游戏记录（分数、时间）<br>· <b>使用目的</b>：登录、保存记录、排行榜。排行榜只显示<b>昵称和犬名</b>，邮箱不会公开，也不会发送广告邮件。<br>· <b>保存期限</b>：直到你删除为止。点击<b>🗑 删除我的信息</b>即可全部删除。<br>· <b>保存位置</b>：游戏排行榜服务器（Supabase，首尔区域）。开启“记住账号”时，邮箱也会保存在本浏览器。<br>· <b>拒绝的权利</b>：不同意也可以用<b>👀 体验模式</b>游玩（不计入排行榜，仅保存在本设备）。<br>· 未满14岁：根据韩国法律需要<b>父母或监护人同意</b>，请一起阅读。","pv_c1":"<b>[必选]</b> 我同意收集和使用个人信息（电子邮箱）","pv_c2":"<b>[必选]</b> 我已满14岁 · 未满14岁时监护人已阅读并同意","ls_nick":"🧑‍✈️ 训导员昵称 <small style=\"font-weight:500;color:var(--muted)\">(在游戏和排行榜中显示)</small>","ph_nick":"例：闪电队长（1–10字）","ls_dog":"🐕 你的缉毒犬昵称","ls_edit":"✏ 修改角色","b_guest":"👀 体验模式","b_delme":"🗑 删除我的信息","ls_top":"🏆 TOP 100 排行榜","b_rankall":"📋 全部排名","mp_p":"地图1–5可以按任意顺序挑战！全部通关后开启👑头目战（地图6），抓住头目后开启🌅隐藏地图。一次行动中的分数会累计。","st_lockB":"🔒 先通关地图1–5","st_run":"✅ 本次已通关","err_email":"请用电子邮箱作为账号（例：dkslek123@google.com）","err_consent":"请阅读个人信息说明并勾选两个[必选]项。如不同意，可使用👀体验模式。","err_nick":"训导员昵称须为1–10个字母或数字。","del_need":"删除前请先输入账号（邮箱）和密码","del_fail":"删除失败，请检查账号和密码。","del_done":"🗑 你的信息已全部删除。","del_confirm":"确定删除你的全部信息吗？\n邮箱、密码、昵称和排行记录将从服务器删除，且无法恢复。","ts_guest":"👀 体验模式 · 不计入排行榜，仅保存在本设备","tod_day":"☀ {city} {time} · 白天行动","tod_dusk":"🌇 {city} {time} · 黄昏行动","tod_night":"🌙 {city} {time} · 夜间行动","ts_leak_warn":"⏳ 10秒内找不到走私品，就会被通关放行！","dlg_leak":"🚨 警报！{item}偷偷通过海关流入市场了…\n\n扣分 −200\n\n快和缉毒犬一起搜查！时间越久，流出的走私品越多。","ts_shot":"🔫 你被走私犯开枪击中！向旁边躲开或跳跃","lbl_gate":"追加关口","lbl_lm":"名胜","sep_lm":"🇰🇷 韩国名胜巡逻 · {n}处","sep_note":"(自由游玩 · 不计入在线排行榜)","qz_gate":"🛃 追加关口","qz_lm":"🇰🇷 名胜巡逻","clr_lm_sub":"🇰🇷 巡逻完成","clr_lm_title":"巡逻成功！","clr_lm_note":"名胜地图的分数与在线排行榜分开","ts_boss_rank":"ℹ 在一次行动中通关地图1–5并抓住头目，在线排名分数才会上升","who_fmt":"🕵 {nick} 训导员 · {score}分","run_fmt":" · 本次 {n}/6","hd_word":"训导员"}},"hi":{"m":["डाकघर","जेल","सियोल स्टेशन","KTX ट्रेन के अंदर","बस टर्मिनल","हवाई जहाज़ के अंदर","म्योंगडोंग","ग्योंगबोकगुंग महल","होंगडे","लोट्टे वर्ल्ड टावर","दोंगदेमुन","ग्वांगअल्ली बीच","सुंगन्येमुन द्वार","सुवोन ह्वासोंग","ग्योंगजू","एन सियोल टावर","हेउंदे","जेजू हल्लासान","पोहांग स्पेस वॉक","जियोनजू हानोक गाँव","ग्वांगह्वामुन चौक","छोंग वा दे","राष्ट्रीय सभा"],"s":["काउंटर, पार्सल डेस्क, पोस्ट बॉक्स और कन्वेयर खोजें।","दीवारें, कैदी भवन, मैदान और मुलाक़ात कक्ष की गश्त करें।","पुराना स्टेशन, काँच का स्टेशन, सियोल्लो 7017 और KTX प्लेटफ़ॉर्म।","300 किमी/घंटा की ट्रेन में सीटों के नीचे और सामान रैक खोजें।","बस स्टैंड, प्रतीक्षालय, टिकट घर और टैक्सी स्टैंड। बसों से सावधान!","बिज़नेस व इकॉनमी सीटें, गैली और शौचालय।","खाने के ठेले, कॉस्मेटिक दुकानें और म्योंगडोंग कैथेड्रल।","ग्वांगह्वामुन, ग्युनजोंगजोन, ग्योंगह्वेरू और ह्यांगवोनजोंग।","बस्किंग मंच, विश्वविद्यालय द्वार, खेल का मैदान और वन मार्ग।","555 मीटर टावर, सोकचोन झील, मॉल और एक्वेरियम।","DDP, LED गुलाब बाग़, ह्युंगइनजिमुन और छोंगग्येछोन।","अर्धचंद्र बीच, ग्वांगान पुल और ड्रोन शो।","व्यस्त चौराहे में राष्ट्रीय धरोहर द्वार और नामदेमुन बाज़ार।","किले के द्वार, निगरानी मीनारें, मंडप और ड्रैगन ट्रेन।","छोमसोंगदे, राजकीय मकबरे, बुलगुकसा, सोकगुरम और वोलजी तालाब।","प्रेम ताले, संकेत अग्नि-स्तंभ, मंडप और केबल कार।","लंबा समुद्र तट, गगनचुंबी इमारतें, स्काई कैप्सूल और दोंगबेक द्वीप।","बेगनोकदम क्रेटर तक चढ़ें। संतरे, सरसों के फूल, हेन्यो।","333 मीटर स्टील पथ, योंगिल खाड़ी और सद्भाव का हाथ।","खपरैल छतें, पुंगनाममुन, जोंदोंग कैथेड्रल और ग्योंगगिजोन।","राजा सेजोंग व एडमिरल यी की मूर्तियाँ, फव्वारे और ग्वांगह्वामुन।","नीली छत वाला मुख्य भवन, अतिथि गृह, चीड़ बाग़ और बुगाकसान।","हरा गुंबद, 24 स्तंभ, हेते मूर्तियाँ और हान नदी।"],"ui":{"ls_id":"🔑 आईडी <small style=\"font-weight:500;color:var(--muted)\">(ईमेल · रैंकिंग में नहीं दिखेगा)</small>","ph_id":"उदा. dkslek123@google.com","ls_remember":"मेरी आईडी याद रखें <small style=\"font-weight:500;color:var(--muted)\">(अगली बार सिर्फ़ पासवर्ड)</small>","pv_title":"<b>📋 व्यक्तिगत जानकारी (ईमेल) संग्रह की सूचना</b>","pv_more":"विवरण देखें","pv_body":"· <b>क्या लिया जाता है</b>: ईमेल (आईडी), पासवर्ड (उलटा न जा सकने वाले एन्क्रिप्शन में), हैंडलर उपनाम, कुत्ते का नाम, खेल रिकॉर्ड (अंक, समय)<br>· <b>उद्देश्य</b>: लॉगिन, रिकॉर्ड सहेजना, रैंकिंग। रैंकिंग में केवल <b>उपनाम और कुत्ते का नाम</b> दिखते हैं; ईमेल कभी सार्वजनिक नहीं होता। कोई प्रचार ईमेल नहीं।<br>· <b>अवधि</b>: जब तक आप हटाएँ नहीं। <b>🗑 मेरी जानकारी हटाएँ</b> दबाते ही सब मिट जाता है।<br>· <b>स्थान</b>: गेम रैंकिंग सर्वर (Supabase, सियोल)। “आईडी याद रखें” चालू होने पर ईमेल इस ब्राउज़र में भी रहता है।<br>· <b>मना करने का अधिकार</b>: सहमति के बिना भी <b>👀 मेहमान बनकर खेलें</b> (रैंकिंग नहीं, केवल इस डिवाइस पर)।<br>· 14 वर्ष से कम: कोरियाई कानून के अनुसार <b>माता-पिता/अभिभावक की सहमति</b> ज़रूरी है। कृपया साथ में पढ़ें।","pv_c1":"<b>[आवश्यक]</b> मैं अपनी व्यक्तिगत जानकारी (ईमेल) के संग्रह और उपयोग से सहमत हूँ","pv_c2":"<b>[आवश्यक]</b> मेरी उम्र 14+ है · 14 से कम हो तो अभिभावक ने पढ़कर सहमति दी है","ls_nick":"🧑‍✈️ हैंडलर उपनाम <small style=\"font-weight:500;color:var(--muted)\">(खेल और रैंकिंग में दिखेगा)</small>","ph_nick":"उदा. बिजली कप्तान (1–10 अक्षर)","ls_dog":"🐕 आपके खोजी कुत्ते का उपनाम","ls_edit":"✏ किरदार बदलें","b_guest":"👀 मेहमान बनकर खेलें","b_delme":"🗑 मेरी जानकारी हटाएँ","ls_top":"🏆 TOP 100 रैंकिंग","b_rankall":"📋 पूरी रैंकिंग","mp_p":"नक्शे 1–5 किसी भी क्रम में पूरे करें! पाँचों पूरे होने पर 👑 बॉस लड़ाई (नक्शा 6) खुलती है, और बॉस पकड़ने पर 🌅 छिपा नक्शा। एक अभियान के अंक जुड़ते जाते हैं।","st_lockB":"🔒 पहले नक्शे 1–5 पूरे करें","st_run":"✅ इस अभियान में पूरा","err_email":"कृपया आईडी के रूप में अपना ईमेल लिखें (उदा. dkslek123@google.com)","err_consent":"सूचना पढ़कर दोनों [आवश्यक] बॉक्स चुनें। सहमत नहीं हैं तो 👀 मेहमान बनकर खेलें।","err_nick":"हैंडलर उपनाम 1–10 अक्षर या अंक का हो।","del_need":"हटाने से पहले आईडी (ईमेल) और पासवर्ड लिखें","del_fail":"हटा नहीं सके। आईडी और पासवर्ड जाँचें।","del_done":"🗑 आपकी सारी जानकारी हटा दी गई।","del_confirm":"क्या आप अपनी सारी जानकारी हटाना चाहते हैं?\nईमेल, पासवर्ड, उपनाम और रैंकिंग रिकॉर्ड सर्वर से मिट जाएँगे और वापस नहीं आएँगे।","ts_guest":"👀 मेहमान मोड · रैंकिंग नहीं, केवल इस डिवाइस पर","tod_day":"☀ {city} {time} · दिन का अभियान","tod_dusk":"🌇 {city} {time} · सूर्यास्त अभियान","tod_night":"🌙 {city} {time} · रात का अभियान","ts_leak_warn":"⏳ 10 सेकंड में तस्करी का सामान न मिला तो वह सीमा पार कर जाएगा!","dlg_leak":"🚨 चेतावनी! {item} चुपके से सीमा शुल्क पार कर बाज़ार में पहुँच गया…\n\nदंड −200\n\nअपने कुत्ते के साथ जल्दी खोजें! समय बीतने पर और सामान निकल जाएगा।","ts_shot":"🔫 तस्कर ने गोली चलाई! बगल में हटें या कूदें","lbl_gate":"अतिरिक्त द्वार","lbl_lm":"स्थल","sep_lm":"🇰🇷 कोरिया के प्रसिद्ध स्थल · {n} जगहें","sep_note":"(मुक्त खेल · ऑनलाइन रैंकिंग में नहीं)","qz_gate":"🛃 अतिरिक्त द्वार","qz_lm":"🇰🇷 स्थल गश्त","clr_lm_sub":"🇰🇷 गश्त पूरी","clr_lm_title":"गश्त सफल!","clr_lm_note":"स्थल नक्शों के अंक ऑनलाइन रैंकिंग से अलग हैं","ts_boss_rank":"ℹ ऑनलाइन अंक के लिए एक ही अभियान में नक्शे 1–5 और बॉस पूरे करें","who_fmt":"🕵 {nick} हैंडलर · {score} अंक","run_fmt":" · यह अभियान {n}/6","hd_word":"हैंडलर"}},"ar":{"m":["مكتب البريد","السجن","محطة سيول","داخل قطار KTX","محطة الحافلات","داخل الطائرة","ميونغدونغ","قصر غيونغبوكغونغ","هونغده","برج لوتي العالمي","دونغدايمون","شاطئ غوانغالي","بوابة سونغنيمون","قلعة سوون هواسونغ","غيونغجو","برج إن سيول","هايونده","جبل هالاسان في جيجو","ممشى الفضاء في بوهانغ","قرية جونجو التقليدية","ساحة غوانغهوامون","تشونغ وا ده","مبنى الجمعية الوطنية"],"s":["فتّش الشبابيك ومكاتب الطرود وصناديق البريد والسير الناقل.","قم بدورية عند الأسوار والعنابر والساحة وغرفة الزيارة.","المحطة القديمة والزجاجية وممشى سيولو 7017 ورصيف KTX.","فتّش تحت المقاعد ورفوف الأمتعة في قطار بسرعة 300 كم/س.","مواقف الحافلات وصالة الانتظار والتذاكر والتاكسي. احذر الحافلات!","مقاعد رجال الأعمال والسياحية والمطبخ ودورات المياه.","أكشاك الطعام ومحلات التجميل وكاتدرائية ميونغدونغ.","غوانغهوامون وغونجونغجون وغيونغهويرو وهيانغوونجونغ.","مسرح العزف وبوابة الجامعة والملعب وممر الغابة.","برج بارتفاع 555 م وبحيرة سوكتشون والمول والأكواريوم.","DDP وحديقة الورود المضيئة وهونغينجيمون ونهر تشونغيتشون.","شاطئ هلالي وجسر غوانغان وعرض الطائرات المسيّرة.","بوابة الكنز الوطني وسط دوّار مزدحم وسوق نامدايمون.","بوابات القلعة وأبراج المراقبة والأجنحة وقطار التنين.","تشومسونغده والمقابر الملكية وبولغوكسا وسوكغورام وبركة وولجي.","أقفال الحب ومنارات الإشارة والجناح والتلفريك.","شاطئ طويل وناطحات سحاب وكبسولات سماوية وجزيرة دونغبيك.","اصعد إلى فوهة بيكنوكدام. يوسفي وزهور الكانولا والغواصات.","ممشى فولاذي بطول 333 م وخليج يونغيل ويد الوئام.","أسطح القرميد وبوابة بونغناممون وكاتدرائية جوندونغ.","تمثالا الملك سيجونغ والأدميرال يي والنوافير وغوانغهوامون.","القاعة الرئيسية ذات السقف الأزرق ودار الضيافة وحديقة الصنوبر.","القبة الخضراء و24 عمودًا وتماثيل الهايته ونهر هان."],"ui":{"ls_id":"🔑 المعرّف <small style=\"font-weight:500;color:var(--muted)\">(البريد الإلكتروني · لا يظهر في الترتيب)</small>","ph_id":"مثال: dkslek123@google.com","ls_remember":"تذكّر معرّفي <small style=\"font-weight:500;color:var(--muted)\">(في المرة القادمة كلمة المرور فقط)</small>","pv_title":"<b>📋 إشعار جمع البيانات الشخصية (البريد الإلكتروني)</b>","pv_more":"عرض التفاصيل","pv_body":"· <b>البيانات</b>: البريد الإلكتروني (المعرّف)، كلمة المرور (مشفّرة بشكل لا يمكن عكسه)، اسم المدرّب المستعار، اسم الكلب، سجل اللعب (النقاط والوقت)<br>· <b>الغرض</b>: تسجيل الدخول وحفظ السجل والترتيب. يظهر <b>الاسم المستعار واسم الكلب فقط</b>، ولا يُنشر بريدك أبدًا، ولا نرسل رسائل دعائية.<br>· <b>مدة الحفظ</b>: حتى تحذفها بنفسك. اضغط <b>🗑 حذف بياناتي</b> لمسح كل شيء فورًا.<br>· <b>مكان الحفظ</b>: خادم ترتيب اللعبة (Supabase، منطقة سيول). عند تفعيل «تذكّر معرّفي» يُحفظ البريد في هذا المتصفح أيضًا.<br>· <b>حق الرفض</b>: يمكنك اللعب دون موافقة عبر <b>👀 جرّب كضيف</b> (دون ترتيب، يُحفظ على هذا الجهاز فقط).<br>· دون 14 عامًا: يشترط القانون الكوري <b>موافقة الوالد أو الوصي</b>. اقرأوا ذلك معًا.","pv_c1":"<b>[إلزامي]</b> أوافق على جمع بياناتي الشخصية (البريد الإلكتروني) واستخدامها","pv_c2":"<b>[إلزامي]</b> عمري 14 عامًا أو أكثر · وإن كنت أصغر فقد قرأ وليّ أمري ووافق","ls_nick":"🧑‍✈️ اسم المدرّب المستعار <small style=\"font-weight:500;color:var(--muted)\">(يظهر في اللعبة والترتيب)</small>","ph_nick":"مثال: القائد برق (1–10 أحرف)","ls_dog":"🐕 اسم كلبك المستعار","ls_edit":"✏ تعديل الشخصية","b_guest":"👀 جرّب كضيف","b_delme":"🗑 حذف بياناتي","ls_top":"🏆 ترتيب أفضل 100","b_rankall":"📋 الترتيب الكامل","mp_p":"أنهِ الخرائط 1–5 بأي ترتيب! إنهاؤها كلها يفتح 👑 معركة الزعيم (الخريطة 6)، والقبض على الزعيم يفتح 🌅 الخريطة السرية. تُجمع نقاطك خلال العملية الواحدة.","st_lockB":"🔒 أنهِ الخرائط 1–5 أولًا","st_run":"✅ أُنجزت في هذه العملية","err_email":"أدخل بريدك الإلكتروني كمعرّف (مثال: dkslek123@google.com)","err_consent":"اقرأ إشعار الخصوصية وحدّد المربعين [إلزامي]. إن لم توافق فاستخدم 👀 جرّب كضيف.","err_nick":"الاسم المستعار من 1 إلى 10 أحرف أو أرقام.","del_need":"أدخل المعرّف (البريد) وكلمة المرور أولًا للحذف","del_fail":"تعذّر الحذف. تحقّق من المعرّف وكلمة المرور.","del_done":"🗑 تم حذف جميع بياناتك.","del_confirm":"هل تريد حذف جميع بياناتك؟\nسيُمسح البريد وكلمة المرور والاسم المستعار وسجل الترتيب من الخادم دون إمكانية الاسترجاع.","ts_guest":"👀 وضع الضيف · دون ترتيب، يُحفظ على هذا الجهاز فقط","tod_day":"☀ {city} {time} · مهمة نهارية","tod_dusk":"🌇 {city} {time} · مهمة الغروب","tod_night":"🌙 {city} {time} · مهمة ليلية","ts_leak_warn":"⏳ إن لم تجد المهرّبات خلال 10 ثوانٍ فستعبر الجمارك!","dlg_leak":"🚨 إنذار! {item} عبر الجمارك خلسة إلى السوق…\n\nخصم −200\n\nأسرع في البحث مع كلبك! كلما مرّ الوقت تسرّبت مهرّبات أكثر.","ts_shot":"🔫 أطلق المهرّب النار عليك! تفادَ جانبًا أو اقفز","lbl_gate":"بوابة إضافية","lbl_lm":"معلم","sep_lm":"🇰🇷 دورية معالم كوريا · {n} مكانًا","sep_note":"(لعب حر · خارج الترتيب الإلكتروني)","qz_gate":"🛃 بوابة إضافية","qz_lm":"🇰🇷 دورية المعالم","clr_lm_sub":"🇰🇷 اكتملت الدورية","clr_lm_title":"نجحت الدورية!","clr_lm_note":"نقاط المعالم منفصلة عن الترتيب الإلكتروني","ts_boss_rank":"ℹ أنهِ الخرائط 1–5 والزعيم في عملية واحدة لترتفع نقاطك على الإنترنت","who_fmt":"🕵 المدرّب {nick} · {score} نقطة","run_fmt":" · هذه العملية {n}/6","hd_word":"المدرّب"}},"vi":{"m":["Bưu điện","Nhà tù","Ga Seoul","Trong tàu KTX","Bến xe buýt","Trong máy bay","Myeongdong","Cung Gyeongbokgung","Hongdae","Tháp Lotte World","Dongdaemun","Bãi biển Gwangalli","Cổng Sungnyemun","Pháo đài Suwon Hwaseong","Gyeongju","Tháp N Seoul","Haeundae","Núi Hallasan, Jeju","Space Walk Pohang","Làng Hanok Jeonju","Quảng trường Gwanghwamun","Cheong Wa Dae","Tòa nhà Quốc hội"],"s":["Lục soát quầy, bàn đóng gói, hộp thư và băng chuyền.","Tuần tra tường rào, khu giam, sân và phòng thăm.","Ga cũ, ga kính, Seoullo 7017 và sân ga KTX.","Lục ghế và giá hành lý trên tàu 300 km/h.","Bến đỗ, phòng chờ, quầy vé và điểm taxi. Cẩn thận xe buýt!","Ghế thương gia, phổ thông, bếp và nhà vệ sinh.","Quầy ăn vặt, tiệm mỹ phẩm và nhà thờ Myeongdong.","Gwanghwamun, Geunjeongjeon, Gyeonghoeru và Hyangwonjeong.","Sân khấu hát rong, cổng trường, sân chơi và đường rừng.","Tháp 555 m, hồ Seokchon, trung tâm mua sắm và thủy cung.","DDP, vườn hồng LED, Heunginjimun và suối Cheonggyecheon.","Bãi biển hình trăng khuyết, cầu Gwangan và màn drone.","Cổng bảo vật quốc gia giữa vòng xuyến và chợ Namdaemun.","Cổng thành, tháp canh, đình và tàu đầu rồng.","Cheomseongdae, lăng mộ, Bulguksa, Seokguram và hồ Wolji.","Khóa tình yêu, đài lửa hiệu, đình và cáp treo.","Bãi biển dài, nhà chọc trời, khoang trời và đảo Dongbaek.","Leo tới miệng núi Baengnokdam. Quýt, hoa cải, hải nữ.","Đường thép 333 m, vịnh Yeongil và Bàn tay hòa hợp.","Mái ngói, cổng Pungnammun, nhà thờ Jeondong, Gyeonggijeon.","Tượng vua Sejong, đô đốc Yi, đài phun nước và Gwanghwamun.","Tòa chính mái xanh, nhà khách, vườn thông và núi Bugak.","Mái vòm xanh, 24 cột, tượng Haetae và sông Hàn."],"ui":{"ls_id":"🔑 ID <small style=\"font-weight:500;color:var(--muted)\">(email · không hiển thị trên bảng xếp hạng)</small>","ph_id":"VD: dkslek123@google.com","ls_remember":"Ghi nhớ ID <small style=\"font-weight:500;color:var(--muted)\">(lần sau chỉ cần mật khẩu)</small>","pv_title":"<b>📋 Thông báo thu thập thông tin cá nhân (email)</b>","pv_more":"Xem chi tiết","pv_body":"· <b>Thông tin</b>: email (ID), mật khẩu (mã hóa không thể đảo ngược), biệt danh người huấn luyện, tên chó, dữ liệu chơi (điểm, thời gian)<br>· <b>Mục đích</b>: đăng nhập, lưu kết quả, xếp hạng. Chỉ <b>biệt danh và tên chó</b> được hiển thị; email không bao giờ công khai. Không gửi email quảng cáo.<br>· <b>Thời hạn</b>: đến khi bạn tự xóa. Nhấn <b>🗑 Xóa thông tin của tôi</b> để xóa hết ngay.<br>· <b>Nơi lưu</b>: máy chủ xếp hạng (Supabase, khu vực Seoul). Bật “Ghi nhớ ID” thì email cũng lưu trên trình duyệt này.<br>· <b>Quyền từ chối</b>: không đồng ý vẫn chơi được bằng <b>👀 Chơi thử</b> (không xếp hạng, chỉ lưu trên máy này).<br>· Dưới 14 tuổi: luật Hàn Quốc yêu cầu <b>cha mẹ hoặc người giám hộ đồng ý</b>. Hãy cùng đọc nhé.","pv_c1":"<b>[Bắt buộc]</b> Tôi đồng ý thu thập và sử dụng thông tin cá nhân (email)","pv_c2":"<b>[Bắt buộc]</b> Tôi đủ 14 tuổi · nếu dưới 14, người giám hộ đã đọc và đồng ý","ls_nick":"🧑‍✈️ Biệt danh người huấn luyện <small style=\"font-weight:500;color:var(--muted)\">(hiện trong game và bảng xếp hạng)</small>","ph_nick":"VD: Đội trưởng Sấm (1–10 ký tự)","ls_dog":"🐕 Biệt danh chó nghiệp vụ","ls_edit":"✏ Đổi nhân vật","b_guest":"👀 Chơi thử","b_delme":"🗑 Xóa thông tin của tôi","ls_top":"🏆 Bảng xếp hạng TOP 100","b_rankall":"📋 Toàn bộ xếp hạng","mp_p":"Chơi bản đồ 1–5 theo thứ tự bất kỳ! Qua cả năm sẽ mở 👑 trận trùm (bản đồ 6), bắt trùm sẽ mở 🌅 bản đồ ẩn. Điểm được cộng dồn trong một chiến dịch.","st_lockB":"🔒 Qua bản đồ 1–5 trước","st_run":"✅ Đã qua trong lượt này","err_email":"Hãy nhập email làm ID (VD: dkslek123@google.com)","err_consent":"Hãy đọc thông báo và đánh dấu cả hai ô [Bắt buộc]. Nếu không đồng ý, hãy dùng 👀 Chơi thử.","err_nick":"Biệt danh gồm 1–10 chữ hoặc số.","del_need":"Nhập ID (email) và mật khẩu trước khi xóa","del_fail":"Không xóa được. Hãy kiểm tra ID và mật khẩu.","del_done":"🗑 Đã xóa toàn bộ thông tin của bạn.","del_confirm":"Xóa toàn bộ thông tin của bạn?\nEmail, mật khẩu, biệt danh và kết quả xếp hạng sẽ bị xóa khỏi máy chủ và không thể khôi phục.","ts_guest":"👀 Chế độ chơi thử · không xếp hạng, chỉ lưu trên máy này","tod_day":"☀ {city} {time} · Nhiệm vụ ban ngày","tod_dusk":"🌇 {city} {time} · Nhiệm vụ hoàng hôn","tod_night":"🌙 {city} {time} · Nhiệm vụ ban đêm","ts_leak_warn":"⏳ Không tìm ra hàng lậu trong 10 giây là nó lọt qua hải quan!","dlg_leak":"🚨 Báo động! {item} đã lọt qua hải quan ra thị trường…\n\nTrừ −200 điểm\n\nNhanh lên, lục soát cùng chú chó! Càng lâu càng nhiều hàng lậu lọt ra.","ts_shot":"🔫 Bạn bị kẻ buôn lậu bắn trúng! Né sang bên hoặc nhảy","lbl_gate":"Cửa khẩu thêm","lbl_lm":"Danh thắng","sep_lm":"🇰🇷 Tuần tra danh thắng Hàn Quốc · {n} nơi","sep_note":"(chơi tự do · không tính xếp hạng trực tuyến)","qz_gate":"🛃 Cửa khẩu thêm","qz_lm":"🇰🇷 Tuần tra danh thắng","clr_lm_sub":"🇰🇷 Hoàn thành tuần tra","clr_lm_title":"tuần tra thành công!","clr_lm_note":"Điểm danh thắng tách riêng với xếp hạng trực tuyến","ts_boss_rank":"ℹ Qua bản đồ 1–5 và bắt trùm trong một chiến dịch để lên điểm xếp hạng","who_fmt":"🕵 Người huấn luyện {nick} · {score} điểm","run_fmt":" · lượt này {n}/6","hd_word":"người huấn luyện"}},"ja":{"m":["郵便局","刑務所","ソウル駅","KTX車内","バスターミナル","飛行機の中","明洞","景福宮","弘大","ロッテワールドタワー","東大門","広安里ビーチ","崇礼門","水原華城","慶州","Nソウルタワー","海雲台","済州・漢拏山","浦項スペースウォーク","全州韓屋村","光化門広場","青瓦台","国会議事堂"],"s":["窓口、小包台、私書箱、ベルトコンベアを捜索。","塀、収容棟、運動場、面会室をパトロール。","旧駅舎、ガラスの新駅舎、ソウルロ7017、KTXホーム。","時速300kmの列車で座席の下と荷物棚を捜索。","乗り場、待合室、切符売り場、タクシー乗り場。バスに注意！","ビジネス席、エコノミー席、ギャレー、化粧室。","屋台、コスメ店、明洞聖堂。","光化門、勤政殿、慶会楼、香遠亭。","バスキングステージ、大学正門、遊び場、京義線の森の道。","555mのタワー、石村湖、モール、水族館。","DDP、LEDバラ庭園、興仁之門、清渓川。","三日月形のビーチ、広安大橋、ドローンショー。","車が回るロータリーの国宝の門と南大門市場。","城門、望楼、あずまや、竜頭の観光列車。","瞻星台、古墳、仏国寺、石窟庵、月池。","愛の南京錠、烽燧台、八角亭、ケーブルカー。","長い砂浜、超高層ビル、スカイカプセル、冬柏島。","白鹿潭の火口まで登ろう。みかん、菜の花、海女。","333mの鉄の散歩道、迎日湾、相生の手。","瓦屋根、豊南門、殿洞聖堂、慶基殿。","世宗大王と李舜臣将軍の像、噴水、光化門。","青い瓦の本館、迎賓館、松の庭、北岳山。","緑のドーム、24本の柱、ヘテ像、漢江。"],"ui":{"ls_id":"🔑 ID <small style=\"font-weight:500;color:var(--muted)\">(メールアドレス · ランキングには表示されません)</small>","ph_id":"例：dkslek123@google.com","ls_remember":"IDを記憶する <small style=\"font-weight:500;color:var(--muted)\">(次回からパスワードだけ)</small>","pv_title":"<b>📋 個人情報（メール）の収集・利用について</b>","pv_more":"詳しく見る","pv_body":"· <b>収集項目</b>：メールアドレス（ID）、パスワード（元に戻せない形で暗号化）、ハンドラーのニックネーム、犬の名前、ゲーム記録（スコア・時間）<br>· <b>利用目的</b>：ログイン、記録の保存、ランキング。ランキングには<b>ニックネームと犬の名前だけ</b>が表示され、メールは公開されません。広告メールは送りません。<br>· <b>保存期間</b>：自分で削除するまで。<b>🗑 自分の情報を削除</b>を押すとすぐにすべて消えます。<br>· <b>保存場所</b>：ゲームのランキングサーバー（Supabase、ソウルリージョン）。「IDを記憶する」をオンにするとこのブラウザにもメールが保存されます。<br>· <b>同意しない権利</b>：同意しなくても<b>👀 お試しプレイ</b>で遊べます（ランキングなし、この端末にのみ保存）。<br>· 14歳未満：韓国の法律により<b>保護者の同意</b>が必要です。一緒に読んでください。","pv_c1":"<b>[必須]</b> 個人情報（メール）の収集・利用に同意します","pv_c2":"<b>[必須]</b> 14歳以上です · 14歳未満の場合は保護者が読んで同意しました","ls_nick":"🧑‍✈️ ハンドラーのニックネーム <small style=\"font-weight:500;color:var(--muted)\">(ゲームとランキングに表示)</small>","ph_nick":"例：いなずま隊長（1〜10文字）","ls_dog":"🐕 あなたの探知犬のニックネーム","ls_edit":"✏ キャラクターを変更","b_guest":"👀 お試しプレイ","b_delme":"🗑 自分の情報を削除","ls_top":"🏆 TOP 100 ランキング","b_rankall":"📋 全ランキング","mp_p":"マップ1〜5は好きな順番でクリアしよう！5つすべてクリアすると👑ボス戦（マップ6）が、ボスを捕まえると🌅隠しマップが開きます。1回の作戦の間スコアが積み重なります。","st_lockB":"🔒 まずマップ1〜5をクリア","st_run":"✅ 今回の作戦でクリア","err_email":"IDにはメールアドレスを入力してください（例：dkslek123@google.com）","err_consent":"個人情報の案内を読んで[必須]の2か所にチェックしてください。同意しない場合は👀お試しプレイをどうぞ。","err_nick":"ニックネームは1〜10文字の文字か数字で。","del_need":"削除するにはID（メール）とパスワードを先に入力してください","del_fail":"削除できませんでした。IDとパスワードを確認してください。","del_done":"🗑 あなたの情報はすべて削除されました。","del_confirm":"本当にすべての情報を削除しますか？\nメール、パスワード、ニックネーム、ランキング記録がサーバーから消え、元に戻せません。","ts_guest":"👀 お試しモード · ランキングなし、この端末にのみ保存","tod_day":"☀ {city} {time} · 昼の作戦","tod_dusk":"🌇 {city} {time} · 夕焼けの作戦","tod_night":"🌙 {city} {time} · 夜の作戦","ts_leak_warn":"⏳ 10秒以内に密輸品を見つけないと通関されてしまう！","dlg_leak":"🚨 警報！{item}がこっそり税関を通過して市場に出回った…\n\n減点 −200\n\n探知犬と急いで捜索しよう！時間がたつほど密輸品が流れ出るよ。","ts_shot":"🔫 密輸犯に撃たれた！横によけるかジャンプしよう","lbl_gate":"追加の関門","lbl_lm":"名所","sep_lm":"🇰🇷 韓国の名所パトロール · {n}か所","sep_note":"(自由プレイ · オンラインランキング対象外)","qz_gate":"🛃 追加の関門","qz_lm":"🇰🇷 名所パトロール","clr_lm_sub":"🇰🇷 パトロール完了","clr_lm_title":"パトロール成功！","clr_lm_note":"名所マップのスコアはオンラインランキングとは別です","ts_boss_rank":"ℹ 1回の作戦でマップ1〜5とボスをクリアするとオンラインスコアが上がります","who_fmt":"🕵 {nick} ハンドラー · {score}点","run_fmt":" · 今回の作戦 {n}/6","hd_word":"ハンドラー"}},"ru":{"m":["Почта","Тюрьма","Вокзал Сеул","В поезде KTX","Автовокзал","В самолёте","Мёндон","Дворец Кёнбоккун","Хондэ","Лотте Ворлд Тауэр","Тондэмун","Пляж Кванъалли","Ворота Суннемун","Крепость Хвасон в Сувоне","Кёнджу","N Сеул Тауэр","Хэундэ","Халласан, Чеджу","Спейс Уок в Пхохане","Ханок-деревня Чонджу","Площадь Кванхвамун","Чхонвадэ","Национальное собрание"],"s":["Обыщите окна, стол упаковки, абонентские ящики и конвейер.","Патрулируйте стены, корпуса, двор и комнату свиданий.","Старый вокзал, стеклянный вокзал, Сеулло 7017 и платформы KTX.","Ищите под сиденьями и на полках поезда на 300 км/ч.","Платформы, зал ожидания, касса и стоянка такси. Осторожно, автобусы!","Бизнес- и эконом-класс, кухня и туалеты.","Уличная еда, магазины косметики и собор Мёндон.","Кванхвамун, Кынджонджон, Кёнхверу и Хянвонджон.","Сцена уличных музыкантов, ворота университета, площадка и лесная тропа.","Башня 555 м, озеро Сокчхон, торговый центр и океанариум.","DDP, сад LED-роз, Хыниннджимун и ручей Чхонгечхон.","Пляж-полумесяц, мост Кванан и шоу дронов.","Ворота-нацсокровище на оживлённом кольце и рынок Намдэмун.","Ворота, сторожевые башни, беседки и поезд-дракон.","Чхомсондэ, царские курганы, Пульгукса, Соккурам и пруд Вольджи.","Замки любви, сигнальные башни, беседка и канатная дорога.","Длинный пляж, небоскрёбы, небесные капсулы и остров Тонбэк.","Поднимитесь к кратеру Пэннокдам. Мандарины, рапс, хэнё.","Стальная тропа 333 м, залив Йонъиль и Рука гармонии.","Черепичные крыши, ворота Пхуннаммун, собор Чондон.","Статуи короля Седжона и адмирала Ли, фонтаны и Кванхвамун.","Главный зал с синей крышей, гостевой дом, сосновый сад.","Зелёный купол, 24 колонны, статуи хэтхэ и река Ханган."],"ui":{"ls_id":"🔑 ID <small style=\"font-weight:500;color:var(--muted)\">(эл. почта · не видна в рейтинге)</small>","ph_id":"напр. dkslek123@google.com","ls_remember":"Запомнить ID <small style=\"font-weight:500;color:var(--muted)\">(в следующий раз только пароль)</small>","pv_title":"<b>📋 Уведомление о сборе личных данных (эл. почты)</b>","pv_more":"Подробнее","pv_body":"· <b>Что собираем</b>: эл. почту (ID), пароль (хранится в необратимо зашифрованном виде), ник кинолога, имя собаки, игровые записи (очки, время)<br>· <b>Зачем</b>: вход, сохранение записей, рейтинг. В рейтинге видны <b>только ник и имя собаки</b>; почта никогда не публикуется. Рекламу не рассылаем.<br>· <b>Срок хранения</b>: пока вы не удалите. Кнопка <b>🗑 Удалить мои данные</b> стирает всё сразу.<br>· <b>Где</b>: сервер рейтинга игры (Supabase, регион Сеул). При «Запомнить ID» почта также хранится в этом браузере.<br>· <b>Право отказаться</b>: без согласия можно играть в режиме <b>👀 Гость</b> (без рейтинга, только на этом устройстве).<br>· Младше 14 лет: по корейскому закону нужно <b>согласие родителя или опекуна</b>. Прочитайте вместе.","pv_c1":"<b>[Обязательно]</b> Согласен(на) на сбор и использование личных данных (эл. почты)","pv_c2":"<b>[Обязательно]</b> Мне 14 лет или больше · если меньше, родитель/опекун прочитал и согласился","ls_nick":"🧑‍✈️ Ник кинолога <small style=\"font-weight:500;color:var(--muted)\">(виден в игре и рейтинге)</small>","ph_nick":"напр. Капитан Молния (1–10 символов)","ls_dog":"🐕 Кличка вашей служебной собаки","ls_edit":"✏ Изменить персонажа","b_guest":"👀 Играть как гость","b_delme":"🗑 Удалить мои данные","ls_top":"🏆 Рейтинг TOP 100","b_rankall":"📋 Весь рейтинг","mp_p":"Проходите карты 1–5 в любом порядке! Пройдя все пять, вы откроете 👑 бой с боссом (карта 6), а поймав босса — 🌅 секретную карту. Очки суммируются за одну операцию.","st_lockB":"🔒 Сначала пройдите карты 1–5","st_run":"✅ Пройдено в этой операции","err_email":"Введите адрес эл. почты как ID (напр. dkslek123@google.com)","err_consent":"Прочитайте уведомление и отметьте оба пункта [Обязательно]. Если не согласны — играйте как 👀 гость.","err_nick":"Ник: от 1 до 10 букв или цифр.","del_need":"Для удаления сначала введите ID (почту) и пароль","del_fail":"Не удалось удалить. Проверьте ID и пароль.","del_done":"🗑 Все ваши данные удалены.","del_confirm":"Удалить все ваши данные?\nПочта, пароль, ник и записи рейтинга будут стёрты с сервера без возможности восстановления.","ts_guest":"👀 Гостевой режим · без рейтинга, только на этом устройстве","tod_day":"☀ {city} {time} · Дневная операция","tod_dusk":"🌇 {city} {time} · Операция на закате","tod_night":"🌙 {city} {time} · Ночная операция","ts_leak_warn":"⏳ Не найдёте контрабанду за 10 секунд — она пройдёт таможню!","dlg_leak":"🚨 Тревога! {item} тайком прошли таможню и попали на рынок…\n\nШтраф −200\n\nСкорее ищите вместе с собакой! Чем дольше, тем больше контрабанды уходит.","ts_shot":"🔫 Контрабандист выстрелил в вас! Уклоняйтесь в сторону или прыгайте","lbl_gate":"Доп. пост","lbl_lm":"Место","sep_lm":"🇰🇷 Патруль по достопримечательностям Кореи · {n}","sep_note":"(свободная игра · вне онлайн-рейтинга)","qz_gate":"🛃 Доп. пост","qz_lm":"🇰🇷 Патруль достопримечательностей","clr_lm_sub":"🇰🇷 Патруль завершён","clr_lm_title":"патруль успешен!","clr_lm_note":"Очки за достопримечательности не идут в онлайн-рейтинг","ts_boss_rank":"ℹ Пройдите карты 1–5 и поймайте босса за одну операцию, чтобы очки попали в рейтинг","who_fmt":"🕵 Кинолог {nick} · {score} очк.","run_fmt":" · эта операция {n}/6","hd_word":"кинолог"}}};
 for (const [l, x] of Object.entries(DICT2)) { const d = DICT[l]; if (!d) continue; d.m = (d.m || []).slice(0, 7).concat(x.m); d.s = (d.s || []).slice(0, 7).concat(x.s); Object.assign(d, x.ui); }
 const NEWT = {"ko":["📡 X-RAY 스캐너가 새로 나타났어요!","🎾 하트 공이 새로 나타났어요!"],"en":["📡 A new X-RAY scanner appeared!","🎾 A new heart ball appeared!"],"zh":["📡 出现了新的X光扫描仪！","🎾 出现了新的爱心球！"],"hi":["📡 नया X-RAY स्कैनर आया!","🎾 नई दिल वाली गेंद आई!"],"ar":["📡 ظهر جهاز أشعة سينية جديد!","🎾 ظهرت كرة قلب جديدة!"],"vi":["📡 Máy quét X-RAY mới xuất hiện!","🎾 Bóng trái tim mới xuất hiện!"],"ja":["📡 新しいX線スキャナーが現れた！","🎾 新しいハートボールが現れた！"],"ru":["📡 Появился новый рентген-сканер!","🎾 Появился новый мяч-сердечко!"]}; for (const [l, [a, b]] of Object.entries(NEWT)) { const d = l === "ko" ? KO : DICT[l]; if (d) { d.ts_newx = a; d.ts_newball = b; } }
+const HELPT = { ko: ['🛡 탐지견 방탄조끼! 다음 공격을 한 번 막아줘요', '👃 슈퍼 코 간식! 20초 동안 냄새 범위 1.5배', '🦴 뼈다귀 가방! 20초 동안 뼈다귀를 2배 빨리 던져요', '🛡 방탄조끼가 막았다!'],
+  en: ['🛡 K9 vest! Blocks the next hit', '👃 Super-nose treat! 1.5× scent range for 20s', '🦴 Bone bag! Throw bones 2× faster for 20s', '🛡 The vest blocked it!'], zh: ['🛡 缉毒犬防弹背心！挡住下一次攻击', '👃 超级鼻子零食！20秒内嗅觉范围1.5倍', '🦴 骨头袋！20秒内投掷速度2倍', '🛡 背心挡住了！'],
+  hi: ['🛡 K9 जैकेट! अगला वार रोकेगी', '👃 सुपर नाक ट्रीट! 20 सेकंड तक सूंघने की दूरी 1.5×', '🦴 हड्डी थैला! 20 सेकंड तक 2× तेज़ फेंकें', '🛡 जैकेट ने बचा लिया!'], ar: ['🛡 سترة الكلب! تصد الضربة التالية', '👃 حلوى الأنف الخارق! مدى الشم ×1.5 لمدة 20 ثانية', '🦴 حقيبة العظام! رمي أسرع ×2 لمدة 20 ثانية', '🛡 صدّتها السترة!'],
+  vi: ['🛡 Áo giáp chó K9! Chặn đòn tiếp theo', '👃 Bánh mũi siêu thính! Tầm đánh hơi ×1.5 trong 20 giây', '🦴 Túi xương! Ném nhanh ×2 trong 20 giây', '🛡 Áo giáp đã chặn!'], ja: ['🛡 探知犬の防弾ベスト！次の攻撃を1回防ぐ', '👃 スーパー鼻おやつ！20秒間においの範囲1.5倍', '🦴 骨バッグ！20秒間2倍速で投げられる', '🛡 ベストが防いだ！'],
+  ru: ['🛡 Жилет K9! Блокирует следующий удар', '👃 Лакомство «супернюх»! Радиус нюха ×1.5 на 20 с', '🦴 Сумка с костями! Броски ×2 быстрее 20 с', '🛡 Жилет защитил!'] };
+for (const [l, [a, b, c, d]] of Object.entries(HELPT)) { const D = l === 'ko' ? KO : DICT[l]; if (D) Object.assign(D, { ts_shield: a, ts_nose: b, ts_bonebag: c, ts_blocked: d }); }
+const CROWDT = { ko: ['👥 지금은 유동인구가 적어요 (한산한 시간)', '👥 유동인구 보통', '👥 유동인구가 많아요', '👥 지금이 유동인구 최고조예요!'], en: ['👥 Few people around now (quiet hours)', '👥 Normal crowd', '👥 Busy crowd', '👥 Peak crowd right now!'], zh: ['👥 现在人流很少（清闲时段）', '👥 人流一般', '👥 人流较多', '👥 现在是人流高峰！'], hi: ['👥 अभी भीड़ कम है', '👥 सामान्य भीड़', '👥 भीड़ ज़्यादा है', '👥 अभी सबसे ज़्यादा भीड़!'], ar: ['👥 الزحام قليل الآن', '👥 زحام عادي', '👥 زحام كبير', '👥 ذروة الزحام الآن!'], vi: ['👥 Lúc này vắng người', '👥 Lượng người bình thường', '👥 Đông người', '👥 Đang là giờ cao điểm!'], ja: ['👥 今は人が少ない時間です', '👥 人出はふつう', '👥 人出が多い', '👥 今が人出のピーク！'], ru: ['👥 Сейчас людей мало', '👥 Обычный поток людей', '👥 Много людей', '👥 Сейчас пик толпы!'] };
+for (const [l, a] of Object.entries(CROWDT)) { const D = l === 'ko' ? KO : DICT[l]; if (D) a.forEach((v, i) => D['crowd_' + i] = v); }
+const PLAYT = { ko: '⏰ 게임을 {m}분 했어요! 잠깐 눈을 쉬고 스트레칭해요 🙆', en: '⏰ You have played for {m} minutes! Rest your eyes and stretch 🙆', zh: '⏰ 已经玩了{m}分钟！休息一下眼睛，伸展一下吧 🙆', hi: '⏰ आपने {m} मिनट खेल लिया! आँखों को आराम दें और स्ट्रेच करें 🙆', ar: '⏰ لعبت {m} دقيقة! أرِح عينيك وتمدّد قليلًا 🙆', vi: '⏰ Bạn đã chơi {m} phút! Nghỉ mắt và vươn vai nhé 🙆', ja: '⏰ {m}分遊びました！目を休めてストレッチしよう 🙆', ru: '⏰ Вы играете уже {m} минут! Дайте глазам отдых и потянитесь 🙆' };
+for (const [l, v] of Object.entries(PLAYT)) { const D = l === 'ko' ? KO : DICT[l]; if (D) D.ts_play30 = v; }
 const NEW_MAPS = { en: [['Gamcheon Culture Village', 'Hanbit Tower, Daejeon'], ['A colorful hillside village of stairs, alleys and fish signposts.', 'The 93 m Expo tower, musical fountain and Expo Bridge.']], zh: [['甘川文化村', '大田韩光塔'], ['山坡上层层叠叠的彩色村庄、小巷和鱼形路标。', '93米世博塔、音乐喷泉和世博桥。']], hi: [['गमछोन सांस्कृतिक गाँव', 'डेजॉन हानबित टावर'], ['पहाड़ी ढलान पर रंगीन सीढ़ीनुमा गाँव, गलियाँ और मछली चिन्ह।', '93 मीटर एक्सपो टावर, संगीत फव्वारा और एक्सपो पुल।']], ar: [['قرية غامتشون الثقافية', 'برج هانبيت في دايجون'], ['قرية ملونة على سفح التل بالسلالم والأزقة ولافتات الأسماك.', 'برج إكسبو بارتفاع 93 م والنافورة الموسيقية وجسر إكسبو.']], vi: [['Làng văn hóa Gamcheon', 'Tháp Hanbit, Daejeon'], ['Làng sườn đồi nhiều màu với bậc thang, ngõ nhỏ và biển chỉ đường hình cá.', 'Tháp Expo 93 m, đài phun nước nhạc và cầu Expo.']], ja: [['甘川文化村', '大田ハンビッタワー'], ['坂道に色とりどりの家が段々に並ぶ村、路地と魚の道しるべ。', '93mのエキスポタワー、音楽噴水、エキスポ橋。']], ru: [['Деревня культуры Камчхон', 'Башня Ханбит, Тэджон'], ['Разноцветная деревня на склоне: лестницы, переулки и указатели-рыбки.', 'Башня Экспо 93 м, музыкальный фонтан и мост Экспо.']] };
 for (const [l, [m2, s2]] of Object.entries(NEW_MAPS)) if (DICT[l]) { DICT[l].m.push(...m2); DICT[l].s.push(...s2); }
 Object.assign(KO, {"err_email":"아이디는 이메일 주소로 입력해 주세요 (예: dkslek123@google.com)","err_consent":"개인정보 수집·이용 안내를 읽고 [필수] 두 곳에 체크해 주세요. 동의하지 않으면 👀 체험하기로 할 수 있어요.","err_nick":"핸들러 닉네임은 한글·영문·숫자 1~10자로 정해주세요","del_need":"삭제하려면 아이디(이메일)와 비밀번호를 먼저 입력하세요","del_fail":"삭제하지 못했어요. 아이디와 비밀번호를 확인해 주세요.","del_done":"🗑 내 정보가 모두 삭제되었어요.","del_confirm":"정말 내 정보를 모두 삭제할까요?\n이메일·비밀번호·닉네임·랭킹 기록이 서버에서 지워지고 되돌릴 수 없어요.","ts_guest":"👀 체험 모드예요 · 랭킹에 올라가지 않고 이 기기에만 저장돼요","tod_day":"☀ {city} {time} · 낮 작전","tod_dusk":"🌇 {city} {time} · 노을 작전","tod_night":"🌙 {city} {time} · 밤 작전","ts_leak_warn":"⏳ 10초 안에 밀수품을 못 찾으면 통관돼 버려요!","dlg_leak":"🚨 경보! {item}이(가) 세관을 몰래 통과해 시중으로 유출됐어요…\n\n감점 −200점\n\n탐지견과 함께 서둘러 수색하세요! 시간이 지날수록 밀수품이 계속 빠져나가요.","ts_shot":"🔫 밀수범의 총에 맞았어요! 옆으로 피하거나 점프하세요","lbl_gate":"추가 관문","lbl_lm":"명소","sep_lm":"🇰🇷 대한민국 명소 순찰 · {n}곳","sep_note":"(자유 플레이 · 온라인 랭킹 미반영)","qz_gate":"🛃 추가 관문","qz_lm":"🇰🇷 명소 순찰","clr_lm_sub":"🇰🇷 명소 순찰 완료","clr_lm_title":"순찰 성공!","clr_lm_note":"명소 맵 점수는 온라인 랭킹과 별도예요","ts_boss_rank":"ℹ 한 번의 작전에서 맵 1~5를 모두 깨고 보스를 잡아야 온라인 랭킹 점수가 올라가요","who_fmt":"🕵 {nick} 핸들러 · 누적 {score}점","run_fmt":" · 이번 작전 {n}/6","hd_word":"핸들러"});
@@ -1031,7 +1041,10 @@ function updateHandler(dt) {
   handler.x = clamp(handler.x, level.bounds.minX + .3, level.bounds.maxX - .3); handler.z = clamp(handler.z, level.bounds.minZ + .3, level.bounds.maxZ - .3);
   // 탐지견이 올라간 높이까지 핸들러도 뛰어 올라간다
   const gh = groundAt(handler.x, handler.z, .4, Math.max(dog.y, 0) + .05).h;
-  if (handler.y < gh - .05 && handler.vy <= 0) { if (gh - handler.y < .45) handler.y = Math.min(gh, handler.y + dt * 3); else handler.vy = 6.5; }
+  if (handler.y < gh - .05 && handler.vy <= 0) { if (gh - handler.y < .45) handler.y = Math.min(gh, handler.y + dt * 3); else handler.vy = Math.sqrt(2 * 22 * (gh - handler.y + .35)); }
+  // 높이 차가 크거나 멀리 떨어져 1초 넘게 못 따라오면, 목줄을 잡고 탐지견 뒤로 폴짝 따라 올라간다
+  { const lagD = Math.hypot(dog.x - handler.x, dog.z - handler.z), lagH = dog.y - handler.y; handler.lagT = (lagH > .6 && lagD > 2.6) || lagD > 7 ? (handler.lagT || 0) + dt : 0;
+    if (handler.lagT > 1 && dog.grounded) { handler.lagT = 0; const hx = dog.x - Math.sin(dog.dir) * 1.1, hz = dog.z - Math.cos(dog.dir) * 1.1; burst(handler.x, handler.y + .5, handler.z, [DUST], 10, 2); handler.x = hx; handler.z = hz; handler.y = dog.y; handler.vy = 0; handler.ry = undefined; floatText('따라왔다!', hx, dog.y + 2.4, hz, { h: .4 }); } }
   handler.vy -= 22 * dt; handler.y += handler.vy * dt;
   if (handler.y <= gh && handler.vy <= 0) { handler.y = gh; handler.vy = 0; }
   const up = dog.y > .3, back = up ? .8 : 1.3, side = up ? .25 : 1.4;
@@ -1100,7 +1113,7 @@ function makeBone() {
 }
 function throwBone() {
   if (handler.boneCd > 0) return;
-  handler.boneCd = 1.0 * (handlerJob === 'police' ? .7 : 1); handler.throwT = .3;
+  handler.boneCd = (1.0 / 1.07) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1); handler.throwT = .3;
   // 탐지견이 바라보는 방향으로 똑바로 던진다 (자동 조준 없음)
   const src = twoP ? handler : dog, fx = Math.sin(src.dir), fz = Math.cos(src.dir);
   bones.push({ m: makeBone(), x: src.x + fx * .6, z: src.z + fz * .6, fx, fz, t: 0, range: 6 + (handlerJob === 'police' ? 2 : 0), speed: 14.4 });
@@ -1230,6 +1243,9 @@ function makePerson(kind, opt = {}) {
 const people = [];
 const pick2 = a => a[Math.floor(Math.random() * a.length)];
 const LINES = {
+  kid: ['엄마, 저 강아지 봐! 🐶', '나도 탐지견 될래!', '배고파~ 간식 사줘!', '우와, 멍멍이다!'],
+  senior: ['허허, 탐지견이 참 영리하구먼.', '젊은이들 수고가 많네.', '천천히 가자, 무릎이 아파서…', '예전엔 이런 개가 없었는데 말이야.'],
+  parent: ['아기가 깨면 안 되는데… 쉿!', '유모차 지나갈게요~', '아기가 강아지 보고 웃어요 😊'],
   hanbok: ['한복 입고 궁궐 오면 입장 무료래!', '사진 찍어 주실래요? 📸', '치마가 예쁘지?', '탐지견도 한복 입혀주고 싶다~'],
   royalguard: ['수문장 교대식이 곧 시작됩니다!', '궁궐을 지키는 수문장이오.', '둥! 둥! 북소리에 맞춰라!'],
   haenyeo: ['숨비소리~ 휘이~', '오늘 전복 많이 잡았수다!', '제주 바당은 우리가 지켜!'],
@@ -1239,6 +1255,7 @@ const LINES = {
   inmate: ['면회 언제 오지…', '운동 시간이 제일 좋아.', '저는 아무것도 몰라요!'],
   merchant: ['골라 골라! 싸요 싸!', '어서 오세요~ 구경하세요!', '이거 하나 맛보고 가요!'],
   tourist: ['여기가 그 유명한 곳이구나!', '인증샷 필수! 📸', '지도 앱이 어디 있더라…'],
+  seated: ['기내식은 언제 나오지?', '창밖 구름이 예쁘다 ☁', '착륙까지 얼마나 남았지?', '탐지견이 비행기에도 타네!'],
   civ: ['비행기에서 한숨도 못 잤어…', '내 가방 어디 갔지?', '와, 탐지견이다! 귀여워🐶', '면세점 들렀다 갈까?', '택시는 어디서 타요?', '배고프다, 뭐 먹을래?', '여행 진짜 재밌었어!', '사진 한 장 찍자📷'],
   worker: ['오늘 물량 엄청 많네', '지게차 지나가요!', '점심 뭐 먹지?', '이 화물은 3번 구역으로!', '허리 아프다…'],
   handler: ['안전 제일!', '팔레트 하나 더!', '이쪽으로 옮겨 주세요', '수고하십니다!'],
@@ -1264,7 +1281,7 @@ class Person {
     this.stun = 0; this.glow = 0; this.target = null; this.wait = mr(0, 2); this.dir = mr(0, 6);
     this.phase = mr(0, 6); this.blocked = 0; this.turn = 0; this.turnT = 0; this.alerted = false;
     this.arrested = false; this.dead = false; this.y = 0; this.vy = 0; this.r = kind === 'boss' ? .5 : .4;
-    this.g.position.set(x, 0, z); world.add(this.g); people.push(this);
+    this.g.position.set(x, 0, z); world.add(this.g); people.push(this); applyAge(this);
     if (this.villain) { this.gun = mesh(BOX(.1, .16, .46), MAT.col(0x111111, .4, .4), 0, -.62, .2, this.arms[1]); this.gun.visible = false; this.gunCd = mr(2, 4); }
   }
   say(line) {
@@ -1273,7 +1290,7 @@ class Person {
     this.bubble = textSprite(line, { h: .3, bg: 'rgba(255,255,255,.95)', color: '#1b2b3c' });
     this.bubble.position.y = 2.75; this.g.add(this.bubble); this.bubbleT = 2.8;
   }
-  lines() { return LINES[this.look || this.kind] || LINES.civ; }
+  lines() { return (this.ageGrp === 'child' && LINES.kid) || (this.ageGrp === 'senior' && LINES.senior) || (this.ageGrp === 'baby' && LINES.parent) || LINES[this.look || this.kind] || LINES.civ; }
   findEscape(awx, awz) {
     // 12방향을 살펴 막히지 않고 탐지견에게서 먼 쪽을 고른다 (낮은 장애물은 점프로 넘을 수 있음)
     const b = level.bounds; let best = null, bs = -1e9, low = false;
@@ -1309,6 +1326,7 @@ class Person {
   }
   update(dt) {
     if (this.dead) return;
+    if (this.seated) { if (this.bubble) { this.bubbleT -= dt; if (this.bubbleT <= 0) { disposeSprite(this.bubble); this.bubble = null; } } this.phase += dt; this.body.children.forEach(c => { if (c.isGroup && c.position.y > 1.6) c.rotation.y = Math.sin(this.phase * .4 + this.x) * .5; }); if (!this.bubble && Math.random() < dt * .012) this.say(pick2(this.lines())); return; }
     if (this.bubble) { this.bubbleT -= dt; if (this.bubbleT <= 0) { disposeSprite(this.bubble); this.bubble = null; } }
     if (this.arrested) {
       if (!this.cuffed) { this.body.rotation.z = Math.sin(time * 18) * .1; this.stars.visible = true; }
@@ -1332,7 +1350,7 @@ class Person {
       this.fleeT = (this.fleeT || 0) - dt;
       // 맞으면 잠깐 물러나고, 아니면 버티며 싸운다: 가까우면 주먹, 멀면 총
       const mode = this.fleeT > 0 || !this.fighter ? 'flee' : d < 2.4 ? 'melee' : d < 6.5 ? 'hold' : d < 11 ? 'close' : 'hold';
-      const base = (this.kind === 'boss' ? 6.6 : 5.0) * level.diff.speed;
+      const base = (this.kind === 'boss' ? 6.6 : 5.0) * level.diff.speed / 1.07;
       if (mode === 'flee') {
         if (this.blocked > .2) { const e = this.findEscape(ax, az); this.escDir = e.dir; this.escT = 1.2; this.blocked = 0; if (e.low && this.y === 0) { this.vy = 6.8; floatText('폴짝!', this.x, 2.4, this.z, { h: .4 }); } }
         if (this.escT > 0) { this.escT -= dt; [ax, az] = this.escDir; }
@@ -1349,7 +1367,7 @@ class Person {
         if (this.aim <= 0) { this.gun.visible = false; fireShot(this); }
       } else if (mode !== 'flee' && mode !== 'melee' && this.gunCd <= 0 && d < 16 && !(this.windup > 0)) {
         this.aim = this.kind === 'boss' ? .45 : .6; this.gun.visible = true;
-        this.gunCd = (this.kind === 'boss' ? mr(1.6, 2.6) : mr(3.2, 5)) / (.7 + .12 * level.diff.stars);
+        this.gunCd = 1.07 * (this.kind === 'boss' ? mr(1.6, 2.6) : mr(3.2, 5)) / (.7 + .12 * level.diff.stars);
         floatText('🔫 !', this.x, 2.7, this.z, { h: .45, color: '#ff4d4d' }); tone(1200, .08, 'square', .04);
       }
       // 주먹: 붙으면 도망 대신 맞선다
@@ -1366,10 +1384,11 @@ class Person {
       if (this.wait > 0) { this.wait -= dt; this.idleAct(dt); }
       else {
         if (!this.target && this.route) { this.ri = (this.ri + 1) % this.route.length; this.target = { x: this.route[this.ri][0], z: this.route[this.ri][1] }; }
-        if (!this.target) { const b = level.bounds; this.target = { x: mr(b.minX + 2, b.maxX - 2), z: mr(b.minZ + 2, b.maxZ - 2) }; }
-        const tx = this.target.x - this.x, tz = this.target.z - this.z, td = Math.hypot(tx, tz);
-        if (td < .6) { this.target = null; this.wait = this.route ? this.waitAt : mr(.5, 3); this.startAct(); }
-        else { sp = 1.4; vx = tx / td * sp; vz = tz / td * sp; }
+        if (!this.target) { this.target = pickWanderTarget(this); this.via = levelVia(this, this.target); }
+        const goal = this.via && this.via.length ? this.via[0] : this.target;
+        const tx = goal.x - this.x, tz = goal.z - this.z, td = Math.hypot(tx, tz);
+        if (td < (goal === this.target ? .6 : .9)) { if (goal !== this.target) this.via.shift(); else { this.target = null; this.wait = this.route ? this.waitAt : mr(.5, 3); this.startAct(); } }
+        else { sp = 1.4 * (this.spd || 1); vx = tx / td * sp; vz = tz / td * sp; }
       }
     }
     if (sp > 0) {
@@ -1378,7 +1397,11 @@ class Person {
       const moved = Math.hypot(this.x - ox, this.z - oz);
       if (moved < sp * dt * .3) {
         this.blocked += dt; this.stuck = (this.stuck || 0) + dt;
-        if (!flee) { this.target = { x: this.x - vx / sp * mr(2, 4) + mr(-2, 2), z: this.z - vz / sp * mr(2, 4) + mr(-2, 2) }; this.wait = .2; }
+        // 감천처럼 축대·계단이 많은 맵: 앞이 1.6m 이하로 높으면 폴짝 뛰어 오른다
+        if (this.via && this.via.length && this.stuck > 2) { this.via = null; this.target = null; }
+        if (!flee && !(this.via && this.via.length) && slopes.length) { const via = stairVia(this); if (via) { this.via = via; this.blocked = 0; this.stuck = 0; } }
+        if (level.npcJump && this.vy === 0 && !this.jumpCd && !(this.via && this.via.length)) { const ax = this.x + vx / sp * .9, az = this.z + vz / sp * .9; let top = 0; for (const c of colliders) if (!c.disabled && !c.pushable && ax > c.minX && ax < c.maxX && az > c.minZ && az < c.maxZ) top = Math.max(top, c.topY); const rise = top - this.y; if (rise > .3 && rise < 1.7) { this.vy = 5.2 + rise * 1.6; this.jumpCd = .8; this.blocked = 0; this.stuck = 0; if (Math.random() < .5) floatText('폴짝!', this.x, this.y + 2.4, this.z, { h: .4 }); } }
+        if (!flee && !(this.vy > 0) && !(this.via && this.via.length)) { this.target = { x: this.x - vx / sp * mr(2, 4) + mr(-2, 2), z: this.z - vz / sp * mr(2, 4) + mr(-2, 2) }; this.wait = .2; }
         if (this.stuck > 2.5) { const b = level.bounds, p = placeFree({ minX: Math.max(b.minX, this.x - 6), maxX: Math.min(b.maxX, this.x + 6), minZ: Math.max(b.minZ, this.z - 6), maxZ: Math.min(b.maxZ, this.z + 6) }, .9, .9, .2); if (p) { this.x = p.x; this.z = p.z; } this.stuck = 0; this.target = null; }
       } else { this.blocked = 0; this.stuck = Math.max(0, (this.stuck || 0) - dt); }
       this.dir += angDiff(this.dir, Math.atan2(vx, vz)) * Math.min(1, dt * 10);
@@ -1390,7 +1413,7 @@ class Person {
     this.arms[0].rotation.x = -Math.sin(this.phase) * .5 * k; this.arms[1].rotation.x = Math.sin(this.phase) * .5 * k;
     { const g2 = groundAt(this.x, this.z, this.r, this.y).h; if (g2 > this.y + .01 && g2 - this.y < .45 && this.vy <= 0) this.y = Math.min(g2, this.y + dt * 4); else if (g2 < this.y - .01 && this.vy === 0) this.vy = -.01; }
     if (this.y > 0 || this.vy > 0 || this.vy < 0) { this.vy -= 22 * dt; this.y += this.vy * dt; const gh = groundAt(this.x, this.z, this.r, Math.max(0, this.y)).h; if (this.y <= gh) { this.y = gh; this.vy = 0; } }
-    unstick(this, this.r, this.y); stairHold(this, .6);
+    unstick(this, this.r, this.y); stairHold(this, .6); if (this.jumpCd) this.jumpCd = Math.max(0, this.jumpCd - dt) || 0;
     this.x = clamp(this.x, level.bounds.minX, level.bounds.maxX); this.z = clamp(this.z, level.bounds.minZ, level.bounds.maxZ);
     if (this.windup > 0) this.arms[0].rotation.x = this.arms[1].rotation.x = -2.6;
     if (this.aim > 0) this.arms[1].rotation.x = -1.55;
@@ -2159,20 +2182,38 @@ function adTexture(ad) {
   });
 }
 function billboards(L) {
-  // 벽 4면에 2개씩, 맵마다 다른 문구 8개
-  const set = ADS.slice((levelIdx % 6) * 8, (levelIdx % 6) * 8 + 8);
-  const sides = [[0, -L.d / 2 + 1, 0, 'x', L.w], [0, L.d / 2 - 1, Math.PI, 'x', L.w], [-L.w / 2 + 1, 0, Math.PI / 2, 'z', L.d], [L.w / 2 - 1, 0, -Math.PI / 2, 'z', L.d]];
+  if (L.name === '비행기 안' || L.name === 'KTX 열차 안') return; // 객실 안에는 광고판을 두지 않는다
+  // 맵의 실제 테두리를 따라 8개, 그 자리 땅 높이(계단·언덕)에 맞춰 세우고 건물에 가리면 옮기거나 뺀다
+  const set = ADS.slice((levelIdx % 6) * 8, (levelIdx % 6) * 8 + 8), b = L.bounds;
+  const P = L.poly || [[b.minX, b.minZ], [b.maxX, b.minZ], [b.maxX, b.maxZ], [b.minX, b.maxZ]];
+  const cx = P.reduce((s, p) => s + p[0], 0) / P.length, cz = P.reduce((s, p) => s + p[1], 0) / P.length, cand = [];
+  for (let i = 0; i < P.length; i++) {
+    const [ax, az] = P[i], [bx2, bz] = P[(i + 1) % P.length], len = Math.hypot(bx2 - ax, bz - az); if (len < 7) continue;
+    let nx = -(bz - az) / len, nz = (bx2 - ax) / len; const mx = (ax + bx2) / 2, mz = (az + bz) / 2; if ((cx - mx) * nx + (cz - mz) * nz < 0) { nx = -nx; nz = -nz; }
+    for (const tt of len > 30 ? [.25, .75] : [.5]) cand.push({ x: ax + (bx2 - ax) * tt, z: az + (bz - az) * tt, nx, nz, ux: (bx2 - ax) / len, uz: (bz - az) / len });
+  }
+  const pickN = Math.min(8, cand.length), chosen = [];
+  for (let k = 0; k < pickN; k++) chosen.push(cand[Math.floor(k * cand.length / pickN)]);
   let k = 0;
-  for (const [cx, cz, rot, axis, len] of sides) for (const sgn of [-1, 1]) {
+  for (const c of chosen) {
     const ad = set[k++]; if (!ad) continue;
-    const x = axis === 'x' ? sgn * len / 4 : cx, z = axis === 'z' ? sgn * len / 4 : cz;
+    let placed = null;
+    for (let tryIn = 1.3; tryIn <= 7.3 && !placed; tryIn += 3) {
+      const x = c.x + c.nx * tryIn, z = c.z + c.nz * tryIn;
+      if (Math.hypot(x - L.spawn.x, z - L.spawn.z) < 8) break;
+      const hs = [-3, 0, 3].map(o => floorAt(x + c.ux * o, z + c.uz * o)); if (hs.some(h => h === null)) continue;
+      const y0 = Math.max(...hs); if (Math.max(...hs) - Math.min(...hs) > 1.5) continue;
+      placed = { x, z, y0 };
+    }
+    if (!placed) continue;
+    const { x, z, y0 } = placed, rot = Math.atan2(c.nx, c.nz);
     const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot; world.add(g);
-    const panel = mesh(BOX(6.4, 3.4, .2), MAT.col(0x0b1f38, .5), 0, 4.4, 0, g); panel.castShadow = false;
+    const panel = mesh(BOX(6.4, 3.4, .2), MAT.col(0x0b1f38, .5), 0, y0 + 4.4, 0, g); panel.castShadow = false;
     const t = adTexture(ad); t.magFilter = THREE.LinearFilter;
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(6, 3), new THREE.MeshBasicMaterial({ map: t, toneMapped: false })); face.position.set(0, 4.4, .11); g.add(face);
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(6, 3), new THREE.MeshBasicMaterial({ map: t, toneMapped: false })); face.position.set(0, y0 + 4.4, .11); g.add(face);
     for (const lx of [-2.6, 2.6]) {
-      mesh(BOX(.18, 2.7, .18), MAT.metal(0x777777), lx, 1.35, -.05, g);
-      addCol(x + Math.cos(rot) * lx + Math.sin(rot) * -.05, z - Math.sin(rot) * lx + Math.cos(rot) * -.05, .3, .3, null, { topY: 2.7 });
+      mesh(BOX(.18, y0 + 2.7, .18), MAT.metal(0x777777), lx, (y0 + 2.7) / 2, -.05, g);
+      addCol(x + Math.cos(rot) * lx + Math.sin(rot) * -.05, z - Math.sin(rot) * lx + Math.cos(rot) * -.05, .3, .3, null, { topY: y0 + 2.7, keep: true });
     }
   }
 }
@@ -2568,7 +2609,7 @@ function fountain(x, z, r = 3, col = 0xbdb7aa) { mesh(new THREE.CylinderGeometry
 function pavilion(x, z, s = 1, y = 0, roof = 0x3b3f45) { for (const sx of [-1, 1]) for (const sz of [-1, 1]) bx(x + sx * 1.6 * s, y, z + sz * 1.6 * s, .3 * s, 2.6 * s, .3 * s, 0x8b2e22, y < .5); bx(x, y, z, 3.8 * s, .3, 3.8 * s, 0x9a8f7a, false); bx(x, y + 2.3 * s, z, 3.9 * s, .35, 3.9 * s, 0x2f7d5b, false); hroof(x, y + 2.6 * s, z, 3 * s, 3 * s, roof); }
 function spire(x, z, w, h, col, rc = 0x4d5a52) { bx(x, 0, z, w, h, w, col); mesh(new THREE.ConeGeometry(w * .75, h * .5, 4), LMC(rc), x, h + h * .25, z).rotation.y = Math.PI / 4; mesh(BOX(.15, 1.6, .15), LMC(0xf4c542), x, h + h * .5 + .8, z); mesh(BOX(.9, .15, .15), LMC(0xf4c542), x, h + h * .5 + 1.1, z); }
 function chimney(x, z, h, col = 0xb0b0b0) { bx(x, 0, z, 2, h, 2, col); for (let y = h * .2; y < h; y += h * .25) mesh(BOX(2.1, .6, 2.1), LMC(0xd84a3a), x, y, z); const c = new THREE.Color(0xdddddd); envAnim.push(dt => { if (Math.random() < dt * 5) spawnP(x, h + .5, z, mr(-.3, .3), 1.5, mr(-.3, .3), c, 2.5); }); }
-function skyline(z, n = 14, hmin = 10, hmax = 40, x0 = -140, gap = 20) { for (let k = 0; k < n; k++) building(x0 + k * gap + rr(-4, 4), z + rr(-6, 6), rr(8, 14), rr(8, 12), rr(hmin, hmax), pick([0xd4dbe2, 0xe8e2d8, 0xc0cad4, 0xb7c4cf, 0xe6d9c8]), { lit: true }); }
+function skyline(z, n = 14, hmin = 8, hmax = 20, x0 = -140, gap = 20) { for (let k = 0; k < n; k++) building(x0 + k * gap + rr(-4, 4), z + rr(-6, 6), rr(8, 14), rr(8, 12), rr(hmin, hmax), pick([0xd4dbe2, 0xe8e2d8, 0xc0cad4, 0xb7c4cf, 0xe6d9c8]), { lit: true }); }
 function flag(x, z, col, h = 4) { bx(x, 0, z, .15, h, .15, 0x6d4c2f); const fl = mesh(BOX(.05, .9, 1.3), LMC(col), x, h - .5, z + .7); fl.castShadow = false; envAnim.push(() => { fl.rotation.y = Math.sin(time * 3 + x) * .3; }); }
 function columns(x, z, n, gap, h, col = 0xf2efe8, axis = 'x', w = .8) { for (let k = 0; k < n; k++) { const o = (k - (n - 1) / 2) * gap; bx(axis === 'x' ? x + o : x, 0, axis === 'x' ? z : z + o, w, h, w, col); } }
 function lanternLine(x0, x1, z, y, cols = [0xff6f61, 0xffd54f, 0x4fc3f7]) { for (let x = x0, k = 0; x <= x1; x += 1.6, k++) { const l = mesh(BOX(.4, .5, .4), glow(cols[k % cols.length], 1.2), x, y - Math.sin((x - x0) / (x1 - x0) * Math.PI) * .6, z); l.castShadow = false; } }
@@ -2576,7 +2617,7 @@ function horse(x, z, col = 0x8d5a3b) { const g = new THREE.Group(); g.position.s
 function rockWall(x0, z0, x1, z1, col = 0x3a3a3a) { const len = Math.hypot(x1 - x0, z1 - z0), n = Math.ceil(len / .9); for (let k = 0; k < n; k++) { const t = k / n, m = mesh(BOX(rr(.7, 1), rr(.7, 1.1), rr(.6, .9)), LMC(col), x0 + (x1 - x0) * t, .4, z0 + (z1 - z0) * t); m.castShadow = false; } addCol((x0 + x1) / 2, (z0 + z1) / 2, Math.abs(x1 - x0) + .8, Math.abs(z1 - z0) + .8, null, { topY: 1 }); }
 function partition(z, hw = 6, aisle = 1.1, col = 0xdfe6ea) { for (const sd of [-1, 1]) bx(sd * (aisle + (hw - aisle) / 2), 0, z, hw - aisle, 2.8, .25, col); mesh(BOX(aisle * 2, .5, .25), LMC(col), 0, 2.55, z); }
 const LMDEF = (o) => ({
-  landmark: true, gate: o.gate, sc: 1, diff: { stars: o.st ?? 2, speed: .95 + (o.st ?? 2) * .06, flee: 1, hp: o.st > 3 ? 3 : 2, bossHp: 5, sniff: 27 - (o.st ?? 2) * 1.5, vehicle: 1 },
+  landmark: true, gate: o.gate, npcJump: o.npcJump, sc: 1, diff: { stars: o.st ?? 2, speed: .95 + (o.st ?? 2) * .06, flee: 1, hp: o.st > 3 ? 3 : 2, bossHp: 5, sniff: 27 - (o.st ?? 2) * 1.5, vehicle: 1 },
   extras: { decor: o.decor || [], items: o.items || [['backpack', 3], ['dutyBag', 2]] }, name: o.name, icon: o.icon, w: o.w ?? 80, d: o.d ?? 60, outdoor: o.out !== false, bg: o.bg ?? 0xcfe3ef, music: o.music ?? 1 + (o.n % 7), sky: o.sky, shape: o.shape, outside: o.outside, rail: o.rail,
   staff: o.staff || [{ kind: 'police', route: [[-(o.w ?? 80) / 2 + 6, (o.d ?? 60) / 2 - 4], [(o.w ?? 80) / 2 - 6, (o.d ?? 60) / 2 - 4]], wait: 2 }, { kind: 'customs', route: [[-12, 8], [12, 8]], wait: 2 }],
   vehicles: o.veh || [], people: o.people || { civ: 9, smuggler: 3 }, hide: o.hide || { drug: 4, gun: 3 }, need: o.need || { drug: 3, gun: 2, smuggler: 2 },
@@ -2666,21 +2707,30 @@ const LANDMARK_LIST = [
       for (const x of [-18, -12, 12, 18]) bench(x, 10);
       for (let k = 0; k < 3; k++) { const g = new THREE.Group(); g.position.set(-38, 0, 2 + k * 5); world.add(g); mesh(BOX(1.9, .8, 4.2), LMC(0xff8c1a), 0, .75, 0, g); mesh(BOX(1.7, .7, 2.2), LMC(0xff8c1a), 0, 1.5, -.2, g); mesh(BOX(.6, .25, .3), LMC(0xffffff), 0, 2, -.2, g); addCol(-38, 2 + k * 5, 2, 4.4, g, { topY: 1.8 }); } sign('🚕 택시 승강장', -38, 3.4, 8, .5);
     } },
-  { name: '비행기 안', gate: true, icon: '🛫', out: false, w: 13, d: 70, bg: 0xe9edf1, floor: TILE('#3c4f6b', '#33445c', .5), obj: luggage, ns: 6, sky: [0x3a8fe0, 0xbfe0fb], shape: CAPSULE(1), shapeFloor: true, rail: { h: 3.2, col: 0xf0f2f4, t: .3 }, st: 3,
-    staff: [{ kind: 'attendant', route: [[0, -26], [0, 26]], wait: 2.5 }, { kind: 'attendant', route: [[0, 20], [0, -18]], wait: 2.5 }], people: { civ: 8, tourist: 2, smuggler: 2 }, hide: { drug: 4, gun: 2 }, need: { drug: 3, gun: 1, smuggler: 2 },
-    items: [["backpack",2],["dutyBag",2],["cosmetics",1]], who: '하늘별 기장', chief: 'pilot', short: '하늘을 나는 여객기 안! 비즈니스석·일반석 좌석 밑, 갤리, 화장실 앞을 수색해요.',
-    intro: '인천행 국제선 여객기 안이야. 착륙 전에 밀수범을 찾아야 해!\n앞쪽 비즈니스석, 3-3 일반석, 비상구, 갤리와 화장실 앞까지 꼼꼼히. 창밖 구름도 구경해!',
+  { name: '비행기 안', gate: true, icon: '🛫', out: false, w: 15, d: 72, bg: 0xe9edf1, floor: TILE('#3c4f6b', '#33445c', .5), obj: luggage, ns: 6, sky: [0x3a8fe0, 0xbfe0fb], shape: CAPSULE(1), shapeFloor: true, rail: { h: 3.2, col: 0xf0f2f4, t: .3 }, st: 3,
+    staff: [{ kind: 'attendant', route: [[-2.55, -27], [-2.55, 27]], wait: 2.5 }, { kind: 'attendant', route: [[2.55, 25], [2.55, -25]], wait: 2.5 }], people: { civ: 4, tourist: 2, smuggler: 2 }, hide: { drug: 4, gun: 2 }, need: { drug: 3, gun: 1, smuggler: 2 },
+    items: [["backpack",2],["dutyBag",2],["cosmetics",1]], who: '하늘별 기장', chief: 'pilot', short: '에어버스 A330 객실! 비즈니스(2-2-2)·일반석(2-4-2) 좌석 밑, 두 통로, 갤리, 화장실 앞을 수색해요.',
+    intro: '인천행 에어버스 A330 여객기 안이야. 착륙 전에 밀수범을 찾아야 해!\n통로가 두 개인 넓은 비행기야. 앞쪽 비즈니스석(2-2-2), 일반석(2-4-2), 비상구, 갤리와 화장실까지 꼼꼼히.\n자리에 앉아 있는 승객들 사이도 살펴봐. 창밖 구름도 구경해!',
     build(L) {
-      for (let z = -24; z <= -16; z += 2.6) for (const x of [-3.9, -2.4, 2.4, 3.9]) { const c = seatBlock(x, z, 0x7a2a4a, Math.PI); c.mesh.scale.set(1.5, 1.2, 1.4); }
-      for (let z = -12; z <= 26; z += 2) { if (Math.abs(z - 4) < 1.2) continue; for (const x of [-4.6, -3.7, -2.8, 2.8, 3.7, 4.6]) seatBlock(x, z, 0x34507a, Math.PI); }
-      partition(-14.2, 6.3, 1.2, 0xe4e7ea); sign('일반석 ECONOMY', 0, 3.3, -14.2, .4); sign('비즈니스 BUSINESS', 0, 3.3, -26, .45, 'rgba(120,30,70,.9)');
-      for (const sd of [-1, 1]) { mesh(BOX(1.6, .7, 56), LMC(0xf4f4f2), sd * 4.5, 2.8, 0); for (let z = -26; z <= 26; z += 2) mesh(BOX(.1, .6, .5), glow(0xbfe6ff, .6), sd * 6.3, 1.6, z); mesh(BOX(.1, .5, 1), glow(0x3fe08a, 1.4), sd * 6.2, 2.4, 4); }
-      sign('🚪 비상구 EXIT', 0, 3, 4, .45, 'rgba(30,140,70,.92)');
-      bx(0, 0, -30, 10, 1.1, 2, 0xd0d4d8); for (let k = 0; k < 4; k++) mesh(BOX(1, 1.6, .2), LMC(0x9aa3ab), -3 + k * 2, 2.1, -30.9); sign('✈ GALLEY 갤리', 0, 3, -30, .45);
-      for (const sd of [-1, 1]) { bx(sd * 4.2, 0, 30, 2.4, 2.6, 2, 0xe4e7ea); sign('🚻', sd * 4.2, 3, 30, .45); }
-      const cart = mesh(BOX(.9, 1.1, 1.2), LMC(0xb9c0c6), 0, .6, 0); envAnim.push(() => { cart.position.z = Math.sin(time * .2) * 18; });
-      for (let k = 0; k < 12; k++) { const c = mesh(BOX(rr(4, 9), 1.4, rr(3, 7)), LMC(0xffffff), 0, -3, 0); const z0 = rr(-40, 40), sd = Math.random() < .5 ? -1 : 1, xo = rr(10, 22); envAnim.push(() => { c.position.set(sd * xo, -1.5 + Math.sin(z0) * 2, ((z0 - time * 9) % 90 + 135) % 90 - 45); }); }
-      for (const sd of [-1, 1]) mesh(BOX(14, .3, 4), LMC(0xdfe4e8), sd * 13, 1, 2);
+      const ECO = [-4.65, -3.75, -1.35, -.45, .45, 1.35, 3.75, 4.65], BIZ = [-4.2, -3.1, -.55, .55, 3.1, 4.2]; L.seatSpots = [];
+      // 비즈니스 2-2-2 (앞쪽, 넓은 좌석)
+      for (let z = -25; z <= -16; z += 2.3) for (const x of BIZ) { const c = seatBlock(x, z, 0x6a2340, Math.PI); c.mesh.scale.set(1.3, 1.25, 1.6); c.minX = x - .55; c.maxX = x + .55; c.minZ = z - .6; c.maxZ = z + .6; L.seatSpots.push([x, z, 'biz']); mesh(BOX(.5, .3, .06), glow(0x6fb7ff, .7), x, 1.4, z - .82).castShadow = false; }
+      for (const [a, b] of [[-6.4, -3.25], [-1.85, 1.85], [3.25, 6.4]]) bx((a + b) / 2, 0, -14.6, b - a, 2.8, .25, 0xe4e7ea); for (const sx of [-1, 1]) mesh(BOX(1.4, .5, .25), LMC(0xe4e7ea), sx * 2.55, 2.55, -14.6);
+      sign('비즈니스 PRESTIGE 2-2-2', 0, 3.3, -26.5, .45, 'rgba(110,30,60,.92)'); sign('일반석 ECONOMY 2-4-2', 0, 3.3, -14.6, .42);
+      // 일반석 2-4-2, 비상구 줄은 비워 둔다
+      for (let z = -12.4; z <= 27; z += 1.65) { if (Math.abs(z - 4.1) < .9) continue; for (const x of ECO) { seatBlock(x, z, 0x2f4f7f, Math.PI); L.seatSpots.push([x, z, 'eco']); mesh(BOX(.4, .26, .05), glow(0x6fb7ff, .5), x, 1.35, z - .42).castShadow = false; } }
+      // 머리 위 짐칸(양옆 + 가운데), 창문, 비상구
+      for (const sx of [-1, 1]) { mesh(BOX(1.5, .8, 54), LMC(0xf4f4f2), sx * 4.25, 2.8, 1); for (let z = -26; z <= 27; z += 1.65) mesh(BOX(.08, .55, .4), glow(0xbfe6ff, .6), sx * 5.75, 1.6, z).castShadow = false; mesh(BOX(.12, .55, 1.4), glow(0x3fe08a, 1.4), sx * 5.75, 2.4, 4.1).castShadow = false; }
+      mesh(BOX(3, .7, 40), LMC(0xeef0f2), 0, 2.9, 7);
+      sign('🚪 비상구 EXIT', 0, 3.5, 4.1, .45, 'rgba(30,140,70,.92)');
+      // 앞 갤리·조종실 문, 뒤 화장실·갤리
+      bx(0, 0, -30.2, 9, 1.1, 1.6, 0xd0d4d8); for (let k = 0; k < 5; k++) mesh(BOX(1, 1.6, .2), LMC(0x9aa3ab), -3.6 + k * 1.8, 2.1, -31); sign('✈ 앞 갤리 · 조종실', 0, 3.2, -30, .42);
+      for (const sx of [-1, 1]) { bx(sx * 4.4, 0, 30.2, 2.2, 2.6, 1.8, 0xe4e7ea); sign('🚻', sx * 4.4, 3, 30.2, .45); } bx(0, 0, 31.2, 3.4, 1.1, 1.2, 0xd0d4d8); sign('뒤 갤리', 0, 2.4, 31.2, .38);
+      for (const sx of [-1, 1]) { bx(sx * 6.1, 0, -28.5, .25, 2.8, 1.4, 0xd9dde2); sign('L1 / R1 도어', sx * 5.2, 2.8, -28.5, .32); }
+      const cart = mesh(BOX(.8, 1.05, 1), LMC(0xb9c0c6), -2.55, .55, 0); envAnim.push(() => { cart.position.z = Math.sin(time * .18) * 16; });
+      for (let k = 0; k < 14; k++) { const c = mesh(BOX(rr(4, 9), 1.4, rr(3, 7)), LMC(0xffffff), 0, -3, 0); const z0 = rr(-40, 40), sd = Math.random() < .5 ? -1 : 1, xo = rr(11, 24); envAnim.push(() => { c.position.set(sd * xo, -1.5 + Math.sin(z0) * 2, ((z0 - time * 9) % 90 + 135) % 90 - 45); }); }
+      for (const sd of [-1, 1]) { mesh(BOX(16, .3, 4.5), LMC(0xdfe4e8), sd * 15, 1, 3); mesh(BOX(1.4, 1.4, 3), MAT.metal(0x9aa3ab), sd * 11, .2, 2); }
+      sign('✈ AIRBUS A330-300 · 인천행', 0, 4, -33, .5);
     } },
   { name: '명동', icon: '🛍', w: 84, d: 60, floor: TILE('#c8bfb0', '#a89f90', .3), obj: luggage, sky: [0x6aa8e8, 0xf2e6f0], st: 3,
     people: { tourist: 6, merchant: 3, civ: 3, smuggler: 3 }, items: [["cosmetics",2],["dutyBag",2],["shoeBox",1],["souvenir",1]], who: '윤쇼핑 명동 상인회장', short: '명동성당 아래 쇼핑 거리! 노점 거리, 화장품 가게, 환전소, 명동예술극장을 순찰해요.',
@@ -2689,9 +2739,9 @@ const LANDMARK_LIST = [
       const fac = [0xf8c8d8, 0xc8e0f0, 0xfff0c0, 0xd8f0d0, 0xe8d0f0, 0xffd8b0];
       for (const sx of [-1, 1]) for (let k = 0; k < 4; k++) { const z = -16 + k * 9, x = sx * 26; building(x, z, 14, 7, rr(9, 16), fac[(k + (sx > 0 ? 3 : 0)) % 6], { lit: true }); neon(x - sx * 7.6, 4.5, z, [['COSMETIC 화장품', '환전 EXCHANGE', 'K-POP STORE', '카페 CAFE'], ['FACE MASK SALE', 'SNEAKERS', '면세점 DUTY FREE', '닭강정']][sx > 0 ? 1 : 0][k], ['#ff4fa3', '#4fd3ff', '#ffd54f', '#7dff6a'][k]); mesh(BOX(.3, 2.6, 6), LMC(fac[k]), x - sx * 7.1, 1.3, z); }
       building(-26, 20, 14, 8, 8, 0xe8dcc4); columns(-26, 15.8, 4, 3, 6, 0xf4efe4); sign('🎭 명동예술극장', -26, 9.4, 16, .55);
-      for (let k = 0; k < 5; k++) stall(k % 2 ? 4.5 : -4.5, -18 + k * 6, [0xd63a2a, 0x2c6fb7, 0xf39c12, 0x27ae60, 0x8e44ad][k], ['떡볶이', '회오리감자', '닭꼬치', '계란빵', '호떡'][k]);
+      for (let k = 0; k < 5; k++) stall(k % 2 ? 4.5 : -4.5, -12 + k * 5, [0xd63a2a, 0x2c6fb7, 0xf39c12, 0x27ae60, 0x8e44ad][k], ['떡볶이', '회오리감자', '닭꼬치', '계란빵', '호떡'][k]);
       for (const z of [-14, -2, 10]) lanternLine(-18, 18, z, 6.4);
-      stepsUp(0, -21.5, 12, 3, -1, 1); bx(0, 1.05, -28, 16, 9, 9, 0x9c4a35, false); addCol(0, -28, 16, 9, null, { topY: 99 }); mesh(new THREE.CylinderGeometry(1.6, 1.6, .2, 16), glow(0xffd27a, .8), 0, 6, -23.4).rotation.x = Math.PI / 2; spire(0, -23.6, 3.6, 18, 0x9c4a35); bx(-7, 0, -28, 2, 12, 2, 0x8a4030); bx(7, 0, -28, 2, 12, 2, 0x8a4030); sign('⛪ 명동성당 (1898)', 0, 28, -23, .8);
+      stepsUp(0, -17.5, 12, 3, -1, 1); bx(0, 0, -22, 16, 1.05, 4, 0xbdb5a8); bx(0, 1.05, -26.5, 16, 9, 5.5, 0x9c4a35, false); addCol(0, -26.5, 16, 5.5, null, { topY: 99 }); mesh(new THREE.CylinderGeometry(1.6, 1.6, .2, 16), glow(0xffd27a, .8), 0, 6.5, -23.7).rotation.x = Math.PI / 2; spire(0, -25.2, 3.6, 18, 0x9c4a35); bx(-7, 0, -27, 2, 12, 2, 0x8a4030); bx(7, 0, -27, 2, 12, 2, 0x8a4030); sign('⛪ 명동성당 (1898)', 0, 28, -23, .8);
       const nt = new THREE.Group(); nt.position.set(30, 0, -120); world.add(nt); mesh(BOX(30, 20, 20), LMC(0x587a4a), 0, 10, 0, nt); mesh(new THREE.CylinderGeometry(1, 1.6, 26, 10), LMC(0xf0f0f0), 0, 33, 0, nt); mesh(new THREE.CylinderGeometry(3, 2.4, 3, 12), LMC(0xdfe4e8), 0, 47, 0, nt);
       sign('🛍 MYEONGDONG 명동 쇼핑거리', 0, 7.5, 12, 1);
     } },
@@ -2730,10 +2780,10 @@ const LANDMARK_LIST = [
     intro: '잠실의 123층, 555m 초고층 타워 앞이야! 붓끝처럼 뾰족하게 솟아 있고, 꼭대기엔 전망대 서울스카이가 있어.\n타워 옆엔 쇼핑몰과 아쿠아리움, 동쪽엔 벚꽃이 예쁜 석촌호수가 있어.',
     build(L) {
       const gl = MAT.col(0x9cc0da, .25, .3), fin = LMC(0xeef3f7);
-      for (let k = 0; k < 24; k++) { const w = 13 - Math.pow(k / 24, 1.6) * 10.5, y = k * 4.6; bx(0, y, -18, w, 4.6, w, gl, k === 0); for (const sx of [-1, 1]) for (const sz of [-1, 1]) mesh(BOX(.35, 4.6, .35), fin, sx * w / 2, y + 2.3, -18 + sz * w / 2); }
-      mesh(BOX(4.4, .6, 4.4), glow(0x9fe0ff, 1.2), 0, 111, -18).castShadow = false; for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2, b = mesh(BOX(.3, 14, .3), fin, Math.cos(a) * 1.4, 118, -18 + Math.sin(a) * 1.4); b.rotation.z = Math.cos(a) * .08; b.rotation.x = Math.sin(a) * .08; } mesh(BOX(.5, .5, .5), glow(0xff4040, 2), 0, 125.5, -18); sign('서울스카이 SEOUL SKY 전망대', 0, 114, -10, 1.2);
+      for (let k = 0; k < 24; k++) { const w = 9 - Math.pow(k / 24, 1.6) * 7.2, y = k * 1.8; bx(0, y, -18, w, 1.8, w, gl, k === 0); for (const sx of [-1, 1]) for (const sz of [-1, 1]) mesh(BOX(.3, 1.8, .3), fin, sx * w / 2, y + .9, -18 + sz * w / 2); }
+      mesh(BOX(2.8, .5, 2.8), glow(0x9fe0ff, 1.2), 0, 43.4, -18).castShadow = false; for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2, b = mesh(BOX(.25, 7, .25), fin, Math.cos(a) * .9, 47, -18 + Math.sin(a) * .9); b.rotation.z = Math.cos(a) * .1; b.rotation.x = Math.sin(a) * .1; } mesh(BOX(.45, .45, .45), glow(0xff4040, 2), 0, 50.8, -18); sign('서울스카이 SEOUL SKY 전망대', 0, 44.5, -12, .9);
       for (const sx of [-1, 1]) { building(sx * 24, -14, 18, 16, 9, 0xdcd6cc, { glass: 0x6a9ab8, sign: sx < 0 ? '🛍 롯데월드몰' : '🐠 아쿠아리움', sh: .6 }); mesh(BOX(18.4, .6, 16.4), LMC(0xc9b48a), sx * 24, 9.3, -14); }
-      fountain(0, 2, 3.4); sign('🏙 LOTTE WORLD TOWER 555m', 0, 8, -6, 1);
+      fountain(0, 2, 3.4); sign('🏙 LOTTE WORLD TOWER 555m (123층)', 0, 8, -6, 1);
       pond(-38, 14, 22, 26, 0x5a9ec8); const boat = mesh(BOX(1.6, .8, 3), LMC(0xffffff), -38, .5, 14); envAnim.push(() => { boat.position.set(-38 + Math.sin(time * .2) * 6, .4, 14 + Math.cos(time * .2) * 8); boat.rotation.y = time * .2; }); sign('석촌호수', -38, 3, 2, .6);
       for (let k = 0; k < 12; k++) tree(-24 + (k % 2) * -3, -2 + k * 2.6, .8, 0xf2a7c3); for (let k = 0; k < 6; k++) tree(rr(16, 40), rr(6, 24), .8, 0xf2a7c3); flowers(28, 14, 16, 10, [0xf48fb1, 0xffffff, 0xffeb3b], 40);
     } },
@@ -2746,7 +2796,7 @@ const LANDMARK_LIST = [
       pond(-21, -12, 38, 3.4, 0x6fb5d8); pond(25, -12, 34, 3.4, 0x6fb5d8); for (let k = 0; k < 8; k++) mesh(BOX(1, .3, .8), LMC(0xb9b2a5), -36 + k * 5, .2, -12); sign('청계천', 20, 2.4, -12, .5);
       const ddp = new THREE.Mesh(new THREE.SphereGeometry(16, 28, 12, 0, Math.PI * 2, 0, Math.PI / 2), MAT.metal(0xc9ced3, .3)); ddp.scale.set(1.4, .45, .8); ddp.position.set(-14, 0, 3); world.add(ddp); addCol(-14, 3, 40, 22, null, { topY: 99 }); for (let k = 0; k < 40; k++) { const a = k / 40 * Math.PI * 2; mesh(BOX(.3, .3, .3), glow(0xbfe6ff, 1), -14 + Math.cos(a) * 22.6, 2.2, 3 + Math.sin(a) * 12.9).castShadow = false; } sign('DDP 동대문디자인플라자', -14, 9, 15, .8);
       for (let x = -34; x <= -12; x += 1.4) for (let z = 17; z <= 22; z += 1.4) { const r = mesh(BOX(.35, .35, .35), glow(pick([0xffffff, 0xffd0e0, 0xfff4c0]), 1.4), x, .8 + Math.random() * .2, z); r.castShadow = false; bx(x, 0, z, .06, .8, .06, 0x3a7a3a, false); } sign('🌹 LED 장미정원', -23, 3.4, 23, .55);
-      building(38, 2, 9, 12, 26, 0x2c3e50, { lit: true }); neon(38, 18, 8.2, 'FASHION TOWER', '#4fd3ff'); building(38, 18, 9, 10, 20, 0x8e44ad, { lit: true }); neon(38, 14, 23.2, '패션몰 24H', '#ff4fa3');
+      building(38, 2, 9, 12, 15, 0x2c3e50, { lit: true }); neon(38, 11, 8.2, 'FASHION TOWER', '#4fd3ff'); building(38, 18, 9, 10, 13, 0x8e44ad, { lit: true }); neon(38, 9, 23.2, '패션몰 24H', '#ff4fa3');
       for (let k = 0; k < 5; k++) stall(22, -4 + k * 5, [0xd63a2a, 0x2c6fb7, 0x27ae60][k % 3], ['원단', '단추', '청바지', '모자', '신발'][k]);
     } },
   { name: '광안리 해변', icon: '🌉', w: 90, d: 56, floor: 0xcdb98c, obj: luggage, sky: [0x3a9ae8, 0xd8f0ff], st: 3, shape: [[-1, 1], [-1, -.3], [-.8, -.6], [-.5, -.8], [0, -.88], [.5, -.8], [.8, -.6], [1, -.3], [1, 1]], outside: { col: 0x3d8fc4, y: .03, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
@@ -2771,7 +2821,7 @@ const LANDMARK_LIST = [
     build(L) {
       floorPlane(48, 26, MAT.col(0xd8cfb8, .9), 0, -3, .01); for (let k = 0; k < 5; k++) mesh(BOX(1.2, .1, 4), LMC(0xffffff), -6 + k * 3, .02, 18).castShadow = false;
       gateTop(0, -6, 18, 7, 5, { tier: true }); sign('숭례문 崇禮門 (국보 제1호)', 0, 17, -2, .9); for (const sx of [-1, 1]) { bx(sx * 15, 0, -6, 10, 4, 4, 0xa9a497); for (let k = 0; k < 6; k++) mesh(BOX(.8, .6, 4.1), LMC(0xa9a497), sx * (11 + k * 1.6), 4.3, -6); }
-      for (let k = 0; k < 6; k++) building(-36 + k * 14, -30, 12, 6, rr(14, 30), [0xd4dbe2, 0xe8e2d8, 0xc0cad4][k % 3], { lit: true }); sign('대한상공회의소', 22, 26, -27, .6);
+      for (let k = 0; k < 6; k++) building(-36 + k * 14, -30, 12, 6, rr(9, 15), [0xd4dbe2, 0xe8e2d8, 0xc0cad4][k % 3], { lit: true }); sign('대한상공회의소', 22, 17, -27, .6);
       for (let k = 0; k < 6; k++) stall(-38, -14 + k * 5, [0xd63a2a, 0x2c6fb7][k % 2], ['갈치조림', '안경', '그릇', '인삼', '모자', '김'][k]); sign('남대문시장', -38, 6, 4, .7); lanternLine(-40, -36, 2, 5.5);
       for (const [x, z] of [[-16, 6], [16, 6], [-16, -16], [16, -16]]) tree(x, z, .9); flowers(0, 6, 30, 3, [0xf44336, 0xffeb3b, 0xffffff], 40);
     } },
@@ -2797,7 +2847,7 @@ const LANDMARK_LIST = [
     build(L) {
       for (let k = 0; k < 27; k++) { const r = 2.6 - Math.sin(k / 27 * Math.PI) * .6 + (k < 4 ? .4 : 0); mesh(new THREE.CylinderGeometry(r * .97, r, .5, 16), LMC(0xd2c39e), 0, .25 + k * .5, -4); } addCol(0, -4, 5, 5, null, { topY: 99 }); bx(0, 13.5, -4, 3.4, .6, 3.4, 0xc4b48e, false); mesh(BOX(1, 1, .1), LMC(0x222222), 0, 7, -1.4); sign('첨성대 瞻星臺 (국보)', 0, 17, -2, .7); flowers(0, 6, 22, 6, [0xf48fb1, 0xffeb3b, 0xff7043, 0xba68c8], 70);
       for (const [x, z, r] of [[-30, 4, 9], [-14, 10, 6], [-40, -8, 6]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x6f9f4a)); m.scale.y = .55; m.position.set(x, 0, z); world.add(m); addCol(x, z, r * 1.5, r * 1.5, null, { topY: 99 }); } sign('대릉원 고분 (천마총)', -26, 8, 8, .6);
-      bx(-24, 0, -26, 30, 3, 6, 0xbfb6a4); stepsUp(-30, -22.5, 4, 8, -1, .4, 0xd2c8b4); stepsUp(-18, -22.5, 4, 8, -1, .4, 0xd2c8b4); sign('청운교 · 백운교', -24, 4.6, -22, .5); hanok(-24, -28, 20, 6, 3, { tier: true, base: 0xbfb6a4 }); for (const s of colliders.slice(-1)) s.minZ = s.minZ; sign('불국사 佛國寺 · 자하문', -24, 13, -24, .7); hanok(-24, -33, 12, 3, 2.6, { tier: false, base: 0xbfb6a4 }); sign('대웅전', -24, 7, -31, .45); pavilion(-36, -27, .8, 3); sign('범영루', -36, 8, -25, .4);
+      bx(-24, 0, -29.5, 30, 2.8, 8, 0xbfb6a4); stepsUp(-30, -22.3, 4, 8, -1, .4, 0xd2c8b4); stepsUp(-18, -22.3, 4, 8, -1, .4, 0xd2c8b4); sign('청운교 · 백운교', -24, 4.6, -22, .5); hanok(-24, -31.5, 14, 3, 2.6, { tier: true, base: 0xbfb6a4 }); sign('불국사 佛國寺 · 자하문 · 대웅전', -24, 12, -28, .7); pavilion(-36, -28, .8, 2.8); sign('범영루', -36, 8, -26, .4);
       for (const [x, sga] of [[-34, 0], [-14, 1]]) { for (let k = 0; k < 3; k++) bx(x, k * 2.4, -16, 3.6 - k * .7, 1.6, 3.6 - k * .7, 0xbfb6a4, k === 0); for (let k = 0; k < 3; k++) mesh(BOX(5 - k * 1.1, .4, 5 - k * 1.1), LMC(0xa89e8c), x, 1.8 + k * 2.4, -16); mesh(BOX(.5, 2.4, .5), LMC(0xa89e8c), x, 8.8, -16); sign(sga ? '석가탑' : '다보탑', x, 11.5, -13.5, .55); }
       const cave = new THREE.Mesh(new THREE.SphereGeometry(8, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x9a948a)); cave.position.set(30, 0, -26); world.add(cave); addCol(30, -26, 12, 12, null, { topY: 99 }); bx(30, 0, -18.5, 4, 4, 2, 0x6d675e, false); statue(30, -19.4, 0xd9c9a0, true, 3.4); sign('석굴암 石窟庵 (국보)', 30, 10, -18, .65);
       pond(30, 8, 20, 12, 0x3f7fa8); for (const [x, z] of [[24, 2.4], [36, 2.4]]) { bx(x, 0, z, 6, .6, 3, 0xbfb6a4); pavilion(x, z, 1, .6); } for (let k = 0; k < 14; k++) mesh(BOX(.3, .3, .3), glow(0xffd27a, 1.2), 20 + k * 1.5, .5, 14.2).castShadow = false; sign('동궁과 월지 (안압지)', 30, 6, 2, .6);
@@ -2807,8 +2857,8 @@ const LANDMARK_LIST = [
     people: { tourist: 6, student: 3, civ: 3, smuggler: 3 }, items: [["backpack",2],["teddy",2],["souvenir",2]], who: '남산 N서울타워 총지배인', short: '남산 꼭대기! N서울타워, 사랑의 자물쇠, 남산 봉수대, 팔각정, 케이블카, 서울 전망을 둘러봐요.',
     intro: '남산 꼭대기의 N서울타워야! 동그란 산 정상에서 서울이 한눈에 보여.\n사랑의 자물쇠 울타리, 옛날 연기로 신호를 보내던 남산 봉수대, 팔각정, 산 아래로 내려가는 케이블카도 있어!',
     build(L) {
-      for (let k = 0; k < 16; k++) { const a = k / 16 * Math.PI * 2, r = rr(70, 110); building(Math.cos(a) * r, Math.sin(a) * r, rr(6, 12), rr(6, 12), rr(10, 40), pick([0xd4dbe2, 0xe8e2d8, 0xc0cad4]), { lit: true }); } mountainBack(-120, 0x587a4a, 6);
-      bx(0, 0, -8, 5, 3, 5, 0xe9e6df); for (let k = 0; k < 10; k++) mesh(new THREE.CylinderGeometry(1.4 - k * .06, 1.6 - k * .06, 3.4, 12), LMC(0xf0f0f0), 0, 3 + k * 3.4 + 1.7, -8); mesh(new THREE.CylinderGeometry(4.4, 3.4, 4.5, 16), LMC(0xdfe4e8), 0, 39, -8); mesh(new THREE.CylinderGeometry(4.5, 4.5, 1, 16), glow(0x9fd3ff, .6), 0, 38.4, -8); mesh(new THREE.CylinderGeometry(.4, .6, 14, 8), LMC(0xd84a3a), 0, 48, -8); const tl = mesh(BOX(.6, .6, .6), glow(0xff4040, 2), 0, 55.4, -8); envAnim.push(() => { tl.material.emissiveIntensity = 1 + Math.sin(time * 3); }); sign('🗼 N SEOUL TOWER', 0, 58, -8, 1);
+      for (let k = 0; k < 16; k++) { const a = k / 16 * Math.PI * 2, r = rr(70, 110); building(Math.cos(a) * r, Math.sin(a) * r, rr(6, 12), rr(6, 12), rr(8, 20), pick([0xd4dbe2, 0xe8e2d8, 0xc0cad4]), { lit: true }); } mountainBack(-120, 0x587a4a, 6);
+      bx(0, 0, -8, 5, 3, 5, 0xe9e6df); for (let k = 0; k < 10; k++) mesh(new THREE.CylinderGeometry(1.2 - k * .05, 1.4 - k * .05, 2.1, 12), LMC(0xf0f0f0), 0, 3 + k * 2.1 + 1.05, -8); mesh(new THREE.CylinderGeometry(3.3, 2.6, 3.3, 16), LMC(0xdfe4e8), 0, 25.6, -8); mesh(new THREE.CylinderGeometry(3.4, 3.4, .7, 16), glow(0x9fd3ff, .6), 0, 25.2, -8); mesh(new THREE.CylinderGeometry(.3, .45, 9, 8), LMC(0xd84a3a), 0, 31.7, -8); const tl = mesh(BOX(.5, .5, .5), glow(0xff4040, 2), 0, 36.4, -8); envAnim.push(() => { tl.material.emissiveIntensity = 1 + Math.sin(time * 3); }); sign('🗼 N SEOUL TOWER', 0, 39.5, -8, 1);
       for (let k = 0; k < 12; k++) { const a = Math.PI * .1 + k * .16, x = Math.cos(a) * 24, z = Math.sin(a) * 20; bx(x, 0, z, 3, 1.2, .2, 0x888888); for (let j = 0; j < 9; j++) mesh(BOX(.22, .22, .1), LMC([0xff5a8a, 0xffd54f, 0x4fc3f7, 0xb388ff][j % 4]), x - 1.2 + j * .3, rr(.3, 1.1), z + .15).castShadow = false; } sign('💕 사랑의 자물쇠', 14, 3, 18, .5); for (let k = 0; k < 20; k++) mesh(BOX(.3, .3, .3), LMC([0xff5a8a, 0xffd54f, 0x4fc3f7][k % 3]), 18 + rr(-1, 1), 1 + k * .15, 6 + rr(-1, 1)); bx(18, 0, 6, .6, 3.4, .6, 0x6d4c2f); sign('자물쇠 나무', 18, 4.6, 6, .4);
       for (let k = 0; k < 5; k++) { bx(-22 + k * 3, 0, -14, 2.4, 1.6, 2.4, 0x9a948a); mesh(new THREE.CylinderGeometry(.6, .9, 1.6, 8), LMC(0x9a948a), -22 + k * 3, 2.4, -14); } sign('남산 봉수대 (봉화 신호)', -16, 4.6, -11.5, .55);
       hanok(-22, 8, 6, 6, 2.6, { door: false }); sign('팔각정', -22, 8, 12, .55);
@@ -2820,7 +2870,7 @@ const LANDMARK_LIST = [
     intro: '대한민국 대표 해수욕장 해운대야! 1.5km 백사장 뒤로 초고층 빌딩 엘시티와 마린시티가 서 있어.\n동쪽 바닷가 절벽엔 알록달록 하늘 캡슐과 해변열차가 달리고, 서쪽 동백섬엔 누리마루 APEC하우스가 있어. 모래조각도 구경해!',
     build(L) {
       seaNorth(-24); suspBridge(-150, -320, 40, 9, 34);
-      for (let k = 0; k < 3; k++) building(18 + k * 10, 40, 8, 8, 70 + k * 12, 0xcfdbe6, { glass: 0x7fa6c8, lit: true }); sign('엘시티 LCT', 28, 96, 36, 1); for (let k = 0; k < 7; k++) building(-44 + k * 8, 42, 7, 6, rr(24, 46), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true }); sign('마린시티', -20, 50, 38, .9);
+      for (let k = 0; k < 3; k++) building(18 + k * 10, 40, 8, 8, 30 + k * 5, 0xcfdbe6, { glass: 0x7fa6c8, lit: true }); sign('엘시티 LCT', 28, 44, 36, 1); for (let k = 0; k < 7; k++) building(-44 + k * 8, 42, 7, 6, rr(14, 24), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true }); sign('마린시티', -20, 28, 38, .9);
       for (let r = 0; r < 2; r++) for (let k = 0; k < 14; k++) { const x = -44 + k * 6.4, z = -8 + r * 7; if (Math.abs(x) < 7 && z > 8) continue; bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(1.8, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0xffffff][(k + r) % 4]), x, 2.8, z); }
       for (let z = -40; z <= 30; z += 1) mesh(BOX(1.2, .2, 1.05), LMC(0x7a6a5a), 56, 6, z).castShadow = false; for (let z = -40; z <= 30; z += 8) mesh(BOX(.6, 6, .6), LMC(0x9aa3ab), 56, 3, z); const caps = []; for (let k = 0; k < 6; k++) { const c = mesh(BOX(1.6, 1.6, 1.8), LMC([0xff5a5a, 0xffd54f, 0x4fc3f7, 0x7dff6a, 0xb388ff, 0xff9a4a][k]), 56, 7.1, 0); caps.push(c); } envAnim.push(() => { caps.forEach((c, k) => { c.position.z = ((time * 2 + k * 4) % 70) - 40; }); }); sign('🚃 해변열차 · 스카이캡슐', 52, 10, -6, .6); const cliff = mesh(BOX(14, 5, 90), LMC(0x6d6a5e), 64, 2.5, -6); cliff.castShadow = false;
       const isl = new THREE.Mesh(new THREE.SphereGeometry(16, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x3f7a3a)); isl.scale.y = .45; isl.position.set(-72, -.3, -26); world.add(isl); mesh(new THREE.CylinderGeometry(4, 5, 3, 10), LMC(0xeef1f4), -72, 7.5, -26); mesh(new THREE.ConeGeometry(5.4, 2, 10), LMC(0x9aa3ab), -72, 10, -26); sign('동백섬 · 누리마루 APEC하우스', -70, 14, -22, .65);
@@ -2874,7 +2924,7 @@ const LANDMARK_LIST = [
     people: { hanbok: 6, tourist: 3, merchant: 2, smuggler: 3 }, items: [["hanbokBag",2],["souvenir",2],["wine",1],["vase",1]], who: '한지 전주 한옥마을 관리소장', short: '기와지붕이 물결치는 한옥마을! 풍남문, 전동성당, 경기전, 오목대, 남천교 청연루, 한옥 골목을 순찰해요.',
     intro: '전주 한옥마을이야! 700채가 넘는 한옥 기와지붕이 물결처럼 이어지고, 한복 입은 여행객이 가득해.\n붉은 벽돌의 전동성당, 태조 어진을 모신 경기전, 언덕 위 오목대, 전주천 다리 위 누각 청연루, 남쪽 성문 풍남문까지!',
     build(L) {
-      for (let r = 0; r < 3; r++) for (let k = 0; k < 4; k++) { const x = -6 + k * 13 + (r % 2) * 4, z = -26 + r * 13; if (x > 42) continue; hanok(x, z, 8, 6, 2.6); bx(x, 0, z + 5, 10, 1.4, .5, 0xb9a988); }
+      for (let r = 0; r < 3; r++) for (let k = 0; k < 4; k++) { const x = -6 + k * 13 + (r % 2) * 4, z = -26 + r * 13; if (x > 30) continue; hanok(x, z, 8, 6, 2.6); bx(x, 0, z + 5, 10, 1.4, .5, 0xb9a988); }
       hanok(-30, -26, 12, 7, 3, { tier: true }); bx(-30, 0, -20, 16, 1.6, .5, 0xb9a988); sign('경기전 (태조 어진) · 서쪽', -30, 11, -21, .6);
       bx(-30, 0, -4, 12, 9, 12, 0x9c4a35); for (const x of [-34.5, -25.5]) { bx(x, 0, 2, 2.6, 15, 2.6, 0x9c4a35); mesh(new THREE.SphereGeometry(1.4, 10, 6), LMC(0x4d6a5a), x, 15.6, 2); } mesh(new THREE.CylinderGeometry(1.4, 1.4, .2, 14), glow(0xffd27a, .7), -30, 7, 2.1).rotation.x = Math.PI / 2; sign('⛪ 전동성당 (1914)', -30, 19, 3, .6);
       gateTop(-30, 18, 14, 5, 4, { tier: true }); sign('풍남문 豐南門 (보물) · 남서쪽', -30, 13, 21, .7);
@@ -2893,7 +2943,7 @@ const LANDMARK_LIST = [
       statue(0, 22, 0x4a6b5a, false, 4); sign('충무공 이순신 장군 동상', 0, 9, 25, .6); for (const sx of [-1, 1]) { const tb = mesh(BOX(1.6, .8, 2.6), LMC(0x3a4a3a), sx * 3.6, .4, 22); tb.castShadow = false; } sign('거북선', 3.6, 1.6, 22, .4);
       for (let z = 28; z < 38; z += 2) for (const x of [-6, -3, 3, 6]) { mesh(BOX(.3, .1, .3), glow(0x9fdcff, 1), x, .06, z).castShadow = false; } const c = new THREE.Color(0xbfe8ff); envAnim.push(() => { if (Math.random() < .8) spawnP(pick2([-6, -3, 3, 6]), .2, rr(28, 38), 0, mr(4, 7), 0, c, 1); }); sign('명량분수', 0, 3, 33, .5);
       for (let z = -28; z <= 14; z += 7) for (const x of [-15, 15]) tree(x, z, .8); flowers(0, 6, 8, 6, [0xf44336, 0xffeb3b, 0xffffff, 0x2196f3], 40);
-      building(-34, -12, 14, 30, 14, 0xd9d2c4); columns(-26.8, -12, 7, 4, 10, 0xf2efe8, 'z', 1); sign('세종문화회관', -27, 16, -12, .7); building(-34, -36, 14, 12, 30, 0xb7c4cf, { lit: true, sign: '정부서울청사', sh: .55 }); building(34, -18, 14, 20, 24, 0xc5ccd3, { lit: true, sign: 'KT 광화문빌딩', sh: .55 }); building(34, 12, 14, 14, 20, 0xcfd6dc, { lit: true });
+      building(-34, -12, 14, 30, 14, 0xd9d2c4); columns(-26.8, -12, 7, 4, 10, 0xf2efe8, 'z', 1); sign('세종문화회관', -27, 16, -12, .7); building(-34, -36, 14, 12, 15, 0xb7c4cf, { lit: true, sign: '정부서울청사', sh: .55 }); building(34, -18, 14, 20, 14, 0xc5ccd3, { lit: true, sign: 'KT 광화문빌딩', sh: .55 }); building(34, 12, 14, 14, 20, 0xcfd6dc, { lit: true });
       const sp = new THREE.Mesh(new THREE.TorusKnotGeometry(2.2, .5, 80, 8, 2, 3), LMC(0xff5a8a)); sp.position.set(14, 6, 44); sp.scale.set(1, 2, 1); world.add(sp); bx(14, 0, 44, 3, 1.4, 3, 0x8a8a80); sign('🐚 청계천 스프링', 14, 11.5, 44, .55);
     } },
   { name: '청와대', icon: '🏛', w: 92, d: 70, floor: 0x7fb05a, obj: crate, sky: [0x5fb0ff, 0xf0f6ff], st: 4,
@@ -2923,14 +2973,14 @@ const LANDMARK_LIST = [
       building(36, -20, 14, 22, 14, 0xd6d0c4, { glass: 0x4f6a80, sign: '의원회관', sh: .6 }); building(-36, -20, 14, 14, 8, 0xd6d0c4, { glass: 0x4f6a80, sign: '국회도서관', sh: .6 });
       for (let z = -32; z <= 30; z += 4) for (const x of [-44, 44]) tree(x, z, .9, 0xf2a7c3); sign('🌸 윤중로 벚꽃길', -40, 5, 20, .55);
       const rw = TEX.water(); rw.repeat.set(30, 4); const han = new THREE.Mesh(new THREE.PlaneGeometry(500, 60), std(0xffffff, .2, 0, { map: rw, color: 0x4a8fbf })); han.rotation.x = -Math.PI / 2; han.position.set(0, -.2, -80); world.add(han); sign('한강', -20, 3, -60, .8);
-      const t63 = new THREE.Group(); t63.position.set(-70, 0, -100); world.add(t63); for (let k = 0; k < 12; k++) mesh(BOX(10 - k * .3, 5, 7 - k * .2), MAT.metal(0xe0b14a, .25), 0, 2.5 + k * 5, 0, t63); sign('63빌딩', -70, 66, -96, 1);
+      const t63 = new THREE.Group(); t63.position.set(-70, 0, -100); world.add(t63); for (let k = 0; k < 12; k++) mesh(BOX(10 - k * .3, 2.6, 7 - k * .2), MAT.metal(0xe0b14a, .25), 0, 1.3 + k * 2.6, 0, t63); sign('63빌딩', -70, 35, -96, 1);
     } },
-  { name: '감천문화마을', icon: '🎨', w: 84, d: 70, floor: 0x9aa3ab, obj: crate, sky: [0x4aa6ee, 0xdff2ff], st: 3,
+  { name: '감천문화마을', npcJump: true, icon: '🎨', w: 84, d: 70, floor: 0x9aa3ab, obj: crate, sky: [0x4aa6ee, 0xdff2ff], st: 3,
     people: { tourist: 6, student: 3, merchant: 2, smuggler: 3 }, items: [["souvenir",2],["fishBox",1],["backpack",2]], who: '알록달록 감천문화마을 관리소장', short: '산비탈 계단식 알록달록 마을! 좁은 골목, 계단, 물고기 길표지, 전망대에서 바다를 내려다봐요.',
     intro: '부산 감천문화마을이야! 산비탈을 따라 파랑·분홍·노랑 집들이 계단처럼 층층이 쌓여 있어.\n좁은 골목과 계단을 오르내리며, 물고기 모양 길 안내판을 따라가 봐. 꼭대기 전망대에선 바다가 보여!',
     build(L) {
       seaNorth(-80, 0x3d8fc4); const cols = [0x4fc3f7, 0xf48fb1, 0xfff176, 0x81c784, 0xffb74d, 0xba68c8, 0x90caf9];
-      for (let r = 0; r < 4; r++) { const z = 10 - r * 11, h = 1.4 * (r + 1); bx(0, 0, z - 5, 84, h, 11, new THREE.Color(0xb8b0a2).multiplyScalar(1 - r * .05).getHex()); for (const sx of [-24, 6, 30]) stepsUp(sx + (r % 2) * 6, z + .9, 3, 4, -1, .55, 0xd9d2c4, r * 1.4); for (let k = 0; k < 7; k++) { const x = -38 + k * 11.4 + (r % 2) * 4; if (Math.abs(x - (-24 + (r % 2) * 6)) < 3.5 || Math.abs(x - (6 + (r % 2) * 6)) < 3.5 || Math.abs(x - (30 + (r % 2) * 6)) < 3.5) continue; const w = rr(4, 6), hh = rr(2.4, 3.6); bx(x, h, z - 7, w, hh, 4, pick(cols), false); addCol(x, z - 7, w, 4, null, { topY: h + hh }); mesh(BOX(w + .4, .3, 4.4), LMC(pick([0xd84a3a, 0x2c6fb7, 0x27ae60, 0xf4f4f2])), x, h + hh + .15, z - 7); mesh(BOX(.8, 1, .05), LMC(0x2a3d52), x - 1, h + 1.4, z - 4.97); } }
+      for (let r = 0; r < 4; r++) { const z = 10 - r * 11, h = 1.4 * (r + 1); bx(0, 0, z - 5, 84, h, 11, new THREE.Color(0xb8b0a2).multiplyScalar(1 - r * .05).getHex()); for (const sx of [-24, 6, 30]) stepsUp(sx + (r % 2) * 6, z + 2.7, 3, 4, -1, .55, 0xd9d2c4, r * 1.4); for (let k = 0; k < 7; k++) { const x = -38 + k * 11.4 + (r % 2) * 4; if ([-24, 6, 30].some(sx => [0, 6].some(o => Math.abs(x - (sx + o)) < 4.2))) continue; const w = rr(4, 6), hh = rr(2.4, 3.6); bx(x, h, z - 7, w, hh, 4, pick(cols), false); addCol(x, z - 7, w, 4, null, { topY: h + hh }); mesh(BOX(w + .4, .3, 4.4), LMC(pick([0xd84a3a, 0x2c6fb7, 0x27ae60, 0xf4f4f2])), x, h + hh + .15, z - 7); mesh(BOX(.8, 1, .05), LMC(0x2a3d52), x - 1, h + 1.4, z - 4.97); } }
       for (let k = 0; k < 8; k++) { const m = mesh(BOX(1.2, .5, .1), LMC(pick(cols)), -30 + k * 8, 1.6 + (k % 4) * 1.4, 4.8 - (k % 4) * 11); m.castShadow = false; } sign('🐟 물고기 길 안내판을 따라가요', 0, 3.2, 14, .5);
       bx(0, 5.6, -36, 10, .3, 4, 0x9a948a, false); for (let x = -5; x <= 5; x += .8) mesh(BOX(.08, 1, .08), MAT.metal(0x888888), x, 6.4, -34.1); statue(-2, -36.5, 0xe8d9b0, true, 1.4); sign('🔭 감천 전망대 (바다 조망)', 0, 9, -35, .55);
       for (let k = 0; k < 4; k++) stall(-30 + k * 18, 20, pick([0xd63a2a, 0x2c6fb7, 0x27ae60]), ['기념품', '어묵', '엽서', '공예'][k]); sign('🎨 감천문화마을 (부산의 마추픽추)', 0, 7, 18, 1);
@@ -2939,11 +2989,11 @@ const LANDMARK_LIST = [
     people: { tourist: 5, student: 5, civ: 2, smuggler: 3 }, items: [["backpack",2],["speaker",1],["souvenir",2]], who: '엑스포 한빛탑 관리소장', short: '1993 대전엑스포의 상징 한빛탑(93m), 음악분수, 엑스포다리와 갑천, 과학관 광장을 순찰해요.',
     intro: '대전 엑스포과학공원의 한빛탑이야! 1993년 대전엑스포를 기념하는 높이 93m의 탑으로, 꼭대기 전망대에서 대전이 보여.\n밤엔 음악분수가 춤추고, 동쪽 갑천 위엔 아치가 멋진 엑스포다리가 있어.',
     build(L) {
-      bx(0, 0, -16, 10, 3, 10, 0xd9d4c8); for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2 + Math.PI / 4; const leg = mesh(BOX(1.4, 30, 1.4), LMC(0xf4f4f2), Math.cos(a) * 3, 17, -16 + Math.sin(a) * 3); leg.rotation.z = Math.cos(a) * .08; leg.rotation.x = -Math.sin(a) * .08; } mesh(new THREE.CylinderGeometry(4.6, 3.6, 5, 16), MAT.glass(), 0, 34, -16); mesh(new THREE.CylinderGeometry(4.8, 4.8, .6, 16), LMC(0xdfe4e8), 0, 36.8, -16); mesh(new THREE.ConeGeometry(1.4, 22, 10), LMC(0xf4f4f2), 0, 48, -16); const tip = mesh(BOX(.6, .6, .6), glow(0x7fd3ff, 2), 0, 59.4, -16); envAnim.push(() => { tip.material.emissiveIntensity = 1.2 + Math.sin(time * 2); }); sign('한빛탑 93m · 전망대', 0, 40, -10, 1);
+      bx(0, 0, -16, 10, 3, 10, 0xd9d4c8); for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2 + Math.PI / 4; const leg = mesh(BOX(1.2, 18, 1.2), LMC(0xf4f4f2), Math.cos(a) * 2.4, 11.5, -16 + Math.sin(a) * 2.4); leg.rotation.z = Math.cos(a) * .08; leg.rotation.x = -Math.sin(a) * .08; } mesh(new THREE.CylinderGeometry(3.4, 2.6, 3.6, 16), MAT.glass(), 0, 22, -16); mesh(new THREE.CylinderGeometry(3.6, 3.6, .5, 16), LMC(0xdfe4e8), 0, 24, -16); mesh(new THREE.ConeGeometry(1, 13, 10), LMC(0xf4f4f2), 0, 30.8, -16); const tip = mesh(BOX(.5, .5, .5), glow(0x7fd3ff, 2), 0, 37.6, -16); envAnim.push(() => { tip.material.emissiveIntensity = 1.2 + Math.sin(time * 2); }); sign('한빛탑 93m · 전망대', 0, 27, -10, 1);
       mesh(new THREE.CylinderGeometry(10, 10.4, .7, 28), LMC(0xbdb7aa), 0, .35, 4); addCol(0, 4, 15, 15, null, { topY: .7 }); const pool = new THREE.Mesh(new THREE.CircleGeometry(9.6, 28), std(0x7fc8ef, .1, 0, { transparent: true, opacity: .85 })); pool.rotation.x = -Math.PI / 2; pool.position.set(0, .72, 4); world.add(pool);
       const jets = []; for (let k = 0; k < 12; k++) { const a = k / 12 * Math.PI * 2, m = mesh(BOX(.4, 1, .4), glow(0x9fdcff, 1.4), Math.cos(a) * 6, 1, 4 + Math.sin(a) * 6); m.castShadow = false; jets.push(m); } envAnim.push(() => { jets.forEach((m, k) => { const hgt = 1 + Math.max(0, Math.sin(time * 2.4 + k * .52)) * 7; m.scale.y = hgt; m.position.y = .7 + hgt / 2; m.material.emissive.setHSL(((time * .1) + k / 12) % 1, .8, .55); }); }); sign('🎵 음악분수', 0, 4, 14, .55);
       pond(36, 0, 12, 66, 0x5aa0c8, false); for (const z of [-10, 10]) { for (let k = 0; k <= 20; k++) { const t = k / 20, y = Math.sin(t * Math.PI) * 8; mesh(BOX(.5, .5, .5), LMC(0xf4f4f2), 30 + t * 12, y + 1, z).castShadow = false; } } bx(36, 0, 0, 12, .5, 4, 0xc9c2b2, false); addCol(36, 0, 12, 4, null, { topY: .5, keep: true }); sign('엑스포다리 (갑천)', 36, 10, 0, .6);
-      building(-30, -18, 18, 14, 10, 0xe5e0d6, { glass: 0x6a9ab8, sign: '국립중앙과학관', sh: .6 }); building(-30, 8, 12, 10, 34, 0xc0cad4, { lit: true, sign: '엑스포 타워', sh: .5 });
+      building(-30, -18, 18, 14, 10, 0xe5e0d6, { glass: 0x6a9ab8, sign: '국립중앙과학관', sh: .6 }); building(-30, 8, 12, 10, 20, 0xc0cad4, { lit: true, sign: '엑스포 타워', sh: .5 });
       for (let x = -40; x <= 20; x += 12) if (Math.abs(x) > 8) lamp(x, 20); flowers(-10, 22, 24, 4, [0xf44336, 0xffeb3b, 0xffffff], 40);
     } },
 ];
@@ -3211,9 +3261,89 @@ function clearWorld() {
   world.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map?.dispose(); o.material.dispose(); } });
   scene.remove(world); world = new THREE.Group(); scene.add(world);
   intro = null; vanAway = null; dogM.g.visible = true; handlerM.g.visible = true; leash.visible = true;
+  for (const [o, m] of occFaded) o.material = m; occFaded.clear();
   colliders = []; slopes = []; people.length = 0; vehicles.length = 0; agents.length = 0; pals = []; flyer = null; helis = []; pgAnim = []; envAnim = []; pgSpots = []; dog.pgAct = null; if (mp) mp.others.clear(); towerCtl = []; bombs = []; bombT = 4; bossT = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
-  clearEffects(); clearParticles(); shots = []; leakT = 0;
+  clearEffects(); clearParticles(); shots = []; leakT = 0; animals = [];
 }
+const CROWD = {
+  commute: [.25, .2, .2, .2, .25, .4, .8, 1.3, 1.4, 1, .9, .9, 1, .95, .9, .95, 1.1, 1.3, 1.4, 1.2, 1, .8, .55, .35],
+  office: [.15, .1, .1, .1, .1, .15, .3, .6, .9, 1.1, 1.2, 1.2, 1, 1.1, 1.2, 1.1, 1, .8, .5, .3, .25, .2, .15, .15],
+  heritage: [.15, .1, .1, .1, .1, .15, .25, .4, .6, .8, .9, 1, 1.1, 1.3, 1.4, 1.4, 1.3, 1, .7, .5, .4, .3, .2, .15],
+  nightlife: [.7, .5, .35, .2, .15, .15, .2, .3, .4, .5, .6, .8, .9, .95, 1, 1.05, 1.15, 1.3, 1.4, 1.4, 1.3, 1.2, 1, .85],
+  view: [.3, .2, .15, .1, .1, .15, .25, .4, .5, .6, .7, .8, .9, .95, 1, 1, 1.1, 1.25, 1.35, 1.35, 1.25, 1, .7, .45],
+  beach: [.3, .2, .15, .1, .15, .3, .5, .7, .9, 1, 1.15, 1.25, 1.3, 1.3, 1.3, 1.25, 1.2, 1.2, 1.25, 1.3, 1.2, .9, .6, .4],
+  airport: [.4, .3, .3, .3, .4, .7, 1, 1.1, 1.1, 1, 1, 1.05, 1.1, 1.1, 1.15, 1.2, 1.25, 1.25, 1.2, 1.15, 1.1, 1, .8, .6],
+  hiking: [.1, .1, .1, .1, .2, .5, 1, 1.3, 1.4, 1.3, 1.2, 1.1, 1, .9, .7, .5, .3, .2, .1, .1, .1, .1, .1, .1],
+  works: [.7, .65, .6, .6, .65, .75, .9, 1, 1.05, 1.05, 1.05, 1, .95, 1, 1.05, 1.05, 1, .95, .9, .85, .8, .75, .75, .7],
+};
+const CROWD_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'works', '국제우편·특송센터': 'works', '국제 여객선': 'airport', '부두 컨테이너 야적장': 'works', '보세창고 (보스전)': 'works',
+  '우체국': 'office', '교도소': 'office', '서울역': 'commute', 'KTX 열차 안': 'commute', '버스터미널': 'commute', '비행기 안': 'airport', '명동': 'nightlife', '경복궁': 'heritage', '홍대': 'nightlife', '롯데월드타워': 'view', '동대문': 'nightlife',
+  '광안리 해변': 'beach', '숭례문': 'heritage', '수원화성': 'heritage', '경주': 'heritage', 'N서울타워': 'view', '해운대': 'beach', '제주 한라산': 'hiking', '포항 스페이스워크': 'view', '전주 한옥마을': 'heritage', '광화문광장': 'view', '청와대': 'office', '국회의사당': 'office', '감천문화마을': 'heritage', '대전 한빛탑': 'view' };
+const AGE_MIX = {
+  airport: [1, 2, 1, 5, 1], commute: [1, 1, 2, 5, 2], office: [0, 1, 1, 5, 3], heritage: [1, 3, 3, 3, 2], nightlife: [0, 0, 3, 6, 1], view: [1, 2, 2, 4, 1], beach: [1, 3, 2, 4, 1], hiking: [0, 0, 1, 5, 4], works: [0, 0, 0, 1, 0],
+};
+const AGE_OF = { '교도소': [0, 1, 1, 6, 2], '우체국': [0, 1, 1, 4, 4], '국회의사당': [0, 1, 4, 4, 1], '청와대': [1, 2, 1, 3, 3], '홍대': [0, 0, 3, 7, 0], '감천문화마을': [0, 1, 2, 4, 3] };
+function buildAgeQueue(def) {
+  const mix = AGE_OF[def.name] || AGE_MIX[CROWD_OF[def.name]] || [0, 0, 0, 1, 0], q = [];
+  const groups = ['baby', 'child', 'teen', 'adult', 'senior'];
+  for (let round = 0; round < 6; round++) groups.forEach((g, i) => { for (let k = 0; k < mix[i]; k++) q.push(g); });
+  return q;
+}
+const AGE_KINDS = ['civ', 'tourist', 'hanbok'];
+function applyAge(p) {
+  if (!level || !AGE_KINDS.includes(p.kind) || !level.ageQ || !level.ageQ.length) { p.ageGrp = 'adult'; return; }
+  const g = level.ageQ.shift(); p.ageGrp = g;
+  const head = p.body.children.find(c => c.isGroup && c.position.y > 1.6);
+  if (g === 'child') { p.age = 4 + Math.floor(rnd() * 9); p.g.scale.setScalar(.6); p.spd = 1.15; }
+  else if (g === 'teen') { p.age = 13 + Math.floor(rnd() * 7); p.g.scale.setScalar(.9); }
+  else if (g === 'senior') { p.age = 65 + Math.floor(rnd() * 26); p.spd = .7; p.g.scale.setScalar(.95); p.body.rotation.x = .12; if (head) { mesh(BOX(.5, .14, .5), MAT.col(0xd8d8d8, .8), 0, .27, -.02, head); mesh(BOX(.5, .3, .1), MAT.col(0xd8d8d8, .8), 0, .1, -.22, head); } mesh(BOX(.06, 1, .06), MAT.col(0x6d4c2f, .6), .5, .5, .25, p.body); }
+  else if (g === 'baby') { p.age = 25 + Math.floor(rnd() * 15); p.baby = Math.floor(rnd() * 4); p.spd = .8; const st = new THREE.Group(); st.position.set(0, 0, .75); p.g.add(st); mesh(BOX(.55, .35, .8), MAT.col(pick([0x5b7fb7, 0xd47a9c, 0x4f8a5b]), .6), 0, .65, 0, st); mesh(BOX(.55, .4, .3), MAT.col(0x333333, .6), 0, .95, -.25, st); mesh(BOX(.22, .22, .22), MAT.skin(pick(skins)), 0, .9, .1, st); for (const sx of [-.25, .25]) for (const sz of [-.3, .3]) mesh(BOX(.08, .2, .2), MAT.col(0x222222, .8), sx, .1, sz, st); for (const sx of [-.25, .25]) mesh(BOX(.05, .5, .05), MAT.metal(0x888888), sx, .65, -.45, st); }
+  else p.age = 20 + Math.floor(rnd() * 45);
+}
+const ANIMALS_OF = {
+  '공항 입국장': [['qdog', 1]], '공항 화물터미널': [['pigeon', 4]], '국제우편·특송센터': [['qdog', 1]], '국제 여객선': [['seagull', 6]], '부두 컨테이너 야적장': [['seagull', 6], ['cat', 2]], '보세창고 (보스전)': [['cat', 1]], '노을 활주로': [['magpie', 3]],
+  '우체국': [['guideDog', 1]], '교도소': [['magpie', 3], ['cat', 1]], '서울역': [['pigeon', 8]], 'KTX 열차 안': [['guideDog', 1]], '버스터미널': [['pigeon', 4]], '비행기 안': [['guideDog', 1]],
+  '명동': [['petDog', 2], ['pigeon', 3]], '경복궁': [['magpie', 4], ['duck', 3]], '홍대': [['petDog', 3], ['cat', 2]], '롯데월드타워': [['duck', 5], ['petDog', 2]], '동대문': [['pigeon', 4], ['cat', 1]],
+  '광안리 해변': [['seagull', 8], ['petDog', 2]], '숭례문': [['pigeon', 6]], '수원화성': [['magpie', 3], ['petDog', 2]], '경주': [['magpie', 3], ['cat', 2], ['horse', 2]], 'N서울타워': [['magpie', 3], ['petDog', 2]],
+  '해운대': [['seagull', 8], ['petDog', 2]], '제주 한라산': [['deer', 3], ['horse', 2], ['magpie', 2]], '포항 스페이스워크': [['seagull', 6]], '전주 한옥마을': [['cat', 2], ['magpie', 2]], '광화문광장': [['pigeon', 6], ['petDog', 2]],
+  '청와대': [['magpie', 4]], '국회의사당': [['magpie', 3], ['duck', 3], ['petDog', 1]], '감천문화마을': [['cat', 5]], '대전 한빛탑': [['petDog', 2], ['pigeon', 3]] };
+let animals = [];
+function makeAnimal(kind) {
+  const g = new THREE.Group(); world.add(g); const A = { kind, g, x: 0, z: 0, y: 0, dir: rr(0, 6), t: rr(0, 3), fly: 0 };
+  const C = c => MAT.col(c, .7);
+  if (kind === 'pigeon' || kind === 'magpie' || kind === 'seagull' || kind === 'duck') {
+    const body = { pigeon: 0x8a8f99, magpie: 0x1a1a1a, seagull: 0xf4f4f2, duck: 0x8d6e4a }[kind], s = kind === 'pigeon' ? .8 : kind === 'duck' ? 1.1 : 1;
+    mesh(BOX(.3 * s, .26 * s, .45 * s), C(body), 0, .2 * s, 0, g); mesh(BOX(.2 * s, .2 * s, .2 * s), C(kind === 'magpie' ? 0x1a1a1a : kind === 'duck' ? 0x2e7d4f : body), 0, .38 * s, .22 * s, g); mesh(BOX(.08, .06, .14), C(kind === 'duck' || kind === 'seagull' ? 0xf4b400 : 0x333333), 0, .36 * s, .36 * s, g);
+    if (kind === 'magpie') mesh(BOX(.32, .1, .3), C(0xffffff), 0, .2, -.02, g); A.bird = true; A.wings = [mesh(BOX(.06, .04 * s, .3 * s), C(body), -.18 * s, .26 * s, 0, g), mesh(BOX(.06, .04 * s, .3 * s), C(body), .18 * s, .26 * s, 0, g)];
+  } else if (kind === 'cat') { const c = pick([0xf0a050, 0x333333, 0xf4f4f2, 0x9a8f80]); mesh(BOX(.3, .28, .6), C(c), 0, .3, 0, g); mesh(BOX(.26, .24, .24), C(c), 0, .5, .35, g); for (const sx of [-.08, .08]) mesh(BOX(.06, .1, .04), C(c), sx, .66, .38, g); mesh(BOX(.06, .06, .4), C(c), 0, .45, -.45, g).rotation.x = .8; for (const sx of [-.1, .1]) for (const sz of [-.2, .2]) mesh(BOX(.07, .18, .07), C(c), sx, .09, sz, g); }
+  else if (kind === 'deer') { const c = 0xa0703f; mesh(BOX(.45, .5, 1.1), C(c), 0, 1, 0, g); mesh(BOX(.25, .5, .25), C(c), 0, 1.4, .5, g); mesh(BOX(.25, .25, .4), C(c), 0, 1.6, .7, g); for (const sx of [-.15, .15]) for (const sz of [-.4, .4]) mesh(BOX(.1, .8, .1), C(c), sx, .4, sz, g); mesh(BOX(.25, .2, .1), C(0xffffff), 0, 1.05, -.56, g); }
+  else if (kind === 'horse') { const c = pick([0x8d5a3b, 0x5d4037, 0xd7ccc8]); mesh(BOX(.7, .7, 1.7), C(c), 0, 1.15, 0, g); mesh(BOX(.45, .8, .45), C(c), 0, 1.75, .85, g); mesh(BOX(.35, .35, .65), C(c), 0, 2.05, 1.25, g); for (const sx of [-.25, .25]) for (const sz of [-.65, .65]) mesh(BOX(.2, .85, .2), C(c), sx, .42, sz, g); }
+  else { const br = kind === 'qdog' ? BREEDS.beagle : kind === 'guideDog' ? BREEDS.labrador : pick([BREEDS.beagle, BREEDS.springer, BREEDS.labrador]); const d = makeDog(br, '', false); d.g.scale.setScalar(kind === 'petDog' ? .65 : .85); g.add(d.g); A.legs = d.legs; if (kind === 'qdog') { const t = textSprite('🐾 검역탐지견', { h: .28 }); t.position.y = 1.4; g.add(t); } if (kind === 'guideDog') { const t = textSprite('🦮 안내견', { h: .28 }); t.position.y = 1.4; g.add(t); } A.follow = true; }
+  return A;
+}
+function spawnAnimals(def) {
+  animals = [];
+  for (const [kind, n] of ANIMALS_OF[def.name] || []) for (let k = 0; k < n; k++) {
+    const A = makeAnimal(kind);
+    if (A.follow) { const owners = people.filter(p => !p.villain && !p.owned && (kind === 'qdog' ? ['customs', 'handler', 'postal'].includes(p.kind) : p.ageGrp === 'adult' && AGE_KINDS.includes(p.kind))); const o = owners[k % Math.max(1, owners.length)]; if (o) { A.owner = o; o.owned = true; A.x = o.x + 1; A.z = o.z; } }
+    if (!A.owner) { const p = placeFree(level.bounds, .8, .8, .3, level.avoid); if (!p) { world.remove(A.g); continue; } A.x = p.x; A.z = p.z; A.hx = p.x; A.hz = p.z; }
+    A.y = groundAt(A.x, A.z, .3, 5).h; animals.push(A);
+  }
+}
+function updateAnimals(dt) {
+  for (const A of animals) {
+    A.t -= dt; const dd = Math.hypot(dog.x - A.x, dog.z - A.z);
+    if (A.owner) { const tx = A.owner.x + Math.sin(A.owner.dir + 2.2) * .9, tz = A.owner.z + Math.cos(A.owner.dir + 2.2) * .9, d = Math.hypot(tx - A.x, tz - A.z); if (d > .3) { const sp = Math.min(d * 2, 4); A.x += (tx - A.x) / d * sp * dt; A.z += (tz - A.z) / d * sp * dt; A.dir = Math.atan2(tx - A.x, tz - A.z); if (A.legs) A.legs.forEach((l, i) => l.rotation.x = Math.sin(time * 14 + i * 1.6) * .6); } A.y = A.owner.y; }
+    else if (A.bird) {
+      if (A.fly > 0) { A.fly -= dt; A.y = Math.min(6, A.y + dt * 4); A.x += Math.sin(A.dir) * 5 * dt; A.z += Math.cos(A.dir) * 5 * dt; A.wings.forEach((w, i) => w.rotation.z = Math.sin(time * 30) * (i ? -1 : 1)); if (A.fly <= 0) { const p = placeFree(level.bounds, .5, .5, .2, level.avoid); if (p) { A.tx = p.x; A.tz = p.z; } } }
+      else if (A.tx !== undefined) { const d = Math.hypot(A.tx - A.x, A.tz - A.z); A.dir = Math.atan2(A.tx - A.x, A.tz - A.z); if (d > .3) { A.x += (A.tx - A.x) / d * 5 * dt; A.z += (A.tz - A.z) / d * 5 * dt; A.y = Math.max(groundAt(A.x, A.z, .2, 9).h, A.y - dt * 2); } else { A.tx = undefined; A.y = groundAt(A.x, A.z, .2, 9).h; } A.wings.forEach((w, i) => w.rotation.z = Math.sin(time * 30) * (i ? -1 : 1)); }
+      else { if (dd < 3.2) { A.fly = 1.4; A.dir = Math.atan2(A.x - dog.x, A.z - dog.z); tone(1400, .05, 'triangle', .03); } else if (A.t <= 0) { A.t = rr(.6, 2.2); A.dir += rr(-1.5, 1.5); } else { A.x += Math.sin(A.dir) * .5 * dt; A.z += Math.cos(A.dir) * .5 * dt; } A.wings.forEach(w => w.rotation.z = 0); }
+    } else { if (A.t <= 0) { A.t = rr(1, 4); A.walk = Math.random() < .55; A.dir += rr(-1.2, 1.2); if (Math.hypot(A.x - A.hx, A.z - A.hz) > 8) A.dir = Math.atan2(A.hx - A.x, A.hz - A.z); } const fear = A.kind === 'cat' && dd < 2.6; if (fear) A.dir = Math.atan2(A.x - dog.x, A.z - dog.z); if (A.walk || fear) { const sp = fear ? 4 : A.kind === 'horse' || A.kind === 'deer' ? 1 : .7; const nx = A.x + Math.sin(A.dir) * sp * dt, nz = A.z + Math.cos(A.dir) * sp * dt; if (!colliders.some(c => !c.disabled && c.topY > A.y + .4 && nx > c.minX && nx < c.maxX && nz > c.minZ && nz < c.maxZ) && (!level.inside || level.inside(nx, nz))) { A.x = nx; A.z = nz; } else A.dir += Math.PI * .6; } A.y = groundAt(A.x, A.z, .3, A.y).h; }
+    A.x = clamp(A.x, level.bounds.minX + .5, level.bounds.maxX - .5); A.z = clamp(A.z, level.bounds.minZ + .5, level.bounds.maxZ - .5);
+    A.g.position.set(A.x, A.y, A.z); A.g.rotation.y = A.dir;
+  }
+}
+function crowdNow(def) { const prof = CROWD[CROWD_OF[def.name]]; if (!prof) return 1; const h = Math.floor(localHour()) % 24; return prof[h]; }
 const LANG_TZ = { ko: ['Asia/Seoul', '서울'], en: ['America/New_York', 'New York'], zh: ['Asia/Shanghai', '北京'], hi: ['Asia/Kolkata', 'दिल्ली'], ar: ['Asia/Riyadh', 'الرياض'], vi: ['Asia/Ho_Chi_Minh', 'Hà Nội'], ja: ['Asia/Tokyo', '東京'], ru: ['Europe/Moscow', 'Москва'] };
 function localHour() {
   const [tz] = LANG_TZ[lang] || LANG_TZ.ko;
@@ -3308,6 +3438,7 @@ function applyTimeOfDay() {
   if (ph === 'night' && out) for (let k = 0; k < 8; k++) { const b = level.bounds, x = mr(b.minX + 6, b.maxX - 6), z = mr(b.minZ + 6, b.maxZ - 6), l = new THREE.PointLight(0xffd59a, 12, 18, 1.8); l.position.set(x, 6, z); world.add(l); }
   const [, city] = LANG_TZ[lang] || LANG_TZ.ko, hh = Math.floor(h), mm = String(Math.floor((h - hh) * 60)).padStart(2, '0');
   setTimeout(() => toast(t('tod_' + ph).replace('{city}', city).replace('{time}', hh + ':' + mm)), 2600);
+  if (level && !level.relax) { const c = crowdNow(level); setTimeout(() => toast(t('crowd_' + (c < .45 ? 0 : c < .9 ? 1 : c < 1.2 ? 2 : 3))), 4400); }
 }
 function pip(poly, x, z) { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, zi] = poly[i], [xj, zj] = poly[j]; if ((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; }
 function ELL(rx = 1, rz = 1, n = 32, cx = 0, cz = 0) { return Array.from({ length: n }, (_, i) => [cx + Math.cos(i / n * Math.PI * 2) * rx, cz + Math.sin(i / n * Math.PI * 2) * rz]); }
@@ -3335,6 +3466,49 @@ function edgeWall(L, h, col, thick = .35, cren = false) {
 }
 // 맵 경계선: 바닥에 노랑·검정 안전띠
 let edgeTex = null;
+// 막힌 NPC가 높은 곳으로 가려 하면, 자기 높이에서 시작하는 가장 가까운 계단(경사로)을 경유지로 잡는다
+// 그 지점의 바닥 높이 (벽 같은 높은 장애물 위는 제외)
+function floorAt(x, z) {
+  let h = 0; for (const c of colliders) if (!c.disabled && !c.pushable && c.topY < 12 && x > c.minX && x < c.maxX && z > c.minZ && z < c.maxZ) h = Math.max(h, c.topY);
+  if (colliders.some(c => !c.disabled && c.topY >= 12 && x > c.minX - .5 && x < c.maxX + .5 && z > c.minZ - .5 && z < c.maxZ + .5)) return null;
+  if (slopes.length) h = Math.max(h, slopeH(x, z));
+  return h;
+}
+// 대부분은 지금 서 있는 높이에서 산책하고, 가끔(25%) 다른 층으로 간다
+function pickWanderTarget(p) {
+  const b = level.bounds, other = Math.random() < .25; let fallback = null;
+  for (let i = 0; i < 14; i++) {
+    const x = mr(b.minX + 2, b.maxX - 2), z = mr(b.minZ + 2, b.maxZ - 2);
+    if (level.inside && !level.inside(x, z)) continue;
+    const h = floorAt(x, z); if (h === null) continue;
+    const same = Math.abs(h - p.y) < .5; if (!fallback) fallback = { x, z };
+    if (same !== other || !slopes.some(o => o.t === 'ramp')) return { x, z };
+  }
+  return fallback || { x: p.x + mr(-4, 4), z: p.z + mr(-4, 4) };
+}
+// 목적지 층이 다르면 계단을 경유한다 (올라가기·내려가기 모두)
+function levelVia(p, tg) {
+  if (!slopes.some(o => o.t === 'ramp')) return null;
+  const th = floorAt(tg.x, tg.z); if (th === null) return null;
+  if (th > p.y + .5) return stairVia(p);
+  if (th < p.y - .5) {
+    let best = null;
+    for (const o of slopes) { if (o.t !== 'ramp' || Math.abs(o.h1 - p.y) > .5) continue; const len = Math.hypot(o.bx - o.ax, o.bz - o.az) || 1, ux = (o.bx - o.ax) / len, uz = (o.bz - o.az) / len, top = { x: o.bx + ux * ((o.ext || 0) + .8), z: o.bz + uz * ((o.ext || 0) + .8) }, d = Math.hypot(top.x - p.x, top.z - p.z); if (!best || d < best.d) best = { d, via: [top, { x: o.bx, z: o.bz }, { x: o.ax - ux * 1.2, z: o.az - uz * 1.2 }] }; }
+    return best && best.via;
+  }
+  return null;
+}
+function stairVia(p) {
+  let best = null;
+  for (const o of slopes) {
+    if (o.t !== 'ramp') continue;
+    const len = Math.hypot(o.bx - o.ax, o.bz - o.az) || 1, ux = (o.bx - o.ax) / len, uz = (o.bz - o.az) / len;
+    const bottom = { x: o.ax - ux * 1.2, z: o.az - uz * 1.2 }, top = { x: o.bx + ux * ((o.ext || 0) + 1.2), z: o.bz + uz * ((o.ext || 0) + 1.2) };
+    const startH = o.h0 - .35, d = Math.hypot(bottom.x - p.x, bottom.z - p.z);
+    if (Math.abs(startH - p.y) < .5 && d < 40 && (!best || d < best.d)) best = { d, via: [bottom, { x: o.ax + ux * .3, z: o.az + uz * .3 }, top] };
+  }
+  return best && best.via;
+}
 function stairHold(e, r = .75) {
   if (!level || !level.stairPath || e.vy > .5) return false;
   const sp = stairSnap(level.stairPath, e.x, e.z);
@@ -3342,6 +3516,24 @@ function stairHold(e, r = .75) {
   if (sp.d > r) { e.x = sp.px + (e.x - sp.px) * r / sp.d; e.z = sp.pz + (e.z - sp.pz) * r / sp.d; }
   if (e.y <= sp.h + .45) { e.y = sp.h; e.vy = 0; return true; }
   return false;
+}
+// 카메라와 탐지견 사이를 가리는 건물·지붕은 반투명하게
+const occRay = new THREE.Raycaster(), occFaded = new Map(), occMatCache = new Map(); let occT = 0;
+const FLAT = new Set(['PlaneGeometry', 'CircleGeometry', 'RingGeometry', 'ShapeGeometry']);
+function fadeMat(m) { let c = occMatCache.get(m); if (!c) { c = m.clone(); c.transparent = true; c.opacity = .22; c.depthWrite = false; occMatCache.set(m, c); } return c; }
+function updateOcclusion(dt) {
+  if (!level || (state !== 'play' && state !== 'photo')) { if (occFaded.size) { for (const [o, m] of occFaded) o.material = m; occFaded.clear(); } return; }
+  occT -= dt; if (occT > 0) return; occT = .12; occRay.camera = camera;
+  const hit = new Set(), from = camera.position;
+  for (const [tx, ty, tz] of [[dog.x, dog.y + .6, dog.z], [handler.x, handler.y + 1.2, handler.z]]) {
+    const dir = new THREE.Vector3(tx - from.x, ty - from.y, tz - from.z), dist = dir.length(); dir.normalize();
+    const tgt = new THREE.Vector3(tx, ty, tz), back = dir.clone().negate(), hits = [];
+    occRay.set(from, dir); occRay.far = dist - .6; hits.push(...occRay.intersectObjects(world.children, true));
+    occRay.set(tgt, back); occRay.far = dist; hits.push(...occRay.intersectObjects(world.children, true).filter(h => h.distance > .7));
+    for (const h of hits) { const o = h.object; if (!o.isMesh || o.isSprite || !o.geometry || FLAT.has(o.geometry.type) || (o.geometry.type === 'SphereGeometry' && o.geometry.parameters.radius > 200) || o.material.side === THREE.BackSide) continue; hit.add(o); }
+  }
+  for (const [o, m] of occFaded) if (!hit.has(o)) { o.material = m; occFaded.delete(o); }
+  for (const o of hit) if (!occFaded.has(o) && !Array.isArray(o.material)) { occFaded.set(o, o.material); o.material = fadeMat(o.material); }
 }
 function stairSnap(P, x, z) {
   let best = null;
@@ -3400,7 +3592,8 @@ function loadLevel(i) {
   // 담당 반장
   const off = new Person('chief', spawn.x + 2.6, spawn.z + 1, def.chief); off.wait = 1.5;
   const ol = textSprite('🎖 ' + def.who, { h: .38 }); ol.position.set(0, 2.5, 0); off.g.add(ol);
-  for (const [kind, n0] of Object.entries(def.people)) for (let k = 0, n = level.scaled && kind !== 'boss' ? n0 * 2 : n0; k < n; k++) {
+  const crowd = def.relax ? 1 : crowdNow(def); level.crowd = crowd; level.ageQ = buildAgeQueue(def);
+  for (const [kind, n0] of Object.entries(def.people)) for (let k = 0, n = Math.max(kind === 'smuggler' || kind === 'boss' ? 0 : 1, Math.round((level.scaled && kind !== 'boss' ? n0 * 2 : n0) * (kind === 'smuggler' || kind === 'boss' ? 1 : crowd))); k < n; k++) {
     const far = kind === 'boss' ? [{ ...spawn, r: 22 }] : level.avoid;
     const p = placeFree(level.bounds, 1, 1, .5, far); if (p) {
       const look = kind === 'smuggler' && def.diff.stars >= 3 && rnd() < .5 ? pick((def.staff || []).map(o => o.kind).concat(['worker'])) : null;
@@ -3410,6 +3603,8 @@ function loadLevel(i) {
   }
   for (const o of def.staff || []) { const p = new Person(o.kind, o.route[0][0], o.route[0][1]); p.route = o.route; p.ri = 0; p.waitAt = o.wait ?? .4; p.target = null; p.wait = mr(0, 1.5); }
   for (const o of def.vehicles || []) new Vehicle(o.type, o.route, o.start || 0);
+  if (level.seatSpots) { const spots = [...level.seatSpots].sort(() => rnd() - .5).slice(0, Math.round(level.seatSpots.length * .32 * Math.max(.5, level.crowd))); for (const [x, z, cls] of spots) { const p = new Person(cls === 'biz' ? 'civ' : pick(['civ', 'tourist', 'civ']), x, z); p.seated = true; p.dir = Math.PI; p.y = .2; p.g.position.set(x, .2, z); p.g.rotation.y = Math.PI; for (const l of p.legs) l.rotation.x = -1.45; p.body.position.z = .15; if (p.ageGrp === 'baby') p.g.children.filter(c => c.isGroup && c.position.z > .7).forEach(c => p.g.remove(c)); } }
+  spawnAnimals(def);
   if (level.swRoute) for (let k = 0; k < 3; k++) { const r = [...level.swRoute, ...[...level.swRoute].reverse().slice(1, -1)], p = new Person(k ? 'tourist' : 'student', r[0][0] - k, r[0][1] + 1); p.route = r; p.ri = k * 3; p.waitAt = .3; p.target = null; p.wait = k * 2; }
   // 넓어진 구역마다 순찰 직원 2명 + 이용객 3명
   const stK = (def.staff || []).map(o => o.kind).filter(k => k !== 'handler'), civK = Object.keys(def.people).filter(k => k !== 'smuggler' && k !== 'boss');
@@ -3417,10 +3612,11 @@ function loadLevel(i) {
     const ix = Math.min(6, (r.maxX - r.minX) / 4), iz = Math.min(6, (r.maxZ - r.minZ) / 4);
     const route = [[r.minX + ix, r.minZ + iz], [r.maxX - ix, r.minZ + iz], [r.maxX - ix, r.maxZ - iz], [r.minX + ix, r.maxZ - iz]];
     for (let k = 0; k < 2; k++) { const st = k * 2, p = new Person(pick(stK.length ? stK : ['customs']), ...route[st]); p.route = k ? [...route].reverse() : route; p.ri = 0; p.waitAt = 1; p.target = null; p.wait = mr(0, 2); }
-    for (let k = 0; k < 3 && civK.length; k++) { const p = placeFree(r, 1, 1, .5, level.avoid); if (p) new Person(pick(civK), p.x, p.z); }
+    for (let k = 0; k < Math.round(3 * level.crowd) && civK.length; k++) { const p = placeFree(r, 1, 1, .5, level.avoid); if (p) new Person(pick(civK), p.x, p.z); }
   }
   { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); xray = null;
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
+  helps = []; dog.shield = 0; dog.noseT = 0; dog.boneT = 0; if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < (level.scaled ? 2 : 1); n++) spawnHelpItem(k);
   helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
   if (def.relax) mpJoin(); else mpLeave();
   if (people.some(p => p.look && p.villain)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
@@ -3470,6 +3666,7 @@ function renderQuest() {
 function addScore(n) { levelScore = Math.max(-500, levelScore + n); }
 function damage() {
   if (dog.hurt > 0 || state !== 'play') return;
+  if (dog.shield > 0) { dog.shield--; dog.hurt = .8; floatText(t('ts_blocked'), dog.x, dog.y + 1.8, dog.z, { h: .5, color: '#7fd3ff' }); burst(dog.x, dog.y + .8, dog.z, [new THREE.Color(0x7fd3ff)], 20, 3); return; }
   if (handlerJob === 'soldier' && Math.random() < .3) { dog.hurt = .6; floatText('🛡 막아냈다!', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#9fe870' }); return; }
   dog.hp--; dog.hurt = 1; lastHurt = time; shake = .4; burst(dog.x, dog.y + .8, dog.z, [RED], 25, 3);
   if (dog.hp > 0) return;
@@ -3721,19 +3918,49 @@ function reveal(c) {
 }
 let leakT = 0, helpT = 30;
 // 하트 공·X-ray가 일정 시간마다 새로 나타난다 (기본 36초 → 20% 빠르게 30초)
+let helps = [];
+const HELP_KINDS = {
+  shield: { emoji: '🛡', col: 0x4f9ad8, label: 'ts_shield' },
+  nose: { emoji: '👃', col: 0xff9a4a, label: 'ts_nose' },
+  bones: { emoji: '🦴', col: 0xf4e1a8, label: 'ts_bonebag' },
+};
+function spawnHelpItem(kind) {
+  const p = placeFree(level.bounds, .7, .7, .4, level.avoid); if (!p) return;
+  const K = HELP_KINDS[kind], g = new THREE.Group(); g.position.set(p.x, .55, p.z); world.add(g);
+  mesh(BOX(.55, .55, .55), M('help' + kind, () => std(K.col, .4, .1, { emissive: K.col, emissiveIntensity: .35 })), 0, 0, 0, g);
+  const tx = textSprite(K.emoji, { h: .45, bg: null }); tx.position.y = .7; g.add(tx);
+  helps.push({ kind, x: p.x, z: p.z, g, got: false });
+}
+function updateHelpItems(dt) {
+  for (const h of helps) {
+    if (h.got) continue;
+    h.g.position.y = .55 + Math.sin(time * 3 + h.x) * .15; h.g.rotation.y += dt * 2;
+    if (Math.hypot(h.x - dog.x, h.z - dog.z) < 1.1 && dog.y < 1.5) {
+      h.got = true; world.remove(h.g); SFX.found(); burst(h.x, .8, h.z, [new THREE.Color(HELP_KINDS[h.kind].col), WHITE], 25, 3);
+      if (h.kind === 'shield') dog.shield = Math.min(2, (dog.shield || 0) + 1);
+      else if (h.kind === 'nose') dog.noseT = 20;
+      else dog.boneT = 20;
+      toast(t(HELP_KINDS[h.kind].label));
+    }
+  }
+  dog.noseT = Math.max(0, (dog.noseT || 0) - dt); dog.boneT = Math.max(0, (dog.boneT || 0) - dt);
+}
 function updateHelp(dt) {
+  if (level && !level.relax) updateHelpItems(dt);
   if (!level || level.relax) return;
   helpT -= dt; if (helpT > 0) return; helpT = 30;
   const live = balls.filter(b => !b.got).length;
+  if (Math.random() < .4 && helps.filter(h => !h.got).length < (level.scaled ? 9 : 5)) { spawnHelpItem(pick2(Object.keys(HELP_KINDS))); return; }
   if ((!xray || xray.got) && Math.random() < .45) { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; toast(t('ts_newx')); } return; }
   if (live < (level.scaled ? 12 : 4)) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) { balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); toast(t('ts_newball')); } }
 }
 function updateLeak(dt) {
   if (!level || level.relax) return;
   leakT += dt;
-  const lim = (level.scaled ? 70 : 50) / (.8 + .1 * level.diff.stars);
-  if (leakT < lim) { if (leakT > lim - 10 && leakT - dt <= lim - 10) toast(t('ts_leak_warn')); return; }
+  const lim = 1.07 * (level.scaled ? 70 : 50) / (.8 + .1 * level.diff.stars);
+  if (leakT < lim) return;
   leakT = 0;
+  if (Math.random() >= .05) return; // 반출 감점은 5% 확률로만
   const left = hidden.filter(c => !c.revealed && c.hidden);
   if (!left.length) return;
   const spare = left.filter(c => left.filter(o => o.hidden === c.hidden).length > (level.need[c.hidden] || 0) - (lvStats[c.hidden] || 0));
@@ -3851,7 +4078,7 @@ function updateDog(dt) {
   const sprint = (keys.ShiftLeft || (!twoP && keys.ShiftRight) || touchIn.run) && dog.stamina > 3 && len > .1 && !dog.sniffing;
   dog.stamina = clamp(dog.stamina + (sprint ? -24 * (1.4 - .1 * ST().sta) * (handlerJob === 'soldier' ? .8 : 1) : 14 * (.7 + .1 * ST().sta)) * dt, 0, 100);
   dog.boost -= dt; dog.hurt -= dt;
-  const maxSp = (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (.85 + .06 * ST().spd) * (level && level.scaled ? 1.25 : 1);
+  const maxSp = 1.07 * (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (.85 + .06 * ST().spd) * (level && level.scaled ? 1.25 : 1);
   const k = 1 - Math.exp(-dt * (dog.grounded ? 10 : 3));
   dog.vx = lerp(dog.vx, mx * maxSp, k); dog.vz = lerp(dog.vz, mz * maxSp, k);
   const pushed = moveCircle(dog, dog.vx * dt, dog.vz * dt, .5, true, dog.y);
@@ -3901,7 +4128,7 @@ function updateDog(dt) {
   let strength = 0;
   if (dog.sniffing) {
     dog.sniffTick -= dt; if (dog.sniffTick <= 0) { dog.sniffTick = .45; SFX.sniff(); }
-    const SN = level.diff.sniff * (.8 + .08 * ST().nose) * (level.scaled ? 1.5 : 1) * (handlerJob === 'customs' ? 1.15 : 1);
+    const SN = 1.07 * (dog.noseT > 0 ? 1.5 : 1) * level.diff.sniff * (.8 + .08 * ST().nose) * (level.scaled ? 1.5 : 1) * (handlerJob === 'customs' ? 1.15 : 1);
     const near = hidden.filter(c => !c.revealed).map(c => { const p = center(c); return { c, p, d: Math.hypot(p.x - dog.x, p.z - dog.z) }; })
       .filter(o => o.d < SN).sort((a, b) => a.d - b.d).slice(0, 3);
     for (const o of near) {
@@ -4081,6 +4308,7 @@ function updateCamera(dt) {
   if (shake > 0) { shake -= dt; camera.position.x += mr(-1, 1) * shake * .5; camera.position.y += mr(-1, 1) * shake * .5; }
   camera.lookAt(tx, ty, tz);
   if (state === 'photo') camera.lookAt((dog.x + handler.x) / 2, dog.y + .9, (dog.z + handler.z) / 2);
+  updateOcclusion(dt);
   if (window.__view) { const v = window.__view; camera.position.set(v[0], v[1], v[2]); camera.lookAt(v[3], v[4], v[5]); }
   if (level && level.ship) camera.rotateZ(Math.sin(time * .7) * .03);
   if (level && level.sunset) sun.position.set(tx - 40, 14, tz - 30); else sun.position.set(tx + 22, 45, tz + 16); sun.target.position.set(tx, 0, tz);
@@ -4126,13 +4354,14 @@ function drawMinimap() {
 
 // ================= 메인 루프 =================
 const clock = new THREE.Clock();
-let hudTick = 0, beltOffset = 0;
+let hudTick = 0, beltOffset = 0, playTotal = 0, playNotes = 0;
 loadLevel(0); state = 'login';
 function loop() {
   requestAnimationFrame(loop);
   const dt = Math.min(clock.getDelta(), .05); time += dt;
+  if (state === 'play' || state === 'dialog') { playTotal += dt; if (Math.floor(playTotal / 1800) > playNotes) { playNotes++; toast(t('ts_play30').replace('{m}', playNotes * 30)); } }
   if (state === 'play') {
-    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
+    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateAnimals(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
     for (const p of people) p.update(dt);
   } else if (state === 'intro') {
     updateIntro(dt); for (const p of people) p.update(dt);
@@ -4156,6 +4385,7 @@ function loop() {
     $('scent').firstChild.style.width = (scentShown * 100).toFixed(0) + '%';
     $('score').textContent = '⭐ ' + (runScore + levelScore);
     $('clock').textContent = '⏱ ' + fmtTime(levelTime);
+    { const h = localHour(), hh = Math.floor(h), mm = String(Math.floor((h - hh) * 60)).padStart(2, '0'), [, city] = LANG_TZ[lang] || LANG_TZ.ko; $('realClock').textContent = (hh >= 6 && hh < 18 ? '☀' : '🌙') + ' ' + city + ' ' + String(hh).padStart(2, '0') + ':' + mm; }
   }
   renderer.render(scene, camera);
 }
@@ -4203,7 +4433,7 @@ window.__cover = () => {
   document.body.appendChild(d);
 };
 if (location.hash === '#cover') setTimeout(() => window.__cover(), 300);
-window.__game = { get yaw() { return yaw; }, set yaw(v) { yaw = v; }, tick(n, dt = 1 / 30) { for (let k = 0; k < n; k++) { time += dt; levelTime += dt; updateDog(dt); updateHandler(dt); updateFun(dt); } }, get pgSpots() { return pgSpots; }, get shots() { return shots; }, setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
+window.__game = { occDbg() { const from = camera.position, dir = new THREE.Vector3(dog.x - from.x, dog.y + .6 - from.y, dog.z - from.z), dist = dir.length(); dir.normalize(); occRay.camera = camera; occRay.set(from, dir); occRay.far = dist; const h = occRay.intersectObjects(world.children, true); return { cam: from.toArray().map(v => v.toFixed(1)), dist: dist.toFixed(1), n: h.length, types: h.slice(0, 6).map(x => x.object.geometry.type + ':' + x.distance.toFixed(1)) }; }, get occ() { return occFaded.size; }, get animals() { return animals; }, get slopes() { return slopes; }, get yaw() { return yaw; }, set yaw(v) { yaw = v; }, tick(n, dt = 1 / 30) { for (let k = 0; k < n; k++) { time += dt; levelTime += dt; updateDog(dt); updateHandler(dt); updateFun(dt); } }, get pgSpots() { return pgSpots; }, get shots() { return shots; }, setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
 </script>
 </body>
 </html>
