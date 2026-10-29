@@ -739,7 +739,7 @@ function tryPush(c, dx, dz) {
 function moveCircle(ent, dx, dz, r, canPush, elev = 0) {
   if (level && level.inside && level.inside(ent.x, ent.z) && !level.inside(ent.x + dx, ent.z + dz)) { if (level.inside(ent.x + dx, ent.z)) dz = 0; else if (level.inside(ent.x, ent.z + dz)) dx = 0; else return false; }
   let pushed = false;
-  const blocking = (c, x, z) => !c.disabled && c.topY > elev + STEP && distToBox(x, z, c) < r;
+  const blocking = (c, x, z) => !c.disabled && c.topY > elev + STEP && !(c.bottomY !== undefined && elev + 1.7 < c.bottomY) && distToBox(x, z, c) < r;
   let nx = ent.x + dx;
   for (const c of colliders) {
     if (!blocking(c, nx, ent.z)) continue;
@@ -760,7 +760,7 @@ function unstick(ent, r, elev) {
   for (let pass = 0; pass < 3; pass++) {
     let moved = false;
     for (const c of colliders) {
-      if (c.disabled || c.topY <= elev + STEP) continue;
+      if (c.disabled || c.topY <= elev + STEP || (c.bottomY !== undefined && elev + 1.7 < c.bottomY)) continue;
       const cx = clamp(ent.x, c.minX, c.maxX), cz = clamp(ent.z, c.minZ, c.maxZ), dx = ent.x - cx, dz = ent.z - cz, d = Math.hypot(dx, dz);
       if (d >= r - .01) continue;
       if (d > .001) { ent.x = cx + dx / d * r; ent.z = cz + dz / d * r; }
@@ -2919,12 +2919,12 @@ const LANDMARK_LIST = [
       // ① 걸어 오르는 구간: 계단 한 칸 0.35m, 사람·탐지견·NPC 모두 올라갈 수 있다
       const N = 38, walk = [];
       for (let k = 0; k < N; k++) { const t = k / (N - 1), x = -32 + t * 30, z = 12 - t * 20 - Math.sin(t * Math.PI) * 6, h = .35 * (k + 1); walk.push([x, z, h]); }
-      walk.forEach(([x, z, h], k) => { const [nx, nz] = walk[Math.min(k + 1, N - 1)], [px, pz] = walk[Math.max(k - 1, 0)], a = Math.atan2(nx - px, nz - pz); const tread = mesh(BOX(1.8, .18, 1.05), steel, x, h - .09, z); tread.rotation.y = a; addCol(x, z, 1.2, 1.2, tread, { topY: h, keep: true }); for (const sd of [-1, 1]) { const ox = Math.cos(a) * .95 * sd, oz = -Math.sin(a) * .95 * sd; const p = mesh(BOX(.07, 1, .07), rail, x + ox, h + .5, z + oz); p.castShadow = false; const r = mesh(BOX(.06, .06, 1.1), rail, x + ox, h + 1, z + oz); r.rotation.y = a; r.castShadow = false; } if (k % 5 === 2) { const c = mesh(BOX(.35, h, .35), LMC(0xb8bec5), x, h / 2, z); c.rotation.z = (k % 2 ? .12 : -.12); c.castShadow = false; } if (k % 3 === 0) mesh(BOX(.2, .2, .2), glow(0xffe7a0, 1.3), x, h + .1, z).castShadow = false; });
-      const [tx, tz, th] = walk[N - 1]; addCol(tx + 1.6, tz - 1.6, 4, 4, null, { topY: th, keep: true }); for (const [ox, oz] of [[-1.5, -1.5], [1.5, 1.5], [-1.5, 1.5], [1.5, -1.5]]) mesh(BOX(.3, th, .3), LMC(0xb8bec5), tx + 1.6 + ox, th / 2, tz - 1.6 + oz).castShadow = false; for (const sd of [-1, 1]) mesh(BOX(4.2, .06, .06), MAT.metal(0xc9ced4, .3), tx + 1.6, th + 1, tz - 1.6 + sd * 2.1); mesh(BOX(4.2, .2, 4.2), steel, tx + 1.6, th, tz - 1.6); sign('🔭 스페이스워크 전망 포인트 (13m)', tx + 1.6, th + 3, tz - 1.6, .55);
+      walk.forEach(([x, z, h], k) => { const [nx, nz] = walk[Math.min(k + 1, N - 1)], [px, pz] = walk[Math.max(k - 1, 0)], a = Math.atan2(nx - px, nz - pz); const tread = mesh(BOX(1.8, .18, 1.05), steel, x, h - .09, z); tread.rotation.y = a; addCol(x, z, 1.2, 1.2, tread, { topY: h, bottomY: h - .3, keep: true }); for (const sd of [-1, 1]) { const ox = Math.cos(a) * .95 * sd, oz = -Math.sin(a) * .95 * sd; const p = mesh(BOX(.07, 1, .07), rail, x + ox, h + .5, z + oz); p.castShadow = false; const r = mesh(BOX(.06, .06, 1.1), rail, x + ox, h + 1, z + oz); r.rotation.y = a; r.castShadow = false; } if (k % 5 === 2) { const px = x + Math.cos(a) * 1.55, pz = z - Math.sin(a) * 1.55, c = mesh(BOX(.35, h, .35), LMC(0xb8bec5), px, h / 2, pz); c.castShadow = false; addCol(px, pz, .4, .4, c, { topY: h - .2, keep: true }); mesh(BOX(1.6, .12, .12), LMC(0xb8bec5), (x + px) / 2, h - .2, (z + pz) / 2).rotation.y = a + Math.PI / 2; } if (k % 3 === 0) mesh(BOX(.2, .2, .2), glow(0xffe7a0, 1.3), x, h + .1, z).castShadow = false; });
+      const [tx, tz, th] = walk[N - 1]; addCol(tx + 1.6, tz - 1.6, 4, 4, null, { topY: th, bottomY: th - .3, keep: true }); for (const [ox, oz] of [[-1.5, -1.5], [1.5, 1.5], [-1.5, 1.5], [1.5, -1.5]]) { mesh(BOX(.3, th, .3), LMC(0xb8bec5), tx + 1.6 + ox, th / 2, tz - 1.6 + oz).castShadow = false; addCol(tx + 1.6 + ox, tz - 1.6 + oz, .4, .4, null, { topY: th - .4, keep: true }); } for (const sd of [-1, 1]) mesh(BOX(4.2, .06, .06), MAT.metal(0xc9ced4, .3), tx + 1.6, th + 1, tz - 1.6 + sd * 2.1); mesh(BOX(4.2, .2, 4.2), steel, tx + 1.6, th, tz - 1.6); sign('🔭 스페이스워크 전망 포인트 (13m)', tx + 1.6, th + 3, tz - 1.6, .55);
       // ② 위쪽 곡선 구간과 360도 고리 (실제처럼 고리는 지나갈 수 없다)
       const P = [[tx + 3, th + .4, tz - 4], [tx + 8, th + 4, tz - 10], [tx + 16, th + 9, tz - 12], [tx + 24, th + 12, tz - 6], [tx + 26, th + 8, tz + 4], [tx + 18, th + 5, tz + 8], [tx + 10, th + 7, tz + 4]].map(([x, y, z]) => new THREE.Vector3(x, y, z));
       const cv = new THREE.CatmullRomCurve3(P);
-      for (let k = 0; k <= 90; k++) { const p = cv.getPointAt(k / 90), q = cv.getPointAt(Math.min(1, k / 90 + .01)), a = Math.atan2(q.x - p.x, q.z - p.z); const tr = mesh(BOX(1.8, .16, .9), steel, p.x, p.y, p.z); tr.rotation.y = a; tr.castShadow = false; for (const sd of [-1, 1]) { const r = mesh(BOX(.06, .06, .95), rail, p.x + Math.cos(a) * .95 * sd, p.y + 1, p.z - Math.sin(a) * .95 * sd); r.rotation.y = a; r.castShadow = false; } if (k % 9 === 4) { const c = mesh(BOX(.35, p.y, .35), LMC(0xb8bec5), p.x, p.y / 2, p.z); c.rotation.x = (k % 2 ? .15 : -.15); c.castShadow = false; } if (k % 4 === 0) mesh(BOX(.2, .2, .2), glow(0xffe7a0, 1.3), p.x, p.y + .1, p.z).castShadow = false; }
+      for (let k = 0; k <= 90; k++) { const p = cv.getPointAt(k / 90), q = cv.getPointAt(Math.min(1, k / 90 + .01)), a = Math.atan2(q.x - p.x, q.z - p.z); const tr = mesh(BOX(1.8, .16, .9), steel, p.x, p.y, p.z); tr.rotation.y = a; tr.castShadow = false; for (const sd of [-1, 1]) { const r = mesh(BOX(.06, .06, .95), rail, p.x + Math.cos(a) * .95 * sd, p.y + 1, p.z - Math.sin(a) * .95 * sd); r.rotation.y = a; r.castShadow = false; } if (k % 9 === 4) { const px = p.x + Math.cos(a) * 1.55, pz = p.z - Math.sin(a) * 1.55, c = mesh(BOX(.35, p.y, .35), LMC(0xb8bec5), px, p.y / 2, pz); c.castShadow = false; addCol(px, pz, .4, .4, c, { topY: p.y - .2, keep: true }); mesh(BOX(1.6, .12, .12), LMC(0xb8bec5), (p.x + px) / 2, p.y - .15, (p.z + pz) / 2).rotation.y = a + Math.PI / 2; } if (k % 4 === 0) mesh(BOX(.2, .2, .2), glow(0xffe7a0, 1.3), p.x, p.y + .1, p.z).castShadow = false; }
       const loop = new THREE.Group(); loop.position.set(tx + 22, th + 8, tz + 10); loop.rotation.y = .5; world.add(loop);
       for (let k = 0; k < 48; k++) { const a = k / 48 * Math.PI * 2, x = Math.sin(a) * 7, y = -Math.cos(a) * 7 + 7; const tr = mesh(BOX(1.8, .16, .95), steel, 0, y - 7 + 7, x, loop); tr.rotation.x = -a; for (const sd of [-1, 1]) mesh(BOX(.07, .07, 1), rail, sd * .95, y + Math.cos(a) * 1, x + Math.sin(a) * 1, loop).rotation.x = -a; if (k % 6 === 0) mesh(BOX(.2, .2, .2), glow(0xffe7a0, 1.3), 0, y, x, loop).castShadow = false; }
       for (const sd of [-1, 1]) { const c = mesh(BOX(.4, th + 8, .4), LMC(0xb8bec5), sd * 3, -(th + 8) / 2 + .2, 0, loop); c.rotation.x = sd * .1; }
@@ -2933,8 +2933,10 @@ const LANDMARK_LIST = [
       const hand = new THREE.Group(); hand.position.set(52, -.3, -52); world.add(hand); const hm = LMC(0x8a7a64); mesh(BOX(3, 6, 1.4), hm, 0, 3, 0, hand); for (let k = 0; k < 4; k++) mesh(BOX(.65, 3.2 - Math.abs(k - 1.5) * .4, .7), hm, -1.1 + k * .74, 7.4, 0, hand); const thb = mesh(BOX(.7, 2.2, .7), hm, 1.9, 4.6, 0, hand); thb.rotation.z = -.6; sign('🖐 호미곶 상생의 손', 52, 12, -50, .7);
       for (let k = 0; k < 6; k++) chimney(-60 + k * 18, -120, rr(18, 30)); for (let k = 0; k < 10; k++) { const b = mesh(BOX(rr(10, 20), rr(6, 12), 10), LMC(0x6d7a86), -70 + k * 15, 4, -130); b.castShadow = false; mesh(BOX(1, 1, .2), glow(0xffa94d, 1.5), -70 + k * 15, 6, -124.8).castShadow = false; } sign('🏭 제철소 (영일만 건너편)', 0, 34, -118, 1.2);
       for (let k = 0; k < 10; k++) tree(k % 2 ? rr(-42, -36) : rr(26, 42), rr(14, 26), .8); building(-32, 24, 14, 6, 5, 0xe5e0d6, { sign: '포항시립미술관' });
-      L.stairPath = walk.map(([x, z, h]) => [x, z, h + .32]);
-      L.swRoute = walk.filter((_, k) => k % 4 === 0 || k === N - 1).map(([x, z]) => [x, z]);
+      const upper = Array.from({ length: 61 }, (_, k) => { const p = cv.getPointAt(k / 60); return [p.x, p.z, p.y + .25]; });
+      L.stairPath = [...walk.map(([x, z, h]) => [x, z, h + .32]), [tx + 1.6, tz - 1.6, th + .32], ...upper];
+      L.swRoute = L.stairPath.filter((_, k) => k % 4 === 0 || k === L.stairPath.length - 1).map(([x, z]) => [x, z]);
+      sign('🚧 360° 고리는 통행 불가 · 여기서 돌아가요', upper[60][0], upper[60][2] + 2.6, upper[60][1], .45, 'rgba(160,40,40,.92)');
     } },
   { name: '전주 한옥마을', icon: '🏡', w: 92, d: 70, floor: 0xd9cfb8, obj: crate, sky: [0x6ab0ee, 0xf6ecd8], st: 3,
     people: { hanbok: 6, tourist: 3, merchant: 2, smuggler: 3 }, items: [["hanbokBag",2],["souvenir",2],["wine",1],["vase",1]], who: '한지 전주 한옥마을 관리소장', short: '기와지붕이 물결치는 한옥마을! 풍남문, 전동성당, 경기전, 오목대, 남천교 청연루, 한옥 골목을 순찰해요.',
@@ -3279,7 +3281,7 @@ function clearWorld() {
   intro = null; vanAway = null; dogM.g.visible = true; handlerM.g.visible = true; leash.visible = true;
   for (const [o, m] of occFaded) o.material = m; occFaded.clear();
   colliders = []; slopes = []; people.length = 0; vehicles.length = 0; agents.length = 0; pals = []; flyer = null; helis = []; pgAnim = []; envAnim = []; pgSpots = []; dog.pgAct = null; if (mp) mp.others.clear(); towerCtl = []; bombs = []; bombT = 4; bossT = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
-  clearEffects(); clearParticles(); shots = []; leakT = 0; animals = [];
+  clearEffects(); clearParticles(); shots = []; leakT = 0; animals = []; debris = [];
 }
 const CROWD = {
   commute: [.25, .2, .2, .2, .25, .4, .8, 1.3, 1.4, 1, .9, .9, 1, .95, .9, .95, 1.1, 1.3, 1.4, 1.2, 1, .8, .55, .35],
@@ -3354,7 +3356,7 @@ function updateAnimals(dt) {
       if (A.fly > 0) { A.fly -= dt; A.y = Math.min(6, A.y + dt * 4); A.x += Math.sin(A.dir) * 5 * dt; A.z += Math.cos(A.dir) * 5 * dt; A.wings.forEach((w, i) => w.rotation.z = Math.sin(time * 30) * (i ? -1 : 1)); if (A.fly <= 0) { const p = placeFree(level.bounds, .5, .5, .2, level.avoid); if (p) { A.tx = p.x; A.tz = p.z; } } }
       else if (A.tx !== undefined) { const d = Math.hypot(A.tx - A.x, A.tz - A.z); A.dir = Math.atan2(A.tx - A.x, A.tz - A.z); if (d > .3) { A.x += (A.tx - A.x) / d * 5 * dt; A.z += (A.tz - A.z) / d * 5 * dt; A.y = Math.max(groundAt(A.x, A.z, .2, 9).h, A.y - dt * 2); } else { A.tx = undefined; A.y = groundAt(A.x, A.z, .2, 9).h; } A.wings.forEach((w, i) => w.rotation.z = Math.sin(time * 30) * (i ? -1 : 1)); }
       else { if (dd < 3.2) { A.fly = 1.4; A.dir = Math.atan2(A.x - dog.x, A.z - dog.z); tone(1400, .05, 'triangle', .03); } else if (A.t <= 0) { A.t = rr(.6, 2.2); A.dir += rr(-1.5, 1.5); } else { A.x += Math.sin(A.dir) * .5 * dt; A.z += Math.cos(A.dir) * .5 * dt; } A.wings.forEach(w => w.rotation.z = 0); }
-    } else { if (A.t <= 0) { A.t = rr(1, 4); A.walk = Math.random() < .55; A.dir += rr(-1.2, 1.2); if (Math.hypot(A.x - A.hx, A.z - A.hz) > 8) A.dir = Math.atan2(A.hx - A.x, A.hz - A.z); } const fear = A.kind === 'cat' && dd < 2.6; if (fear) A.dir = Math.atan2(A.x - dog.x, A.z - dog.z); if (A.walk || fear) { const sp = fear ? 4 : A.kind === 'horse' || A.kind === 'deer' ? 1 : .7; const nx = A.x + Math.sin(A.dir) * sp * dt, nz = A.z + Math.cos(A.dir) * sp * dt; if (!colliders.some(c => !c.disabled && c.topY > A.y + .4 && nx > c.minX && nx < c.maxX && nz > c.minZ && nz < c.maxZ) && (!level.inside || level.inside(nx, nz))) { A.x = nx; A.z = nz; } else A.dir += Math.PI * .6; } A.y = groundAt(A.x, A.z, .3, A.y).h; }
+    } else { if (A.t <= 0) { A.t = rr(1, 4); A.walk = Math.random() < .55; A.dir += rr(-1.2, 1.2); if (Math.hypot(A.x - A.hx, A.z - A.hz) > 8) A.dir = Math.atan2(A.hx - A.x, A.hz - A.z); } const fear = A.kind === 'cat' && dd < 2.6; if (fear) A.dir = Math.atan2(A.x - dog.x, A.z - dog.z); if (A.walk || fear) { const sp = fear ? 4 : A.kind === 'horse' || A.kind === 'deer' ? 1 : .7; const nx = A.x + Math.sin(A.dir) * sp * dt, nz = A.z + Math.cos(A.dir) * sp * dt; if (!colliders.some(c => !c.disabled && c.topY > A.y + .4 && !(c.bottomY !== undefined && A.y + 1 < c.bottomY) && nx > c.minX && nx < c.maxX && nz > c.minZ && nz < c.maxZ) && (!level.inside || level.inside(nx, nz))) { A.x = nx; A.z = nz; } else A.dir += Math.PI * .6; } A.y = groundAt(A.x, A.z, .3, A.y).h; }
     A.x = clamp(A.x, level.bounds.minX + .5, level.bounds.maxX - .5); A.z = clamp(A.z, level.bounds.minZ + .5, level.bounds.maxZ - .5);
     A.g.position.set(A.x, A.y, A.z); A.g.rotation.y = A.dir;
   }
@@ -3527,8 +3529,8 @@ function stairVia(p) {
 }
 function stairHold(e, r = .75) {
   if (!level || !level.stairPath || e.vy > .5) return false;
-  const sp = stairSnap(level.stairPath, e.x, e.z);
-  if (!sp || sp.end || sp.d > 2.4 || e.y < sp.h - 1.3) return false;
+  const sp = stairSnap(level.stairPath, e.x, e.z, e.y);
+  if (!sp || (sp.end && !sp.top) || sp.d > 2.4 || e.y < sp.h - 1.3) return false;
   if (sp.d > r) { e.x = sp.px + (e.x - sp.px) * r / sp.d; e.z = sp.pz + (e.z - sp.pz) * r / sp.d; }
   if (e.y <= sp.h + .45) { e.y = sp.h; e.vy = 0; return true; }
   return false;
@@ -3551,9 +3553,9 @@ function updateOcclusion(dt) {
   for (const [o, m] of occFaded) if (!hit.has(o)) { o.material = m; occFaded.delete(o); }
   for (const o of hit) if (!occFaded.has(o) && !Array.isArray(o.material)) { occFaded.set(o, o.material); o.material = fadeMat(o.material); }
 }
-function stairSnap(P, x, z) {
+function stairSnap(P, x, z, y) {
   let best = null;
-  for (let i = 0; i < P.length - 1; i++) { const [ax, az, ah] = P[i], [bx2, bz, bh] = P[i + 1], vx = bx2 - ax, vz = bz - az, L2 = vx * vx + vz * vz || 1; let u = ((x - ax) * vx + (z - az) * vz) / L2; const raw = u; u = clamp(u, 0, 1); const px = ax + vx * u, pz = az + vz * u, d = Math.hypot(x - px, z - pz); if (!best || d < best.d) best = { d, px, pz, h: ah + (bh - ah) * u, end: (i === 0 && raw < -.2) || (i === P.length - 2 && raw > 1.2) }; }
+  for (let i = 0; i < P.length - 1; i++) { const [ax, az, ah] = P[i], [bx2, bz, bh] = P[i + 1], vx = bx2 - ax, vz = bz - az, L2 = vx * vx + vz * vz || 1; let u = ((x - ax) * vx + (z - az) * vz) / L2; const raw = u; u = clamp(u, 0, 1); const px = ax + vx * u, pz = az + vz * u, d = Math.hypot(x - px, z - pz), hh = ah + (bh - ah) * u, score = d + (y === undefined ? 0 : Math.max(0, Math.abs(hh - y) - 1.2) * 4); if (!best || score < best.score) best = { score, d, px, pz, h: ah + (bh - ah) * u, end: (i === 0 && raw < -.2) || (i === P.length - 2 && raw > 1.2), top: i === P.length - 2 && raw > 1 }; }
   return best;
 }
 function boundaryLine(L) {
@@ -4010,6 +4012,37 @@ function arrest(p) {
   toast(t(p.kind === 'boss' ? 'ts_boss' : 'ts_arrest'));
   lvStats[p.kind]++; checkQuest();
 }
+let debris = [];
+function matOf(c) {
+  const l = (c.label || '') + ' ' + (c.kind || '');
+  if (/아이스박스|cooler/.test(l)) return 'plastic';
+  if (/와인|꽃병|도자기|병|vase|wine/.test(l)) return 'glass';
+  if (/스피커|TV|기계|전자|speaker|machine/.test(l)) return 'tech';
+  if (/가방|배낭|자루|백|세탁물|bag/.test(l) || c.kind === 'bag') return 'fabric';
+  if (/택배|소포|상자|박스|화장품|신발|parcel|cardboard/.test(l) || c.kind === 'parcel') return 'card';
+  if (/나무|팔레트|crate/.test(l) || c.kind === 'crate') return 'wood';
+  return 'card';
+}
+function colorOf(c) { let col = null; if (c.mesh) c.mesh.traverse(o => { if (!col && o.isMesh && o.material && o.material.color) col = o.material.color.clone(); }); return col || new THREE.Color(0x8d6e4a); }
+function shatter(c) {
+  const p = center(c), top = c.topY || .8, mat = matOf(c), base = colorOf(c), W = Math.max(.4, c.maxX - c.minX), D = Math.max(.4, c.maxZ - c.minZ);
+  const piece = (w, h, d, col, vy = 4, spread = 3, life = 2.4) => { const m = mesh(BOX(w, h, d), MAT.col(col instanceof THREE.Color ? col.getHex() : col, .7), p.x + mr(-W / 3, W / 3), top * .5 + mr(0, top * .4), p.z + mr(-D / 3, D / 3)); m.castShadow = false; debris.push({ m, vx: mr(-spread, spread), vy: mr(vy * .6, vy), vz: mr(-spread, spread), rx: mr(-8, 8), rz: mr(-8, 8), life, t: 0 }); };
+  if (mat === 'wood') { for (let k = 0; k < 8; k++) piece(W * .9, .08, .22, base.clone().multiplyScalar(mr(.8, 1.1)), 5, 3.5); for (let k = 0; k < 14; k++) piece(.08, .08, .3, 0xb48650, 6, 4, 1.4); tone(220, .12, 'sawtooth', .07, 90); }
+  else if (mat === 'card') { for (let k = 0; k < 6; k++) piece(W * .6, .03, D * .6, base.clone().multiplyScalar(mr(.85, 1.1)), 3, 2.2); for (let k = 0; k < 10; k++) spawnP(p.x, top * .6, p.z, mr(-2, 2), mr(1, 3), mr(-2, 2), new THREE.Color(0xc49a64), 1); tone(160, .1, 'square', .05, 80); }
+  else if (mat === 'fabric') { for (let k = 0; k < 2; k++) piece(W * .5, top * .8, D * .9, base, 3, 2.5); for (let k = 0; k < 7; k++) piece(rr(.25, .45), .08, rr(.25, .5), new THREE.Color().setHSL(Math.random(), .6, .55), 5, 3); tone(300, .1, 'triangle', .05, 140); }
+  else if (mat === 'plastic') { for (let k = 0; k < 6; k++) piece(rr(.2, .4), .1, rr(.2, .4), k % 2 ? 0xf4f4f2 : base, 4.5, 3); for (let k = 0; k < 8; k++) spawnP(p.x, top * .6, p.z, mr(-2, 2), mr(2, 4), mr(-2, 2), new THREE.Color(0x9fdcff), .8); tone(500, .08, 'square', .05, 200); }
+  else if (mat === 'glass') { for (let k = 0; k < 16; k++) piece(rr(.06, .18), .05, rr(.06, .18), base.clone().lerp(new THREE.Color(0xffffff), .3), 4, 3.5, 1.6); tone(1400, .15, 'triangle', .06, 900); tone(1900, .1, 'sine', .05, 1300); }
+  else { for (let k = 0; k < 6; k++) piece(rr(.15, .35), rr(.1, .25), rr(.15, .35), k % 2 ? 0x333333 : base, 4, 3); for (let k = 0; k < 12; k++) spawnP(p.x, top * .7, p.z, mr(-3, 3), mr(2, 5), mr(-3, 3), new THREE.Color(0xffe27a), .6); tone(900, .08, 'square', .05, 300); }
+  const LBL = { wood: '🪵 우지끈!', card: '📦 와르르!', fabric: '👜 찌익!', plastic: '🧊 퍽!', glass: '🫙 쨍그랑!', tech: '⚡ 지지직!' };
+  floatText(lang === 'ko' ? LBL[mat] : '💥', p.x, top + 1.2, p.z, { h: .5 });
+  if (c.mesh) { world.remove(c.mesh); c.mesh.visible = false; }
+  const k = colliders.indexOf(c); if (k >= 0) colliders.splice(k, 1); c.broken = true; c.disabled = true;
+  if (level.search) { const j = level.search.indexOf(c); if (j >= 0) level.search.splice(j, 1); }
+}
+function updateDebris(dt) {
+  for (const d of debris) { d.t += dt; d.vy -= 18 * dt; d.m.position.x += d.vx * dt; d.m.position.y = Math.max(.03, d.m.position.y + d.vy * dt); d.m.position.z += d.vz * dt; if (d.m.position.y <= .04) { d.vx *= .85; d.vz *= .85; d.rx *= .8; d.rz *= .8; } d.m.rotation.x += d.rx * dt; d.m.rotation.z += d.rz * dt; if (d.t > d.life - .6) d.m.scale.setScalar(Math.max(.01, (d.life - d.t) / .6)); }
+  debris = debris.filter(d => { if (d.t < d.life) return true; world.remove(d.m); return false; });
+}
 function bark() {
   if (mp && level.relax) mp.ch.send({ type: 'broadcast', event: 'bark', payload: { k: mp.key } });
   const BR = .8 + .06 * ST().bark;
@@ -4029,7 +4062,7 @@ function bark() {
   if (best) return reveal(best);
   for (const c of colliders) {
     if (!c.search || c.checked || c.revealed) continue;
-    if (distToBox(dog.x, dog.z, c) < 1.1) { c.checked = true; addScore(-10); totals.mistakes++; toast(lang === 'ko' ? `🤔 깨끗한 물건(${placeOf(c)})이에요! 오탐 (-10)` : t('ts_false')); SFX.error(); if (handlerJob !== 'customs' || Math.random() < .5) damage(); break; }
+    if (distToBox(dog.x, dog.z, c) < 1.1) { c.checked = true; if (['bag', 'crate', 'parcel', 'item'].includes(c.kind)) shatter(c); addScore(-10); totals.mistakes++; toast(lang === 'ko' ? `🤔 깨끗한 물건(${placeOf(c)})이에요! 오탐 (-10)` : t('ts_false')); SFX.error(); if (handlerJob !== 'customs' || Math.random() < .5) damage(); break; }
   }
 }
 
@@ -4060,12 +4093,12 @@ cvs.addEventListener('pointerdown', e => {
 });
 cvs.addEventListener('pointermove', e => {
   const p = ptrs.get(e.pointerId); if (!p) return;
-  if (ptrs.size >= 2 && pinch) { p.x = e.clientX; p.y = e.clientY; const [a, b] = [...ptrs.values()]; camDist = clamp(pinch.cam * pinch.d / Math.max(20, Math.hypot(a.x - b.x, a.y - b.y)), 3.5, 22); return; }
+  if (ptrs.size >= 2 && pinch) { p.x = e.clientX; p.y = e.clientY; const [a, b] = [...ptrs.values()]; camDist = clamp(pinch.cam * pinch.d / Math.max(20, Math.hypot(a.x - b.x, a.y - b.y)), 3.5, 33); return; }
   yaw -= (e.clientX - p.x) * .006; pitch = clamp(pitch + (e.clientY - p.y) * .004, .12, 1.2); p.x = e.clientX; p.y = e.clientY;
 });
 const ptrEnd = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; };
 cvs.addEventListener('pointerup', ptrEnd); cvs.addEventListener('pointercancel', ptrEnd);
-cvs.addEventListener('wheel', e => { camDist = clamp(camDist + e.deltaY * .01, 4.5, 18); }, { passive: true });
+cvs.addEventListener('wheel', e => { camDist = clamp(camDist + e.deltaY * .01, 4.5, 27); }, { passive: true });
 cvs.addEventListener('contextmenu', e => e.preventDefault());
 const joy = $('joy'), knob = $('knob'); let joyId = null;
 function joyMove(e) {
@@ -4393,7 +4426,7 @@ function loop() {
   const dt = Math.min(clock.getDelta(), .05); time += dt;
   if (state === 'play' || state === 'dialog') { playTotal += dt; if (Math.floor(playTotal / 1800) > playNotes) { playNotes++; toast(t('ts_play30').replace('{m}', playNotes * 30)); } }
   if (state === 'play') {
-    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateAnimals(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
+    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateAnimals(dt); updateDebris(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
     for (const p of people) p.update(dt);
   } else if (state === 'intro') {
     updateIntro(dt); for (const p of people) p.update(dt);
@@ -4466,7 +4499,7 @@ window.__cover = () => {
   document.body.appendChild(d);
 };
 if (location.hash === '#cover') setTimeout(() => window.__cover(), 300);
-window.__game = { forceClear() { for (const k in level.need) lvStats[k] = level.need[k]; checkQuest(); }, occDbg() { const from = camera.position, dir = new THREE.Vector3(dog.x - from.x, dog.y + .6 - from.y, dog.z - from.z), dist = dir.length(); dir.normalize(); occRay.camera = camera; occRay.set(from, dir); occRay.far = dist; const h = occRay.intersectObjects(world.children, true); return { cam: from.toArray().map(v => v.toFixed(1)), dist: dist.toFixed(1), n: h.length, types: h.slice(0, 6).map(x => x.object.geometry.type + ':' + x.distance.toFixed(1)) }; }, get occ() { return occFaded.size; }, get animals() { return animals; }, get slopes() { return slopes; }, get yaw() { return yaw; }, set yaw(v) { yaw = v; }, tick(n, dt = 1 / 30) { for (let k = 0; k < n; k++) { time += dt; levelTime += dt; updateDog(dt); updateHandler(dt); updateFun(dt); } }, get pgSpots() { return pgSpots; }, get shots() { return shots; }, setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
+window.__game = { get stairPath() { return level && level.stairPath; }, forceClear() { for (const k in level.need) lvStats[k] = level.need[k]; checkQuest(); }, occDbg() { const from = camera.position, dir = new THREE.Vector3(dog.x - from.x, dog.y + .6 - from.y, dog.z - from.z), dist = dir.length(); dir.normalize(); occRay.camera = camera; occRay.set(from, dir); occRay.far = dist; const h = occRay.intersectObjects(world.children, true); return { cam: from.toArray().map(v => v.toFixed(1)), dist: dist.toFixed(1), n: h.length, types: h.slice(0, 6).map(x => x.object.geometry.type + ':' + x.distance.toFixed(1)) }; }, get occ() { return occFaded.size; }, get animals() { return animals; }, get slopes() { return slopes; }, get yaw() { return yaw; }, set yaw(v) { yaw = v; }, tick(n, dt = 1 / 30) { for (let k = 0; k < n; k++) { time += dt; levelTime += dt; updateDog(dt); updateHandler(dt); updateFun(dt); } }, get pgSpots() { return pgSpots; }, get shots() { return shots; }, setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
 </script>
 </body>
 </html>
