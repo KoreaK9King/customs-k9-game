@@ -306,7 +306,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030013956';
+const BUILD = '20261030014126';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -2655,6 +2655,21 @@ function building(x, z, w, d, h, c, o = {}) {
   if (o.sign) sign(o.sign, x, h + 1.2, z + d / 2, o.sh ?? .7, o.sbg);
 }
 // 바닷가 느낌: 밀려왔다 빠지는 파도·흰 거품·젖은 모래·물놀이객·부표·요트·파도 소리
+// 모래사장: 알갱이 있는 모래 바닥 · 산책로 · 모래 언덕 · 조개껍데기 · 해초
+function sandBeach(L) {
+  if (!L.poly) return;
+  const tex = pixTex('sandgrain', 32, (x, y) => (x * 7 + y * 13) % 29 === 0 ? '#b89a62' : (x * 11 + y * 5) % 37 === 0 ? '#fff4d6' : jit('#e8cf98', .1), [1 / 2.5, 1 / 2.5]);
+  shapeFloor(L, std(0xffffff, .95, 0, { map: tex }), .008);
+  // 도시 쪽 산책로 (타일) + 경계석
+  const pz = L.d / 2 - 5; floorPlane(L.w + 40, 10, std(0xffffff, .85, 0, { map: TEX.tile('prom', '#c9b8a0', '#a8977f', 16, [L.w / 4, 2.5]) }), 0, pz + 5, .012);
+  mesh(BOX(L.w + 40, .25, .5), LMC(0xbdb5a8), 0, .12, pz).castShadow = false;
+  // 모래 언덕(걸어서 넘을 수 있다)
+  for (const [x, z, r] of [[-L.w * .32, 2, 4.5], [L.w * .3, -2, 3.8], [-L.w * .1, 8, 3.2]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), std(0xffffff, .95, 0, { map: tex })); m.scale.y = .3; m.position.set(x, 0, z); m.receiveShadow = true; world.add(m); slopes.push({ t: 'dome', x, z, r, h: r * .3 }); }
+  // 물가 근처 조개껍데기·해초·발자국
+  const minZ = Math.min(...L.poly.map(p => p[1]));
+  for (let k = 0; k < 40; k++) { const x = rr(-L.w / 2 + 4, L.w / 2 - 4), z = rr(minZ + 3, minZ + 12); if (!L.inside(x, z)) continue; const m = mesh(BOX(rr(.12, .25), .05, rr(.12, .25)), LMC(pick([0xfff4ec, 0xf8c8c0, 0xe0d0b8, 0x2f6b3a])), x, .04, z); m.rotation.y = rr(0, 6); m.castShadow = false; }
+  for (let k = 0; k < 18; k++) { const x = -6 + k * .55 + Math.sin(k) * .3, z = 6 - k * 1.1; for (const sd of [-.12, .12]) { const m = mesh(BOX(.12, .02, .16), LMC(0xc9b07a), x + sd, .02, z); m.castShadow = false; } }
+}
 function shoreFX(L) {
   if (!L.poly) return;
   const P = L.poly, edges = [];
@@ -2901,7 +2916,7 @@ const LANDMARK_LIST = [
     people: { tourist: 6, civ: 4, merchant: 1, smuggler: 3 }, items: [["cooler",2],["beachBag",2],["fishBox",2]], who: '부산바다 광안리해수욕장 관리소장', chief: 'crew', short: '반달 모양 광안리 해변! 바다 위 광안대교, 드론쇼, 민락수변공원, 회센터를 둘러보며 수색해요.',
     intro: '부산 광안리 해수욕장이야. 반달 모양 모래사장 앞바다에 길이 7.4km, 2층짜리 광안대교가 떠 있어.\n밤엔 다리가 알록달록 빛나고 하늘엔 드론쇼가 펼쳐져! 동쪽 민락수변공원, 서쪽 회센터도 있어.',
     build(L) {
-      seaNorth(-26); suspBridge(-90, -170, 170, 9, 34); shoreFX(L);
+      seaNorth(-26); suspBridge(-90, -170, 170, 9, 34); sandBeach(L); shoreFX(L);
       const dots = []; for (let k = 0; k < 60; k++) { const m = mesh(BOX(.8, .8, .8), glow(pick([0x7fd3ff, 0xff7fd0, 0xffe27f]), 2), 0, 0, 0); m.castShadow = false; dots.push(m); } envAnim.push(() => { const ph = (time * .1) % 1; dots.forEach((m, k) => { const a = k / 60 * Math.PI * 2, heart = [16 * Math.pow(Math.sin(a), 3), 13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)]; const ring = [Math.cos(a) * 16, Math.sin(a) * 16], u = (Math.sin(ph * Math.PI * 2) + 1) / 2; m.position.set(heart[0] * u + ring[0] * (1 - u), 40 + (heart[1] * u + ring[1] * (1 - u)) * .9, -70); }); }); sign('🛸 드론 라이트쇼', 0, 62, -70, 1);
       for (let k = 0; k < 9; k++) building(-40 + k * 10, 38, 9, 6, rr(10, 22), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true });
       for (let k = 0; k < 8; k++) { const x = -30 + k * 8.4; if (Math.abs(x) < 6) continue; const z = rr(-6, 4); bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(2, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0x7dff6a][k % 4]), x, 2.8, z); }
@@ -2967,7 +2982,7 @@ const LANDMARK_LIST = [
     people: { tourist: 7, civ: 4, student: 2, smuggler: 3 }, items: [["cooler",2],["beachBag",2],["fishBox",1],["backpack",1]], who: '파도 해운대해수욕장 관리소장', chief: 'crew', short: '해운대 백사장! 엘시티·마린시티 초고층, 해변열차와 하늘 캡슐, 동백섬 누리마루, 모래조각, 멀리 광안대교.',
     intro: '대한민국 대표 해수욕장 해운대야! 1.5km 백사장 뒤로 초고층 빌딩 엘시티와 마린시티가 서 있어.\n동쪽 바닷가 절벽엔 알록달록 하늘 캡슐과 해변열차가 달리고, 서쪽 동백섬엔 누리마루 APEC하우스가 있어. 모래조각도 구경해!',
     build(L) {
-      seaNorth(-24); suspBridge(-150, -320, 40, 9, 34); shoreFX(L);
+      seaNorth(-24); suspBridge(-150, -320, 40, 9, 34); sandBeach(L); shoreFX(L);
       for (let k = 0; k < 3; k++) building(18 + k * 10, 40, 8, 8, 30 + k * 5, 0xcfdbe6, { glass: 0x7fa6c8, lit: true }); sign('엘시티 LCT', 28, 44, 36, 1); for (let k = 0; k < 7; k++) building(-44 + k * 8, 42, 7, 6, rr(14, 24), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true }); sign('마린시티', -20, 28, 38, .9);
       for (let r = 0; r < 2; r++) for (let k = 0; k < 14; k++) { const x = -44 + k * 6.4, z = -8 + r * 7; if (Math.abs(x) < 7 && z > 8) continue; bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(1.8, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0xffffff][(k + r) % 4]), x, 2.8, z); }
       for (let z = -40; z <= 30; z += 1) mesh(BOX(1.2, .2, 1.05), LMC(0x7a6a5a), 56, 6, z).castShadow = false; for (let z = -40; z <= 30; z += 8) mesh(BOX(.6, 6, .6), LMC(0x9aa3ab), 56, 3, z); const caps = []; for (let k = 0; k < 6; k++) { const c = mesh(BOX(1.6, 1.6, 1.8), LMC([0xff5a5a, 0xffd54f, 0x4fc3f7, 0x7dff6a, 0xb388ff, 0xff9a4a][k]), 56, 7.1, 0); caps.push(c); } envAnim.push(() => { caps.forEach((c, k) => { c.position.z = ((time * 2 + k * 4) % 70) - 40; }); }); sign('🚃 해변열차 · 스카이캡슐', 52, 10, -6, .6); const cliff = mesh(BOX(14, 5, 90), LMC(0x6d6a5e), 64, 2.5, -6); cliff.castShadow = false;
