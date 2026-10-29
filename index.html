@@ -162,7 +162,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <h1>🐕 탐지견 킁킁 게임</h1>
  <p>나만의 <b>탐지견</b>을 만들어 공항부터 보세창고까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
  <label for="pid" id="lbId" style="font-weight:700;color:var(--navy)">🔑 아이디 <small style="font-weight:500;color:var(--muted)">(이메일 주소 · 랭킹에 공개되지 않아요)</small></label>
- <input id="pid" type="email" inputmode="email" maxlength="60" placeholder="예: dkslek123@google.com" autocomplete="email">
+ <input id="pid" type="email" inputmode="email" maxlength="60" placeholder="예: dkslek123@google.com" autocomplete="username" name="username" list="idList"><datalist id="idList"></datalist>
  <label for="ppw" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">비밀번호</label>
  <input id="ppw" type="password" maxlength="32" placeholder="4자 이상 · 처음 접속이면 지금 정한 비밀번호로 가입돼요" autocomplete="current-password">
  <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:14px;font-weight:700;color:var(--navy)"><input type="checkbox" id="remember" checked style="width:18px;height:18px"> <span id="lbRemember">아이디 기억하기 <small style="font-weight:500;color:var(--muted)">(다음부터 비밀번호만 입력)</small></span></label>
@@ -2617,7 +2617,7 @@ function horse(x, z, col = 0x8d5a3b) { const g = new THREE.Group(); g.position.s
 function rockWall(x0, z0, x1, z1, col = 0x3a3a3a) { const len = Math.hypot(x1 - x0, z1 - z0), n = Math.ceil(len / .9); for (let k = 0; k < n; k++) { const t = k / n, m = mesh(BOX(rr(.7, 1), rr(.7, 1.1), rr(.6, .9)), LMC(col), x0 + (x1 - x0) * t, .4, z0 + (z1 - z0) * t); m.castShadow = false; } addCol((x0 + x1) / 2, (z0 + z1) / 2, Math.abs(x1 - x0) + .8, Math.abs(z1 - z0) + .8, null, { topY: 1 }); }
 function partition(z, hw = 6, aisle = 1.1, col = 0xdfe6ea) { for (const sd of [-1, 1]) bx(sd * (aisle + (hw - aisle) / 2), 0, z, hw - aisle, 2.8, .25, col); mesh(BOX(aisle * 2, .5, .25), LMC(col), 0, 2.55, z); }
 const LMDEF = (o) => ({
-  landmark: true, gate: o.gate, npcJump: o.npcJump, sc: 1, diff: { stars: o.st ?? 2, speed: .95 + (o.st ?? 2) * .06, flee: 1, hp: o.st > 3 ? 3 : 2, bossHp: 5, sniff: 27 - (o.st ?? 2) * 1.5, vehicle: 1 },
+  landmark: true, gate: o.gate, npcJump: o.npcJump, mmFloor: typeof o.floor === "number" ? o.floor : null, sc: 1, diff: { stars: o.st ?? 2, speed: .95 + (o.st ?? 2) * .06, flee: 1, hp: o.st > 3 ? 3 : 2, bossHp: 5, sniff: 27 - (o.st ?? 2) * 1.5, vehicle: 1 },
   extras: { decor: o.decor || [], items: o.items || [['backpack', 3], ['dutyBag', 2]] }, name: o.name, icon: o.icon, w: o.w ?? 80, d: o.d ?? 60, outdoor: o.out !== false, bg: o.bg ?? 0xcfe3ef, music: o.music ?? 1 + (o.n % 7), sky: o.sky, shape: o.shape, outside: o.outside, rail: o.rail,
   staff: o.staff || [{ kind: 'police', route: [[-(o.w ?? 80) / 2 + 6, (o.d ?? 60) / 2 - 4], [(o.w ?? 80) / 2 - 6, (o.d ?? 60) / 2 - 4]], wait: 2 }, { kind: 'customs', route: [[-12, 8], [12, 8]], wait: 2 }],
   vehicles: o.veh || [], people: o.people || { civ: 9, smuggler: 3 }, hide: o.hide || { drug: 4, gun: 3 }, need: o.need || { drug: 3, gun: 2, smuggler: 2 },
@@ -3784,7 +3784,7 @@ function showMaps(paused = false) {
   const lmGate = LEVELS.map((L, i) => i).filter(i => LEVELS[i].gate), lmRest = LEVELS.map((L, i) => i).filter(i => LEVELS[i].landmark && !LEVELS[i].gate);
   const order = [0, 1, 2, 3, 4, ...lmGate, 5, 6, ...lmRest];
   $('mapGrid').innerHTML = order.map(i => [LEVELS[i], i]).map(([L, i]) => {
-    const locked = L.hidden ? prog.best[5] === undefined : i === 5 ? ![0, 1, 2, 3, 4].every(k => prog.best[k] !== undefined || runCleared.has(k)) : false, cleared = !L.hidden && prog.best[i] !== undefined, inRun = runActive && runCleared.has(i);
+    const locked = L.hidden ? prog.best[5] === undefined && !hiddenVip : i === 5 ? ![0, 1, 2, 3, 4].every(k => prog.best[k] !== undefined || runCleared.has(k)) : false, cleared = !L.hidden && prog.best[i] !== undefined, inRun = runActive && runCleared.has(i);
     const cur = pausedGame && i === levelIdx;
     const st = cur ? t('st_cur') : locked ? (L.hidden ? t('st_lockH') : t('st_lockB')) : inRun ? t('st_run') : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
     return (i === lmRest[0] ? `<div class="mapsep">${t('sep_lm').replace('{n}', lmRest.length)} <small>${t('sep_note')}</small></div>` : '') + `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.hidden && locked ? "❓" : L.icon}</span><span class="no">${L.hidden ? "HIDDEN" : L.gate ? t("lbl_gate") + " " + (lmGate.indexOf(i) + 1) : L.landmark ? t("lbl_lm") + " " + (lmRest.indexOf(i) + 1) : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(5 - L.diff.stars)}</span></button>`;
@@ -3844,6 +3844,7 @@ function loadSavedDog(id) {
 function showCharBox(open) { $('charBox').classList.toggle('hidden', !open); $('charSum').classList.toggle('hidden', open); }
 function restoreLogin() {
   const id = store.get('k9id', ''); $('pid').value = id; $('remember').checked = true;
+  $('idList').innerHTML = store.get('k9ids', id ? [id] : []).map(x => '<option value="' + esc(x) + '">').join('');
   if (store.get('k9agree', false)) $('agree').checked = true;
   if (store.get('k9pcons', false)) { $('pcons').checked = true; $('age14').checked = true; }
   loadSavedDog(id); $('nick').value = store.get('k9nick:' + id, '') || '';
@@ -3855,6 +3856,10 @@ loadSavedDog(store.get('k9id', ''));
 $('pid').addEventListener('change', () => { const id = $('pid').value.trim(), d = store.get('k9dog:' + id, null); if (d) { $('dname').value = d.name; pickBreed = d.breed; renderBreeds(); } $('nick').value = store.get('k9nick:' + id, '') || ''; });
 const rpc = (name, body) => fetch(RANK_CFG.url + '/rest/v1/rpc/' + name, { method: 'POST', headers: sbHeaders(), body: JSON.stringify(body) });
 const loginErr = t => { $('pidErr').textContent = t; };
+// 히든맵 바로 입장 허용 계정 (이메일은 공개하지 않고 SHA-256 해시로만 비교)
+const HIDDEN_VIP = ['f31f2ec546aeb4af9e3579b21d61a6a707375f6a5ec73096567eed2bdc70bfe6'];
+let hiddenVip = false;
+async function checkVip(id) { try { const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(id)); hiddenVip = HIDDEN_VIP.includes([...new Uint8Array(d)].map(b => b.toString(16).padStart(2, '0')).join('')); } catch { hiddenVip = false; } }
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
@@ -3874,7 +3879,7 @@ async function login() {
   if (res === 'bad') return loginErr(t('err_bad'));
   if (res === 'locked') return loginErr('비밀번호를 여러 번 틀려서 5분간 잠겼어요. 잠시 후 다시 시도하세요.');
   loginErr('');
-  playerId = guest ? 'guest_' + nk : v; playerNick = nk; store.set('k9nick:' + v, nk); setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; if (!guest) store.set('k9id', $('remember').checked ? v : ''); store.set('k9agree', $('agree').checked); if (!guest) store.set('k9pcons', true); runScore = 0; runActive = false;
+  playerId = guest ? 'guest_' + nk : v; playerNick = nk; await checkVip(guest ? '' : v); store.set('k9nick:' + v, nk); setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; if (!guest) { store.set('k9id', $('remember').checked ? v : ''); if ($('remember').checked) store.set('k9ids', [v, ...store.get('k9ids', []).filter(x => x !== v)].slice(0, 5)); } store.set('k9agree', $('agree').checked); if (!guest) store.set('k9pcons', true); runScore = 0; runActive = false;
   if (serverOn() && playerPw) rpc('set_profile', { p_id: v, p_pw: pw, p_nick: nk, p_dog: dn, p_consent: true }).catch(() => { });
   if (guest) toast(t('ts_guest'));
   if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
@@ -3898,7 +3903,7 @@ $('btnRankOpen').onclick = openRank;
 $('dok').onclick = closeDialog;
 $('btnNext').onclick = () => { if (level && level.landmark) { const n = levelIdx + 1 < LEVELS.length ? levelIdx + 1 : LANDMARK_START; startLevel(n); return; } const n = [0, 1, 2, 3, 4].find(k => !runCleared.has(k)); startLevel(n ?? 5); };
 $('btnToMaps').onclick = showMaps;
-$('btnHidden').onclick = () => startLevel(LEVELS.length - 1);
+$('btnHidden').onclick = () => startLevel(LEVELS.findIndex(L => L.hidden));
 $('btnWinMaps').onclick = () => { runActive = false; showMaps(); };
 $('tbHome').onclick = () => { if (state === 'play' || state === 'dialog') { showMaps(true); toast('🏠 홈으로 돌아왔어요. 수고했어요!'); } };
 $('tbMaps').onclick = () => { if (state === 'play' || state === 'dialog') showMaps(true); };
@@ -4315,20 +4320,31 @@ function updateCamera(dt) {
 }
 
 // ================= 미니맵 =================
-const mm = $('mm'), mctx = mm.getContext('2d');
+const mm = $('mm'), mctx = mm.getContext('2d'), mmCache = {};
 function drawMinimap() {
   if (!level) return;
-  const g = mctx, W = mm.width, H = mm.height, S = Math.min(W / (level.w + (level.extraEast || 0) + 2), H / (level.d + 2 * (level.extraZ || 0) + 2));
-  const ox = W / 2 - (level.extraEast || 0) / 2 * S, oz = H / 2, P = (x, z) => [ox + x * S, oz + z * S];
-  g.fillStyle = '#1c2a36'; g.fillRect(0, 0, W, H);
-  g.fillStyle = level.outdoor ? '#7f8a8f' : '#cfcac0'; const [a0, b0] = P(-level.w / 2, -level.d / 2); g.fillRect(a0, b0, (level.w + (level.extraEast || 0)) * S, level.d * S);
-  if (waterMesh) { g.fillStyle = '#2f86b8'; g.fillRect(0, 0, W, b0); }
-  for (const c of colliders) {
-    if (c.disabled || !c.mesh || c.topY > 50) continue;
-    const [x1, y1] = P(c.minX, c.minZ), [x2, y2] = P(c.maxX, c.maxZ);
-    g.fillStyle = c.revealed ? '#2ecc71' : c.pushable ? '#a98a64' : '#6d747a';
-    g.fillRect(x1, y1, Math.max(2, x2 - x1), Math.max(2, y2 - y1));
+  const g = mctx, W = mm.width, H = mm.height, b = level.bounds, bw = b.maxX - b.minX, bh = b.maxZ - b.minZ;
+  const S = Math.min(W / (bw + 4), H / (bh + 4)), ox = W / 2 - (b.minX + b.maxX) / 2 * S, oz = H / 2 - (b.minZ + b.maxZ) / 2 * S, P = (x, z) => [ox + x * S, oz + z * S];
+  // 맵마다 한 번만 그리는 바탕 (모양·바닥색·물·언덕·계단·건물·경계선)
+  if (mmCache.level !== level) {
+    const c = mmCache.cv || (mmCache.cv = document.createElement('canvas')); c.width = W; c.height = H; const q = c.getContext('2d'); mmCache.level = level;
+    const hex = n => '#' + n.toString(16).padStart(6, '0'), oc = level.outside;
+    q.fillStyle = oc ? hex(oc.col) : waterMesh ? '#2f86b8' : '#1c2a36'; q.fillRect(0, 0, W, H);
+    if (waterMesh && !oc) { const [, wz] = P(0, b.minZ); q.fillStyle = '#1c2a36'; q.fillRect(0, wz, W, H - wz); }
+    const ground = typeof level.mmFloor === 'number' ? hex(level.mmFloor) : level.outdoor ? '#8e989c' : '#d6d0c4';
+    const poly = level.poly || [[b.minX, b.minZ], [b.maxX, b.minZ], [b.maxX, b.maxZ], [b.minX, b.maxZ]];
+    q.beginPath(); poly.forEach(([x, z], i) => { const [px, pz] = P(x, z); i ? q.lineTo(px, pz) : q.moveTo(px, pz); }); q.closePath(); q.fillStyle = ground; q.fill();
+    for (const o of slopes) { if (o.t === 'cone' || o.t === 'dome') { const r0 = o.t === 'cone' ? o.r0 : o.r; for (let k = 4; k >= 1; k--) { const [px, pz] = P(o.x, o.z); q.beginPath(); q.arc(px, pz, r0 * S * k / 4, 0, 7); q.fillStyle = 'rgba(70,110,50,' + (.18 + (4 - k) * .1) + ')'; q.fill(); } } else { const [x1, z1] = P(o.ax, o.az), [x2, z2] = P(o.bx, o.bz); q.strokeStyle = '#efe6cf'; q.lineWidth = Math.max(2, o.w * S); q.setLineDash([2, 2]); q.beginPath(); q.moveTo(x1, z1); q.lineTo(x2, z2); q.stroke(); q.setLineDash([]); } }
+    for (const cl of colliders) { if (cl.disabled || !cl.mesh || cl.pushable || cl.topY > 50) continue; const [x1, y1] = P(cl.minX, cl.minZ), [x2, y2] = P(cl.maxX, cl.maxZ); const t = Math.min(1, cl.topY / 12); q.fillStyle = 'rgb(' + Math.round(130 - t * 70) + ',' + Math.round(138 - t * 70) + ',' + Math.round(145 - t * 65) + ')'; q.fillRect(x1, y1, Math.max(2, x2 - x1), Math.max(2, y2 - y1)); }
+    q.beginPath(); poly.forEach(([x, z], i) => { const [px, pz] = P(x, z); i ? q.lineTo(px, pz) : q.moveTo(px, pz); }); q.closePath(); q.strokeStyle = '#ffcc00'; q.lineWidth = 2; q.stroke();
+    const [sx, sz] = P(level.spawn.x, level.spawn.z); q.fillStyle = '#ffffff'; q.font = 'bold 13px sans-serif'; q.fillText('🏁', sx - 7, sz + 5);
+    q.font = 'bold 15px sans-serif'; q.fillStyle = 'rgba(0,0,0,.55)'; q.fillRect(4, 4, Math.min(W - 8, q.measureText(level.icon + ' ' + mapName(levelIdx)).width + 10), 21); q.fillStyle = '#fff'; q.fillText(level.icon + ' ' + mapName(levelIdx), 9, 20);
   }
+  g.drawImage(mmCache.cv, 0, 0);
+  // 움직이는 것: 밀 수 있는 물건, 적발된 장소
+  for (const c of colliders) { if (c.disabled || !c.mesh || !(c.pushable || c.revealed)) continue; const [x1, y1] = P(c.minX, c.minZ), [x2, y2] = P(c.maxX, c.maxZ); g.fillStyle = c.revealed ? '#2ecc71' : '#a98a64'; g.fillRect(x1, y1, Math.max(2, x2 - x1), Math.max(2, y2 - y1)); }
+  for (const h of (typeof helps !== 'undefined' ? helps : [])) { if (h.got) continue; const [x, y] = P(h.x, h.z); g.fillStyle = '#7fd3ff'; g.fillRect(x - 2.5, y - 2.5, 5, 5); }
+  for (const bl of balls) { if (bl.got) continue; const [x, y] = P(bl.x, bl.z); g.fillStyle = '#c8e632'; g.beginPath(); g.arc(x, y, 2.5, 0, 7); g.fill(); }
   for (const c of hidden) {
     if (c.revealed || !(c.ping > 0)) continue;
     c.ping -= 1 / 30;
@@ -4405,6 +4421,7 @@ const I18N_EL = [
   [() => $('keys'), 'hud_keys'], [() => $('stam').previousElementSibling, 'hud_stam'], [() => $('scent').previousElementSibling, 'hud_scent'],
 ];
 function applyLang() {
+  mmCache.level = null;
   if (level && state === 'play' && !level.sunset) { hemi.intensity = level.outdoor ? .55 : level.dim ? .45 : .6; sun.intensity = level.outdoor ? 1.25 : level.dim ? .8 : 1; sun.color.set(level.outdoor ? 0xfff1d6 : 0xffffff); hemi.color.set(0xffffff); applyTimeOfDay(); }
   const set = (el, key) => { if (!el) return; if (el.dataset.ko === undefined) el.dataset.ko = el.innerHTML; el.innerHTML = lang === 'ko' ? el.dataset.ko : (DICT[lang]?.[key] ?? el.dataset.ko); };
   for (const [get, key] of I18N_EL) set(get(), key);
@@ -4433,7 +4450,7 @@ window.__cover = () => {
   document.body.appendChild(d);
 };
 if (location.hash === '#cover') setTimeout(() => window.__cover(), 300);
-window.__game = { occDbg() { const from = camera.position, dir = new THREE.Vector3(dog.x - from.x, dog.y + .6 - from.y, dog.z - from.z), dist = dir.length(); dir.normalize(); occRay.camera = camera; occRay.set(from, dir); occRay.far = dist; const h = occRay.intersectObjects(world.children, true); return { cam: from.toArray().map(v => v.toFixed(1)), dist: dist.toFixed(1), n: h.length, types: h.slice(0, 6).map(x => x.object.geometry.type + ':' + x.distance.toFixed(1)) }; }, get occ() { return occFaded.size; }, get animals() { return animals; }, get slopes() { return slopes; }, get yaw() { return yaw; }, set yaw(v) { yaw = v; }, tick(n, dt = 1 / 30) { for (let k = 0; k < n; k++) { time += dt; levelTime += dt; updateDog(dt); updateHandler(dt); updateFun(dt); } }, get pgSpots() { return pgSpots; }, get shots() { return shots; }, setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
+window.__game = { forceClear() { for (const k in level.need) lvStats[k] = level.need[k]; checkQuest(); }, occDbg() { const from = camera.position, dir = new THREE.Vector3(dog.x - from.x, dog.y + .6 - from.y, dog.z - from.z), dist = dir.length(); dir.normalize(); occRay.camera = camera; occRay.set(from, dir); occRay.far = dist; const h = occRay.intersectObjects(world.children, true); return { cam: from.toArray().map(v => v.toFixed(1)), dist: dist.toFixed(1), n: h.length, types: h.slice(0, 6).map(x => x.object.geometry.type + ':' + x.distance.toFixed(1)) }; }, get occ() { return occFaded.size; }, get animals() { return animals; }, get slopes() { return slopes; }, get yaw() { return yaw; }, set yaw(v) { yaw = v; }, tick(n, dt = 1 / 30) { for (let k = 0; k < n; k++) { time += dt; levelTime += dt; updateDog(dt); updateHandler(dt); updateFun(dt); } }, get pgSpots() { return pgSpots; }, get shots() { return shots; }, setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
 </script>
 </body>
 </html>
