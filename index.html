@@ -759,17 +759,30 @@ function unstick(ent, r, elev) {
     if (!moved) break;
   }
 }
+let slopes = [];
+// 비탈 높이: cone(산), dome(오름), ramp(계단 위 경사로)
+function slopeH(x, z) {
+  let h = -1;
+  for (const o of slopes) {
+    if (o.t === 'cone') { const d = Math.hypot(x - o.x, z - o.z); if (d < o.r0) h = Math.max(h, d <= o.r1 ? o.h : o.h * (o.r0 - d) / (o.r0 - o.r1)); }
+    else if (o.t === 'dome') { const d = Math.hypot(x - o.x, z - o.z); if (d < o.r) h = Math.max(h, o.h * Math.sqrt(1 - (d / o.r) ** 2)); }
+    else { const vx = o.bx - o.ax, vz = o.bz - o.az, len = Math.hypot(vx, vz) || 1, ux = vx / len, uz = vz / len, sx = (x - o.ax) * ux + (z - o.az) * uz, lat = Math.abs(-(x - o.ax) * uz + (z - o.az) * ux); if (sx >= 0 && sx <= len + (o.ext || 0) && lat <= o.w / 2) h = Math.max(h, o.h0 + (o.h1 - o.h0) * Math.min(1, sx / len)); }
+  }
+  return h;
+}
 function groundAt(x, z, r, elev) {
   let h = 0, on = null;
   for (const c of colliders) {
     if (c.disabled || c.topY > elev + STEP || c.topY <= h) continue;
     if (distToBox(x, z, c) < r * .6) { h = c.topY; on = c; }
   }
+  if (slopes.length) { const hs = slopeH(x, z); if (hs > h && hs <= elev + STEP + .25) { h = hs; on = null; } }
   return { h, on };
 }
 function placeFree(b, w, d, margin = .7, avoid = []) {
   for (let i = 0; i < 500; i++) {
     const x = rr(b.minX + w / 2, b.maxX - w / 2), z = rr(b.minZ + d / 2, b.maxZ - d / 2);
+    if (slopes.length && slopeH(x, z) > .15) continue;
     if (level && level.inside && !(level.inside(x - w / 2 - 1, z - d / 2 - 1) && level.inside(x + w / 2 + 1, z + d / 2 + 1) && level.inside(x - w / 2 - 1, z + d / 2 + 1) && level.inside(x + w / 2 + 1, z - d / 2 - 1))) continue;
     const t = { minX: x - w / 2 - margin, maxX: x + w / 2 + margin, minZ: z - d / 2 - margin, maxZ: z + d / 2 + margin };
     if (colliders.some(c => !c.disabled && aabbHits(t, c))) continue;
@@ -1039,6 +1052,7 @@ function updateHandler(dt) {
   else if (!twoP) handler.dir += angDiff(handler.dir, Math.atan2(dog.x - handler.x, dog.z - handler.z)) * Math.min(1, dt * 4);
   unstick(handler, .35, handler.y);
   const spA = twoP ? (handler.p2 || 0) : sp; handler.phase += dt * spA * 3; const k = Math.min(1, spA / 2);
+  stairHold(handler, .7);
   handler.ry = handler.vy === 0 && handler.ry !== undefined && Math.abs(handler.y - handler.ry) < .9 ? handler.ry + (handler.y - handler.ry) * Math.min(1, dt * 9) : handler.y;
   const h = handlerM; h.g.position.set(handler.x, handler.ry + Math.abs(Math.sin(handler.phase)) * .05 * k, handler.z);
   if (handler.y > .05) { h.legs[0].rotation.x = -.8; h.legs[1].rotation.x = .4; } h.g.rotation.y = handler.dir;
@@ -1376,7 +1390,7 @@ class Person {
     this.arms[0].rotation.x = -Math.sin(this.phase) * .5 * k; this.arms[1].rotation.x = Math.sin(this.phase) * .5 * k;
     { const g2 = groundAt(this.x, this.z, this.r, this.y).h; if (g2 > this.y + .01 && g2 - this.y < .45 && this.vy <= 0) this.y = Math.min(g2, this.y + dt * 4); else if (g2 < this.y - .01 && this.vy === 0) this.vy = -.01; }
     if (this.y > 0 || this.vy > 0 || this.vy < 0) { this.vy -= 22 * dt; this.y += this.vy * dt; const gh = groundAt(this.x, this.z, this.r, Math.max(0, this.y)).h; if (this.y <= gh) { this.y = gh; this.vy = 0; } }
-    unstick(this, this.r, this.y);
+    unstick(this, this.r, this.y); stairHold(this, .6);
     this.x = clamp(this.x, level.bounds.minX, level.bounds.maxX); this.z = clamp(this.z, level.bounds.minZ, level.bounds.maxZ);
     if (this.windup > 0) this.arms[0].rotation.x = this.arms[1].rotation.x = -2.6;
     if (this.aim > 0) this.arms[1].rotation.x = -1.55;
@@ -2548,7 +2562,7 @@ function statue(x, z, col, seat, h = 3) { bx(x, 0, z, 3, 2, 3, 0x8e8a80); const 
 
 
 function pond(x, z, w, d, col = 0x4f9fd0, block = true) { const t = TEX.water(); t.repeat.set(Math.max(1, w / 6), Math.max(1, d / 6)); const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), std(0xffffff, .2, 0, { map: t, color: col })); m.rotation.x = -Math.PI / 2; m.position.set(x, .05, z); world.add(m); if (block) addCol(x, z, w, d, null, { topY: 99 }); for (const [ex, ez, ew, ed] of [[0, -d / 2, w + .6, .3], [0, d / 2, w + .6, .3], [-w / 2, 0, .3, d], [w / 2, 0, .3, d]]) bx(x + ex, .02, z + ez, ew, .35, ed, 0x9a948a, false); return m; }
-function stepsUp(x, z0, w, n, dir = -1, sd = .8, col = 0xb9b2a5) { for (let k = 0; k < n; k++) bx(x, 0, z0 + dir * k * sd, w, .35 * (k + 1), sd, col); return .35 * n; }
+function stepsUp(x, z0, w, n, dir = -1, sd = .8, col = 0xb9b2a5, base = 0) { for (let k = 0; k < n; k++) bx(x, 0, z0 + dir * k * sd, w, base + .35 * (k + 1), sd, col); slopes.push({ t: 'ramp', ax: x, az: z0 - dir * sd / 2, bx: x, bz: z0 + dir * (n - 1.5) * sd, h0: base + .35, h1: base + .35 * n, w, ext: sd }); return base + .35 * n; }
 function flowers(x, z, w, d, cols, n = 50) { for (let k = 0; k < n; k++) { const m = mesh(BOX(.4, .35, .4), LMC(pick(cols)), x + rr(-w / 2, w / 2), .18, z + rr(-d / 2, d / 2)); m.castShadow = false; } }
 function fountain(x, z, r = 3, col = 0xbdb7aa) { mesh(new THREE.CylinderGeometry(r, r + .3, .7, 20), LMC(col), x, .35, z); addCol(x, z, r * 1.5, r * 1.5, null, { topY: .7 }); const w = new THREE.Mesh(new THREE.CircleGeometry(r - .3, 20), std(0x7fc8ef, .1, 0, { transparent: true, opacity: .85 })); w.rotation.x = -Math.PI / 2; w.position.set(x, .72, z); world.add(w); const c = new THREE.Color(0xbfe8ff); envAnim.push(() => { if (Math.random() < .7) spawnP(x + mr(-.3, .3), 1, z + mr(-.3, .3), mr(-1.5, 1.5), mr(5, 8), mr(-1.5, 1.5), c, 1.1); }); }
 function pavilion(x, z, s = 1, y = 0, roof = 0x3b3f45) { for (const sx of [-1, 1]) for (const sz of [-1, 1]) bx(x + sx * 1.6 * s, y, z + sz * 1.6 * s, .3 * s, 2.6 * s, .3 * s, 0x8b2e22, y < .5); bx(x, y, z, 3.8 * s, .3, 3.8 * s, 0x9a8f7a, false); bx(x, y + 2.3 * s, z, 3.9 * s, .35, 3.9 * s, 0x2f7d5b, false); hroof(x, y + 2.6 * s, z, 3 * s, 3 * s, roof); }
@@ -2743,7 +2757,7 @@ const LANDMARK_LIST = [
       const dots = []; for (let k = 0; k < 60; k++) { const m = mesh(BOX(.8, .8, .8), glow(pick([0x7fd3ff, 0xff7fd0, 0xffe27f]), 2), 0, 0, 0); m.castShadow = false; dots.push(m); } envAnim.push(() => { const ph = (time * .1) % 1; dots.forEach((m, k) => { const a = k / 60 * Math.PI * 2, heart = [16 * Math.pow(Math.sin(a), 3), 13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)]; const ring = [Math.cos(a) * 16, Math.sin(a) * 16], u = (Math.sin(ph * Math.PI * 2) + 1) / 2; m.position.set(heart[0] * u + ring[0] * (1 - u), 40 + (heart[1] * u + ring[1] * (1 - u)) * .9, -70); }); }); sign('🛸 드론 라이트쇼', 0, 62, -70, 1);
       for (let k = 0; k < 9; k++) building(-40 + k * 10, 38, 9, 6, rr(10, 22), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true });
       for (let k = 0; k < 8; k++) { const x = -30 + k * 8.4; if (Math.abs(x) < 6) continue; const z = rr(-6, 4); bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(2, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0x7dff6a][k % 4]), x, 2.8, z); }
-      for (let k = 0; k < 5; k++) bx(36, 0, -6 + k * 2, 12, .35 * (k + 1), 2, 0xbdb7aa); sign('민락수변공원', 36, 4, -2, .55);
+      stepsUp(36, -6, 12, 5, 1, 2, 0xbdb7aa); sign('민락수변공원', 36, 4, -2, .55);
       building(-36, 14, 12, 8, 5, 0x5d8fb4, { glass: 0x2a5070, sign: '🐟 회센터' }); for (let k = 0; k < 4; k++) mesh(BOX(2.4, 1.2, .1), std(0x7fc8ef, .1, 0, { transparent: true, opacity: .6 }), -40 + k * 2.6, 1, 18.1);
       bx(-18, 0, -14, 2, .3, 2, 0xffffff); for (const sx of [-.8, .8]) bx(-18 + sx, 0, -14, .2, 3, .2, 0xffffff, false); mesh(BOX(2.4, 1.4, 2.4), LMC(0xe74c3c), -18, 3.4, -14); sign('🛟 안전요원', -18, 5, -14, .4);
       for (let k = 0; k < 4; k++) { const m = mesh(BOX(.5, 2.4, .15), LMC([0xff7043, 0x4fc3f7, 0xffeb3b, 0x7dff6a][k]), 18 + k * .7, 1.2, 4); m.rotation.z = .2; } sign('🏄 서핑', 19, 3.4, 4, .4);
@@ -2819,13 +2833,13 @@ const LANDMARK_LIST = [
     items: [["fruitBox",3],["cooler",1],["backpack",2]], who: '고돌하르방 한라산국립공원 관리소장', short: '섬 가운데 한라산! 층층이 올라 백록담까지. 돌하르방, 돌담 감귤밭, 유채꽃, 오름, 조랑말, 해녀, 성산일출봉.',
     intro: '제주도 한라산이야! 섬 가운데 솟은 1,947m 화산 꼭대기엔 분화구 호수 백록담이 있어.\n산 아래엔 검은 돌담 감귤밭과 노란 유채꽃밭, 조랑말 목장이 있고, 바닷가엔 해녀 삼촌들, 멀리 성산일출봉도 보여!',
     build(L) {
-      for (let k = 0; k < 26; k++) { const r = 30 - k * 1.08; const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r + .6, .35, 24), LMC(k > 20 ? 0x8a7d6a : new THREE.Color(0x5f8a45).lerp(new THREE.Color(0x7a8a5a), k / 26).getHex())); m.position.set(0, .175 + k * .35, -6); m.receiveShadow = true; world.add(m); addCol(0, -6, r * 1.42, r * 1.42, null, { topY: .35 * (k + 1), keep: true }); }
+      { const cone = new THREE.Mesh(new THREE.CylinderGeometry(2.8, 30, 9.1, 40, 6), LMC(0x6a8f4a)); cone.position.set(0, 4.55, -6); cone.receiveShadow = true; world.add(cone); const top = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 6, 1.6, 24), LMC(0x8a7d6a)); top.position.set(0, 8.4, -6); world.add(top); slopes.push({ t: 'cone', x: 0, z: -6, r0: 30, r1: 2.8, h: 9.1 }); }
       const lake = new THREE.Mesh(new THREE.CircleGeometry(2.4, 18), std(0xffffff, .2, 0, { map: TEX.water(), color: 0x3fa0c8 })); lake.rotation.x = -Math.PI / 2; lake.position.set(0, 9.15, -6); world.add(lake); for (let k = 0; k < 16; k++) { const a = k / 16 * Math.PI * 2; mesh(BOX(1, 1, 1), LMC(0x6d6050), Math.cos(a) * 3.2, 9.4, -6 + Math.sin(a) * 3.2); } sign('백록담 白鹿潭 1,947m', 0, 12, -6, .7);
       for (let k = 0; k < 12; k++) { const a = k / 12 * Math.PI * 2; mesh(BOX(.5, .5, .5), LMC(0xffffff), Math.cos(a) * 20, 3.8, -6 + Math.sin(a) * 20).castShadow = false; } sign('🥾 성판악 탐방로', 18, 5, 6, .5);
       for (const [x, z] of [[-14, 34], [14, 34], [36, 14], [-36, 14]]) { bx(x, 0, z, 1.2, 2.6, 1, 0x5a5550); mesh(BOX(1.4, .6, 1.2), LMC(0x4a4540), x, 2.9, z); mesh(BOX(.3, .3, .1), LMC(0x3a3530), x - .25, 2.2, z + .52); mesh(BOX(.3, .3, .1), LMC(0x3a3530), x + .25, 2.2, z + .52); } sign('돌하르방', -14, 4, 35, .5);
       rockWall(-40, -6, -28, -6); rockWall(-40, 6, -28, 6); for (let k = 0; k < 6; k++) { const x = -38 + (k % 3) * 4.6, z = -3 + Math.floor(k / 3) * 6; tree(x, z, .6, 0x3f7f2f); mesh(BOX(.4, .4, .4), LMC(0xff9a1f), x + .6, 2.1, z + .6); } sign('🍊 돌담 감귤밭', -34, 4, 0, .5);
       flowers(30, -18, 14, 10, [0xffe23f, 0xfff06a, 0x9cc85a], 90); sign('🌼 유채꽃밭', 30, 3, -18, .5);
-      for (const [x, z, r] of [[-28, -28, 5], [34, 2, 4]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x7a9a4a)); m.scale.y = .6; m.position.set(x, 0, z); world.add(m); addCol(x, z, r * 1.4, r * 1.4, null, { topY: 99 }); } sign('오름', -28, 5, -24, .5);
+      for (const [x, z, r] of [[-28, -28, 5], [34, 2, 4]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x7a9a4a)); m.scale.y = .6; m.position.set(x, 0, z); world.add(m); slopes.push({ t: 'dome', x, z, r, h: r * .6 }); } sign('오름', -28, 5, -24, .5);
       for (const [x, z] of [[24, 20], [28, 24], [20, 26]]) horse(x, z, pick([0x8d5a3b, 0x5d4037, 0xd7ccc8])); sign('🐴 조랑말 목장', 24, 4, 22, .5);
       for (let r = 0; r < 4; r++) { const R = 18 - r * 2.2, h = 4 + r * 3; for (let k = 0; k < 28; k++) { const a = k / 28 * Math.PI * 2; const m = mesh(BOX(3.6, h, 3.6), LMC(r === 3 ? 0x6d6a4a : new THREE.Color(0x5f8a45).lerp(new THREE.Color(0x6d6a4a), r / 3).getHex()), 70 + Math.cos(a) * R, h / 2 - .6, -40 + Math.sin(a) * R); m.castShadow = false; } } const crater = new THREE.Mesh(new THREE.CircleGeometry(11, 24), LMC(0x7fa65a)); crater.rotation.x = -Math.PI / 2; crater.position.set(70, 4, -40); world.add(crater); sign('🌅 성산일출봉 (세계자연유산 · 분화구)', 70, 20, -40, 1);
     } },
@@ -2834,12 +2848,12 @@ const LANDMARK_LIST = [
     intro: '포항 환호공원의 스페이스워크야! 롤러코스터처럼 꼬인 길이 333m, 계단 717개짜리 철제 트랙을 걷는 작품이야.\n가운데 360도 고리는 지나갈 수 없게 만들어졌대. 영일만 바다 위 영일대 누각, 호미곶의 상생의 손, 바다 건너 제철소 불빛도 보여!',
     build(L) {
       seaNorth(-30, 0x3a86c0); floorPlane(120, 8, MAT.col(0xd9c79a, .9), 0, -27, .012);
-      for (let k = 0; k < 4; k++) { const m = new THREE.Mesh(new THREE.CylinderGeometry(24 - k * 5, 25 - k * 5, .35, 24), LMC(0x7aa85e)); m.position.set(4, .175 + k * .35, -12); world.add(m); addCol(4, -12, (24 - k * 5) * 1.4, (24 - k * 5) * 1.4, null, { topY: .35 * (k + 1) }); }
+      { const hill = new THREE.Mesh(new THREE.CylinderGeometry(8, 25, 1.4, 36, 3), LMC(0x7aa85e)); hill.position.set(4, .7, -12); hill.receiveShadow = true; world.add(hill); slopes.push({ t: 'cone', x: 4, z: -12, r0: 25, r1: 8, h: 1.4 }); }
       const steel = MAT.metal(0xdfe3e8, .25), rail = MAT.metal(0xc9ced4, .3);
       // ① 걸어 오르는 구간: 계단 한 칸 0.35m, 사람·탐지견·NPC 모두 올라갈 수 있다
       const N = 38, walk = [];
       for (let k = 0; k < N; k++) { const t = k / (N - 1), x = -32 + t * 30, z = 12 - t * 20 - Math.sin(t * Math.PI) * 6, h = .35 * (k + 1); walk.push([x, z, h]); }
-      walk.forEach(([x, z, h], k) => { const [nx, nz] = walk[Math.min(k + 1, N - 1)], [px, pz] = walk[Math.max(k - 1, 0)], a = Math.atan2(nx - px, nz - pz); const tread = mesh(BOX(1.8, .18, 1.05), steel, x, h - .09, z); tread.rotation.y = a; addCol(x, z, 1.5, 1.5, tread, { topY: h, keep: true }); for (const sd of [-1, 1]) { const ox = Math.cos(a) * .95 * sd, oz = -Math.sin(a) * .95 * sd; const p = mesh(BOX(.07, 1, .07), rail, x + ox, h + .5, z + oz); p.castShadow = false; const r = mesh(BOX(.06, .06, 1.1), rail, x + ox, h + 1, z + oz); r.rotation.y = a; r.castShadow = false; } if (k % 5 === 2) { const c = mesh(BOX(.35, h, .35), LMC(0xb8bec5), x, h / 2, z); c.rotation.z = (k % 2 ? .12 : -.12); c.castShadow = false; } if (k % 3 === 0) mesh(BOX(.2, .2, .2), glow(0xffe7a0, 1.3), x, h + .1, z).castShadow = false; });
+      walk.forEach(([x, z, h], k) => { const [nx, nz] = walk[Math.min(k + 1, N - 1)], [px, pz] = walk[Math.max(k - 1, 0)], a = Math.atan2(nx - px, nz - pz); const tread = mesh(BOX(1.8, .18, 1.05), steel, x, h - .09, z); tread.rotation.y = a; addCol(x, z, 1.2, 1.2, tread, { topY: h, keep: true }); for (const sd of [-1, 1]) { const ox = Math.cos(a) * .95 * sd, oz = -Math.sin(a) * .95 * sd; const p = mesh(BOX(.07, 1, .07), rail, x + ox, h + .5, z + oz); p.castShadow = false; const r = mesh(BOX(.06, .06, 1.1), rail, x + ox, h + 1, z + oz); r.rotation.y = a; r.castShadow = false; } if (k % 5 === 2) { const c = mesh(BOX(.35, h, .35), LMC(0xb8bec5), x, h / 2, z); c.rotation.z = (k % 2 ? .12 : -.12); c.castShadow = false; } if (k % 3 === 0) mesh(BOX(.2, .2, .2), glow(0xffe7a0, 1.3), x, h + .1, z).castShadow = false; });
       const [tx, tz, th] = walk[N - 1]; addCol(tx + 1.6, tz - 1.6, 4, 4, null, { topY: th, keep: true }); for (const [ox, oz] of [[-1.5, -1.5], [1.5, 1.5], [-1.5, 1.5], [1.5, -1.5]]) mesh(BOX(.3, th, .3), LMC(0xb8bec5), tx + 1.6 + ox, th / 2, tz - 1.6 + oz).castShadow = false; for (const sd of [-1, 1]) mesh(BOX(4.2, .06, .06), MAT.metal(0xc9ced4, .3), tx + 1.6, th + 1, tz - 1.6 + sd * 2.1); mesh(BOX(4.2, .2, 4.2), steel, tx + 1.6, th, tz - 1.6); sign('🔭 스페이스워크 전망 포인트 (13m)', tx + 1.6, th + 3, tz - 1.6, .55);
       // ② 위쪽 곡선 구간과 360도 고리 (실제처럼 고리는 지나갈 수 없다)
       const P = [[tx + 3, th + .4, tz - 4], [tx + 8, th + 4, tz - 10], [tx + 16, th + 9, tz - 12], [tx + 24, th + 12, tz - 6], [tx + 26, th + 8, tz + 4], [tx + 18, th + 5, tz + 8], [tx + 10, th + 7, tz + 4]].map(([x, y, z]) => new THREE.Vector3(x, y, z));
@@ -2853,6 +2867,7 @@ const LANDMARK_LIST = [
       const hand = new THREE.Group(); hand.position.set(52, -.3, -52); world.add(hand); const hm = LMC(0x8a7a64); mesh(BOX(3, 6, 1.4), hm, 0, 3, 0, hand); for (let k = 0; k < 4; k++) mesh(BOX(.65, 3.2 - Math.abs(k - 1.5) * .4, .7), hm, -1.1 + k * .74, 7.4, 0, hand); const thb = mesh(BOX(.7, 2.2, .7), hm, 1.9, 4.6, 0, hand); thb.rotation.z = -.6; sign('🖐 호미곶 상생의 손', 52, 12, -50, .7);
       for (let k = 0; k < 6; k++) chimney(-60 + k * 18, -120, rr(18, 30)); for (let k = 0; k < 10; k++) { const b = mesh(BOX(rr(10, 20), rr(6, 12), 10), LMC(0x6d7a86), -70 + k * 15, 4, -130); b.castShadow = false; mesh(BOX(1, 1, .2), glow(0xffa94d, 1.5), -70 + k * 15, 6, -124.8).castShadow = false; } sign('🏭 제철소 (영일만 건너편)', 0, 34, -118, 1.2);
       for (let k = 0; k < 10; k++) tree(k % 2 ? rr(-42, -36) : rr(26, 42), rr(14, 26), .8); building(-32, 24, 14, 6, 5, 0xe5e0d6, { sign: '포항시립미술관' });
+      L.stairPath = walk.map(([x, z, h]) => [x, z, h + .32]);
       L.swRoute = walk.filter((_, k) => k % 4 === 0 || k === N - 1).map(([x, z]) => [x, z]);
     } },
   { name: '전주 한옥마을', icon: '🏡', w: 92, d: 70, floor: 0xd9cfb8, obj: crate, sky: [0x6ab0ee, 0xf6ecd8], st: 3,
@@ -2915,7 +2930,7 @@ const LANDMARK_LIST = [
     intro: '부산 감천문화마을이야! 산비탈을 따라 파랑·분홍·노랑 집들이 계단처럼 층층이 쌓여 있어.\n좁은 골목과 계단을 오르내리며, 물고기 모양 길 안내판을 따라가 봐. 꼭대기 전망대에선 바다가 보여!',
     build(L) {
       seaNorth(-80, 0x3d8fc4); const cols = [0x4fc3f7, 0xf48fb1, 0xfff176, 0x81c784, 0xffb74d, 0xba68c8, 0x90caf9];
-      for (let r = 0; r < 4; r++) { const z = 10 - r * 11, h = 1.4 * (r + 1); bx(0, 0, z - 5, 84, h, 11, new THREE.Color(0xb8b0a2).multiplyScalar(1 - r * .05).getHex()); for (const sx of [-24, 6, 30]) for (let k = 0; k < 4; k++) bx(sx + (r % 2) * 6, 0, z + .9 - k * .55, 3, r * 1.4 + .35 * (k + 1), .55, 0xd9d2c4); for (let k = 0; k < 7; k++) { const x = -38 + k * 11.4 + (r % 2) * 4; if (Math.abs(x - (-24 + (r % 2) * 6)) < 3.5 || Math.abs(x - (6 + (r % 2) * 6)) < 3.5 || Math.abs(x - (30 + (r % 2) * 6)) < 3.5) continue; const w = rr(4, 6), hh = rr(2.4, 3.6); bx(x, h, z - 7, w, hh, 4, pick(cols), false); addCol(x, z - 7, w, 4, null, { topY: h + hh }); mesh(BOX(w + .4, .3, 4.4), LMC(pick([0xd84a3a, 0x2c6fb7, 0x27ae60, 0xf4f4f2])), x, h + hh + .15, z - 7); mesh(BOX(.8, 1, .05), LMC(0x2a3d52), x - 1, h + 1.4, z - 4.97); } }
+      for (let r = 0; r < 4; r++) { const z = 10 - r * 11, h = 1.4 * (r + 1); bx(0, 0, z - 5, 84, h, 11, new THREE.Color(0xb8b0a2).multiplyScalar(1 - r * .05).getHex()); for (const sx of [-24, 6, 30]) stepsUp(sx + (r % 2) * 6, z + .9, 3, 4, -1, .55, 0xd9d2c4, r * 1.4); for (let k = 0; k < 7; k++) { const x = -38 + k * 11.4 + (r % 2) * 4; if (Math.abs(x - (-24 + (r % 2) * 6)) < 3.5 || Math.abs(x - (6 + (r % 2) * 6)) < 3.5 || Math.abs(x - (30 + (r % 2) * 6)) < 3.5) continue; const w = rr(4, 6), hh = rr(2.4, 3.6); bx(x, h, z - 7, w, hh, 4, pick(cols), false); addCol(x, z - 7, w, 4, null, { topY: h + hh }); mesh(BOX(w + .4, .3, 4.4), LMC(pick([0xd84a3a, 0x2c6fb7, 0x27ae60, 0xf4f4f2])), x, h + hh + .15, z - 7); mesh(BOX(.8, 1, .05), LMC(0x2a3d52), x - 1, h + 1.4, z - 4.97); } }
       for (let k = 0; k < 8; k++) { const m = mesh(BOX(1.2, .5, .1), LMC(pick(cols)), -30 + k * 8, 1.6 + (k % 4) * 1.4, 4.8 - (k % 4) * 11); m.castShadow = false; } sign('🐟 물고기 길 안내판을 따라가요', 0, 3.2, 14, .5);
       bx(0, 5.6, -36, 10, .3, 4, 0x9a948a, false); for (let x = -5; x <= 5; x += .8) mesh(BOX(.08, 1, .08), MAT.metal(0x888888), x, 6.4, -34.1); statue(-2, -36.5, 0xe8d9b0, true, 1.4); sign('🔭 감천 전망대 (바다 조망)', 0, 9, -35, .55);
       for (let k = 0; k < 4; k++) stall(-30 + k * 18, 20, pick([0xd63a2a, 0x2c6fb7, 0x27ae60]), ['기념품', '어묵', '엽서', '공예'][k]); sign('🎨 감천문화마을 (부산의 마추픽추)', 0, 7, 18, 1);
@@ -3196,7 +3211,7 @@ function clearWorld() {
   world.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map?.dispose(); o.material.dispose(); } });
   scene.remove(world); world = new THREE.Group(); scene.add(world);
   intro = null; vanAway = null; dogM.g.visible = true; handlerM.g.visible = true; leash.visible = true;
-  colliders = []; people.length = 0; vehicles.length = 0; agents.length = 0; pals = []; flyer = null; helis = []; pgAnim = []; envAnim = []; pgSpots = []; dog.pgAct = null; if (mp) mp.others.clear(); towerCtl = []; bombs = []; bombT = 4; bossT = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
+  colliders = []; slopes = []; people.length = 0; vehicles.length = 0; agents.length = 0; pals = []; flyer = null; helis = []; pgAnim = []; envAnim = []; pgSpots = []; dog.pgAct = null; if (mp) mp.others.clear(); towerCtl = []; bombs = []; bombT = 4; bossT = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
   clearEffects(); clearParticles(); shots = []; leakT = 0;
 }
 const LANG_TZ = { ko: ['Asia/Seoul', '서울'], en: ['America/New_York', 'New York'], zh: ['Asia/Shanghai', '北京'], hi: ['Asia/Kolkata', 'दिल्ली'], ar: ['Asia/Riyadh', 'الرياض'], vi: ['Asia/Ho_Chi_Minh', 'Hà Nội'], ja: ['Asia/Tokyo', '東京'], ru: ['Europe/Moscow', 'Москва'] };
@@ -3320,6 +3335,19 @@ function edgeWall(L, h, col, thick = .35, cren = false) {
 }
 // 맵 경계선: 바닥에 노랑·검정 안전띠
 let edgeTex = null;
+function stairHold(e, r = .75) {
+  if (!level || !level.stairPath || e.vy > .5) return false;
+  const sp = stairSnap(level.stairPath, e.x, e.z);
+  if (!sp || sp.end || sp.d > 2.4 || e.y < sp.h - 1.3) return false;
+  if (sp.d > r) { e.x = sp.px + (e.x - sp.px) * r / sp.d; e.z = sp.pz + (e.z - sp.pz) * r / sp.d; }
+  if (e.y <= sp.h + .45) { e.y = sp.h; e.vy = 0; return true; }
+  return false;
+}
+function stairSnap(P, x, z) {
+  let best = null;
+  for (let i = 0; i < P.length - 1; i++) { const [ax, az, ah] = P[i], [bx2, bz, bh] = P[i + 1], vx = bx2 - ax, vz = bz - az, L2 = vx * vx + vz * vz || 1; let u = ((x - ax) * vx + (z - az) * vz) / L2; const raw = u; u = clamp(u, 0, 1); const px = ax + vx * u, pz = az + vz * u, d = Math.hypot(x - px, z - pz); if (!best || d < best.d) best = { d, px, pz, h: ah + (bh - ah) * u, end: (i === 0 && raw < -.2) || (i === P.length - 2 && raw > 1.2) }; }
+  return best;
+}
 function boundaryLine(L) {
   if (!edgeTex) { const c = document.createElement('canvas'); c.width = 64; c.height = 16; const g = c.getContext('2d'); g.fillStyle = '#ffcc00'; g.fillRect(0, 0, 64, 16); g.fillStyle = '#1a1a1a'; for (let x = -16; x < 64; x += 16) { g.beginPath(); g.moveTo(x, 16); g.lineTo(x + 8, 16); g.lineTo(x + 16, 0); g.lineTo(x + 8, 0); g.fill(); } edgeTex = new THREE.CanvasTexture(c); edgeTex.wrapS = THREE.RepeatWrapping; edgeTex.colorSpace = THREE.SRGBColorSpace; }
   const b = L.bounds, P = L.poly || [[b.minX, b.minZ], [b.maxX, b.minZ], [b.maxX, b.maxZ], [b.minX, b.maxZ]];
@@ -3853,6 +3881,8 @@ function updateDog(dt) {
     if (gnd.on && gnd.on.belt) moveCircle(dog, gnd.on.belt * dt, 0, .5, false, dog.y);
   } else if (dog.grounded && dog.vy <= 0 && dog.y - gnd.h < .45) { dog.y = gnd.h; dog.vy = 0; }
   else dog.grounded = false;
+  // 계단 산책로: 부드러운 경사로처럼 오르고, 옆으로 떨어지지 않게 길 안쪽으로 붙잡는다
+  if (stairHold(dog, .7)) { dog.grounded = true; dog.jumps = 0; }
 
   // 사람과 겹치지 않기
   dog.tackleCd -= dt;
@@ -4173,7 +4203,7 @@ window.__cover = () => {
   document.body.appendChild(d);
 };
 if (location.hash === '#cover') setTimeout(() => window.__cover(), 300);
-window.__game = { tick(n, dt = 1 / 30) { for (let k = 0; k < n; k++) { time += dt; levelTime += dt; updateDog(dt); updateHandler(dt); updateFun(dt); } }, get pgSpots() { return pgSpots; }, get shots() { return shots; }, setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
+window.__game = { get yaw() { return yaw; }, set yaw(v) { yaw = v; }, tick(n, dt = 1 / 30) { for (let k = 0; k < n; k++) { time += dt; levelTime += dt; updateDog(dt); updateHandler(dt); updateFun(dt); } }, get pgSpots() { return pgSpots; }, get shots() { return shots; }, setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
 </script>
 </body>
 </html>
