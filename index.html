@@ -85,6 +85,10 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 #jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
 #skins{display:flex;gap:8px;margin-top:8px;align-items:center}
 .skin{width:34px;height:34px;border-radius:50%;border:3px solid #d6cdb8;cursor:pointer}.skin.on{border-color:var(--navy);transform:scale(1.12)}
+.langs{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:10px}
+.langbtn{border:2px solid #d6cdb8;border-radius:8px;background:#fff;padding:3px 7px;display:flex;gap:5px;align-items:center;font-size:12px;cursor:pointer;color:var(--ink);font-family:inherit}
+.langbtn.on{border-color:var(--navy);background:#eaf2fb;font-weight:700}.langbtn svg{width:22px;height:15px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.agreebox{margin-top:12px;background:#eef6ea;border-radius:10px;padding:10px;font-size:13.5px;line-height:1.5}.agreebox input{width:20px;height:20px;vertical-align:middle}#ageTxt{margin-top:6px;font-weight:700;color:#2e7d32}
 #pid,#ppw,#dname{font-size:20px;padding:10px 14px;border-radius:12px;border:2px solid #c9bfa8;width:100%;box-sizing:border-box;font-family:inherit;background:#fff;color:var(--ink)}
 #pidErr{color:#c0392b;font-size:13px;min-height:18px;margin-top:4px}
 .rank{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
@@ -131,7 +135,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
 
 <div id="quest" class="hud"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><p id="qdesc"></p><div id="qgoals"></div></div>
 <div id="mmwrap" class="hud"><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span></div></div>
-<div id="topbar" class="hidden"><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
+<div id="topbar" class="hidden"><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div>
 <div id="mission" class="hud hidden"></div>
@@ -151,6 +155,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
 
 <!-- 접속 (아이디 입력) -->
 <div id="login" class="overlay"><div class="card">
+ <div class="langs"></div>
  <img id="logo" src="logo.png" alt="관세청" style="display:block;max-height:56px;max-width:60%;margin:0 auto 10px" onerror="this.remove()">
  <div class="sub">관세청 일일 특강 교육 게임</div>
  <h1>🐕 탐지견 킁킁 게임</h1>
@@ -169,6 +174,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div id="skins" role="radiogroup" aria-label="피부색"></div>
  <div id="jobInfo" class="notice" style="margin-top:6px;font-size:13px"></div>
  <div id="pidErr"></div>
+ <div class="agreebox"><label><input type="checkbox" id="agree"> <span id="agreeTxt">✅ 게임 이용 안내에 동의해요 · 친구에게 친절하게, 비밀번호는 비밀! (이 게임은 개인정보를 수집하지 않아요)</span></label><div id="ageTxt">🎮 이용 등급: 전체 이용가 (권장 만 7세 이상 · 자체 기준)</div></div>
  <div class="row"><button class="big" id="btnLogin">접속하기</button></div>
  <h2 style="margin-top:16px">🏆 TOP 랭킹</h2>
  <div class="rankwrap" id="rankMini"></div>
@@ -178,6 +184,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
 
 <!-- 맵 선택 -->
 <div id="maps" class="overlay hidden"><div class="card">
+ <div class="langs"></div>
  <div class="sub" id="mapsWho">플레이어</div>
  <h1>순찰할 관문을 고르세요</h1>
  <p style="margin:4px 0 0;font-size:14px">맵 1부터 순서대로 클리어하면 점수가 누적되어 랭킹에 올라갑니다. 클리어한 맵 다음 맵이 열려요.</p>
@@ -281,6 +288,271 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { } },
 };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// ================= 다국어 (8개 언어) =================
+const LANGS = [
+  ['ko', '한국어', '<rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="5" fill="#c60c30"/><path d="M10 10a5 5 0 0 0 10 0a2.5 2.5 0 0 0-5 0a2.5 2.5 0 0 1-5 0" fill="#003478"/><g fill="#000"><rect x="3" y="3" width="5" height="1.2"/><rect x="22" y="3" width="5" height="1.2"/><rect x="3" y="15.8" width="5" height="1.2"/><rect x="22" y="15.8" width="5" height="1.2"/></g>'],
+  ['en', 'English', '<rect width="30" height="20" fill="#b22234"/><path d="M0 2.3h30M0 5.4h30M0 8.5h30M0 11.6h30M0 14.7h30M0 17.8h30" stroke="#fff" stroke-width="1.5"/><rect width="13" height="10.8" fill="#3c3b6e"/>'],
+  ['zh', '中文', '<rect width="30" height="20" fill="#de2910"/><polygon points="6,2 7.2,5.6 11,5.6 7.9,7.8 9.1,11.4 6,9.2 2.9,11.4 4.1,7.8 1,5.6 4.8,5.6" fill="#ffde00"/>'],
+  ['hi', 'हिन्दी', '<rect width="30" height="6.7" fill="#ff9933"/><rect y="6.7" width="30" height="6.6" fill="#fff"/><rect y="13.3" width="30" height="6.7" fill="#138808"/><circle cx="15" cy="10" r="2.4" fill="none" stroke="#000080" stroke-width=".8"/>'],
+  ['ar', 'العربية', '<rect width="30" height="20" fill="#006c35"/><rect x="8" y="6" width="14" height="3" fill="#fff" opacity=".85"/><rect x="7" y="12" width="16" height="1.2" fill="#fff"/>'],
+  ['vi', 'Tiếng Việt', '<rect width="30" height="20" fill="#da251d"/><polygon points="15,4 16.4,8.2 20.8,8.2 17.2,10.8 18.6,15 15,12.4 11.4,15 12.8,10.8 9.2,8.2 13.6,8.2" fill="#ffff00"/>'],
+  ['ja', '日本語', '<rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="5.5" fill="#bc002d"/>'],
+  ['ru', 'Русский', '<rect width="30" height="6.7" fill="#fff"/><rect y="6.7" width="30" height="6.6" fill="#0039a6"/><rect y="13.3" width="30" height="6.7" fill="#d52b1e"/>'],
+];
+const DICT = {
+  en: {
+    ls_sub: 'Korea Customs one-day lecture · educational game', ls_h1: '🐕 K9 Sniff Game',
+    ls_p: 'Create your own detector dog and patrol from the airport to the bonded warehouse. Find hidden <b>drugs</b> and <b>illegal guns</b>, catch <b>smugglers</b> and the <b>boss</b>, and climb the ranking!',
+    ls_id: 'Player ID', ls_pw: 'Password', ls_dog: '🐕 Your detector dog\'s name', ls_breed: 'Choose a breed', ls_hand: '🧑‍✈️ Choose your handler', ls_login: 'Log in', ls_top: '🏆 TOP ranking',
+    ls_ad: '📢 <b style="color:#f4c542">Public notice</b> · Report drug or gun smuggling: <b style="color:#f4c542">☎ 125</b> · Declare your travel goods',
+    ls_note: '※ An educational game for the Korea Customs one-day lecture. All characters and events are fictional.',
+    ph_id: '2–12 letters/numbers', ph_pw: '4+ characters · first login creates your account', ph_dog: 'e.g. Bori, Leo (1–8 chars)',
+    mp_h1: 'Choose your patrol area', mp_p: 'Clear the maps in order to add up your score for the ranking. Clearing a map unlocks the next one.',
+    b_rank: '🏆 Ranking', b_logout: 'Change ID', b_resume: '▶ Back to game', b_restart: '🔄 Restart this map',
+    ht_sub: 'Pre-mission briefing', ht_h1: '🐕‍🦺 How to play', ht_p: 'You control the <b>detector dog</b>. Your <b>handler</b> holds the leash and stays with you. The dog sniffs, and the team catches smugglers together.',
+    ht_ctl: '<kbd>W A S D</kbd><span>Move (push bags and boxes)</span><kbd>Shift</kbd><span>Run</span><kbd>Space</kbd><span>Jump · press again in the air for a double jump</span><kbd>E (hold)</kbd><span>Sniff — scent particles lead to hidden items; smugglers get a red mark</span><kbd>F</kbd><span>🐕 Bark — find items next to you, stun and hit smugglers</span><kbd>Q</kbd><span>🦴 Handler throws a bone forward</span><kbd>Mouse drag</kbd><span>Rotate camera (wheel: zoom) · 🗺 pause · 🔄 restart · 📸 photo</span>',
+    ht_touch: '<kbd>Joystick</kbd><span>Move</span><kbd>Run</kbd><span>Hold and move</span><kbd>Jump</kbd><span>Jump on boxes</span><kbd>Sniff</kbd><span>Hold to sniff</span><kbd>Bark</kbd><span>Find items / hit smugglers</span><kbd>🦴</kbd><span>Throw a bone</span><kbd>Drag / pinch</kbd><span>Rotate / zoom camera</span>',
+    ht_rules: '❤️ Start with 3 hearts (up to 7). Wrong alerts, hitting people, vehicles and bombs cost hearts. 🎾 Balls heal you!',
+    ht_ok: 'Got it! Let\'s go!', dk_ok: 'Got it! Woof!', cl_next: 'Next map ▶', cl_maps: 'Map select', rk_sub: 'Player ranking', rk_h1: '🏆 Hall of Fame', rk_close: 'Close',
+    wn_sub: 'All missions complete', wn_h1: '🏅 Mission success!', wn_hidden: '🌅 Play in the hidden map', wn_maps: 'Back to maps',
+    hud_keys: '<b>WASD</b> Move · <b>Shift</b> Run · <b>Space</b> Jump · <b>E</b> Sniff · <b>F</b> Bark · <b>Q</b> Bone<br>Mouse drag / <b>←→</b> rotate · Wheel zoom', hud_stam: 'Energy', hud_scent: 'Scent',
+    m: ['Airport Arrivals', 'Air Cargo Terminal', 'International Mail Center', 'International Ferry', 'Container Yard', 'Bonded Warehouse (Boss)', 'Sunset Runway'],
+    s: ['Sniff luggage to find drugs and catch a smuggler.', 'Search pallets and air containers for drugs and guns. Watch the forklifts!', 'Search parcels and mail sacks and catch smugglers. Jump onto the conveyors!', 'Find drugs and guns on the rocking deck and catch smugglers.', 'Search containers and crates and catch a smuggler. Trucks are fast!', 'Catch the gang and the boss in the dark warehouse. Dodge the 💣 bombs!', 'Walk with friends at sunset and play in the dog park. Wait 1.5s at a ride to play!'],
+    g: ['💊 Drugs found', '🔫 Guns found', '🕶 Smugglers caught', '👑 Boss caught'],
+    st_open: 'Ready', st_lock: '🔒 Clear the previous map', st_lockH: '🔒 Clear all 6 maps', st_best: '✅ Best', st_cur: '▶ In progress · tap to return', st_diff: 'Difficulty', st_relax: '🌅 Relax map', st_hidden: '??? Hidden map',
+    intro: '{map}\n\nWelcome, {dog}! Smugglers are hiding contraband here.\nHold [E] to sniff, bark [F] next to suspicious items,\nand stop smugglers with barks and bones.\nGood luck, team!',
+    rk_cols: 'Rank|ID|Reached|Time|Score', clr_title: 'cleared!', clr_time: 'Clear time', clr_bonus: 'Mission +300 · Time bonus', clr_score: 'This map / Total', clr_snack: 'Snacks',
+    ts_found: 'found! Customs team on the way…', i_drug: 'Drugs', i_gun: 'Illegal gun', ts_arrest: '🚔 Smuggler arrested!', ts_boss: '👑 Boss arrested!!', ts_false: '🤔 Clean item! False alert (-10)', ts_ball: '🎾 Ball! +1 heart · speed up', ts_ms_ok: '✅ Mission success! +200 ❤️+1', ts_ms_fail: '⌛ Mission failed… next time!', ts_track: '🚨 Tracking the suspect!!',
+    ms: ['🚨 Find 1 item in 30s!', '🚨 Arrest 1 smuggler in 40s!', '🎾 Grab 1 ball in 20s!', '🛡 No damage for 30s!', '⚡ 3 double jumps in 15s!'],
+    b: ['Malinois', 'German Shepherd', 'Labrador Retriever', 'Beagle', 'Pointer', 'Springer Spaniel'],
+    bd: ['Fastest and most agile. Best jumper!', 'Most intimidating bark. Wide bark range.', 'Customs\' signature dog! Great nose and stamina.', 'Airport baggage expert. Small but best nose.', 'Fast search in wide areas.', 'Tireless! Runs long and climbs well.'],
+    j: ['Customs officer', 'Police', 'Soldier'], jd: ['Scent range +15% · X-ray +3s · 50% no injury on false alerts', 'Bone cooldown -30% · bone range +2m', 'Start with 4 hearts · 20% block · -20% energy use'],
+    sn: ['🏃 Speed', '👃 Nose', '💪 Stamina', '📢 Bark', '🦘 Jump'], skin: 'Skin tone', skin_note: 'Skin tone is cosmetic only and doesn\'t change abilities.',
+    mode1: '👤 1 player (tap for 2-player co-op)', mode2: '👥 2-player co-op (P1 dog · P2 handler)',
+    err_id: 'ID must be 2–12 letters, numbers or _.', err_pw: 'Password must be 4+ characters.', err_dog: 'Dog name must be 1–8 letters or numbers.', err_bad: 'Wrong password. 5 wrong tries lock it for 5 minutes.',
+  },
+  zh: {
+    ls_sub: '韩国关税厅一日讲座 · 教育游戏', ls_h1: '🐕 缉毒犬嗅嗅游戏',
+    ls_p: '创建你自己的缉毒犬，从机场巡逻到保税仓库。找出隐藏的<b>毒品</b>和<b>非法枪支</b>，抓住<b>走私犯</b>和<b>头目</b>，登上排行榜！',
+    ls_id: '玩家ID', ls_pw: '密码', ls_dog: '🐕 你的缉毒犬名字', ls_breed: '选择犬种', ls_hand: '🧑‍✈️ 选择训导员', ls_login: '登录', ls_top: '🏆 排行榜 TOP',
+    ls_ad: '📢 <b style="color:#f4c542">公益广告</b> · 举报毒品、枪支走私：<b style="color:#f4c542">☎ 125</b> · 请主动申报旅行物品',
+    ls_note: '※ 本游戏为韩国关税厅一日讲座教育游戏，所有人物和事件均为虚构。',
+    ph_id: '2–12位字母/数字', ph_pw: '4位以上 · 首次登录即注册', ph_dog: '例：小宝、Leo（1–8字）',
+    mp_h1: '选择巡逻区域', mp_p: '按顺序通关，分数会累积进入排行榜。通关后解锁下一张地图。',
+    b_rank: '🏆 排行榜', b_logout: '更换ID', b_resume: '▶ 返回游戏', b_restart: '🔄 重新开始本地图',
+    ht_sub: '出动前简报', ht_h1: '🐕‍🦺 操作说明', ht_p: '你操控<b>缉毒犬</b>。<b>训导员</b>牵着牵引绳一直陪着你。缉毒犬负责嗅探，团队一起抓捕走私犯。',
+    ht_ctl: '<kbd>W A S D</kbd><span>移动（可推动行李和箱子）</span><kbd>Shift</kbd><span>奔跑</span><kbd>Space</kbd><span>跳跃 · 空中再按一次二段跳</span><kbd>E（按住）</kbd><span>嗅探 — 气味粒子指向隐藏物品，走私犯脚下出现红圈</span><kbd>F</kbd><span>🐕 吠叫 — 发现身边的物品，震慑并攻击走私犯</span><kbd>Q</kbd><span>🦴 训导员向前扔骨头</span><kbd>鼠标拖动</kbd><span>旋转镜头（滚轮缩放）· 🗺 暂停 · 🔄 重来 · 📸 拍照</span>',
+    ht_touch: '<kbd>摇杆</kbd><span>移动</span><kbd>奔跑</kbd><span>按住移动</span><kbd>跳跃</kbd><span>跳上箱子</span><kbd>嗅探</kbd><span>按住嗅探</span><kbd>吠叫</kbd><span>发现物品 / 攻击走私犯</span><kbd>🦴</kbd><span>扔骨头</span><kbd>拖动 / 双指</kbd><span>旋转 / 缩放镜头</span>',
+    ht_rules: '❤️ 初始3颗心（最多7颗）。误报、撞到人、车辆和炸弹会扣心。🎾 捡球可以回复！',
+    ht_ok: '明白！出发！', dk_ok: '明白！汪！', cl_next: '下一张地图 ▶', cl_maps: '选择地图', rk_sub: '玩家排行', rk_h1: '🏆 名人堂', rk_close: '关闭',
+    wn_sub: '全部任务完成', wn_h1: '🏅 任务成功！', wn_hidden: '🌅 去隐藏地图玩', wn_maps: '返回地图',
+    hud_keys: '<b>WASD</b> 移动 · <b>Shift</b> 奔跑 · <b>Space</b> 跳跃 · <b>E</b> 嗅探 · <b>F</b> 吠叫 · <b>Q</b> 骨头<br>鼠标拖动 / <b>←→</b> 旋转 · 滚轮缩放', hud_stam: '体力', hud_scent: '气味',
+    m: ['机场入境大厅', '航空货运站', '国际邮件中心', '国际渡轮', '集装箱堆场', '保税仓库（头目战）', '夕阳跑道'],
+    s: ['嗅探行李找出毒品，抓住走私犯。', '搜查托盘和航空集装箱中的毒品和枪支。小心叉车！', '搜查包裹和邮袋，抓住走私犯。跳上传送带！', '在摇晃的甲板上找出毒品和枪支，抓住走私犯。', '搜查集装箱和木箱，抓住走私犯。卡车很快！', '在昏暗的仓库里抓住团伙和头目。躲开💣炸弹！', '夕阳下和朋友散步，在狗狗乐园玩耍。在设施前等1.5秒开始游戏！'],
+    g: ['💊 毒品查获', '🔫 枪支查获', '🕶 抓获走私犯', '👑 抓获头目'],
+    st_open: '可挑战', st_lock: '🔒 请先通关上一张地图', st_lockH: '🔒 通关全部6张地图后开放', st_best: '✅ 最佳', st_cur: '▶ 进行中 · 点击返回', st_diff: '难度', st_relax: '🌅 休闲地图', st_hidden: '??? 隐藏地图',
+    intro: '{map}\n\n欢迎你，{dog}！走私犯把违禁品藏在了这里。\n按住[E]嗅探，在可疑物品旁按[F]吠叫，\n用吠叫和骨头阻止走私犯。\n加油，团队！',
+    rk_cols: '排名|ID|到达|时间|分数', clr_title: '通关！', clr_time: '通关时间', clr_bonus: '任务 +300 · 时间奖励', clr_score: '本图 / 累计', clr_snack: '零食',
+    ts_found: '已查获！海关队伍出动…', i_drug: '毒品', i_gun: '非法枪支', ts_arrest: '🚔 抓获走私犯！', ts_boss: '👑 抓获头目！！', ts_false: '🤔 干净物品！误报 (-10)', ts_ball: '🎾 捡到球！+1心 · 加速', ts_ms_ok: '✅ 任务成功！+200 ❤️+1', ts_ms_fail: '⌛ 任务失败…下次加油！', ts_track: '🚨 开始追踪嫌犯!!',
+    ms: ['🚨 30秒内查获1件物品！', '🚨 40秒内抓获1名走私犯！', '🎾 20秒内捡到1个球！', '🛡 30秒内不受伤！', '⚡ 15秒内二段跳3次！'],
+    b: ['马里努阿犬', '德国牧羊犬', '拉布拉多寻回犬', '比格犬', '指示犬', '史宾格犬'],
+    bd: ['最快最灵活，跳跃第一！', '吠叫最有威慑力，吠叫范围大。', '海关代表犬！嗅觉和耐力出众。', '机场行李专家，个子小嗅觉最好。', '大范围快速搜索。', '不知疲倦！跑得久，爬得好。'],
+    j: ['海关人员', '警察', '军人'], jd: ['嗅探距离+15% · X光+3秒 · 误报50%不受伤', '骨头冷却-30% · 骨头射程+2米', '初始4颗心 · 20%概率格挡伤害 · 体力消耗-20%'],
+    sn: ['🏃 速度', '👃 嗅觉', '💪 耐力', '📢 吠叫', '🦘 跳跃'], skin: '肤色', skin_note: '肤色只改变外观，不影响能力。',
+    mode1: '👤 单人模式（点击切换双人合作）', mode2: '👥 双人合作（P1 犬 · P2 训导员）',
+    err_id: 'ID须为2–12位字母、数字或_。', err_pw: '密码至少4位。', err_dog: '犬名须为1–8位字母或数字。', err_bad: '密码错误。错误5次将锁定5分钟。',
+  },
+  hi: {
+    ls_sub: 'कोरिया सीमा शुल्क एक-दिवसीय व्याख्यान · शैक्षिक खेल', ls_h1: '🐕 सूँघो-सूँघो डॉग गेम',
+    ls_p: 'अपना खुद का खोजी कुत्ता बनाइए और हवाई अड्डे से बॉन्डेड गोदाम तक गश्त कीजिए। छिपे हुए <b>नशीले पदार्थ</b> और <b>अवैध हथियार</b> खोजिए, <b>तस्करों</b> और <b>बॉस</b> को पकड़िए और रैंकिंग में ऊपर जाइए!',
+    ls_id: 'खिलाड़ी ID', ls_pw: 'पासवर्ड', ls_dog: '🐕 आपके खोजी कुत्ते का नाम', ls_breed: 'नस्ल चुनें', ls_hand: '🧑‍✈️ हैंडलर चुनें', ls_login: 'लॉग इन', ls_top: '🏆 टॉप रैंकिंग',
+    ls_ad: '📢 <b style="color:#f4c542">जनहित सूचना</b> · नशीले पदार्थ/हथियार तस्करी की सूचना: <b style="color:#f4c542">☎ 125</b> · यात्रा सामान घोषित करें',
+    ls_note: '※ यह कोरिया सीमा शुल्क एक-दिवसीय व्याख्यान के लिए शैक्षिक खेल है। सभी पात्र और घटनाएँ काल्पनिक हैं।',
+    ph_id: '2–12 अक्षर/अंक', ph_pw: '4+ अक्षर · पहली बार में खाता बनेगा', ph_dog: 'जैसे: बोरी, लियो (1–8 अक्षर)',
+    mp_h1: 'गश्त का क्षेत्र चुनें', mp_p: 'नक्शे क्रम से पूरे करें, अंक जुड़कर रैंकिंग में आएँगे। नक्शा पूरा करने पर अगला खुलेगा।',
+    b_rank: '🏆 रैंकिंग', b_logout: 'ID बदलें', b_resume: '▶ खेल पर लौटें', b_restart: '🔄 यह नक्शा फिर से',
+    ht_sub: 'मिशन से पहले ब्रीफिंग', ht_h1: '🐕‍🦺 कैसे खेलें', ht_p: 'आप <b>खोजी कुत्ते</b> को चलाते हैं। <b>हैंडलर</b> पट्टा पकड़कर हमेशा साथ रहता है। कुत्ता सूँघकर खोजता है और टीम मिलकर तस्करों को पकड़ती है।',
+    ht_ctl: '<kbd>W A S D</kbd><span>चलना (बैग और बक्से धकेल सकते हैं)</span><kbd>Shift</kbd><span>दौड़ना</span><kbd>Space</kbd><span>कूदना · हवा में फिर दबाएँ तो डबल जंप</span><kbd>E (दबाए रखें)</kbd><span>सूँघना — गंध के कण छिपी चीज़ तक ले जाते हैं, तस्कर के नीचे लाल घेरा</span><kbd>F</kbd><span>🐕 भौंकना — पास की चीज़ पकड़ें, तस्कर को रोकें और मारें</span><kbd>Q</kbd><span>🦴 हैंडलर आगे हड्डी फेंकता है</span><kbd>माउस खींचें</kbd><span>कैमरा घुमाएँ (व्हील: ज़ूम) · 🗺 रोकें · 🔄 फिर से · 📸 फोटो</span>',
+    ht_touch: '<kbd>जॉयस्टिक</kbd><span>चलना</span><kbd>दौड़</kbd><span>दबाकर चलें</span><kbd>कूद</kbd><span>बक्सों पर कूदें</span><kbd>सूँघो</kbd><span>दबाकर सूँघें</span><kbd>भौं</kbd><span>खोजें / तस्कर को मारें</span><kbd>🦴</kbd><span>हड्डी फेंकें</span><kbd>खींचें / पिंच</kbd><span>कैमरा घुमाएँ / ज़ूम</span>',
+    ht_rules: '❤️ 3 दिलों से शुरुआत (अधिकतम 7)। गलत अलर्ट, लोगों से टकराना, वाहन और बम से दिल घटते हैं। 🎾 गेंद से ठीक हों!',
+    ht_ok: 'समझ गया! चलो!', dk_ok: 'समझ गया! भौं!', cl_next: 'अगला नक्शा ▶', cl_maps: 'नक्शा चुनें', rk_sub: 'खिलाड़ी रैंकिंग', rk_h1: '🏆 हॉल ऑफ़ फ़ेम', rk_close: 'बंद करें',
+    wn_sub: 'सभी मिशन पूरे', wn_h1: '🏅 मिशन सफल!', wn_hidden: '🌅 छिपे नक्शे में खेलें', wn_maps: 'नक्शों पर लौटें',
+    hud_keys: '<b>WASD</b> चलना · <b>Shift</b> दौड़ · <b>Space</b> कूद · <b>E</b> सूँघना · <b>F</b> भौंकना · <b>Q</b> हड्डी<br>माउस / <b>←→</b> घुमाएँ · व्हील ज़ूम', hud_stam: 'ऊर्जा', hud_scent: 'गंध',
+    m: ['हवाई अड्डा आगमन', 'हवाई कार्गो टर्मिनल', 'अंतरराष्ट्रीय डाक केंद्र', 'अंतरराष्ट्रीय फ़ेरी', 'कंटेनर यार्ड', 'बॉन्डेड गोदाम (बॉस)', 'सूर्यास्त रनवे'],
+    s: ['सामान सूँघकर नशीले पदार्थ खोजें और तस्कर पकड़ें।', 'पैलेट और हवाई कंटेनरों में नशीले पदार्थ व हथियार खोजें। फ़ोर्कलिफ़्ट से सावधान!', 'पार्सल और डाक थैले जाँचें, तस्कर पकड़ें। कन्वेयर पर कूदें!', 'हिलते डेक पर नशीले पदार्थ व हथियार खोजें और तस्कर पकड़ें।', 'कंटेनर और बक्से खोजें, तस्कर पकड़ें। ट्रक तेज़ हैं!', 'अँधेरे गोदाम में गिरोह और बॉस को पकड़ें। 💣 बमों से बचें!', 'सूर्यास्त में दोस्तों के साथ टहलें और डॉग पार्क में खेलें। झूले के पास 1.5 सेकंड रुकें!'],
+    g: ['💊 नशीले पदार्थ पकड़े', '🔫 हथियार पकड़े', '🕶 तस्कर पकड़े', '👑 बॉस पकड़ा'],
+    st_open: 'खेलें', st_lock: '🔒 पिछला नक्शा पूरा करें', st_lockH: '🔒 सभी 6 नक्शे पूरे करें', st_best: '✅ सर्वश्रेष्ठ', st_cur: '▶ चल रहा है · लौटने के लिए छुएँ', st_diff: 'कठिनाई', st_relax: '🌅 आराम नक्शा', st_hidden: '??? छिपा नक्शा',
+    intro: '{map}\n\nस्वागत है, {dog}! तस्करों ने यहाँ प्रतिबंधित सामान छिपाया है।\n[E] दबाकर सूँघें, संदिग्ध चीज़ के पास [F] से भौंकें,\nऔर भौंककर व हड्डी फेंककर तस्करों को रोकें।\nशुभकामनाएँ, टीम!',
+    rk_cols: 'रैंक|ID|नक्शा|समय|अंक', clr_title: 'पूरा!', clr_time: 'समय', clr_bonus: 'मिशन +300 · समय बोनस', clr_score: 'यह नक्शा / कुल', clr_snack: 'स्नैक',
+    ts_found: 'मिला! सीमा शुल्क टीम आ रही है…', i_drug: 'नशीले पदार्थ', i_gun: 'अवैध हथियार', ts_arrest: '🚔 तस्कर गिरफ़्तार!', ts_boss: '👑 बॉस गिरफ़्तार!!', ts_false: '🤔 साफ़ सामान! गलत अलर्ट (-10)', ts_ball: '🎾 गेंद! +1 दिल · तेज़ी', ts_ms_ok: '✅ मिशन सफल! +200 ❤️+1', ts_ms_fail: '⌛ मिशन विफल… अगली बार!', ts_track: '🚨 संदिग्ध का पीछा शुरू!!',
+    ms: ['🚨 30 सेकंड में 1 चीज़ खोजें!', '🚨 40 सेकंड में 1 तस्कर पकड़ें!', '🎾 20 सेकंड में 1 गेंद उठाएँ!', '🛡 30 सेकंड बिना चोट!', '⚡ 15 सेकंड में 3 डबल जंप!'],
+    b: ['मालिनोइस', 'जर्मन शेफर्ड', 'लैब्राडोर रिट्रीवर', 'बीगल', 'पॉइंटर', 'स्प्रिंगर स्पैनियल'],
+    bd: ['सबसे तेज़ और फुर्तीला। सबसे अच्छी छलांग!', 'सबसे डरावनी भौंक। भौंक की दूरी ज़्यादा।', 'सीमा शुल्क का प्रतीक! बढ़िया नाक और ताकत।', 'हवाई अड्डे के सामान का विशेषज्ञ। छोटा पर सबसे तेज़ नाक।', 'बड़े इलाके में तेज़ खोज।', 'कभी नहीं थकता! देर तक दौड़ता, अच्छा चढ़ता है।'],
+    j: ['सीमा शुल्क अधिकारी', 'पुलिस', 'सैनिक'], jd: ['गंध दूरी +15% · एक्स-रे +3 सेकंड · गलत अलर्ट पर 50% चोट नहीं', 'हड्डी कूलडाउन -30% · दूरी +2 मी', '4 दिलों से शुरुआत · 20% नुकसान रोकें · ऊर्जा खर्च -20%'],
+    sn: ['🏃 गति', '👃 नाक', '💪 सहनशक्ति', '📢 भौंक', '🦘 छलांग'], skin: 'त्वचा का रंग', skin_note: 'त्वचा का रंग केवल रूप बदलता है, क्षमताएँ नहीं।',
+    mode1: '👤 1 खिलाड़ी (2 खिलाड़ी के लिए छुएँ)', mode2: '👥 2 खिलाड़ी सहयोग (P1 कुत्ता · P2 हैंडलर)',
+    err_id: 'ID 2–12 अक्षर, अंक या _ हो।', err_pw: 'पासवर्ड कम से कम 4 अक्षर।', err_dog: 'कुत्ते का नाम 1–8 अक्षर।', err_bad: 'गलत पासवर्ड। 5 बार गलत होने पर 5 मिनट लॉक।',
+  },
+  ar: {
+    ls_sub: 'لعبة تعليمية · محاضرة يوم واحد لجمارك كوريا', ls_h1: '🐕 لعبة الكلب البوليسي شم شم',
+    ls_p: 'اصنع كلبك البوليسي الخاص وقم بالدورية من المطار حتى المستودع الجمركي. اعثر على <b>المخدرات</b> و<b>الأسلحة غير القانونية</b> المخبأة، واقبض على <b>المهربين</b> و<b>الزعيم</b>، وتصدّر الترتيب!',
+    ls_id: 'معرّف اللاعب', ls_pw: 'كلمة المرور', ls_dog: '🐕 اسم كلبك', ls_breed: 'اختر السلالة', ls_hand: '🧑‍✈️ اختر المدرّب', ls_login: 'دخول', ls_top: '🏆 أفضل الترتيب',
+    ls_ad: '📢 <b style="color:#f4c542">إعلان توعوي</b> · للإبلاغ عن تهريب المخدرات والأسلحة: <b style="color:#f4c542">☎ 125</b> · صرّح بأمتعتك',
+    ls_note: '※ لعبة تعليمية لمحاضرة يوم واحد لجمارك كوريا. جميع الشخصيات والأحداث خيالية.',
+    ph_id: '2–12 حرفًا/رقمًا', ph_pw: '4 أحرف أو أكثر · أول دخول ينشئ الحساب', ph_dog: 'مثال: بوري، ليو (1–8)',
+    mp_h1: 'اختر منطقة الدورية', mp_p: 'أنهِ الخرائط بالترتيب لتجمع النقاط في الترتيب. إنهاء خريطة يفتح التالية.',
+    b_rank: '🏆 الترتيب', b_logout: 'تغيير المعرّف', b_resume: '▶ العودة إلى اللعبة', b_restart: '🔄 إعادة هذه الخريطة',
+    ht_sub: 'إحاطة قبل المهمة', ht_h1: '🐕‍🦺 طريقة اللعب', ht_p: 'أنت تتحكم في <b>الكلب البوليسي</b>. يمسك <b>المدرّب</b> المقود ويبقى معك دائمًا. الكلب يشم، والفريق يقبض على المهربين معًا.',
+    ht_ctl: '<kbd>W A S D</kbd><span>التحرك (يمكن دفع الحقائب والصناديق)</span><kbd>Shift</kbd><span>الجري</span><kbd>Space</kbd><span>القفز · اضغط مرة أخرى في الهواء لقفزة مزدوجة</span><kbd>E (مطوّل)</kbd><span>الشم — جزيئات الرائحة تقود إلى المخبأ، ودائرة حمراء تحت المهرب</span><kbd>F</kbd><span>🐕 النباح — اكتشف ما بجانبك، وأوقف المهرب واضربه</span><kbd>Q</kbd><span>🦴 المدرّب يرمي عظمة للأمام</span><kbd>سحب الفأرة</kbd><span>تدوير الكاميرا (العجلة للتكبير) · 🗺 إيقاف · 🔄 إعادة · 📸 صورة</span>',
+    ht_touch: '<kbd>عصا التحكم</kbd><span>التحرك</span><kbd>جري</kbd><span>اضغط وتحرك</span><kbd>قفز</kbd><span>اقفز على الصناديق</span><kbd>شم</kbd><span>اضغط مطولًا للشم</span><kbd>نباح</kbd><span>اكتشاف / ضرب المهرب</span><kbd>🦴</kbd><span>رمي عظمة</span><kbd>سحب / قرص</kbd><span>تدوير / تكبير الكاميرا</span>',
+    ht_rules: '❤️ تبدأ بـ 3 قلوب (حتى 7). الإنذار الخاطئ والاصطدام بالناس والمركبات والقنابل تُفقدك قلوبًا. 🎾 الكرات تشفيك!',
+    ht_ok: 'فهمت! انطلق!', dk_ok: 'فهمت! هاو!', cl_next: 'الخريطة التالية ◀', cl_maps: 'اختيار الخريطة', rk_sub: 'ترتيب اللاعبين', rk_h1: '🏆 قاعة المشاهير', rk_close: 'إغلاق',
+    wn_sub: 'اكتملت جميع المهام', wn_h1: '🏅 نجحت العملية!', wn_hidden: '🌅 العب في الخريطة السرية', wn_maps: 'العودة إلى الخرائط',
+    hud_keys: '<b>WASD</b> تحرك · <b>Shift</b> جري · <b>Space</b> قفز · <b>E</b> شم · <b>F</b> نباح · <b>Q</b> عظمة<br>الفأرة / <b>←→</b> تدوير · العجلة للتكبير', hud_stam: 'الطاقة', hud_scent: 'الرائحة',
+    m: ['صالة الوصول في المطار', 'محطة الشحن الجوي', 'مركز البريد الدولي', 'العبّارة الدولية', 'ساحة الحاويات', 'المستودع الجمركي (الزعيم)', 'مدرج الغروب'],
+    s: ['شم الأمتعة للعثور على المخدرات واقبض على المهرب.', 'فتّش المنصات والحاويات الجوية عن المخدرات والأسلحة. احذر الرافعات!', 'افحص الطرود وأكياس البريد واقبض على المهربين. اقفز على السيور!', 'اعثر على المخدرات والأسلحة على السطح المتأرجح واقبض على المهربين.', 'فتّش الحاويات والصناديق واقبض على المهرب. الشاحنات سريعة!', 'اقبض على العصابة والزعيم في المستودع المظلم. تفادَ 💣 القنابل!', 'تنزّه مع الأصدقاء عند الغروب والعب في حديقة الكلاب. انتظر 1.5 ثانية عند اللعبة!'],
+    g: ['💊 مخدرات مضبوطة', '🔫 أسلحة مضبوطة', '🕶 مهربون مقبوض عليهم', '👑 القبض على الزعيم'],
+    st_open: 'متاحة', st_lock: '🔒 أنهِ الخريطة السابقة', st_lockH: '🔒 أنهِ الخرائط الست', st_best: '✅ أفضل وقت', st_cur: '▶ قيد اللعب · اضغط للعودة', st_diff: 'الصعوبة', st_relax: '🌅 خريطة استرخاء', st_hidden: '??? خريطة سرية',
+    intro: '{map}\n\nمرحبًا يا {dog}! أخفى المهربون بضائع ممنوعة هنا.\nاضغط مطولًا [E] للشم، وانبح [F] بجانب الأشياء المشبوهة،\nوأوقف المهربين بالنباح والعظام.\nبالتوفيق يا فريق!',
+    rk_cols: 'المركز|المعرّف|الخريطة|الوقت|النقاط', clr_title: 'اكتملت!', clr_time: 'الوقت', clr_bonus: 'المهمة +300 · مكافأة الوقت', clr_score: 'هذه الخريطة / المجموع', clr_snack: 'مكافآت',
+    ts_found: 'ضُبطت! فريق الجمارك قادم…', i_drug: 'مخدرات', i_gun: 'سلاح غير قانوني', ts_arrest: '🚔 تم القبض على مهرب!', ts_boss: '👑 تم القبض على الزعيم!!', ts_false: '🤔 الغرض نظيف! إنذار خاطئ (-10)', ts_ball: '🎾 كرة! +1 قلب · سرعة', ts_ms_ok: '✅ نجحت المهمة! +200 ❤️+1', ts_ms_fail: '⌛ فشلت المهمة… في المرة القادمة!', ts_track: '🚨 بدأت ملاحقة المشتبه به!!',
+    ms: ['🚨 اعثر على غرض واحد خلال 30 ثانية!', '🚨 اقبض على مهرب خلال 40 ثانية!', '🎾 التقط كرة خلال 20 ثانية!', '🛡 30 ثانية بدون ضرر!', '⚡ 3 قفزات مزدوجة خلال 15 ثانية!'],
+    b: ['مالينوا', 'الراعي الألماني', 'لابرادور ريتريفر', 'بيغل', 'بوينتر', 'سبرينغر سبانيل'],
+    bd: ['الأسرع والأكثر رشاقة. أفضل قفّاز!', 'أكثر نباح ترهيبًا ومدى نباح واسع.', 'كلب الجمارك المميز! أنف ممتاز وتحمّل كبير.', 'خبير أمتعة المطار. صغير لكن أنفه الأفضل.', 'بحث سريع في الأماكن الواسعة.', 'لا يتعب! يجري طويلًا ويتسلق جيدًا.'],
+    j: ['موظف جمارك', 'شرطي', 'جندي'], jd: ['مدى الشم +15% · الأشعة +3 ث · 50% بلا إصابة عند الخطأ', 'تبريد العظمة -30% · المدى +2 م', 'تبدأ بـ 4 قلوب · صدّ 20% · استهلاك طاقة -20%'],
+    sn: ['🏃 السرعة', '👃 الأنف', '💪 التحمّل', '📢 النباح', '🦘 القفز'], skin: 'لون البشرة', skin_note: 'لون البشرة يغيّر المظهر فقط ولا يغيّر القدرات.',
+    mode1: '👤 لاعب واحد (اضغط للتعاون الثنائي)', mode2: '👥 تعاون ثنائي (P1 الكلب · P2 المدرّب)',
+    err_id: 'المعرّف 2–12 حرفًا أو رقمًا أو _.', err_pw: 'كلمة المرور 4 أحرف على الأقل.', err_dog: 'اسم الكلب 1–8 أحرف.', err_bad: 'كلمة مرور خاطئة. 5 أخطاء تقفل الحساب 5 دقائق.',
+  },
+  vi: {
+    ls_sub: 'Trò chơi giáo dục · Bài giảng một ngày của Hải quan Hàn Quốc', ls_h1: '🐕 Trò chơi Chó nghiệp vụ Khịt Khịt',
+    ls_p: 'Tạo chú chó nghiệp vụ của riêng bạn và tuần tra từ sân bay đến kho ngoại quan. Tìm <b>ma túy</b> và <b>súng trái phép</b> bị giấu, bắt <b>kẻ buôn lậu</b> và <b>trùm</b>, rồi leo bảng xếp hạng!',
+    ls_id: 'ID người chơi', ls_pw: 'Mật khẩu', ls_dog: '🐕 Tên chú chó của bạn', ls_breed: 'Chọn giống chó', ls_hand: '🧑‍✈️ Chọn người huấn luyện', ls_login: 'Đăng nhập', ls_top: '🏆 Bảng xếp hạng TOP',
+    ls_ad: '📢 <b style="color:#f4c542">Thông báo công cộng</b> · Báo buôn lậu ma túy, súng: <b style="color:#f4c542">☎ 125</b> · Hãy khai báo hành lý',
+    ls_note: '※ Trò chơi giáo dục cho bài giảng một ngày của Hải quan Hàn Quốc. Mọi nhân vật và sự kiện đều là hư cấu.',
+    ph_id: '2–12 chữ/số', ph_pw: 'Từ 4 ký tự · lần đầu sẽ tạo tài khoản', ph_dog: 'VD: Bori, Leo (1–8 ký tự)',
+    mp_h1: 'Chọn khu vực tuần tra', mp_p: 'Hoàn thành các bản đồ theo thứ tự để cộng điểm lên bảng xếp hạng. Qua màn sẽ mở bản đồ tiếp theo.',
+    b_rank: '🏆 Xếp hạng', b_logout: 'Đổi ID', b_resume: '▶ Quay lại trò chơi', b_restart: '🔄 Chơi lại bản đồ này',
+    ht_sub: 'Họp trước nhiệm vụ', ht_h1: '🐕‍🦺 Cách chơi', ht_p: 'Bạn điều khiển <b>chó nghiệp vụ</b>. <b>Người huấn luyện</b> cầm dây và luôn đi cùng. Chó đánh hơi, cả đội cùng bắt kẻ buôn lậu.',
+    ht_ctl: '<kbd>W A S D</kbd><span>Di chuyển (đẩy được túi và thùng)</span><kbd>Shift</kbd><span>Chạy</span><kbd>Space</kbd><span>Nhảy · bấm lần nữa trên không để nhảy đôi</span><kbd>E (giữ)</kbd><span>Đánh hơi — hạt mùi dẫn tới đồ giấu, kẻ buôn lậu có vòng đỏ</span><kbd>F</kbd><span>🐕 Sủa — phát hiện đồ bên cạnh, làm choáng và đánh kẻ buôn lậu</span><kbd>Q</kbd><span>🦴 Người huấn luyện ném xương về phía trước</span><kbd>Kéo chuột</kbd><span>Xoay camera (lăn chuột: phóng to) · 🗺 tạm dừng · 🔄 chơi lại · 📸 chụp ảnh</span>',
+    ht_touch: '<kbd>Cần điều khiển</kbd><span>Di chuyển</span><kbd>Chạy</kbd><span>Giữ và di chuyển</span><kbd>Nhảy</kbd><span>Nhảy lên thùng</span><kbd>Đánh hơi</kbd><span>Giữ để đánh hơi</span><kbd>Sủa</kbd><span>Phát hiện / đánh kẻ buôn lậu</span><kbd>🦴</kbd><span>Ném xương</span><kbd>Kéo / chụm</kbd><span>Xoay / phóng to camera</span>',
+    ht_rules: '❤️ Bắt đầu với 3 tim (tối đa 7). Báo sai, đụng người, xe và bom sẽ mất tim. 🎾 Nhặt bóng để hồi!',
+    ht_ok: 'Hiểu rồi! Xuất phát!', dk_ok: 'Hiểu rồi! Gâu!', cl_next: 'Bản đồ tiếp ▶', cl_maps: 'Chọn bản đồ', rk_sub: 'Xếp hạng người chơi', rk_h1: '🏆 Bảng vàng', rk_close: 'Đóng',
+    wn_sub: 'Hoàn thành mọi nhiệm vụ', wn_h1: '🏅 Nhiệm vụ thành công!', wn_hidden: '🌅 Chơi bản đồ ẩn', wn_maps: 'Về chọn bản đồ',
+    hud_keys: '<b>WASD</b> Đi · <b>Shift</b> Chạy · <b>Space</b> Nhảy · <b>E</b> Đánh hơi · <b>F</b> Sủa · <b>Q</b> Xương<br>Kéo chuột / <b>←→</b> xoay · Lăn chuột phóng to', hud_stam: 'Sức', hud_scent: 'Mùi',
+    m: ['Sảnh đến sân bay', 'Nhà ga hàng hóa hàng không', 'Trung tâm bưu chính quốc tế', 'Phà quốc tế', 'Bãi container', 'Kho ngoại quan (Trùm)', 'Đường băng hoàng hôn'],
+    s: ['Đánh hơi hành lý để tìm ma túy và bắt kẻ buôn lậu.', 'Lục soát pallet và container hàng không tìm ma túy, súng. Cẩn thận xe nâng!', 'Kiểm tra bưu kiện, túi thư và bắt kẻ buôn lậu. Nhảy lên băng chuyền!', 'Tìm ma túy, súng trên boong tàu lắc lư và bắt kẻ buôn lậu.', 'Lục soát container, thùng gỗ và bắt kẻ buôn lậu. Xe tải chạy nhanh!', 'Bắt băng nhóm và trùm trong kho tối. Né 💣 bom!', 'Dạo chơi cùng bạn bè lúc hoàng hôn và chơi ở công viên chó. Đợi 1,5 giây trước trò chơi để chơi!'],
+    g: ['💊 Ma túy tìm thấy', '🔫 Súng tìm thấy', '🕶 Kẻ buôn lậu bị bắt', '👑 Trùm bị bắt'],
+    st_open: 'Có thể chơi', st_lock: '🔒 Hãy qua bản đồ trước', st_lockH: '🔒 Qua cả 6 bản đồ để mở', st_best: '✅ Kỷ lục', st_cur: '▶ Đang chơi · chạm để quay lại', st_diff: 'Độ khó', st_relax: '🌅 Bản đồ thư giãn', st_hidden: '??? Bản đồ ẩn',
+    intro: '{map}\n\nChào mừng, {dog}! Kẻ buôn lậu đã giấu hàng cấm ở đây.\nGiữ [E] để đánh hơi, bấm [F] sủa cạnh đồ khả nghi,\nvà chặn kẻ buôn lậu bằng tiếng sủa và xương.\nCố lên cả đội!',
+    rk_cols: 'Hạng|ID|Đến|Thời gian|Điểm', clr_title: 'hoàn thành!', clr_time: 'Thời gian', clr_bonus: 'Nhiệm vụ +300 · Thưởng thời gian', clr_score: 'Bản đồ này / Tổng', clr_snack: 'Bánh thưởng',
+    ts_found: 'đã tìm thấy! Đội hải quan đang tới…', i_drug: 'Ma túy', i_gun: 'Súng trái phép', ts_arrest: '🚔 Bắt được kẻ buôn lậu!', ts_boss: '👑 Bắt được trùm!!', ts_false: '🤔 Đồ sạch! Báo sai (-10)', ts_ball: '🎾 Nhặt bóng! +1 tim · tăng tốc', ts_ms_ok: '✅ Nhiệm vụ thành công! +200 ❤️+1', ts_ms_fail: '⌛ Nhiệm vụ thất bại… lần sau nhé!', ts_track: '🚨 Bắt đầu truy đuổi nghi phạm!!',
+    ms: ['🚨 Tìm 1 món trong 30 giây!', '🚨 Bắt 1 kẻ buôn lậu trong 40 giây!', '🎾 Nhặt 1 quả bóng trong 20 giây!', '🛡 Không bị thương trong 30 giây!', '⚡ Nhảy đôi 3 lần trong 15 giây!'],
+    b: ['Malinois', 'Chăn cừu Đức', 'Labrador Retriever', 'Beagle', 'Pointer', 'Springer Spaniel'],
+    bd: ['Nhanh và nhanh nhẹn nhất. Nhảy giỏi nhất!', 'Tiếng sủa uy lực nhất, phạm vi sủa rộng.', 'Chó tiêu biểu của hải quan! Mũi thính, bền sức.', 'Chuyên gia hành lý sân bay. Nhỏ nhưng mũi thính nhất.', 'Tìm kiếm nhanh ở nơi rộng.', 'Không biết mệt! Chạy lâu, leo giỏi.'],
+    j: ['Nhân viên hải quan', 'Cảnh sát', 'Quân nhân'], jd: ['Tầm đánh hơi +15% · X-quang +3 giây · báo sai 50% không bị thương', 'Hồi chiêu xương -30% · tầm ném +2m', 'Bắt đầu 4 tim · 20% chặn sát thương · tiêu hao sức -20%'],
+    sn: ['🏃 Tốc độ', '👃 Khứu giác', '💪 Sức bền', '📢 Sủa', '🦘 Nhảy'], skin: 'Màu da', skin_note: 'Màu da chỉ thay đổi ngoại hình, không ảnh hưởng năng lực.',
+    mode1: '👤 1 người (chạm để chơi 2 người)', mode2: '👥 2 người hợp tác (P1 chó · P2 huấn luyện)',
+    err_id: 'ID gồm 2–12 chữ, số hoặc _.', err_pw: 'Mật khẩu từ 4 ký tự.', err_dog: 'Tên chó 1–8 chữ hoặc số.', err_bad: 'Sai mật khẩu. Sai 5 lần sẽ khóa 5 phút.',
+  },
+  ja: {
+    ls_sub: '韓国関税庁 一日特別講義 · 教育ゲーム', ls_h1: '🐕 探知犬クンクンゲーム',
+    ls_p: '自分だけの探知犬を作って、空港から保税倉庫までパトロールしよう。隠された<b>麻薬</b>と<b>違法銃器</b>を見つけ、<b>密輸犯</b>と<b>ボス</b>を捕まえてランキングに挑戦！',
+    ls_id: 'プレイヤーID', ls_pw: 'パスワード', ls_dog: '🐕 探知犬の名前', ls_breed: '犬種を選ぶ', ls_hand: '🧑‍✈️ ハンドラーを選ぶ', ls_login: 'ログイン', ls_top: '🏆 TOPランキング',
+    ls_ad: '📢 <b style="color:#f4c542">公共広告</b> · 麻薬・銃器の密輸通報は <b style="color:#f4c542">☎ 125</b> · 携帯品は自主申告を',
+    ls_note: '※ 韓国関税庁一日特別講義用の教育ゲームです。登場人物と事件はすべて架空です。',
+    ph_id: '英数字2〜12文字', ph_pw: '4文字以上 · 初回ログインで登録', ph_dog: '例：ポチ、Leo（1〜8文字）',
+    mp_h1: 'パトロールするエリアを選ぼう', mp_p: 'マップを順番にクリアするとスコアが加算されランキングに載ります。クリアすると次のマップが開きます。',
+    b_rank: '🏆 ランキング', b_logout: 'ID変更', b_resume: '▶ ゲームに戻る', b_restart: '🔄 このマップをやり直す',
+    ht_sub: '出動前ブリーフィング', ht_h1: '🐕‍🦺 操作方法', ht_p: 'あなたは<b>探知犬</b>を操作します。<b>ハンドラー</b>がリードを持っていつも一緒です。探知犬が匂いで探し、チームで密輸犯を捕まえます。',
+    ht_ctl: '<kbd>W A S D</kbd><span>移動（バッグや箱を押せる）</span><kbd>Shift</kbd><span>ダッシュ</span><kbd>Space</kbd><span>ジャンプ · 空中でもう一度押すと二段ジャンプ</span><kbd>E（長押し）</kbd><span>匂いを嗅ぐ — 匂いの粒が隠し物へ、密輸犯の足元に赤い印</span><kbd>F</kbd><span>🐕 吠える — 近くの物を摘発、密輸犯を怯ませて攻撃</span><kbd>Q</kbd><span>🦴 ハンドラーが骨を前に投げる</span><kbd>マウスドラッグ</kbd><span>カメラ回転（ホイールでズーム）· 🗺 一時停止 · 🔄 やり直し · 📸 写真</span>',
+    ht_touch: '<kbd>スティック</kbd><span>移動</span><kbd>ダッシュ</kbd><span>押しながら移動</span><kbd>ジャンプ</kbd><span>箱に飛び乗る</span><kbd>クンクン</kbd><span>長押しで匂いを嗅ぐ</span><kbd>ワン</kbd><span>摘発 / 密輸犯を攻撃</span><kbd>🦴</kbd><span>骨を投げる</span><kbd>ドラッグ / ピンチ</kbd><span>カメラ回転 / ズーム</span>',
+    ht_rules: '❤️ ハート3つでスタート（最大7つ）。誤報、人や車への衝突、爆弾でハートが減ります。🎾 ボールで回復！',
+    ht_ok: 'わかった！出動！', dk_ok: 'わかった！ワン！', cl_next: '次のマップ ▶', cl_maps: 'マップ選択', rk_sub: 'プレイヤーランキング', rk_h1: '🏆 殿堂入り', rk_close: '閉じる',
+    wn_sub: '全任務完了', wn_h1: '🏅 作戦成功！', wn_hidden: '🌅 隠しマップで遊ぶ', wn_maps: 'マップ選択へ',
+    hud_keys: '<b>WASD</b> 移動 · <b>Shift</b> ダッシュ · <b>Space</b> ジャンプ · <b>E</b> 嗅ぐ · <b>F</b> 吠える · <b>Q</b> 骨<br>マウスドラッグ / <b>←→</b> 回転 · ホイールでズーム', hud_stam: '体力', hud_scent: '匂い',
+    m: ['空港到着ロビー', '航空貨物ターミナル', '国際郵便センター', '国際フェリー', 'コンテナヤード', '保税倉庫（ボス戦）', '夕焼けの滑走路'],
+    s: ['荷物の匂いを嗅いで麻薬を見つけ、密輸犯を捕まえよう。', 'パレットや航空コンテナから麻薬と銃を探そう。フォークリフトに注意！', '小包や郵便袋を調べて密輸犯を捕まえよう。コンベヤーにジャンプ！', '揺れる甲板で麻薬と銃を見つけ、密輸犯を捕まえよう。', 'コンテナや木箱を調べて密輸犯を捕まえよう。トラックは速いぞ！', '暗い倉庫で組織とボスを捕まえよう。💣爆弾をよけて！', '夕焼けの中で友達と散歩し、ドッグパークで遊ぼう。遊具の前で1.5秒待つと遊べるよ！'],
+    g: ['💊 麻薬摘発', '🔫 銃器摘発', '🕶 密輸犯逮捕', '👑 ボス逮捕'],
+    st_open: '挑戦できる', st_lock: '🔒 前のマップをクリアしよう', st_lockH: '🔒 6マップすべてクリアで解放', st_best: '✅ ベスト', st_cur: '▶ プレイ中 · タップで戻る', st_diff: '難易度', st_relax: '🌅 のんびりマップ', st_hidden: '??? 隠しマップ',
+    intro: '{map}\n\nようこそ、{dog}！密輸犯がここに禁制品を隠している。\n[E]長押しで匂いを嗅ぎ、怪しい物の横で[F]で吠えよう。\n吠え声と骨で密輸犯を止めるんだ。\n頼んだぞ、チーム！',
+    rk_cols: '順位|ID|到達|時間|スコア', clr_title: 'クリア！', clr_time: 'クリアタイム', clr_bonus: '任務 +300 · タイムボーナス', clr_score: 'このマップ / 累計', clr_snack: 'おやつ',
+    ts_found: '摘発！税関チーム出動…', i_drug: '麻薬', i_gun: '違法銃器', ts_arrest: '🚔 密輸犯を逮捕！', ts_boss: '👑 ボスを逮捕！！', ts_false: '🤔 きれいな物だ！誤報 (-10)', ts_ball: '🎾 ボールゲット！ハート+1 · スピードアップ', ts_ms_ok: '✅ ミッション成功！+200 ❤️+1', ts_ms_fail: '⌛ ミッション失敗…次がんばろう！', ts_track: '🚨 犯人追跡開始!!',
+    ms: ['🚨 30秒以内に1件摘発！', '🚨 40秒以内に密輸犯を1人逮捕！', '🎾 20秒以内にボールを1個拾え！', '🛡 30秒間ノーダメージ！', '⚡ 15秒以内に二段ジャンプ3回！'],
+    b: ['マリノア', 'ジャーマン・シェパード', 'ラブラドール・レトリーバー', 'ビーグル', 'ポインター', 'スプリンガー・スパニエル'],
+    bd: ['一番速くて身軽。ジャンプ力最強！', '吠え声の迫力No.1。吠える範囲が広い。', '税関の代表犬！嗅覚とスタミナが抜群。', '空港の荷物探知の達人。小さいけど嗅覚最強。', '広い場所を素早く捜索。', '疲れ知らず！長く走れて登るのも得意。'],
+    j: ['税関職員', '警察', '軍人'], jd: ['嗅覚距離+15% · X線+3秒 · 誤報でも50%で無傷', '骨のクールタイム-30% · 骨の射程+2m', 'ハート4つでスタート · 20%でダメージ防御 · 体力消費-20%'],
+    sn: ['🏃 速さ', '👃 嗅覚', '💪 スタミナ', '📢 吠え', '🦘 ジャンプ'], skin: '肌の色', skin_note: '肌の色は見た目だけで、能力には影響しません。',
+    mode1: '👤 1人モード（タップで2人協力）', mode2: '👥 2人協力（P1 犬 · P2 ハンドラー）',
+    err_id: 'IDは英数字・_で2〜12文字にしてね。', err_pw: 'パスワードは4文字以上。', err_dog: '犬の名前は1〜8文字にしてね。', err_bad: 'パスワードが違います。5回間違えると5分間ロック。',
+  },
+  ru: {
+    ls_sub: 'Обучающая игра · однодневная лекция Таможни Кореи', ls_h1: '🐕 Игра «Нюх-нюх, служебный пёс»',
+    ls_p: 'Создай своего служебного пса и патрулируй от аэропорта до таможенного склада. Найди спрятанные <b>наркотики</b> и <b>незаконное оружие</b>, поймай <b>контрабандистов</b> и <b>босса</b> и поднимись в рейтинге!',
+    ls_id: 'ID игрока', ls_pw: 'Пароль', ls_dog: '🐕 Кличка твоего пса', ls_breed: 'Выбери породу', ls_hand: '🧑‍✈️ Выбери кинолога', ls_login: 'Войти', ls_top: '🏆 ТОП рейтинга',
+    ls_ad: '📢 <b style="color:#f4c542">Соцреклама</b> · Сообщите о контрабанде наркотиков и оружия: <b style="color:#f4c542">☎ 125</b> · Декларируйте багаж',
+    ls_note: '※ Обучающая игра для однодневной лекции Таможни Кореи. Все персонажи и события вымышлены.',
+    ph_id: '2–12 букв/цифр', ph_pw: 'От 4 символов · при первом входе создаётся аккаунт', ph_dog: 'напр.: Бори, Лео (1–8 символов)',
+    mp_h1: 'Выбери зону патруля', mp_p: 'Проходи карты по порядку — очки суммируются для рейтинга. Пройденная карта открывает следующую.',
+    b_rank: '🏆 Рейтинг', b_logout: 'Сменить ID', b_resume: '▶ Вернуться в игру', b_restart: '🔄 Начать карту заново',
+    ht_sub: 'Брифинг перед выходом', ht_h1: '🐕‍🦺 Управление', ht_p: 'Ты управляешь <b>служебным псом</b>. <b>Кинолог</b> держит поводок и всегда рядом. Пёс ищет по запаху, а команда вместе ловит контрабандистов.',
+    ht_ctl: '<kbd>W A S D</kbd><span>Движение (можно толкать сумки и ящики)</span><kbd>Shift</kbd><span>Бег</span><kbd>Space</kbd><span>Прыжок · в воздухе ещё раз — двойной прыжок</span><kbd>E (удерживать)</kbd><span>Нюхать — частицы запаха ведут к тайнику, у контрабандиста красный круг</span><kbd>F</kbd><span>🐕 Лай — найти предмет рядом, оглушить и ударить контрабандиста</span><kbd>Q</kbd><span>🦴 Кинолог бросает кость вперёд</span><kbd>Мышь</kbd><span>Поворот камеры (колесо — зум) · 🗺 пауза · 🔄 заново · 📸 фото</span>',
+    ht_touch: '<kbd>Джойстик</kbd><span>Движение</span><kbd>Бег</kbd><span>Удерживать и двигаться</span><kbd>Прыжок</kbd><span>Запрыгнуть на ящик</span><kbd>Нюх</kbd><span>Удерживать, чтобы нюхать</span><kbd>Гав</kbd><span>Найти / ударить контрабандиста</span><kbd>🦴</kbd><span>Бросить кость</span><kbd>Свайп / щипок</kbd><span>Поворот / зум камеры</span>',
+    ht_rules: '❤️ Старт с 3 сердцами (максимум 7). Ложная тревога, столкновения с людьми, машины и бомбы отнимают сердца. 🎾 Мячи лечат!',
+    ht_ok: 'Понял! Вперёд!', dk_ok: 'Понял! Гав!', cl_next: 'Следующая карта ▶', cl_maps: 'Выбор карты', rk_sub: 'Рейтинг игроков', rk_h1: '🏆 Зал славы', rk_close: 'Закрыть',
+    wn_sub: 'Все задания выполнены', wn_h1: '🏅 Операция успешна!', wn_hidden: '🌅 Играть на секретной карте', wn_maps: 'К выбору карт',
+    hud_keys: '<b>WASD</b> Движение · <b>Shift</b> Бег · <b>Space</b> Прыжок · <b>E</b> Нюх · <b>F</b> Лай · <b>Q</b> Кость<br>Мышь / <b>←→</b> поворот · Колесо — зум', hud_stam: 'Силы', hud_scent: 'Запах',
+    m: ['Зал прилёта', 'Авиагрузовой терминал', 'Международный почтовый центр', 'Международный паром', 'Контейнерный терминал', 'Таможенный склад (Босс)', 'Закатная взлётная полоса'],
+    s: ['Обнюхивай багаж, найди наркотики и поймай контрабандиста.', 'Обыщи паллеты и авиаконтейнеры. Осторожно, погрузчики!', 'Проверь посылки и почтовые мешки, поймай контрабандистов. Прыгай на конвейер!', 'Найди наркотики и оружие на качающейся палубе и поймай контрабандистов.', 'Обыщи контейнеры и ящики, поймай контрабандиста. Грузовики быстрые!', 'Поймай банду и босса в тёмном складе. Уворачивайся от 💣 бомб!', 'Гуляй с друзьями на закате и играй в собачьем парке. Подожди 1,5 с у аттракциона!'],
+    g: ['💊 Наркотики найдены', '🔫 Оружие найдено', '🕶 Пойманы контрабандисты', '👑 Пойман босс'],
+    st_open: 'Доступно', st_lock: '🔒 Пройди предыдущую карту', st_lockH: '🔒 Пройди все 6 карт', st_best: '✅ Рекорд', st_cur: '▶ Идёт игра · нажми, чтобы вернуться', st_diff: 'Сложность', st_relax: '🌅 Карта отдыха', st_hidden: '??? Секретная карта',
+    intro: '{map}\n\nДобро пожаловать, {dog}! Контрабандисты спрятали здесь запрещённые вещи.\nУдерживай [E], чтобы нюхать, лай [F] рядом с подозрительным предметом,\nостанавливай контрабандистов лаем и костями.\nУдачи, команда!',
+    rk_cols: 'Место|ID|Карта|Время|Очки', clr_title: 'пройдено!', clr_time: 'Время', clr_bonus: 'Задание +300 · Бонус за время', clr_score: 'Эта карта / Всего', clr_snack: 'Лакомства',
+    ts_found: 'найдено! Таможенники уже идут…', i_drug: 'Наркотики', i_gun: 'Незаконное оружие', ts_arrest: '🚔 Контрабандист задержан!', ts_boss: '👑 Босс задержан!!', ts_false: '🤔 Чисто! Ложная тревога (-10)', ts_ball: '🎾 Мяч! +1 сердце · ускорение', ts_ms_ok: '✅ Задание выполнено! +200 ❤️+1', ts_ms_fail: '⌛ Задание провалено… в следующий раз!', ts_track: '🚨 Начинаем погоню за подозреваемым!!',
+    ms: ['🚨 Найди 1 предмет за 30 с!', '🚨 Задержи 1 контрабандиста за 40 с!', '🎾 Подбери 1 мяч за 20 с!', '🛡 30 с без урона!', '⚡ 3 двойных прыжка за 15 с!'],
+    b: ['Малинуа', 'Немецкая овчарка', 'Лабрадор-ретривер', 'Бигль', 'Пойнтер', 'Спрингер-спаниель'],
+    bd: ['Самый быстрый и ловкий. Лучший прыгун!', 'Самый грозный лай. Большой радиус лая.', 'Символ таможни! Отличный нюх и выносливость.', 'Эксперт по багажу в аэропорту. Маленький, но лучший нюх.', 'Быстрый поиск на больших площадях.', 'Неутомимый! Долго бегает и хорошо лазает.'],
+    j: ['Таможенник', 'Полицейский', 'Военный'], jd: ['Дальность нюха +15% · рентген +3 с · при ложной тревоге 50% без урона', 'Перезарядка кости -30% · дальность +2 м', 'Старт с 4 сердцами · 20% блок урона · расход сил -20%'],
+    sn: ['🏃 Скорость', '👃 Нюх', '💪 Выносливость', '📢 Лай', '🦘 Прыжок'], skin: 'Цвет кожи', skin_note: 'Цвет кожи меняет только внешность, а не способности.',
+    mode1: '👤 1 игрок (нажми для кооператива)', mode2: '👥 Кооператив (P1 пёс · P2 кинолог)',
+    err_id: 'ID: 2–12 букв, цифр или _.', err_pw: 'Пароль от 4 символов.', err_dog: 'Кличка: 1–8 букв или цифр.', err_bad: 'Неверный пароль. После 5 ошибок — блокировка на 5 минут.',
+  },
+};
+const KO = {
+  st_open: '도전 가능', st_lock: '🔒 이전 맵을 클리어하세요', st_lockH: '🔒 6개 맵을 모두 클리어하면 열려요', st_best: '✅ 최고 기록', st_cur: '▶ 진행 중 · 눌러서 돌아가기', st_diff: '난이도', st_relax: '🌅 휴식 맵', st_hidden: '??? 히든맵',
+  rk_cols: '순위|아이디|도달|시간|점수', clr_title: '통과!', clr_time: '클리어 시간', clr_bonus: '임무 완료 +300 · 시간 보너스', clr_score: '이번 맵 / 누적', clr_snack: '간식',
+  ts_arrest: '🚔 밀수범 체포 성공!', ts_boss: '👑 밀수 조직 보스 체포!!', ts_ball: '🎾 공 획득! 체력 +1 · 6초간 스피드 업', ts_ms_ok: '✅ 돌발 미션 성공! +200점 ❤️+1', ts_ms_fail: '⌛ 돌발 미션 실패… 다음 기회에!', ts_track: '🚨 범인 추적 시작!!',
+  skin: '피부색', skin_note: '피부색은 겉모습만 바뀌고 능력에는 영향이 없어요.', mode1: '👤 1인 모드 (눌러서 2인 협동 모드로)', mode2: '👥 2인 협동 모드 (P1 탐지견 · P2 핸들러)',
+  err_id: '아이디는 한글·영문·숫자·_ 로 2~12자여야 해요.', err_pw: '비밀번호는 4자 이상이에요.', err_dog: '탐지견 이름은 한글·영문·숫자 1~8자로 지어주세요.', err_bad: '비밀번호가 틀렸어요. 5번 틀리면 5분간 잠겨요.', dk_ok: '알겠어요! 멍!',
+};
+for (const [k, v] of Object.entries({"en":["✅ I agree to the game guide · Be kind to friends, keep your password secret! (No personal data is collected)","🎮 Rating: All ages (recommended 7+ · self-rated)","Please tick the agreement box first."],"zh":["✅ 我同意游戏使用说明 · 友善对待朋友，密码要保密！（本游戏不收集个人信息）","🎮 分级：全年龄（建议7岁以上 · 自定）","请先勾选同意。"],"hi":["✅ मैं खेल नियमों से सहमत हूँ · दोस्तों से अच्छा व्यवहार, पासवर्ड गुप्त रखें! (कोई निजी जानकारी नहीं ली जाती)","🎮 रेटिंग: सभी उम्र (7+ सुझाया · स्व-निर्धारित)","पहले सहमति बॉक्स पर टिक करें।"],"ar":["✅ أوافق على دليل اللعبة · كن لطيفًا مع أصدقائك واحفظ كلمة المرور سرًا! (لا نجمع أي بيانات شخصية)","🎮 التصنيف: لجميع الأعمار (يُنصح من 7 سنوات · تصنيف ذاتي)","يرجى تحديد مربع الموافقة أولًا."],"vi":["✅ Tôi đồng ý hướng dẫn trò chơi · Thân thiện với bạn bè, giữ bí mật mật khẩu! (Không thu thập thông tin cá nhân)","🎮 Phân loại: Mọi lứa tuổi (khuyến nghị từ 7 tuổi · tự đánh giá)","Hãy đánh dấu ô đồng ý trước."],"ja":["✅ ゲームの案内に同意します · 友達にやさしく、パスワードはひみつ！（個人情報は集めません）","🎮 対象年齢：全年齢（推奨7歳以上 · 自主基準）","まず同意にチェックしてね。"],"ru":["✅ Я согласен с правилами игры · Будь добр к друзьям, храни пароль в секрете! (Личные данные не собираются)","🎮 Возраст: для всех (рекомендуется 7+ · самооценка)","Сначала отметь согласие."]})) Object.assign(DICT[k], { agree: v[0], age: v[1], err_agree: v[2] });
+KO.err_agree = '먼저 이용 안내 동의에 체크해 주세요.';
+let lang = (() => { try { return localStorage.getItem('k9lang') || 'ko'; } catch { return 'ko'; } })();
+function t(key) {
+  const D = DICT[lang]; let m;
+  if (D) {
+    let v;
+    if ((m = key.match(/^(m|s|ms)(\d+)$/))) v = D[m[1]]?.[+m[2]];
+    else if ((m = key.match(/^g_(\w+)$/))) v = D.g?.[['drug', 'gun', 'smuggler', 'boss'].indexOf(m[1])];
+    else if ((m = key.match(/^(b|bd)_(\w+)$/))) v = D[m[1]]?.[Object.keys(BREEDS).indexOf(m[2])];
+    else if ((m = key.match(/^(j|jd)_(\w+)$/))) v = D[m[1]]?.[Object.keys(JOBS).indexOf(m[2])];
+    else if ((m = key.match(/^sn_(\w+)$/))) v = D.sn?.[STAT_NAMES.findIndex(x => x[0] === m[1])];
+    else v = D[key];
+    if (v !== undefined) return v;
+  }
+  if ((m = key.match(/^m(\d+)$/))) return LEVELS[+m[1]]?.name ?? '';
+  if ((m = key.match(/^s(\d+)$/))) return LEVELS[+m[1]]?.short ?? '';
+  if ((m = key.match(/^ms(\d+)$/))) return MISSIONS[+m[1]]?.text ?? '';
+  if ((m = key.match(/^g_(\w+)$/))) return LABEL[m[1]];
+  if ((m = key.match(/^b_(\w+)$/))) return BREEDS[m[1]]?.name;
+  if ((m = key.match(/^bd_(\w+)$/))) return BREEDS[m[1]]?.desc;
+  if ((m = key.match(/^j_(\w+)$/))) return JOBS[m[1]]?.name;
+  if ((m = key.match(/^jd_(\w+)$/))) return JOBS[m[1]]?.desc;
+  if ((m = key.match(/^sn_(\w+)$/))) return STAT_NAMES.find(x => x[0] === m[1])?.[1];
+  return KO[key] ?? key;
+}
+const mapName = i => t('m' + i);
+
 
 // ================= 렌더러 =================
 const isMobile = matchMedia('(pointer: coarse)').matches;
@@ -1167,7 +1439,7 @@ function playground(ox) {
     (x, z) => { st(x, z, 3, 3, .5, 0xbdc3c7); mesh(BOX(.5, 1.8, .5), C(0x95a5a6), x, 1.2, z); const blue = new THREE.Color(0x7fd3f7); pgAnim.push(() => { if (Math.random() < .7) spawnP(x, 2.1, z, mr(-1.2, 1.2), 3, mr(-1.2, 1.2), blue, 1); }); lab('⛲ 분수대', x, z, 3.2); },
     (x, z) => { for (const [dx, dz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) mesh(BOX(.15, .5, .15), MAT.metal(0x555555), x + dx, .25, z + dz); mesh(BOX(2.4, .1, 2.4), C(0x2c3e50), x, .5, z); mesh(BOX(2.6, .12, .2), C(0x3498db), x, .52, z - 1.2); mesh(BOX(2.6, .12, .2), C(0x3498db), x, .52, z + 1.2); addCol(x, z, 2.4, 2.4, null, { topY: .55, tramp: true }); lab('🤸 트램펄린 (올라가 보세요!)', x, z, 1.8); },
     (x, z) => { const g = new THREE.Group(); g.position.set(x, 0, z); world.add(g); mesh(new THREE.CylinderGeometry(1.8, 1.8, .25, 24), C(0xe74c3c), 0, .2, 0, g); for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2; mesh(BOX(.1, 1.1, .1), MAT.metal(0xdddddd), Math.cos(a) * 1.4, .8, Math.sin(a) * 1.4, g); } addCol(x, z, 3, 3, null, { topY: .33 }); pgAnim.push(dt => g.rotation.y += dt * .8); lab('🎡 회전 놀이기구', x, z, 2); },
-    (x, z) => { st(x, z, 2, 2, 1.3, 0xc0392b); const rf = mesh(BOX(2.4, .2, 1.4), C(0x7f8c8d), x, 1.65, z - .5); rf.rotation.x = .6; const rf2 = mesh(BOX(2.4, .2, 1.4), C(0x7f8c8d), x, 1.65, z + .5); rf2.rotation.x = -.6; mesh(BOX(.8, .8, .05), C(0x2c1a10), x, .45, z + 1.01); lab('🏠 개집', x, z, 2.8); },
+    (x, z) => { st(x, z, 2, 2, 1.3, 0xc0392b); const rf = mesh(BOX(2.4, .2, 1.4), C(0x7f8c8d), x, 1.65, z - .5); rf.rotation.x = -.6; const rf2 = mesh(BOX(2.4, .2, 1.4), C(0x7f8c8d), x, 1.65, z + .5); rf2.rotation.x = .6; mesh(BOX(.8, .8, .05), C(0x2c1a10), x, .45, z + 1.01); lab('🏠 개집', x, z, 2.8); },
     (x, z) => { st(x, z, 1.4, 1.4, .6, 0x95a5a6); mesh(BOX(3, .6, .6), C(0xf5efe0), x, 1.3, z); for (const sx of [-1.5, 1.5]) for (const sz of [-.35, .35]) mesh(BOX(.7, .7, .55), C(0xf5efe0), x + sx, 1.3, z + sz); lab('🦴 왕뼈다귀 조형물', x, z, 2.6); },
     (x, z) => { st(x, z, .6, .6, .9, 0xe74c3c); mesh(BOX(.8, .2, .2), C(0xe74c3c), x, .6, z); mesh(BOX(.4, .2, .4), C(0xf1c40f), x, 1, z); const blue = new THREE.Color(0x7fd3f7); pgAnim.push(() => { if (Math.hypot(dog.x - x, dog.z - z) < 3 && Math.random() < .8) spawnP(x + .5, .6, z, mr(1, 3), mr(1, 2.5), mr(-.6, .6), blue, .8); }); lab('🚒 소화전 (가까이 가면 물!)', x, z, 1.8); },
     (x, z) => { [.3, .6, .9, 1.2, 1.5, 1.8].forEach((h, k) => st(x - 2.5 + k * .6, z, .6, 1.4, h, 0x8e44ad)); st(x + 1.6, z, 2.4, 2.4, 2.1, 0x9b59b6); for (const [dx, dz] of [[1.6, -1.15], [1.6, 1.15]]) mesh(BOX(2.4, .6, .08), MAT.metal(0xdddddd), x + dx, 2.4, z + dz); lab('🔭 전망대', x, z, 3.4); },
@@ -1213,7 +1485,7 @@ function updatePgAct(dt) {
   for (const sp of pgSpots) sp.cd -= dt;
   const m = dogM;
   if (!dog.pgAct) {
-    if (dog.idleT < 1.5 || dog.idleMode) return;
+    if (dog.idleT < 1 || dog.idleMode) return;
     const sp = pgSpots.find(p => p.cd <= 0 && Math.hypot(dog.x - p.x, dog.z - p.z) < 3.2);
     if (!sp) return;
     dog.pgAct = { sp, t: 0, i: 0, x0: dog.x, z0: dog.z };
@@ -1224,7 +1496,8 @@ function updatePgAct(dt) {
   A.t += dt; dog.idleT = 1.6; const t = A.t;
   const run = k => m.legs.forEach((l, i) => l.rotation.x = Math.sin(time * k + [0, Math.PI, Math.PI, 0][i]) * .75);
   const sitP = () => { m.g.rotation.x = -.32; m.legs[2].rotation.x = m.legs[3].rotation.x = -1.25; m.legs[0].rotation.x = m.legs[1].rotation.x = .3; };
-  let x = dog.x, y = dog.y, z = dog.z, dir = dog.dir, done = t > 6;
+  let x = dog.x, y = dog.y, z = dog.z, dir = dog.dir, done = false;
+  const seatH = (hx, hy, hz, hd) => { handler.x = hx; handler.z = hz; handler.y = hy; handler.vy = 0; handlerM.g.position.set(hx, hy - .45, hz); handlerM.g.rotation.y = hd; handlerM.legs[0].rotation.x = handlerM.legs[1].rotation.x = -1.4; };
   m.g.rotation.x = 0; m.g.rotation.z = 0;
   if (sp.type === 'path') {
     const pts = sp.pts, a = pts[Math.min(A.i, pts.length - 1)], b = pts[Math.min(A.i + 1, pts.length - 1)];
@@ -1232,17 +1505,19 @@ function updatePgAct(dt) {
     if (A.u >= 1) { A.u = 0; A.i++; }
     const u = Math.min(1, A.u || 0); x = sp.x + lerp(a[0], b[0], u); y = lerp(a[1], b[1], u) + (b[1] === a[1] ? 0 : Math.sin(Math.PI * u) * .25); z = sp.z + lerp(a[2], b[2], u);
     if (Math.hypot(b[0] - a[0], b[2] - a[2]) > .01) dir = Math.atan2(b[0] - a[0], b[2] - a[2]);
-    run(16); done = A.i >= pts.length - 1;
-    if (done) floatText('🎉 성공!', x, y + 1.8, z, { h: .45 });
+    run(16);
+    if (A.i >= pts.length - 1) { A.i = 0; A.u = 0; floatText('🎉 성공! 한 번 더!', x, y + 1.8, z, { h: .45 }); }
   } else if (sp.type === 'swing') {
     const ang = Math.sin(time * 2) * .5; x = sp.x - .8; y = 3 - 2.2 * Math.cos(ang) - .25; z = sp.z + 2.2 * Math.sin(ang); dir = 0; sitP();
+    const a2 = Math.sin(time * 2 + 1) * .5; seatH(sp.x + .8, 3 - 2.2 * Math.cos(a2) - .1, sp.z + 2.2 * Math.sin(a2), 0);
   } else if (sp.type === 'seesaw') {
     const rot = Math.sin(time * 1.6) * .25; x = sp.x - 1.9; y = .66 - 1.9 * Math.sin(rot); z = sp.z; dir = Math.PI / 2; sitP();
+    seatH(sp.x + 1.9, .76 + 1.9 * Math.sin(rot), sp.z, -Math.PI / 2);
   } else if (sp.type === 'spring') {
     x = sp.x; z = sp.z; y = .95 + Math.abs(Math.sin(time * 3)) * .25; dir = Math.PI / 2; sitP();
   } else if (sp.type === 'circle') {
     A.a = (A.a || 0) + dt * sp.sp; x = sp.x + Math.cos(A.a) * sp.r; z = sp.z + Math.sin(A.a) * sp.r; y = sp.y; dir = Math.atan2(-Math.sin(A.a), Math.cos(A.a));
-    if (sp.sit) sitP(); else run(10);
+    if (sp.sit) { sitP(); seatH(sp.x + Math.cos(A.a + Math.PI) * sp.r, sp.y + .1, sp.z + Math.sin(A.a + Math.PI) * sp.r, dir + Math.PI); } else run(10);
     if (sp.swim && Math.random() < .6) spawnP(x + mr(-.4, .4), .2, z + mr(-.4, .4), mr(-1, 1), 2, mr(-1, 1), new THREE.Color(0x9fdcff), .6);
   } else if (sp.type === 'tramp') {
     x = sp.x; z = sp.z; y = .55 + Math.abs(Math.sin(t * 4)) * 2.2; run(6); if (Math.random() < dt * 2) floatText('🤸 통통!', x, y + 1.5, z, { h: .4 });
@@ -1861,7 +2136,7 @@ const LEVELS = [
       { kind: 'customs', route: [[-28, -16.3], [-10, -16.3]], wait: 2.5 },
     ],
     people: { civ: 4 }, hide: {}, need: {},
-    who: '강민준 공항세관장', short: '석양 아래 활주로에서 친구들과 산책하고, 동쪽 🐶 강아지 놀이터에서 놀아요. 놀이기구 앞에서 1.5초 기다리면 놀이 시작! 같은 시간에 접속한 친구도 보여요.',
+    who: '강민준 공항세관장', short: '석양 아래 활주로에서 친구들과 산책하고, 동쪽 🐶 강아지 놀이터에서 놀아요. 놀이기구 앞에서 1초 기다리면 놀이 시작, 가만히 있으면 계속 놀아요! 같은 시간에 접속한 친구도 보여요.',
     intro: '🎉 밀수 조직 보스 체포, 정말 수고했다!\n오늘은 특별히 공항 활주로를 개방했어.\n\n석양 아래에서 친구 탐지견들과 산책하고,\n비행기가 뜨고 내리는 것도 구경하며 푹 쉬어라.\n관세청 탐지견, 넌 최고야! 🐕',
     build(L) {
       // 석양 하늘 (그라데이션 돔) + 해 + 분홍 구름
@@ -1931,7 +2206,7 @@ const LEVELS = [
 let twoP = false;
 $('btnMode').onclick = () => {
   twoP = !twoP;
-  $('btnMode').textContent = twoP ? '👥 2인 협동 모드 (P1 탐지견 · P2 핸들러)' : '👤 1인 모드 (눌러서 2인 협동 모드로)';
+  $('btnMode').textContent = t(twoP ? 'mode2' : 'mode1');
   $('btnMode').classList.toggle('alt', !twoP);
   if (twoP && isMobile) toast('👥 2인 모드는 키보드 2명용이에요 (PC 권장)');
 };
@@ -2112,9 +2387,9 @@ function updateFun(dt) {
     }
   } else {
     mission.t -= dt; const done = mission.t <= 0;
-    $('mission').textContent = `${mission.d.text}  ⏱ ${Math.max(0, Math.ceil(mission.t))}초`;
-    if (mission.d.check(mission, done)) { addScore(200); dog.hp = Math.min(7, dog.hp + 1); ach.missions = (ach.missions || 0) + 1; toast('✅ 돌발 미션 성공! +200점 ❤️+1'); SFX.quest(); endMission(); }
-    else if (done) { toast('⌛ 돌발 미션 실패… 다음 기회에!'); endMission(); }
+    $('mission').textContent = `${lang === 'ko' ? mission.d.text : t('ms' + MISSIONS.indexOf(mission.d))}  ⏱ ${Math.max(0, Math.ceil(mission.t))}초`;
+    if (mission.d.check(mission, done)) { addScore(200); dog.hp = Math.min(7, dog.hp + 1); ach.missions = (ach.missions || 0) + 1; toast(t('ts_ms_ok')); SFX.quest(); endMission(); }
+    else if (done) { toast(t('ts_ms_fail')); endMission(); }
   }
 }
 // 배지
@@ -2249,7 +2524,7 @@ function startLevel(i) {
   runNext = i;
   hideAll(); loadLevel(i);
   $('topbar').classList.remove('hidden');
-  const intro = () => showDialog(scaleNums(LEVELS[i].intro) + (level.scaled ? '\n\n🗺 이번 맵은 A~D 구역까지 넓어졌어. 미니맵을 보며 구석구석 수색해!' : ''), null, LEVELS[i].who);
+  const intro = () => showDialog(lang !== 'ko' ? t('intro').replace('{map}', mapName(i)).replace('{dog}', dogName) : scaleNums(LEVELS[i].intro) + (level.scaled ? '\n\n🗺 이번 맵은 A~D 구역까지 넓어졌어. 미니맵을 보며 구석구석 수색해!' : ''), null, LEVELS[i].who);
   playIntro(() => { if (!seenHowto) showHowto(intro); else intro(); });
 }
 function hideAll() { for (const id of ['login', 'maps', 'dlg', 'clear', 'rank', 'win', 'howto']) $(id).classList.add('hidden'); }
@@ -2257,7 +2532,7 @@ function hideAll() { for (const id of ['login', 'maps', 'dlg', 'clear', 'rank', 
 let dlgCb = null;
 function showDialog(text, cb, who) {
   state = 'dialog'; dlgCb = cb;
-  $('dtxt').textContent = text.split('관세청 탐지견').join(dogName); $('dwho').textContent = who; $('dok').textContent = '알겠어요! 멍!'; $('dlg').classList.remove('hidden'); keys = {};
+  $('dtxt').textContent = text.split('관세청 탐지견').join(dogName); $('dwho').textContent = who; $('dok').textContent = t('dk_ok'); $('dlg').classList.remove('hidden'); keys = {};
 }
 function closeDialog() {
   if (state !== 'dialog') return;
@@ -2266,9 +2541,9 @@ function closeDialog() {
 }
 function renderQuest() {
   if (!level) return;
-  $('qzone').textContent = level.relax ? `🌅 HIDDEN MAP · ${level.name}` : `${level.icon} MAP ${levelIdx + 1}/6 · ${level.name}`;
-  $('qtitle').textContent = level.name; $('qdesc').textContent = scaleNums(level.short) + (level.scaled ? ' · 🗺 A~D 구역까지 넓어졌어요!' : '');
-  $('qgoals').innerHTML = Object.entries(level.need).map(([k, n]) => { const v = Math.min(lvStats[k] || 0, n); return `<div class="goal ${v >= n ? 'done' : ''}"><span>${LABEL[k]}</span><b>${v}/${n}</b></div>`; }).join('');
+  $('qzone').textContent = level.relax ? `🌅 HIDDEN MAP · ${mapName(levelIdx)}` : `${level.icon} MAP ${levelIdx + 1}/6 · ${mapName(levelIdx)}`;
+  $('qtitle').textContent = mapName(levelIdx); $('qdesc').textContent = lang === 'ko' ? scaleNums(level.short) + (level.scaled ? ' · 🗺 A~D 구역까지 넓어졌어요!' : '') : t('s' + levelIdx);
+  $('qgoals').innerHTML = Object.entries(level.need).map(([k, n]) => { const v = Math.min(lvStats[k] || 0, n); return `<div class="goal ${v >= n ? 'done' : ''}"><span>${t('g_' + k)}</span><b>${v}/${n}</b></div>`; }).join('');
 }
 function addScore(n) { levelScore = Math.max(-500, levelScore + n); }
 function damage() {
@@ -2304,8 +2579,8 @@ function levelClear() {
   reportClear(levelIdx + 1, levelScore, runScore, runStage, Math.round(runTime));
   if (levelIdx === LEVELS.length - 1) return win();
   $('clrSub').textContent = `MAP ${levelIdx + 1} 클리어`;
-  $('clrTitle').textContent = `${level.icon} ${level.name} 통과!`;
-  $('clrStats').innerHTML = `⏱ 클리어 시간 <b>${fmtTime(levelTime)}</b><br>✅ 임무 완료 +300 · ⚡ 시간 보너스 +${timeBonus}<br>⭐ 이번 맵 <b>${levelScore}</b>점 · 누적 <b>${runScore}</b>점<br>🦴 간식 +${coinsGot}개 (맵 선택 화면 상점에서 사용)`;
+  $('clrTitle').textContent = `${level.icon} ${mapName(levelIdx)} ${t('clr_title')}`;
+  $('clrStats').innerHTML = `⏱ ${t('clr_time')} <b>${fmtTime(levelTime)}</b><br>✅ ${t('clr_bonus')} +${timeBonus}<br>⭐ ${t('clr_score')} <b>${levelScore}</b> / <b>${runScore}</b><br>🦴 ${t('clr_snack')} +${coinsGot}`;
   $('clear').classList.remove('hidden');
 }
 async function win() {
@@ -2359,7 +2634,7 @@ async function fetchRanking() {
 }
 function renderRanking(el, { list, online }, limit = 100) {
   const rows = list.slice(0, limit).map((r, i) => `<tr class="${r.player_id === playerId ? 'me' : ''}"><td>${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${r.title ? `<small style="color:#b07a00">${esc(r.title)}</small> ` : ''}${esc(r.player_id)}</td><td class="n">MAP ${r.stage}</td><td class="n">${fmtTime(r.secs)}</td><td class="n">${r.score}</td></tr>`).join('');
-  el.innerHTML = list.length ? `<table class="rank"><tr><th>순위</th><th>아이디</th><th class="n">도달</th><th class="n">시간</th><th class="n">점수</th></tr>${rows}</table>` : '<p style="font-size:14px;color:var(--muted)">아직 기록이 없어요. 첫 번째 주인공이 되어보세요!</p>';
+  el.innerHTML = list.length ? `<table class="rank"><tr>${t('rk_cols').split('|').map((h, i) => `<th${i > 1 ? ' class="n"' : ''}>${h}</th>`).join('')}</tr>${rows}</table>` : '<p style="font-size:14px;color:var(--muted)">아직 기록이 없어요. 첫 번째 주인공이 되어보세요!</p>';
   if (el.id === 'rankFull') $('rankSrv').textContent = online ? '🌐 온라인 랭킹 — 모든 플레이어 기록' : '📱 이 기기에 저장된 기록만 표시 중 (온라인 랭킹 서버 미연결)';
 }
 let rankPrev = null;
@@ -2387,8 +2662,8 @@ function showMaps(paused = false) {
   $('mapGrid').innerHTML = LEVELS.map((L, i) => {
     const locked = L.hidden ? prog.best[5] === undefined : i > prog.unlocked, cleared = !L.hidden && prog.best[i] !== undefined;
     const cur = pausedGame && i === levelIdx;
-    const st = cur ? '▶ 진행 중 · 눌러서 돌아가기' : locked ? (L.hidden ? '🔒 6개 맵을 모두 클리어하면 열려요' : '🔒 이전 맵을 클리어하세요') : cleared ? `✅ 최고 기록 ${fmtTime(prog.best[i])}` : '도전 가능';
-    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.hidden && locked ? "❓" : L.icon}</span><span class="no">${L.hidden ? "HIDDEN" : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? "??? 히든맵" : L.name}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? '🌅 휴식 맵' : '난이도 ' + '★'.repeat(L.diff.stars) + '☆'.repeat(5 - L.diff.stars)}</span></button>`;
+    const st = cur ? t('st_cur') : locked ? (L.hidden ? t('st_lockH') : t('st_lock')) : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
+    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.hidden && locked ? "❓" : L.icon}</span><span class="no">${L.hidden ? "HIDDEN" : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(5 - L.diff.stars)}</span></button>`;
   }).join('');
   renderBadges(); renderShop();
   $('pauseRow').classList.toggle('hidden', !pausedGame);
@@ -2428,15 +2703,15 @@ const STAT_NAMES = [['spd', '🏃 속도', '이동·달리기 속도'], ['nose',
 function renderBreeds() {
   if (!Object.keys(breedThumbs).length) makeBreedThumbs();
   const sb = BREEDS[pickBreed];
-  $('breedInfo').innerHTML = `<b>${sb.name}</b> — ${sb.desc}<br>` + STAT_NAMES.map(([k, n, t]) => `<span title="${t}" style="display:inline-block;min-width:150px">${n} <span style="color:#c98a00;letter-spacing:1px">${'★'.repeat(sb.stat[k])}${'☆'.repeat(5 - sb.stat[k])}</span></span>`).join(' ') + `<br><small style="color:#56708a">실제 효과: 이동 속도 ×${(.85 + .06 * sb.stat.spd).toFixed(2)} · 냄새 거리 ×${(.8 + .08 * sb.stat.nose).toFixed(2)} · 기력 소모 ×${(1.4 - .1 * sb.stat.sta).toFixed(2)} · 왕왕 범위 ×${(.8 + .06 * sb.stat.bark).toFixed(2)} · 왕왕 공격 간격 ×${(1.3 - .06 * sb.stat.bark).toFixed(2)} · 점프 ×${(.85 + .05 * sb.stat.jump).toFixed(2)}</small>`;
-  $('breeds').innerHTML = Object.entries(BREEDS).map(([k, b]) => `<button type="button" class="breed ${k === pickBreed ? 'on' : ''}" role="radio" aria-checked="${k === pickBreed}" data-k="${k}">${breedThumbs[k] ? `<img src="${breedThumbs[k]}" alt="" width="96" height="72">` : ""}${b.name}<small style="color:#56708a">${STAT_NAMES.filter(([k]) => b.stat[k] === 5).map(([, n]) => n.split(" ")[1] + " 최고").join(" · ") || "균형형"}</small></button>`).join('');
+  $('breedInfo').innerHTML = `<b>${t('b_' + pickBreed)}</b> — ${t('bd_' + pickBreed)}<br>` + STAT_NAMES.map(([k, n, tip]) => `<span title="${tip}" style="display:inline-block;min-width:150px">${t('sn_' + k)} <span style="color:#c98a00;letter-spacing:1px">${'★'.repeat(sb.stat[k])}${'☆'.repeat(5 - sb.stat[k])}</span></span>`).join(' ') + `<br><small style="color:#56708a">실제 효과: 이동 속도 ×${(.85 + .06 * sb.stat.spd).toFixed(2)} · 냄새 거리 ×${(.8 + .08 * sb.stat.nose).toFixed(2)} · 기력 소모 ×${(1.4 - .1 * sb.stat.sta).toFixed(2)} · 왕왕 범위 ×${(.8 + .06 * sb.stat.bark).toFixed(2)} · 왕왕 공격 간격 ×${(1.3 - .06 * sb.stat.bark).toFixed(2)} · 점프 ×${(.85 + .05 * sb.stat.jump).toFixed(2)}</small>`;
+  $('breeds').innerHTML = Object.entries(BREEDS).map(([k, b]) => `<button type="button" class="breed ${k === pickBreed ? 'on' : ''}" role="radio" aria-checked="${k === pickBreed}" data-k="${k}">${breedThumbs[k] ? `<img src="${breedThumbs[k]}" alt="" width="96" height="72">` : ""}${t('b_' + k)}<small style="color:#56708a">${STAT_NAMES.filter(([k]) => b.stat[k] === 5).map(([, n]) => n.split(" ")[1] + " 최고").join(" · ") || "균형형"}</small></button>`).join('');
 }
 $('breeds').addEventListener('click', e => { const t = e.target.closest('.breed'); if (!t) return; pickBreed = t.dataset.k; renderBreeds(); });
 let pickJob = 'customs', pickSkin = 1;
 function renderJobs() {
-  $('jobs').innerHTML = Object.entries(JOBS).map(([k, j]) => `<button type="button" class="breed ${k === pickJob ? 'on' : ''}" role="radio" aria-checked="${k === pickJob}" data-j="${k}"><span style="font-size:26px">${j.icon}</span>${j.name}</button>`).join('');
-  $('skins').innerHTML = '<span style="font-size:13px">피부색</span>' + SKIN_TONES.map((c, i) => `<button type="button" class="skin ${i === pickSkin ? 'on' : ''}" aria-label="피부색 ${i + 1}" data-s="${i}" style="background:#${new THREE.Color(c).getHexString()}"></button>`).join('');
-  $('jobInfo').innerHTML = `<b>${JOBS[pickJob].icon} ${JOBS[pickJob].name}</b> — ${JOBS[pickJob].desc}<br><small>피부색은 겉모습만 바뀌고 능력에는 영향이 없어요.</small>`;
+  $('jobs').innerHTML = Object.entries(JOBS).map(([k, j]) => `<button type="button" class="breed ${k === pickJob ? 'on' : ''}" role="radio" aria-checked="${k === pickJob}" data-j="${k}"><span style="font-size:26px">${j.icon}</span>${t('j_' + k)}</button>`).join('');
+  $('skins').innerHTML = `<span style="font-size:13px">${t('skin')}</span>` + SKIN_TONES.map((c, i) => `<button type="button" class="skin ${i === pickSkin ? 'on' : ''}" aria-label="피부색 ${i + 1}" data-s="${i}" style="background:#${new THREE.Color(c).getHexString()}"></button>`).join('');
+  $('jobInfo').innerHTML = `<b>${JOBS[pickJob].icon} ${t('j_' + pickJob)}</b> — ${t('jd_' + pickJob)}<br><small>${t('skin_note')}</small>`;
 }
 $('jobs').addEventListener('click', e => { const t = e.target.closest('[data-j]'); if (t) { pickJob = t.dataset.j; renderJobs(); } });
 $('skins').addEventListener('click', e => { const t = e.target.closest('[data-s]'); if (t) { pickSkin = +t.dataset.s; renderJobs(); } });
@@ -2448,16 +2723,17 @@ const rpc = (name, body) => fetch(RANK_CFG.url + '/rest/v1/rpc/' + name, { metho
 const loginErr = t => { $('pidErr').textContent = t; };
 async function login() {
   const v = $('pid').value.trim(), pw = $('ppw').value;
-  if (!/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr('아이디는 한글·영문·숫자·_ 로 2~12자여야 해요.');
-  if (pw.length < 4) return loginErr('비밀번호는 4자 이상이에요.');
+  if (!/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr(t('err_id'));
+  if (pw.length < 4) return loginErr(t('err_pw'));
+  if (!$('agree').checked) return loginErr(t('err_agree'));
   const dn = $('dname').value.trim();
-  if (!/^[가-힣A-Za-z0-9 ]{1,8}$/.test(dn)) return loginErr('탐지견 이름은 한글·영문·숫자 1~8자로 지어주세요.');
+  if (!/^[가-힣A-Za-z0-9 ]{1,8}$/.test(dn)) return loginErr(t('err_dog'));
   ac(); actx.resume?.(); setMusic(musicOn);
   $('btnLogin').disabled = true; loginErr('확인 중…');
   let res = 'offline';
   if (serverOn()) { try { const r = await rpc('login_player', { p_id: v, p_pw: pw }); if (r.ok) res = await r.json(); } catch { } }
   $('btnLogin').disabled = false;
-  if (res === 'bad') return loginErr('비밀번호가 틀렸어요. 5번 틀리면 5분간 잠겨요.');
+  if (res === 'bad') return loginErr(t('err_bad'));
   if (res === 'locked') return loginErr('비밀번호를 여러 번 틀려서 5분간 잠겼어요. 잠시 후 다시 시도하세요.');
   loginErr('');
   playerId = v; setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; store.set('k9id', v); runScore = 0; runNext = 0;
@@ -2474,6 +2750,7 @@ $('btnNext').onclick = () => startLevel(levelIdx + 1);
 $('btnToMaps').onclick = showMaps;
 $('btnHidden').onclick = () => startLevel(LEVELS.length - 1);
 $('btnWinMaps').onclick = () => { runNext = 0; showMaps(); };
+$('tbHome').onclick = () => { if (state === 'play' || state === 'dialog') { mpLeave(); runNext = 0; showMaps(false); toast('🏠 홈으로 돌아왔어요. 수고했어요!'); } };
 $('tbMaps').onclick = () => { if (state === 'play' || state === 'dialog') showMaps(true); };
 $('tbMusic').onclick = () => { ac(); setMusic(!musicOn); };
 $('tbRank').onclick = () => { if (state === 'play') openRank(); };
@@ -2486,13 +2763,13 @@ function reveal(c) {
   const s = textSprite(`${info.emoji} ${placeOf(c)} 속 ${info.name} 발견!`, { bg: info.bg, h: .6 });
   s.position.set(p.x, c.topY + 1.1, p.z); scene.add(s);
   effects.push({ kind: 'reveal', s, t: 0, c });
-  SFX.found(); toast(`${info.emoji} ${placeOf(c)} 속 ${info.name} 적발! 세관 단속반 출동…`);
+  SFX.found(); toast(lang === 'ko' ? `${info.emoji} ${placeOf(c)} 속 ${info.name} 적발! 세관 단속반 출동…` : `${info.emoji} ${t('i_' + c.hidden)} ${t('ts_found')}`);
   burst(p.x, c.topY, p.z, [info.color, WHITE], 30, 3);
 }
 function destroyItem(c) {
   const p = center(c), info = ITEM[c.hidden];
   tone(523, .15, 'square', .08); tone(784, .2, 'square', .08, 0, .16);
-  toast('🚨 범인 추적 시작!!'); spawnAgent({ c });
+  toast(t('ts_track')); spawnAgent({ c });
   const suspect = people.filter(q => q.villain && !q.arrested && !q.dead).sort((a, b) => Math.hypot(a.x - p.x, a.z - p.z) - Math.hypot(b.x - p.x, b.z - p.z))[0];
   if (suspect) { suspect.glow = 8; floatText('🎯 추적 대상!', suspect.x, 2.9, suspect.z, { h: .45, color: '#ff6b6b' }); }
   const pts = info.pts * comboHit();
@@ -2506,7 +2783,7 @@ function arrest(p) {
   SFX.arrest(); chiefSay(pick2(['체포 성공! 👏', '멋지다, 팀워크 최고!']));
   const pts = (p.kind === 'boss' ? 600 : 200) * comboHit(); addScore(pts); totals.arrests++; if (p.kind === 'boss') ach.boss++; else ach.arrest++; checkBadges();
   floatText(`🚔 체포! +${pts}`, p.x, 3, p.z, { color: '#7dd3ff' });
-  toast(p.kind === 'boss' ? '👑 밀수 조직 보스 체포!!' : '🚔 밀수범 체포 성공!');
+  toast(t(p.kind === 'boss' ? 'ts_boss' : 'ts_arrest'));
   lvStats[p.kind]++; checkQuest();
 }
 function bark() {
@@ -2528,7 +2805,7 @@ function bark() {
   if (best) return reveal(best);
   for (const c of colliders) {
     if (!c.search || c.checked || c.revealed) continue;
-    if (distToBox(dog.x, dog.z, c) < 1.1) { c.checked = true; addScore(-10); totals.mistakes++; toast(`🤔 깨끗한 물건(${placeOf(c)})이에요! 오탐 (-10)`); SFX.error(); if (handlerJob !== 'customs' || Math.random() < .5) damage(); break; }
+    if (distToBox(dog.x, dog.z, c) < 1.1) { c.checked = true; addScore(-10); totals.mistakes++; toast(lang === 'ko' ? `🤔 깨끗한 물건(${placeOf(c)})이에요! 오탐 (-10)` : t('ts_false')); SFX.error(); if (handlerJob !== 'customs' || Math.random() < .5) damage(); break; }
   }
 }
 
@@ -2636,7 +2913,7 @@ function updateDog(dt) {
     if (d < .85) moveCircle(dog, dx / d * (.85 - d), dz / d * (.85 - d), .5, false, dog.y);
   }
 
-  for (const b of balls) { if (b.got) continue; b.m.position.y = .5 + Math.sin(time * 3 + b.x) * .15; b.m.rotation.y += dt * 3; if (Math.hypot(b.x - dog.x, b.z - dog.z) < 1 && dog.y < 1.2) { b.got = true; ballsGot++; world.remove(b.m); dog.hp = Math.min(7, dog.hp + 1); dog.boost = 6; SFX.found(); burst(b.x, .6, b.z, [new THREE.Color(0xc8e632), WHITE], 25, 3); toast('🎾 공 획득! 체력 +1 · 6초간 스피드 업'); } }
+  for (const b of balls) { if (b.got) continue; b.m.position.y = .5 + Math.sin(time * 3 + b.x) * .15; b.m.rotation.y += dt * 3; if (Math.hypot(b.x - dog.x, b.z - dog.z) < 1 && dog.y < 1.2) { b.got = true; ballsGot++; world.remove(b.m); dog.hp = Math.min(7, dog.hp + 1); dog.boost = 6; SFX.found(); burst(b.x, .6, b.z, [new THREE.Color(0xc8e632), WHITE], 25, 3); toast(t('ts_ball')); } }
   if (barkQ && dog.barkCd <= 0) bark();
   barkQ = false; dog.barkCd -= dt;
 
@@ -2901,6 +3178,36 @@ function loop() {
 loop();
 setMusic(musicOn);
 showLogin();
+const I18N_EL = [
+  [() => $('login').querySelector('.sub'), 'ls_sub'], [() => $('login').querySelector('h1'), 'ls_h1'], [() => $('login').querySelector('p'), 'ls_p'],
+  [() => document.querySelector('label[for=pid]'), 'ls_id'], [() => document.querySelector('label[for=ppw]'), 'ls_pw'], [() => document.querySelector('label[for=dname]'), 'ls_dog'],
+  [() => $('breeds').previousElementSibling, 'ls_breed'], [() => $('jobs').previousElementSibling, 'ls_hand'], [() => $('btnLogin'), 'ls_login'], [() => $('rankMini').previousElementSibling, 'ls_top'],
+  [() => { const n = $('login').querySelectorAll('.notice'); return n[n.length - 2]; }, 'ls_ad'], [() => { const n = $('login').querySelectorAll('.notice'); return n[n.length - 1]; }, 'ls_note'],
+  [() => $('agreeTxt'), 'agree'], [() => $('ageTxt'), 'age'],
+  [() => $('maps').querySelector('h1'), 'mp_h1'], [() => $('maps').querySelector('p'), 'mp_p'], [() => $('btnRankOpen'), 'b_rank'], [() => $('btnLogout'), 'b_logout'], [() => $('btnResume'), 'b_resume'], [() => $('btnRestartMap'), 'b_restart'],
+  [() => $('howto').querySelector('.sub'), 'ht_sub'], [() => $('howto').querySelector('h1'), 'ht_h1'], [() => $('howto').querySelectorAll('p')[0], 'ht_p'], [() => $('howto').querySelectorAll('p')[1], 'ht_rules'], [() => $('btnHowtoOk'), 'ht_ok'],
+  [() => $('btnNext'), 'cl_next'], [() => $('btnToMaps'), 'cl_maps'], [() => $('rank').querySelector('.sub'), 'rk_sub'], [() => $('rank').querySelector('h1'), 'rk_h1'], [() => $('btnRankClose'), 'rk_close'],
+  [() => $('win').querySelector('.sub'), 'wn_sub'], [() => $('win').querySelector('h1'), 'wn_h1'], [() => $('btnHidden'), 'wn_hidden'], [() => $('btnWinMaps'), 'wn_maps'],
+  [() => $('keys'), 'hud_keys'], [() => $('stam').previousElementSibling, 'hud_stam'], [() => $('scent').previousElementSibling, 'hud_scent'],
+];
+function applyLang() {
+  const set = (el, key) => { if (!el) return; if (el.dataset.ko === undefined) el.dataset.ko = el.innerHTML; el.innerHTML = lang === 'ko' ? el.dataset.ko : (DICT[lang]?.[key] ?? el.dataset.ko); };
+  for (const [get, key] of I18N_EL) set(get(), key);
+  document.querySelectorAll('.ctl:not(.touchonly)').forEach(el => set(el, 'ht_ctl'));
+  document.querySelectorAll('.ctl.touchonly').forEach(el => set(el, 'ht_touch'));
+  for (const [id, key] of [['pid', 'ph_id'], ['ppw', 'ph_pw'], ['dname', 'ph_dog']]) { const el = $(id); if (el.dataset.kop === undefined) el.dataset.kop = el.placeholder; el.placeholder = lang === 'ko' ? el.dataset.kop : (DICT[lang]?.[key] ?? el.dataset.kop); }
+  $('btnMode').textContent = t(twoP ? 'mode2' : 'mode1');
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.card').forEach(c => c.dir = lang === 'ar' ? 'rtl' : 'ltr');
+  renderBreeds(); renderJobs(); renderLangs();
+  if (state === 'maps') showMaps(pausedGame);
+  if (level) renderQuest();
+}
+function renderLangs() {
+  document.querySelectorAll('.langs').forEach(box => box.innerHTML = LANGS.map(([k, n, svg]) => `<button type="button" class="langbtn ${k === lang ? 'on' : ''}" data-lang="${k}" aria-label="${n}"><svg viewBox="0 0 30 20">${svg}</svg>${n}</button>`).join(''));
+}
+document.addEventListener('click', e => { const b = e.target.closest('.langbtn'); if (!b) return; lang = b.dataset.lang; try { localStorage.setItem('k9lang', lang); } catch { } applyLang(); });
+applyLang();
 window.__cover = () => {
   hideAll(); setDog('beagle', '킁킁이'); loadLevel(4); state = 'photo'; photoPose = 4.1;
   const sp = level.spawn; Object.assign(dog, { x: sp.x, z: sp.z - 2, dir: 0 }); Object.assign(handler, { x: sp.x + 1.7, z: sp.z - 3.2, dir: 0 }); photoDir = 0;
