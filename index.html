@@ -161,27 +161,27 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div class="sub">관세청 일일 특강 교육 게임</div>
  <h1>🐕 탐지견 킁킁 게임</h1>
  <p>나만의 <b>탐지견</b>을 만들어 공항부터 보세창고까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
- <label for="pid" style="font-weight:700;color:var(--navy)">🔑 아이디 <small style="font-weight:500;color:var(--muted)">(이메일 주소 · 랭킹에 공개되지 않아요)</small></label>
+ <label for="pid" id="lbId" style="font-weight:700;color:var(--navy)">🔑 아이디 <small style="font-weight:500;color:var(--muted)">(이메일 주소 · 랭킹에 공개되지 않아요)</small></label>
  <input id="pid" type="email" inputmode="email" maxlength="60" placeholder="예: dkslek123@google.com" autocomplete="email">
  <label for="ppw" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">비밀번호</label>
  <input id="ppw" type="password" maxlength="32" placeholder="4자 이상 · 처음 접속이면 지금 정한 비밀번호로 가입돼요" autocomplete="current-password">
- <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:14px;font-weight:700;color:var(--navy)"><input type="checkbox" id="remember" checked style="width:18px;height:18px"> 아이디 기억하기 <small style="font-weight:500;color:var(--muted)">(다음부터 비밀번호만 입력)</small></label>
+ <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:14px;font-weight:700;color:var(--navy)"><input type="checkbox" id="remember" checked style="width:18px;height:18px"> <span id="lbRemember">아이디 기억하기 <small style="font-weight:500;color:var(--muted)">(다음부터 비밀번호만 입력)</small></span></label>
  <div class="notice" style="font-size:13px;line-height:1.65;margin-top:10px;background:#f4f7fb">
-  <b>📋 개인정보(이메일) 수집·이용 안내</b>
-  <details><summary style="cursor:pointer;color:var(--navy);font-weight:700">자세히 보기</summary>
+  <span id="pvTitle"><b>📋 개인정보(이메일) 수집·이용 안내</b></span>
+  <details><summary id="pvMore" style="cursor:pointer;color:var(--navy);font-weight:700">자세히 보기</summary><div id="pvBody">
   · <b>수집 항목</b>: 이메일 주소(아이디), 비밀번호(복호화할 수 없게 암호화해 저장), 핸들러 닉네임, 탐지견 이름, 게임 기록(점수·시간)<br>
   · <b>이용 목적</b>: 로그인과 기록 저장, 랭킹 표시. 랭킹에는 <b>닉네임과 탐지견 이름만</b> 보이고 이메일은 공개되지 않아요. 광고·홍보 메일을 보내지 않아요.<br>
   · <b>보관 기간</b>: 직접 삭제할 때까지. 아래 <b>🗑 내 정보 삭제</b>를 누르면 바로 모두 지워져요.<br>
   · <b>보관 장소</b>: 게임 랭킹 서버(Supabase, 서울 리전). '아이디 기억하기'를 켜면 이 기기 브라우저에도 이메일이 저장돼요.<br>
   · <b>동의하지 않을 권리</b>: 동의하지 않아도 <b>👀 체험하기</b>로 게임을 할 수 있어요(랭킹 미반영, 이 기기에만 저장).<br>
   · <b>만 14세 미만</b>은 법에 따라 <b>보호자(법정대리인)의 동의</b>가 필요해요. 보호자와 함께 읽고 동의해 주세요.
-  </details>
-  <label style="display:flex;gap:6px;align-items:flex-start;margin-top:6px"><input type="checkbox" id="pcons" style="width:18px;height:18px;flex:none"> <span><b>[필수]</b> 위 개인정보(이메일) 수집·이용에 동의해요</span></label>
-  <label style="display:flex;gap:6px;align-items:flex-start;margin-top:4px"><input type="checkbox" id="age14" style="width:18px;height:18px;flex:none"> <span><b>[필수]</b> 만 14세 이상이에요 · 만 14세 미만이면 보호자가 함께 읽고 동의했어요</span></label>
+  </div></details>
+  <label style="display:flex;gap:6px;align-items:flex-start;margin-top:6px"><input type="checkbox" id="pcons" style="width:18px;height:18px;flex:none"> <span id="pvC1"><b>[필수]</b> 위 개인정보(이메일) 수집·이용에 동의해요</span></label>
+  <label style="display:flex;gap:6px;align-items:flex-start;margin-top:4px"><input type="checkbox" id="age14" style="width:18px;height:18px;flex:none"> <span id="pvC2"><b>[필수]</b> 만 14세 이상이에요 · 만 14세 미만이면 보호자가 함께 읽고 동의했어요</span></label>
  </div>
  <div id="charSum" class="notice hidden" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px"><span id="charSumTxt"></span><button class="alt" id="btnCharEdit" style="font-size:13px;padding:6px 10px;border-radius:10px">✏ 캐릭터 바꾸기</button></div>
  <div id="charBox">
- <label for="nick" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">🧑‍✈️ 핸들러 닉네임 <small style="font-weight:500;color:var(--muted)">(게임·랭킹에 보이는 이름)</small></label>
+ <label for="nick" id="lbNick" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">🧑‍✈️ 핸들러 닉네임 <small style="font-weight:500;color:var(--muted)">(게임·랭킹에 보이는 이름)</small></label>
  <input id="nick" maxlength="10" placeholder="예: 번개반장, 킁킁대장 (1~10자)" autocomplete="nickname">
  <label for="dname" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">🐕 나만의 탐지견 닉네임</label>
  <input id="dname" maxlength="8" placeholder="예: 보리, 번개, 레오 (1~8자)" autocomplete="off">
@@ -197,7 +197,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div class="agreebox"><label><input type="checkbox" id="agree"> <span id="agreeTxt">✅ 게임 이용 안내에 동의해요 · 친구에게 친절하게, 비밀번호는 비밀! (이 게임은 개인정보를 수집하지 않아요)</span></label><div id="ageTxt">🎮 이용 등급: 전체 이용가 (권장 만 7세 이상 · 자체 기준)</div></div>
  <div class="row"><button class="big" id="btnLogin">접속하기</button><button class="big alt" id="btnGuest">👀 체험하기</button></div>
  <div style="text-align:right;margin-top:4px"><button class="alt" id="btnDelMe" style="font-size:12px;padding:5px 10px;border-radius:9px">🗑 내 정보 삭제</button></div>
- <h2 style="margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">🏆 TOP 100 랭킹 <button class="alt" id="btnRankAll" style="font-size:13px;padding:6px 12px;border-radius:10px">📋 전체 랭킹 보기</button></h2>
+ <h2 style="margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span id="topTxt">🏆 TOP 100 랭킹</span> <button class="alt" id="btnRankAll" style="font-size:13px;padding:6px 12px;border-radius:10px">📋 전체 랭킹 보기</button></h2>
  <div class="rankwrap" id="rankMini"></div>
  <div class="notice" style="background:#13335a;color:#fff;font-size:13px">📢 <b style="color:#f4c542">관세청 공익광고</b> · 마약·총기 밀수 신고는 <b style="color:#f4c542">☎ 125</b> (관세청 밀수신고센터) · 여행자 휴대품은 자진신고하세요</div>
  <div class="notice">※ 관세청 일일 특강용 교육 게임입니다. 세관 업무 이해를 돕기 위해 만들었으며, 등장인물과 사건은 모두 가상입니다.</div>
@@ -547,6 +547,14 @@ const KO = {
   skin: '피부색', skin_note: '피부색은 겉모습만 바뀌고 능력에는 영향이 없어요.', mode1: '👤 1인 모드 (눌러서 2인 협동 모드로)', mode2: '👥 2인 협동 모드 (P1 탐지견 · P2 핸들러)',
   err_id: '아이디는 한글·영문·숫자·_ 로 2~12자여야 해요.', err_pw: '비밀번호는 4자 이상이에요.', err_dog: '탐지견 이름은 한글·영문·숫자 1~8자로 지어주세요.', err_bad: '비밀번호가 틀렸어요. 5번 틀리면 5분간 잠겨요.', dk_ok: '알겠어요! 멍!',
 };
+// 새 문구 (명소 맵·로그인·개인정보 안내 등)
+const DICT2 = {"en":{"m":["Post Office","Prison","Seoul Station","Inside the KTX","Bus Terminal","Inside a Plane","Myeongdong","Gyeongbokgung Palace","Hongdae","Lotte World Tower","Dongdaemun","Gwangalli Beach","Sungnyemun Gate","Suwon Hwaseong","Gyeongju","N Seoul Tower","Haeundae","Hallasan, Jeju","Pohang Space Walk","Jeonju Hanok Village","Gwanghwamun Square","Cheong Wa Dae","National Assembly"],"s":["Search counters, parcel desks, P.O. boxes and the conveyor.","Patrol the walls, cell blocks, yard and visiting room.","Old station, glass station, Seoullo 7017 and KTX platforms.","Search under seats and in luggage racks of a 300 km/h train.","Bus bays, waiting hall, ticket office and taxi stand. Mind the buses!","Business and economy seats, galley and restrooms.","Street food stalls, cosmetics shops and Myeongdong Cathedral.","Gwanghwamun, Geunjeongjeon, Gyeonghoeru and Hyangwonjeong.","Busking stage, university gate, playground and Gyeongui Line Forest.","555 m tower, Seokchon Lake, mall and aquarium.","DDP, LED rose garden, Heunginjimun and Cheonggyecheon.","Crescent beach, Gwangan Bridge and a drone show.","National Treasure gate in a busy roundabout and Namdaemun Market.","Fortress gates, watchtowers, pavilions and the dragon train.","Cheomseongdae, royal tombs, Bulguksa, Seokguram and Wolji pond.","Love locks, beacon mounds, pavilion and cable car.","Long beach, skyscrapers, sky capsules and Dongbaek Island.","Climb to Baengnokdam crater. Tangerines, canola flowers, haenyeo.","The 333 m steel walkway, Yeongil Bay and the Hand of Harmony.","Tiled roofs, Pungnammun, Jeondong Cathedral and Gyeonggijeon.","King Sejong and Admiral Yi statues, fountains and Gwanghwamun.","Blue-roofed main hall, guest house, pine garden and Bugaksan.","Green dome, 24 columns, Haetae statues and the Han River."],"ui":{"ls_id":"🔑 ID <small style=\"font-weight:500;color:var(--muted)\">(email address · never shown in the ranking)</small>","ph_id":"e.g. dkslek123@google.com","ls_remember":"Remember my ID <small style=\"font-weight:500;color:var(--muted)\">(next time, password only)</small>","pv_title":"<b>📋 Notice on collecting personal info (email)</b>","pv_more":"Show details","pv_body":"· <b>Items</b>: email (ID), password (stored irreversibly encrypted), handler nickname, dog name, game records (score, time)<br>· <b>Purpose</b>: login, saving records, ranking. Only the <b>nickname and dog name</b> are shown; your email is never public. No marketing email.<br>· <b>Retention</b>: until you delete it. Press <b>🗑 Delete my data</b> to erase everything at once.<br>· <b>Where</b>: game ranking server (Supabase, Seoul region). With “Remember my ID”, the email is also saved in this browser.<br>· <b>Right to refuse</b>: you can still play with <b>👀 Try as guest</b> (no ranking, saved on this device only).<br>· Under 14: Korean law requires <b>a parent or guardian’s consent</b>. Please read this together.","pv_c1":"<b>[Required]</b> I agree to the collection and use of my personal info (email)","pv_c2":"<b>[Required]</b> I am 14 or older · if under 14, my parent/guardian read this and agreed","ls_nick":"🧑‍✈️ Handler nickname <small style=\"font-weight:500;color:var(--muted)\">(shown in game and ranking)</small>","ph_nick":"e.g. Captain Bolt (1–10 chars)","ls_dog":"🐕 Your detector dog’s nickname","ls_edit":"✏ Edit character","b_guest":"👀 Try as guest","b_delme":"🗑 Delete my data","ls_top":"🏆 TOP 100 Ranking","b_rankall":"📋 Full ranking","mp_p":"Clear maps 1–5 in any order! Clearing all five opens the 👑 boss fight (map 6), and catching the boss opens the 🌅 hidden map. Your score adds up during one operation.","st_lockB":"🔒 Clear maps 1–5 first","st_run":"✅ Cleared this run","err_email":"Please enter your email address as your ID (e.g. dkslek123@google.com)","err_consent":"Please read the privacy notice and tick both [Required] boxes. If you don’t agree, use 👀 Try as guest.","err_nick":"Handler nickname must be 1–10 letters or numbers.","del_need":"Enter your ID (email) and password first to delete.","del_fail":"Could not delete. Please check your ID and password.","del_done":"🗑 All your data has been deleted.","del_confirm":"Delete all your data?\nYour email, password, nickname and ranking records will be erased from the server and cannot be restored.","ts_guest":"👀 Guest mode · not ranked, saved on this device only","tod_day":"☀ {city} {time} · Day mission","tod_dusk":"🌇 {city} {time} · Sunset mission","tod_night":"🌙 {city} {time} · Night mission","ts_leak_warn":"⏳ Find contraband in 10 seconds or it slips through customs!","dlg_leak":"🚨 Alert! {item} slipped through customs into the market…\n\nPenalty −200\n\nHurry and search with your dog! More contraband slips out as time passes.","ts_shot":"🔫 You were shot by a smuggler! Dodge sideways or jump","lbl_gate":"Extra gate","lbl_lm":"Landmark","sep_lm":"🇰🇷 Korean landmark patrol · {n} places","sep_note":"(free play · not in the online ranking)","qz_gate":"🛃 Extra gate","qz_lm":"🇰🇷 Landmark patrol","clr_lm_sub":"🇰🇷 Patrol complete","clr_lm_title":"patrol success!","clr_lm_note":"Landmark scores are separate from the online ranking","ts_boss_rank":"ℹ Clear maps 1–5 and the boss in one operation to post your online score","who_fmt":"🕵 {nick} handler · {score} pts","run_fmt":" · this run {n}/6","hd_word":"handler"}},"zh":{"m":["邮局","监狱","首尔站","KTX列车内","巴士客运站","飞机客舱","明洞","景福宫","弘大","乐天世界塔","东大门","广安里海滩","崇礼门","水原华城","庆州","N首尔塔","海云台","济州汉拿山","浦项太空步道","全州韩屋村","光化门广场","青瓦台","国会议事堂"],"s":["搜查柜台、包裹台、邮政信箱和传送带。","巡逻围墙、监舍、操场和会见室。","老站舍、玻璃新站、首尔路7017和KTX站台。","在时速300公里的列车上搜查座位下和行李架。","站台、候车大厅、售票处和出租车站。小心巴士！","商务舱、经济舱、厨房和洗手间。","小吃摊、化妆品店和明洞天主教堂。","光化门、勤政殿、庆会楼和香远亭。","街头表演舞台、大学正门、游乐场和京义线林荫路。","555米高塔、石村湖、商场和水族馆。","DDP、LED玫瑰园、兴仁之门和清溪川。","半月形海滩、广安大桥和无人机表演。","车流环绕的国宝城门和南大门市场。","城门、望楼、亭子和龙头观光车。","瞻星台、古坟、佛国寺、石窟庵和月池。","爱情锁、烽燧台、八角亭和缆车。","长长的沙滩、摩天楼、天空胶囊和冬柏岛。","登上白鹿潭火山口。橘子、油菜花、海女。","333米钢铁步道、迎日湾和相生之手。","瓦片屋顶、丰南门、殿洞圣堂和庆基殿。","世宗大王和李舜臣将军铜像、喷泉和光化门。","蓝瓦本馆、迎宾馆、松树庭园和北岳山。","绿色圆顶、24根柱子、獬豸像和汉江。"],"ui":{"ls_id":"🔑 账号 <small style=\"font-weight:500;color:var(--muted)\">(电子邮箱 · 不会在排行榜公开)</small>","ph_id":"例：dkslek123@google.com","ls_remember":"记住账号 <small style=\"font-weight:500;color:var(--muted)\">(下次只需输入密码)</small>","pv_title":"<b>📋 个人信息（电子邮箱）收集与使用说明</b>","pv_more":"查看详情","pv_body":"· <b>收集项目</b>：电子邮箱（账号）、密码（不可逆加密保存）、训导员昵称、犬名、游戏记录（分数、时间）<br>· <b>使用目的</b>：登录、保存记录、排行榜。排行榜只显示<b>昵称和犬名</b>，邮箱不会公开，也不会发送广告邮件。<br>· <b>保存期限</b>：直到你删除为止。点击<b>🗑 删除我的信息</b>即可全部删除。<br>· <b>保存位置</b>：游戏排行榜服务器（Supabase，首尔区域）。开启“记住账号”时，邮箱也会保存在本浏览器。<br>· <b>拒绝的权利</b>：不同意也可以用<b>👀 体验模式</b>游玩（不计入排行榜，仅保存在本设备）。<br>· 未满14岁：根据韩国法律需要<b>父母或监护人同意</b>，请一起阅读。","pv_c1":"<b>[必选]</b> 我同意收集和使用个人信息（电子邮箱）","pv_c2":"<b>[必选]</b> 我已满14岁 · 未满14岁时监护人已阅读并同意","ls_nick":"🧑‍✈️ 训导员昵称 <small style=\"font-weight:500;color:var(--muted)\">(在游戏和排行榜中显示)</small>","ph_nick":"例：闪电队长（1–10字）","ls_dog":"🐕 你的缉毒犬昵称","ls_edit":"✏ 修改角色","b_guest":"👀 体验模式","b_delme":"🗑 删除我的信息","ls_top":"🏆 TOP 100 排行榜","b_rankall":"📋 全部排名","mp_p":"地图1–5可以按任意顺序挑战！全部通关后开启👑头目战（地图6），抓住头目后开启🌅隐藏地图。一次行动中的分数会累计。","st_lockB":"🔒 先通关地图1–5","st_run":"✅ 本次已通关","err_email":"请用电子邮箱作为账号（例：dkslek123@google.com）","err_consent":"请阅读个人信息说明并勾选两个[必选]项。如不同意，可使用👀体验模式。","err_nick":"训导员昵称须为1–10个字母或数字。","del_need":"删除前请先输入账号（邮箱）和密码","del_fail":"删除失败，请检查账号和密码。","del_done":"🗑 你的信息已全部删除。","del_confirm":"确定删除你的全部信息吗？\n邮箱、密码、昵称和排行记录将从服务器删除，且无法恢复。","ts_guest":"👀 体验模式 · 不计入排行榜，仅保存在本设备","tod_day":"☀ {city} {time} · 白天行动","tod_dusk":"🌇 {city} {time} · 黄昏行动","tod_night":"🌙 {city} {time} · 夜间行动","ts_leak_warn":"⏳ 10秒内找不到走私品，就会被通关放行！","dlg_leak":"🚨 警报！{item}偷偷通过海关流入市场了…\n\n扣分 −200\n\n快和缉毒犬一起搜查！时间越久，流出的走私品越多。","ts_shot":"🔫 你被走私犯开枪击中！向旁边躲开或跳跃","lbl_gate":"追加关口","lbl_lm":"名胜","sep_lm":"🇰🇷 韩国名胜巡逻 · {n}处","sep_note":"(自由游玩 · 不计入在线排行榜)","qz_gate":"🛃 追加关口","qz_lm":"🇰🇷 名胜巡逻","clr_lm_sub":"🇰🇷 巡逻完成","clr_lm_title":"巡逻成功！","clr_lm_note":"名胜地图的分数与在线排行榜分开","ts_boss_rank":"ℹ 在一次行动中通关地图1–5并抓住头目，在线排名分数才会上升","who_fmt":"🕵 {nick} 训导员 · {score}分","run_fmt":" · 本次 {n}/6","hd_word":"训导员"}},"hi":{"m":["डाकघर","जेल","सियोल स्टेशन","KTX ट्रेन के अंदर","बस टर्मिनल","हवाई जहाज़ के अंदर","म्योंगडोंग","ग्योंगबोकगुंग महल","होंगडे","लोट्टे वर्ल्ड टावर","दोंगदेमुन","ग्वांगअल्ली बीच","सुंगन्येमुन द्वार","सुवोन ह्वासोंग","ग्योंगजू","एन सियोल टावर","हेउंदे","जेजू हल्लासान","पोहांग स्पेस वॉक","जियोनजू हानोक गाँव","ग्वांगह्वामुन चौक","छोंग वा दे","राष्ट्रीय सभा"],"s":["काउंटर, पार्सल डेस्क, पोस्ट बॉक्स और कन्वेयर खोजें।","दीवारें, कैदी भवन, मैदान और मुलाक़ात कक्ष की गश्त करें।","पुराना स्टेशन, काँच का स्टेशन, सियोल्लो 7017 और KTX प्लेटफ़ॉर्म।","300 किमी/घंटा की ट्रेन में सीटों के नीचे और सामान रैक खोजें।","बस स्टैंड, प्रतीक्षालय, टिकट घर और टैक्सी स्टैंड। बसों से सावधान!","बिज़नेस व इकॉनमी सीटें, गैली और शौचालय।","खाने के ठेले, कॉस्मेटिक दुकानें और म्योंगडोंग कैथेड्रल।","ग्वांगह्वामुन, ग्युनजोंगजोन, ग्योंगह्वेरू और ह्यांगवोनजोंग।","बस्किंग मंच, विश्वविद्यालय द्वार, खेल का मैदान और वन मार्ग।","555 मीटर टावर, सोकचोन झील, मॉल और एक्वेरियम।","DDP, LED गुलाब बाग़, ह्युंगइनजिमुन और छोंगग्येछोन।","अर्धचंद्र बीच, ग्वांगान पुल और ड्रोन शो।","व्यस्त चौराहे में राष्ट्रीय धरोहर द्वार और नामदेमुन बाज़ार।","किले के द्वार, निगरानी मीनारें, मंडप और ड्रैगन ट्रेन।","छोमसोंगदे, राजकीय मकबरे, बुलगुकसा, सोकगुरम और वोलजी तालाब।","प्रेम ताले, संकेत अग्नि-स्तंभ, मंडप और केबल कार।","लंबा समुद्र तट, गगनचुंबी इमारतें, स्काई कैप्सूल और दोंगबेक द्वीप।","बेगनोकदम क्रेटर तक चढ़ें। संतरे, सरसों के फूल, हेन्यो।","333 मीटर स्टील पथ, योंगिल खाड़ी और सद्भाव का हाथ।","खपरैल छतें, पुंगनाममुन, जोंदोंग कैथेड्रल और ग्योंगगिजोन।","राजा सेजोंग व एडमिरल यी की मूर्तियाँ, फव्वारे और ग्वांगह्वामुन।","नीली छत वाला मुख्य भवन, अतिथि गृह, चीड़ बाग़ और बुगाकसान।","हरा गुंबद, 24 स्तंभ, हेते मूर्तियाँ और हान नदी।"],"ui":{"ls_id":"🔑 आईडी <small style=\"font-weight:500;color:var(--muted)\">(ईमेल · रैंकिंग में नहीं दिखेगा)</small>","ph_id":"उदा. dkslek123@google.com","ls_remember":"मेरी आईडी याद रखें <small style=\"font-weight:500;color:var(--muted)\">(अगली बार सिर्फ़ पासवर्ड)</small>","pv_title":"<b>📋 व्यक्तिगत जानकारी (ईमेल) संग्रह की सूचना</b>","pv_more":"विवरण देखें","pv_body":"· <b>क्या लिया जाता है</b>: ईमेल (आईडी), पासवर्ड (उलटा न जा सकने वाले एन्क्रिप्शन में), हैंडलर उपनाम, कुत्ते का नाम, खेल रिकॉर्ड (अंक, समय)<br>· <b>उद्देश्य</b>: लॉगिन, रिकॉर्ड सहेजना, रैंकिंग। रैंकिंग में केवल <b>उपनाम और कुत्ते का नाम</b> दिखते हैं; ईमेल कभी सार्वजनिक नहीं होता। कोई प्रचार ईमेल नहीं।<br>· <b>अवधि</b>: जब तक आप हटाएँ नहीं। <b>🗑 मेरी जानकारी हटाएँ</b> दबाते ही सब मिट जाता है।<br>· <b>स्थान</b>: गेम रैंकिंग सर्वर (Supabase, सियोल)। “आईडी याद रखें” चालू होने पर ईमेल इस ब्राउज़र में भी रहता है।<br>· <b>मना करने का अधिकार</b>: सहमति के बिना भी <b>👀 मेहमान बनकर खेलें</b> (रैंकिंग नहीं, केवल इस डिवाइस पर)।<br>· 14 वर्ष से कम: कोरियाई कानून के अनुसार <b>माता-पिता/अभिभावक की सहमति</b> ज़रूरी है। कृपया साथ में पढ़ें।","pv_c1":"<b>[आवश्यक]</b> मैं अपनी व्यक्तिगत जानकारी (ईमेल) के संग्रह और उपयोग से सहमत हूँ","pv_c2":"<b>[आवश्यक]</b> मेरी उम्र 14+ है · 14 से कम हो तो अभिभावक ने पढ़कर सहमति दी है","ls_nick":"🧑‍✈️ हैंडलर उपनाम <small style=\"font-weight:500;color:var(--muted)\">(खेल और रैंकिंग में दिखेगा)</small>","ph_nick":"उदा. बिजली कप्तान (1–10 अक्षर)","ls_dog":"🐕 आपके खोजी कुत्ते का उपनाम","ls_edit":"✏ किरदार बदलें","b_guest":"👀 मेहमान बनकर खेलें","b_delme":"🗑 मेरी जानकारी हटाएँ","ls_top":"🏆 TOP 100 रैंकिंग","b_rankall":"📋 पूरी रैंकिंग","mp_p":"नक्शे 1–5 किसी भी क्रम में पूरे करें! पाँचों पूरे होने पर 👑 बॉस लड़ाई (नक्शा 6) खुलती है, और बॉस पकड़ने पर 🌅 छिपा नक्शा। एक अभियान के अंक जुड़ते जाते हैं।","st_lockB":"🔒 पहले नक्शे 1–5 पूरे करें","st_run":"✅ इस अभियान में पूरा","err_email":"कृपया आईडी के रूप में अपना ईमेल लिखें (उदा. dkslek123@google.com)","err_consent":"सूचना पढ़कर दोनों [आवश्यक] बॉक्स चुनें। सहमत नहीं हैं तो 👀 मेहमान बनकर खेलें।","err_nick":"हैंडलर उपनाम 1–10 अक्षर या अंक का हो।","del_need":"हटाने से पहले आईडी (ईमेल) और पासवर्ड लिखें","del_fail":"हटा नहीं सके। आईडी और पासवर्ड जाँचें।","del_done":"🗑 आपकी सारी जानकारी हटा दी गई।","del_confirm":"क्या आप अपनी सारी जानकारी हटाना चाहते हैं?\nईमेल, पासवर्ड, उपनाम और रैंकिंग रिकॉर्ड सर्वर से मिट जाएँगे और वापस नहीं आएँगे।","ts_guest":"👀 मेहमान मोड · रैंकिंग नहीं, केवल इस डिवाइस पर","tod_day":"☀ {city} {time} · दिन का अभियान","tod_dusk":"🌇 {city} {time} · सूर्यास्त अभियान","tod_night":"🌙 {city} {time} · रात का अभियान","ts_leak_warn":"⏳ 10 सेकंड में तस्करी का सामान न मिला तो वह सीमा पार कर जाएगा!","dlg_leak":"🚨 चेतावनी! {item} चुपके से सीमा शुल्क पार कर बाज़ार में पहुँच गया…\n\nदंड −200\n\nअपने कुत्ते के साथ जल्दी खोजें! समय बीतने पर और सामान निकल जाएगा।","ts_shot":"🔫 तस्कर ने गोली चलाई! बगल में हटें या कूदें","lbl_gate":"अतिरिक्त द्वार","lbl_lm":"स्थल","sep_lm":"🇰🇷 कोरिया के प्रसिद्ध स्थल · {n} जगहें","sep_note":"(मुक्त खेल · ऑनलाइन रैंकिंग में नहीं)","qz_gate":"🛃 अतिरिक्त द्वार","qz_lm":"🇰🇷 स्थल गश्त","clr_lm_sub":"🇰🇷 गश्त पूरी","clr_lm_title":"गश्त सफल!","clr_lm_note":"स्थल नक्शों के अंक ऑनलाइन रैंकिंग से अलग हैं","ts_boss_rank":"ℹ ऑनलाइन अंक के लिए एक ही अभियान में नक्शे 1–5 और बॉस पूरे करें","who_fmt":"🕵 {nick} हैंडलर · {score} अंक","run_fmt":" · यह अभियान {n}/6","hd_word":"हैंडलर"}},"ar":{"m":["مكتب البريد","السجن","محطة سيول","داخل قطار KTX","محطة الحافلات","داخل الطائرة","ميونغدونغ","قصر غيونغبوكغونغ","هونغده","برج لوتي العالمي","دونغدايمون","شاطئ غوانغالي","بوابة سونغنيمون","قلعة سوون هواسونغ","غيونغجو","برج إن سيول","هايونده","جبل هالاسان في جيجو","ممشى الفضاء في بوهانغ","قرية جونجو التقليدية","ساحة غوانغهوامون","تشونغ وا ده","مبنى الجمعية الوطنية"],"s":["فتّش الشبابيك ومكاتب الطرود وصناديق البريد والسير الناقل.","قم بدورية عند الأسوار والعنابر والساحة وغرفة الزيارة.","المحطة القديمة والزجاجية وممشى سيولو 7017 ورصيف KTX.","فتّش تحت المقاعد ورفوف الأمتعة في قطار بسرعة 300 كم/س.","مواقف الحافلات وصالة الانتظار والتذاكر والتاكسي. احذر الحافلات!","مقاعد رجال الأعمال والسياحية والمطبخ ودورات المياه.","أكشاك الطعام ومحلات التجميل وكاتدرائية ميونغدونغ.","غوانغهوامون وغونجونغجون وغيونغهويرو وهيانغوونجونغ.","مسرح العزف وبوابة الجامعة والملعب وممر الغابة.","برج بارتفاع 555 م وبحيرة سوكتشون والمول والأكواريوم.","DDP وحديقة الورود المضيئة وهونغينجيمون ونهر تشونغيتشون.","شاطئ هلالي وجسر غوانغان وعرض الطائرات المسيّرة.","بوابة الكنز الوطني وسط دوّار مزدحم وسوق نامدايمون.","بوابات القلعة وأبراج المراقبة والأجنحة وقطار التنين.","تشومسونغده والمقابر الملكية وبولغوكسا وسوكغورام وبركة وولجي.","أقفال الحب ومنارات الإشارة والجناح والتلفريك.","شاطئ طويل وناطحات سحاب وكبسولات سماوية وجزيرة دونغبيك.","اصعد إلى فوهة بيكنوكدام. يوسفي وزهور الكانولا والغواصات.","ممشى فولاذي بطول 333 م وخليج يونغيل ويد الوئام.","أسطح القرميد وبوابة بونغناممون وكاتدرائية جوندونغ.","تمثالا الملك سيجونغ والأدميرال يي والنوافير وغوانغهوامون.","القاعة الرئيسية ذات السقف الأزرق ودار الضيافة وحديقة الصنوبر.","القبة الخضراء و24 عمودًا وتماثيل الهايته ونهر هان."],"ui":{"ls_id":"🔑 المعرّف <small style=\"font-weight:500;color:var(--muted)\">(البريد الإلكتروني · لا يظهر في الترتيب)</small>","ph_id":"مثال: dkslek123@google.com","ls_remember":"تذكّر معرّفي <small style=\"font-weight:500;color:var(--muted)\">(في المرة القادمة كلمة المرور فقط)</small>","pv_title":"<b>📋 إشعار جمع البيانات الشخصية (البريد الإلكتروني)</b>","pv_more":"عرض التفاصيل","pv_body":"· <b>البيانات</b>: البريد الإلكتروني (المعرّف)، كلمة المرور (مشفّرة بشكل لا يمكن عكسه)، اسم المدرّب المستعار، اسم الكلب، سجل اللعب (النقاط والوقت)<br>· <b>الغرض</b>: تسجيل الدخول وحفظ السجل والترتيب. يظهر <b>الاسم المستعار واسم الكلب فقط</b>، ولا يُنشر بريدك أبدًا، ولا نرسل رسائل دعائية.<br>· <b>مدة الحفظ</b>: حتى تحذفها بنفسك. اضغط <b>🗑 حذف بياناتي</b> لمسح كل شيء فورًا.<br>· <b>مكان الحفظ</b>: خادم ترتيب اللعبة (Supabase، منطقة سيول). عند تفعيل «تذكّر معرّفي» يُحفظ البريد في هذا المتصفح أيضًا.<br>· <b>حق الرفض</b>: يمكنك اللعب دون موافقة عبر <b>👀 جرّب كضيف</b> (دون ترتيب، يُحفظ على هذا الجهاز فقط).<br>· دون 14 عامًا: يشترط القانون الكوري <b>موافقة الوالد أو الوصي</b>. اقرأوا ذلك معًا.","pv_c1":"<b>[إلزامي]</b> أوافق على جمع بياناتي الشخصية (البريد الإلكتروني) واستخدامها","pv_c2":"<b>[إلزامي]</b> عمري 14 عامًا أو أكثر · وإن كنت أصغر فقد قرأ وليّ أمري ووافق","ls_nick":"🧑‍✈️ اسم المدرّب المستعار <small style=\"font-weight:500;color:var(--muted)\">(يظهر في اللعبة والترتيب)</small>","ph_nick":"مثال: القائد برق (1–10 أحرف)","ls_dog":"🐕 اسم كلبك المستعار","ls_edit":"✏ تعديل الشخصية","b_guest":"👀 جرّب كضيف","b_delme":"🗑 حذف بياناتي","ls_top":"🏆 ترتيب أفضل 100","b_rankall":"📋 الترتيب الكامل","mp_p":"أنهِ الخرائط 1–5 بأي ترتيب! إنهاؤها كلها يفتح 👑 معركة الزعيم (الخريطة 6)، والقبض على الزعيم يفتح 🌅 الخريطة السرية. تُجمع نقاطك خلال العملية الواحدة.","st_lockB":"🔒 أنهِ الخرائط 1–5 أولًا","st_run":"✅ أُنجزت في هذه العملية","err_email":"أدخل بريدك الإلكتروني كمعرّف (مثال: dkslek123@google.com)","err_consent":"اقرأ إشعار الخصوصية وحدّد المربعين [إلزامي]. إن لم توافق فاستخدم 👀 جرّب كضيف.","err_nick":"الاسم المستعار من 1 إلى 10 أحرف أو أرقام.","del_need":"أدخل المعرّف (البريد) وكلمة المرور أولًا للحذف","del_fail":"تعذّر الحذف. تحقّق من المعرّف وكلمة المرور.","del_done":"🗑 تم حذف جميع بياناتك.","del_confirm":"هل تريد حذف جميع بياناتك؟\nسيُمسح البريد وكلمة المرور والاسم المستعار وسجل الترتيب من الخادم دون إمكانية الاسترجاع.","ts_guest":"👀 وضع الضيف · دون ترتيب، يُحفظ على هذا الجهاز فقط","tod_day":"☀ {city} {time} · مهمة نهارية","tod_dusk":"🌇 {city} {time} · مهمة الغروب","tod_night":"🌙 {city} {time} · مهمة ليلية","ts_leak_warn":"⏳ إن لم تجد المهرّبات خلال 10 ثوانٍ فستعبر الجمارك!","dlg_leak":"🚨 إنذار! {item} عبر الجمارك خلسة إلى السوق…\n\nخصم −200\n\nأسرع في البحث مع كلبك! كلما مرّ الوقت تسرّبت مهرّبات أكثر.","ts_shot":"🔫 أطلق المهرّب النار عليك! تفادَ جانبًا أو اقفز","lbl_gate":"بوابة إضافية","lbl_lm":"معلم","sep_lm":"🇰🇷 دورية معالم كوريا · {n} مكانًا","sep_note":"(لعب حر · خارج الترتيب الإلكتروني)","qz_gate":"🛃 بوابة إضافية","qz_lm":"🇰🇷 دورية المعالم","clr_lm_sub":"🇰🇷 اكتملت الدورية","clr_lm_title":"نجحت الدورية!","clr_lm_note":"نقاط المعالم منفصلة عن الترتيب الإلكتروني","ts_boss_rank":"ℹ أنهِ الخرائط 1–5 والزعيم في عملية واحدة لترتفع نقاطك على الإنترنت","who_fmt":"🕵 المدرّب {nick} · {score} نقطة","run_fmt":" · هذه العملية {n}/6","hd_word":"المدرّب"}},"vi":{"m":["Bưu điện","Nhà tù","Ga Seoul","Trong tàu KTX","Bến xe buýt","Trong máy bay","Myeongdong","Cung Gyeongbokgung","Hongdae","Tháp Lotte World","Dongdaemun","Bãi biển Gwangalli","Cổng Sungnyemun","Pháo đài Suwon Hwaseong","Gyeongju","Tháp N Seoul","Haeundae","Núi Hallasan, Jeju","Space Walk Pohang","Làng Hanok Jeonju","Quảng trường Gwanghwamun","Cheong Wa Dae","Tòa nhà Quốc hội"],"s":["Lục soát quầy, bàn đóng gói, hộp thư và băng chuyền.","Tuần tra tường rào, khu giam, sân và phòng thăm.","Ga cũ, ga kính, Seoullo 7017 và sân ga KTX.","Lục ghế và giá hành lý trên tàu 300 km/h.","Bến đỗ, phòng chờ, quầy vé và điểm taxi. Cẩn thận xe buýt!","Ghế thương gia, phổ thông, bếp và nhà vệ sinh.","Quầy ăn vặt, tiệm mỹ phẩm và nhà thờ Myeongdong.","Gwanghwamun, Geunjeongjeon, Gyeonghoeru và Hyangwonjeong.","Sân khấu hát rong, cổng trường, sân chơi và đường rừng.","Tháp 555 m, hồ Seokchon, trung tâm mua sắm và thủy cung.","DDP, vườn hồng LED, Heunginjimun và suối Cheonggyecheon.","Bãi biển hình trăng khuyết, cầu Gwangan và màn drone.","Cổng bảo vật quốc gia giữa vòng xuyến và chợ Namdaemun.","Cổng thành, tháp canh, đình và tàu đầu rồng.","Cheomseongdae, lăng mộ, Bulguksa, Seokguram và hồ Wolji.","Khóa tình yêu, đài lửa hiệu, đình và cáp treo.","Bãi biển dài, nhà chọc trời, khoang trời và đảo Dongbaek.","Leo tới miệng núi Baengnokdam. Quýt, hoa cải, hải nữ.","Đường thép 333 m, vịnh Yeongil và Bàn tay hòa hợp.","Mái ngói, cổng Pungnammun, nhà thờ Jeondong, Gyeonggijeon.","Tượng vua Sejong, đô đốc Yi, đài phun nước và Gwanghwamun.","Tòa chính mái xanh, nhà khách, vườn thông và núi Bugak.","Mái vòm xanh, 24 cột, tượng Haetae và sông Hàn."],"ui":{"ls_id":"🔑 ID <small style=\"font-weight:500;color:var(--muted)\">(email · không hiển thị trên bảng xếp hạng)</small>","ph_id":"VD: dkslek123@google.com","ls_remember":"Ghi nhớ ID <small style=\"font-weight:500;color:var(--muted)\">(lần sau chỉ cần mật khẩu)</small>","pv_title":"<b>📋 Thông báo thu thập thông tin cá nhân (email)</b>","pv_more":"Xem chi tiết","pv_body":"· <b>Thông tin</b>: email (ID), mật khẩu (mã hóa không thể đảo ngược), biệt danh người huấn luyện, tên chó, dữ liệu chơi (điểm, thời gian)<br>· <b>Mục đích</b>: đăng nhập, lưu kết quả, xếp hạng. Chỉ <b>biệt danh và tên chó</b> được hiển thị; email không bao giờ công khai. Không gửi email quảng cáo.<br>· <b>Thời hạn</b>: đến khi bạn tự xóa. Nhấn <b>🗑 Xóa thông tin của tôi</b> để xóa hết ngay.<br>· <b>Nơi lưu</b>: máy chủ xếp hạng (Supabase, khu vực Seoul). Bật “Ghi nhớ ID” thì email cũng lưu trên trình duyệt này.<br>· <b>Quyền từ chối</b>: không đồng ý vẫn chơi được bằng <b>👀 Chơi thử</b> (không xếp hạng, chỉ lưu trên máy này).<br>· Dưới 14 tuổi: luật Hàn Quốc yêu cầu <b>cha mẹ hoặc người giám hộ đồng ý</b>. Hãy cùng đọc nhé.","pv_c1":"<b>[Bắt buộc]</b> Tôi đồng ý thu thập và sử dụng thông tin cá nhân (email)","pv_c2":"<b>[Bắt buộc]</b> Tôi đủ 14 tuổi · nếu dưới 14, người giám hộ đã đọc và đồng ý","ls_nick":"🧑‍✈️ Biệt danh người huấn luyện <small style=\"font-weight:500;color:var(--muted)\">(hiện trong game và bảng xếp hạng)</small>","ph_nick":"VD: Đội trưởng Sấm (1–10 ký tự)","ls_dog":"🐕 Biệt danh chó nghiệp vụ","ls_edit":"✏ Đổi nhân vật","b_guest":"👀 Chơi thử","b_delme":"🗑 Xóa thông tin của tôi","ls_top":"🏆 Bảng xếp hạng TOP 100","b_rankall":"📋 Toàn bộ xếp hạng","mp_p":"Chơi bản đồ 1–5 theo thứ tự bất kỳ! Qua cả năm sẽ mở 👑 trận trùm (bản đồ 6), bắt trùm sẽ mở 🌅 bản đồ ẩn. Điểm được cộng dồn trong một chiến dịch.","st_lockB":"🔒 Qua bản đồ 1–5 trước","st_run":"✅ Đã qua trong lượt này","err_email":"Hãy nhập email làm ID (VD: dkslek123@google.com)","err_consent":"Hãy đọc thông báo và đánh dấu cả hai ô [Bắt buộc]. Nếu không đồng ý, hãy dùng 👀 Chơi thử.","err_nick":"Biệt danh gồm 1–10 chữ hoặc số.","del_need":"Nhập ID (email) và mật khẩu trước khi xóa","del_fail":"Không xóa được. Hãy kiểm tra ID và mật khẩu.","del_done":"🗑 Đã xóa toàn bộ thông tin của bạn.","del_confirm":"Xóa toàn bộ thông tin của bạn?\nEmail, mật khẩu, biệt danh và kết quả xếp hạng sẽ bị xóa khỏi máy chủ và không thể khôi phục.","ts_guest":"👀 Chế độ chơi thử · không xếp hạng, chỉ lưu trên máy này","tod_day":"☀ {city} {time} · Nhiệm vụ ban ngày","tod_dusk":"🌇 {city} {time} · Nhiệm vụ hoàng hôn","tod_night":"🌙 {city} {time} · Nhiệm vụ ban đêm","ts_leak_warn":"⏳ Không tìm ra hàng lậu trong 10 giây là nó lọt qua hải quan!","dlg_leak":"🚨 Báo động! {item} đã lọt qua hải quan ra thị trường…\n\nTrừ −200 điểm\n\nNhanh lên, lục soát cùng chú chó! Càng lâu càng nhiều hàng lậu lọt ra.","ts_shot":"🔫 Bạn bị kẻ buôn lậu bắn trúng! Né sang bên hoặc nhảy","lbl_gate":"Cửa khẩu thêm","lbl_lm":"Danh thắng","sep_lm":"🇰🇷 Tuần tra danh thắng Hàn Quốc · {n} nơi","sep_note":"(chơi tự do · không tính xếp hạng trực tuyến)","qz_gate":"🛃 Cửa khẩu thêm","qz_lm":"🇰🇷 Tuần tra danh thắng","clr_lm_sub":"🇰🇷 Hoàn thành tuần tra","clr_lm_title":"tuần tra thành công!","clr_lm_note":"Điểm danh thắng tách riêng với xếp hạng trực tuyến","ts_boss_rank":"ℹ Qua bản đồ 1–5 và bắt trùm trong một chiến dịch để lên điểm xếp hạng","who_fmt":"🕵 Người huấn luyện {nick} · {score} điểm","run_fmt":" · lượt này {n}/6","hd_word":"người huấn luyện"}},"ja":{"m":["郵便局","刑務所","ソウル駅","KTX車内","バスターミナル","飛行機の中","明洞","景福宮","弘大","ロッテワールドタワー","東大門","広安里ビーチ","崇礼門","水原華城","慶州","Nソウルタワー","海雲台","済州・漢拏山","浦項スペースウォーク","全州韓屋村","光化門広場","青瓦台","国会議事堂"],"s":["窓口、小包台、私書箱、ベルトコンベアを捜索。","塀、収容棟、運動場、面会室をパトロール。","旧駅舎、ガラスの新駅舎、ソウルロ7017、KTXホーム。","時速300kmの列車で座席の下と荷物棚を捜索。","乗り場、待合室、切符売り場、タクシー乗り場。バスに注意！","ビジネス席、エコノミー席、ギャレー、化粧室。","屋台、コスメ店、明洞聖堂。","光化門、勤政殿、慶会楼、香遠亭。","バスキングステージ、大学正門、遊び場、京義線の森の道。","555mのタワー、石村湖、モール、水族館。","DDP、LEDバラ庭園、興仁之門、清渓川。","三日月形のビーチ、広安大橋、ドローンショー。","車が回るロータリーの国宝の門と南大門市場。","城門、望楼、あずまや、竜頭の観光列車。","瞻星台、古墳、仏国寺、石窟庵、月池。","愛の南京錠、烽燧台、八角亭、ケーブルカー。","長い砂浜、超高層ビル、スカイカプセル、冬柏島。","白鹿潭の火口まで登ろう。みかん、菜の花、海女。","333mの鉄の散歩道、迎日湾、相生の手。","瓦屋根、豊南門、殿洞聖堂、慶基殿。","世宗大王と李舜臣将軍の像、噴水、光化門。","青い瓦の本館、迎賓館、松の庭、北岳山。","緑のドーム、24本の柱、ヘテ像、漢江。"],"ui":{"ls_id":"🔑 ID <small style=\"font-weight:500;color:var(--muted)\">(メールアドレス · ランキングには表示されません)</small>","ph_id":"例：dkslek123@google.com","ls_remember":"IDを記憶する <small style=\"font-weight:500;color:var(--muted)\">(次回からパスワードだけ)</small>","pv_title":"<b>📋 個人情報（メール）の収集・利用について</b>","pv_more":"詳しく見る","pv_body":"· <b>収集項目</b>：メールアドレス（ID）、パスワード（元に戻せない形で暗号化）、ハンドラーのニックネーム、犬の名前、ゲーム記録（スコア・時間）<br>· <b>利用目的</b>：ログイン、記録の保存、ランキング。ランキングには<b>ニックネームと犬の名前だけ</b>が表示され、メールは公開されません。広告メールは送りません。<br>· <b>保存期間</b>：自分で削除するまで。<b>🗑 自分の情報を削除</b>を押すとすぐにすべて消えます。<br>· <b>保存場所</b>：ゲームのランキングサーバー（Supabase、ソウルリージョン）。「IDを記憶する」をオンにするとこのブラウザにもメールが保存されます。<br>· <b>同意しない権利</b>：同意しなくても<b>👀 お試しプレイ</b>で遊べます（ランキングなし、この端末にのみ保存）。<br>· 14歳未満：韓国の法律により<b>保護者の同意</b>が必要です。一緒に読んでください。","pv_c1":"<b>[必須]</b> 個人情報（メール）の収集・利用に同意します","pv_c2":"<b>[必須]</b> 14歳以上です · 14歳未満の場合は保護者が読んで同意しました","ls_nick":"🧑‍✈️ ハンドラーのニックネーム <small style=\"font-weight:500;color:var(--muted)\">(ゲームとランキングに表示)</small>","ph_nick":"例：いなずま隊長（1〜10文字）","ls_dog":"🐕 あなたの探知犬のニックネーム","ls_edit":"✏ キャラクターを変更","b_guest":"👀 お試しプレイ","b_delme":"🗑 自分の情報を削除","ls_top":"🏆 TOP 100 ランキング","b_rankall":"📋 全ランキング","mp_p":"マップ1〜5は好きな順番でクリアしよう！5つすべてクリアすると👑ボス戦（マップ6）が、ボスを捕まえると🌅隠しマップが開きます。1回の作戦の間スコアが積み重なります。","st_lockB":"🔒 まずマップ1〜5をクリア","st_run":"✅ 今回の作戦でクリア","err_email":"IDにはメールアドレスを入力してください（例：dkslek123@google.com）","err_consent":"個人情報の案内を読んで[必須]の2か所にチェックしてください。同意しない場合は👀お試しプレイをどうぞ。","err_nick":"ニックネームは1〜10文字の文字か数字で。","del_need":"削除するにはID（メール）とパスワードを先に入力してください","del_fail":"削除できませんでした。IDとパスワードを確認してください。","del_done":"🗑 あなたの情報はすべて削除されました。","del_confirm":"本当にすべての情報を削除しますか？\nメール、パスワード、ニックネーム、ランキング記録がサーバーから消え、元に戻せません。","ts_guest":"👀 お試しモード · ランキングなし、この端末にのみ保存","tod_day":"☀ {city} {time} · 昼の作戦","tod_dusk":"🌇 {city} {time} · 夕焼けの作戦","tod_night":"🌙 {city} {time} · 夜の作戦","ts_leak_warn":"⏳ 10秒以内に密輸品を見つけないと通関されてしまう！","dlg_leak":"🚨 警報！{item}がこっそり税関を通過して市場に出回った…\n\n減点 −200\n\n探知犬と急いで捜索しよう！時間がたつほど密輸品が流れ出るよ。","ts_shot":"🔫 密輸犯に撃たれた！横によけるかジャンプしよう","lbl_gate":"追加の関門","lbl_lm":"名所","sep_lm":"🇰🇷 韓国の名所パトロール · {n}か所","sep_note":"(自由プレイ · オンラインランキング対象外)","qz_gate":"🛃 追加の関門","qz_lm":"🇰🇷 名所パトロール","clr_lm_sub":"🇰🇷 パトロール完了","clr_lm_title":"パトロール成功！","clr_lm_note":"名所マップのスコアはオンラインランキングとは別です","ts_boss_rank":"ℹ 1回の作戦でマップ1〜5とボスをクリアするとオンラインスコアが上がります","who_fmt":"🕵 {nick} ハンドラー · {score}点","run_fmt":" · 今回の作戦 {n}/6","hd_word":"ハンドラー"}},"ru":{"m":["Почта","Тюрьма","Вокзал Сеул","В поезде KTX","Автовокзал","В самолёте","Мёндон","Дворец Кёнбоккун","Хондэ","Лотте Ворлд Тауэр","Тондэмун","Пляж Кванъалли","Ворота Суннемун","Крепость Хвасон в Сувоне","Кёнджу","N Сеул Тауэр","Хэундэ","Халласан, Чеджу","Спейс Уок в Пхохане","Ханок-деревня Чонджу","Площадь Кванхвамун","Чхонвадэ","Национальное собрание"],"s":["Обыщите окна, стол упаковки, абонентские ящики и конвейер.","Патрулируйте стены, корпуса, двор и комнату свиданий.","Старый вокзал, стеклянный вокзал, Сеулло 7017 и платформы KTX.","Ищите под сиденьями и на полках поезда на 300 км/ч.","Платформы, зал ожидания, касса и стоянка такси. Осторожно, автобусы!","Бизнес- и эконом-класс, кухня и туалеты.","Уличная еда, магазины косметики и собор Мёндон.","Кванхвамун, Кынджонджон, Кёнхверу и Хянвонджон.","Сцена уличных музыкантов, ворота университета, площадка и лесная тропа.","Башня 555 м, озеро Сокчхон, торговый центр и океанариум.","DDP, сад LED-роз, Хыниннджимун и ручей Чхонгечхон.","Пляж-полумесяц, мост Кванан и шоу дронов.","Ворота-нацсокровище на оживлённом кольце и рынок Намдэмун.","Ворота, сторожевые башни, беседки и поезд-дракон.","Чхомсондэ, царские курганы, Пульгукса, Соккурам и пруд Вольджи.","Замки любви, сигнальные башни, беседка и канатная дорога.","Длинный пляж, небоскрёбы, небесные капсулы и остров Тонбэк.","Поднимитесь к кратеру Пэннокдам. Мандарины, рапс, хэнё.","Стальная тропа 333 м, залив Йонъиль и Рука гармонии.","Черепичные крыши, ворота Пхуннаммун, собор Чондон.","Статуи короля Седжона и адмирала Ли, фонтаны и Кванхвамун.","Главный зал с синей крышей, гостевой дом, сосновый сад.","Зелёный купол, 24 колонны, статуи хэтхэ и река Ханган."],"ui":{"ls_id":"🔑 ID <small style=\"font-weight:500;color:var(--muted)\">(эл. почта · не видна в рейтинге)</small>","ph_id":"напр. dkslek123@google.com","ls_remember":"Запомнить ID <small style=\"font-weight:500;color:var(--muted)\">(в следующий раз только пароль)</small>","pv_title":"<b>📋 Уведомление о сборе личных данных (эл. почты)</b>","pv_more":"Подробнее","pv_body":"· <b>Что собираем</b>: эл. почту (ID), пароль (хранится в необратимо зашифрованном виде), ник кинолога, имя собаки, игровые записи (очки, время)<br>· <b>Зачем</b>: вход, сохранение записей, рейтинг. В рейтинге видны <b>только ник и имя собаки</b>; почта никогда не публикуется. Рекламу не рассылаем.<br>· <b>Срок хранения</b>: пока вы не удалите. Кнопка <b>🗑 Удалить мои данные</b> стирает всё сразу.<br>· <b>Где</b>: сервер рейтинга игры (Supabase, регион Сеул). При «Запомнить ID» почта также хранится в этом браузере.<br>· <b>Право отказаться</b>: без согласия можно играть в режиме <b>👀 Гость</b> (без рейтинга, только на этом устройстве).<br>· Младше 14 лет: по корейскому закону нужно <b>согласие родителя или опекуна</b>. Прочитайте вместе.","pv_c1":"<b>[Обязательно]</b> Согласен(на) на сбор и использование личных данных (эл. почты)","pv_c2":"<b>[Обязательно]</b> Мне 14 лет или больше · если меньше, родитель/опекун прочитал и согласился","ls_nick":"🧑‍✈️ Ник кинолога <small style=\"font-weight:500;color:var(--muted)\">(виден в игре и рейтинге)</small>","ph_nick":"напр. Капитан Молния (1–10 символов)","ls_dog":"🐕 Кличка вашей служебной собаки","ls_edit":"✏ Изменить персонажа","b_guest":"👀 Играть как гость","b_delme":"🗑 Удалить мои данные","ls_top":"🏆 Рейтинг TOP 100","b_rankall":"📋 Весь рейтинг","mp_p":"Проходите карты 1–5 в любом порядке! Пройдя все пять, вы откроете 👑 бой с боссом (карта 6), а поймав босса — 🌅 секретную карту. Очки суммируются за одну операцию.","st_lockB":"🔒 Сначала пройдите карты 1–5","st_run":"✅ Пройдено в этой операции","err_email":"Введите адрес эл. почты как ID (напр. dkslek123@google.com)","err_consent":"Прочитайте уведомление и отметьте оба пункта [Обязательно]. Если не согласны — играйте как 👀 гость.","err_nick":"Ник: от 1 до 10 букв или цифр.","del_need":"Для удаления сначала введите ID (почту) и пароль","del_fail":"Не удалось удалить. Проверьте ID и пароль.","del_done":"🗑 Все ваши данные удалены.","del_confirm":"Удалить все ваши данные?\nПочта, пароль, ник и записи рейтинга будут стёрты с сервера без возможности восстановления.","ts_guest":"👀 Гостевой режим · без рейтинга, только на этом устройстве","tod_day":"☀ {city} {time} · Дневная операция","tod_dusk":"🌇 {city} {time} · Операция на закате","tod_night":"🌙 {city} {time} · Ночная операция","ts_leak_warn":"⏳ Не найдёте контрабанду за 10 секунд — она пройдёт таможню!","dlg_leak":"🚨 Тревога! {item} тайком прошли таможню и попали на рынок…\n\nШтраф −200\n\nСкорее ищите вместе с собакой! Чем дольше, тем больше контрабанды уходит.","ts_shot":"🔫 Контрабандист выстрелил в вас! Уклоняйтесь в сторону или прыгайте","lbl_gate":"Доп. пост","lbl_lm":"Место","sep_lm":"🇰🇷 Патруль по достопримечательностям Кореи · {n}","sep_note":"(свободная игра · вне онлайн-рейтинга)","qz_gate":"🛃 Доп. пост","qz_lm":"🇰🇷 Патруль достопримечательностей","clr_lm_sub":"🇰🇷 Патруль завершён","clr_lm_title":"патруль успешен!","clr_lm_note":"Очки за достопримечательности не идут в онлайн-рейтинг","ts_boss_rank":"ℹ Пройдите карты 1–5 и поймайте босса за одну операцию, чтобы очки попали в рейтинг","who_fmt":"🕵 Кинолог {nick} · {score} очк.","run_fmt":" · эта операция {n}/6","hd_word":"кинолог"}}};
+for (const [l, x] of Object.entries(DICT2)) { const d = DICT[l]; if (!d) continue; d.m = (d.m || []).slice(0, 7).concat(x.m); d.s = (d.s || []).slice(0, 7).concat(x.s); Object.assign(d, x.ui); }
+const NEWT = {"ko":["📡 X-RAY 스캐너가 새로 나타났어요!","🎾 하트 공이 새로 나타났어요!"],"en":["📡 A new X-RAY scanner appeared!","🎾 A new heart ball appeared!"],"zh":["📡 出现了新的X光扫描仪！","🎾 出现了新的爱心球！"],"hi":["📡 नया X-RAY स्कैनर आया!","🎾 नई दिल वाली गेंद आई!"],"ar":["📡 ظهر جهاز أشعة سينية جديد!","🎾 ظهرت كرة قلب جديدة!"],"vi":["📡 Máy quét X-RAY mới xuất hiện!","🎾 Bóng trái tim mới xuất hiện!"],"ja":["📡 新しいX線スキャナーが現れた！","🎾 新しいハートボールが現れた！"],"ru":["📡 Появился новый рентген-сканер!","🎾 Появился новый мяч-сердечко!"]}; for (const [l, [a, b]] of Object.entries(NEWT)) { const d = l === "ko" ? KO : DICT[l]; if (d) { d.ts_newx = a; d.ts_newball = b; } }
+const NEW_MAPS = { en: [['Gamcheon Culture Village', 'Hanbit Tower, Daejeon'], ['A colorful hillside village of stairs, alleys and fish signposts.', 'The 93 m Expo tower, musical fountain and Expo Bridge.']], zh: [['甘川文化村', '大田韩光塔'], ['山坡上层层叠叠的彩色村庄、小巷和鱼形路标。', '93米世博塔、音乐喷泉和世博桥。']], hi: [['गमछोन सांस्कृतिक गाँव', 'डेजॉन हानबित टावर'], ['पहाड़ी ढलान पर रंगीन सीढ़ीनुमा गाँव, गलियाँ और मछली चिन्ह।', '93 मीटर एक्सपो टावर, संगीत फव्वारा और एक्सपो पुल।']], ar: [['قرية غامتشون الثقافية', 'برج هانبيت في دايجون'], ['قرية ملونة على سفح التل بالسلالم والأزقة ولافتات الأسماك.', 'برج إكسبو بارتفاع 93 م والنافورة الموسيقية وجسر إكسبو.']], vi: [['Làng văn hóa Gamcheon', 'Tháp Hanbit, Daejeon'], ['Làng sườn đồi nhiều màu với bậc thang, ngõ nhỏ và biển chỉ đường hình cá.', 'Tháp Expo 93 m, đài phun nước nhạc và cầu Expo.']], ja: [['甘川文化村', '大田ハンビッタワー'], ['坂道に色とりどりの家が段々に並ぶ村、路地と魚の道しるべ。', '93mのエキスポタワー、音楽噴水、エキスポ橋。']], ru: [['Деревня культуры Камчхон', 'Башня Ханбит, Тэджон'], ['Разноцветная деревня на склоне: лестницы, переулки и указатели-рыбки.', 'Башня Экспо 93 м, музыкальный фонтан и мост Экспо.']] };
+for (const [l, [m2, s2]] of Object.entries(NEW_MAPS)) if (DICT[l]) { DICT[l].m.push(...m2); DICT[l].s.push(...s2); }
+Object.assign(KO, {"err_email":"아이디는 이메일 주소로 입력해 주세요 (예: dkslek123@google.com)","err_consent":"개인정보 수집·이용 안내를 읽고 [필수] 두 곳에 체크해 주세요. 동의하지 않으면 👀 체험하기로 할 수 있어요.","err_nick":"핸들러 닉네임은 한글·영문·숫자 1~10자로 정해주세요","del_need":"삭제하려면 아이디(이메일)와 비밀번호를 먼저 입력하세요","del_fail":"삭제하지 못했어요. 아이디와 비밀번호를 확인해 주세요.","del_done":"🗑 내 정보가 모두 삭제되었어요.","del_confirm":"정말 내 정보를 모두 삭제할까요?\n이메일·비밀번호·닉네임·랭킹 기록이 서버에서 지워지고 되돌릴 수 없어요.","ts_guest":"👀 체험 모드예요 · 랭킹에 올라가지 않고 이 기기에만 저장돼요","tod_day":"☀ {city} {time} · 낮 작전","tod_dusk":"🌇 {city} {time} · 노을 작전","tod_night":"🌙 {city} {time} · 밤 작전","ts_leak_warn":"⏳ 10초 안에 밀수품을 못 찾으면 통관돼 버려요!","dlg_leak":"🚨 경보! {item}이(가) 세관을 몰래 통과해 시중으로 유출됐어요…\n\n감점 −200점\n\n탐지견과 함께 서둘러 수색하세요! 시간이 지날수록 밀수품이 계속 빠져나가요.","ts_shot":"🔫 밀수범의 총에 맞았어요! 옆으로 피하거나 점프하세요","lbl_gate":"추가 관문","lbl_lm":"명소","sep_lm":"🇰🇷 대한민국 명소 순찰 · {n}곳","sep_note":"(자유 플레이 · 온라인 랭킹 미반영)","qz_gate":"🛃 추가 관문","qz_lm":"🇰🇷 명소 순찰","clr_lm_sub":"🇰🇷 명소 순찰 완료","clr_lm_title":"순찰 성공!","clr_lm_note":"명소 맵 점수는 온라인 랭킹과 별도예요","ts_boss_rank":"ℹ 한 번의 작전에서 맵 1~5를 모두 깨고 보스를 잡아야 온라인 랭킹 점수가 올라가요","who_fmt":"🕵 {nick} 핸들러 · 누적 {score}점","run_fmt":" · 이번 작전 {n}/6","hd_word":"핸들러"});
+
 for (const [k, v] of Object.entries({"en":["✅ I agree to the game guide · Be kind to friends, keep your password secret! (No personal data is collected)","🎮 Rating: All ages (recommended 7+ · self-rated)","Please tick the agreement box first."],"zh":["✅ 我同意游戏使用说明 · 友善对待朋友，密码要保密！（本游戏不收集个人信息）","🎮 分级：全年龄（建议7岁以上 · 自定）","请先勾选同意。"],"hi":["✅ मैं खेल नियमों से सहमत हूँ · दोस्तों से अच्छा व्यवहार, पासवर्ड गुप्त रखें! (कोई निजी जानकारी नहीं ली जाती)","🎮 रेटिंग: सभी उम्र (7+ सुझाया · स्व-निर्धारित)","पहले सहमति बॉक्स पर टिक करें।"],"ar":["✅ أوافق على دليل اللعبة · كن لطيفًا مع أصدقائك واحفظ كلمة المرور سرًا! (لا نجمع أي بيانات شخصية)","🎮 التصنيف: لجميع الأعمار (يُنصح من 7 سنوات · تصنيف ذاتي)","يرجى تحديد مربع الموافقة أولًا."],"vi":["✅ Tôi đồng ý hướng dẫn trò chơi · Thân thiện với bạn bè, giữ bí mật mật khẩu! (Không thu thập thông tin cá nhân)","🎮 Phân loại: Mọi lứa tuổi (khuyến nghị từ 7 tuổi · tự đánh giá)","Hãy đánh dấu ô đồng ý trước."],"ja":["✅ ゲームの案内に同意します · 友達にやさしく、パスワードはひみつ！（個人情報は集めません）","🎮 対象年齢：全年齢（推奨7歳以上 · 自主基準）","まず同意にチェックしてね。"],"ru":["✅ Я согласен с правилами игры · Будь добр к друзьям, храни пароль в секрете! (Личные данные не собираются)","🎮 Возраст: для всех (рекомендуется 7+ · самооценка)","Сначала отметь согласие."]})) Object.assign(DICT[k], { agree: v[0], age: v[1], err_agree: v[2] });
 KO.err_agree = '먼저 이용 안내 동의에 체크해 주세요.';
 let lang = (() => { try { return localStorage.getItem('k9lang') || 'ko'; } catch { return 'ko'; } })();
@@ -1010,7 +1018,7 @@ function updateHandler(dt) {
   handler.x = clamp(handler.x, level.bounds.minX + .3, level.bounds.maxX - .3); handler.z = clamp(handler.z, level.bounds.minZ + .3, level.bounds.maxZ - .3);
   // 탐지견이 올라간 높이까지 핸들러도 뛰어 올라간다
   const gh = groundAt(handler.x, handler.z, .4, Math.max(dog.y, 0) + .05).h;
-  if (handler.y < gh - .05 && handler.vy <= 0) handler.vy = 6.5;
+  if (handler.y < gh - .05 && handler.vy <= 0) { if (gh - handler.y < .45) handler.y = Math.min(gh, handler.y + dt * 3); else handler.vy = 6.5; }
   handler.vy -= 22 * dt; handler.y += handler.vy * dt;
   if (handler.y <= gh && handler.vy <= 0) { handler.y = gh; handler.vy = 0; }
   const up = dog.y > .3, back = up ? .8 : 1.3, side = up ? .25 : 1.4;
@@ -1031,7 +1039,8 @@ function updateHandler(dt) {
   else if (!twoP) handler.dir += angDiff(handler.dir, Math.atan2(dog.x - handler.x, dog.z - handler.z)) * Math.min(1, dt * 4);
   unstick(handler, .35, handler.y);
   const spA = twoP ? (handler.p2 || 0) : sp; handler.phase += dt * spA * 3; const k = Math.min(1, spA / 2);
-  const h = handlerM; h.g.position.set(handler.x, handler.y + Math.abs(Math.sin(handler.phase)) * .05 * k, handler.z);
+  handler.ry = handler.vy === 0 && handler.ry !== undefined && Math.abs(handler.y - handler.ry) < .9 ? handler.ry + (handler.y - handler.ry) * Math.min(1, dt * 9) : handler.y;
+  const h = handlerM; h.g.position.set(handler.x, handler.ry + Math.abs(Math.sin(handler.phase)) * .05 * k, handler.z);
   if (handler.y > .05) { h.legs[0].rotation.x = -.8; h.legs[1].rotation.x = .4; } h.g.rotation.y = handler.dir;
   h.legs[0].rotation.x = Math.sin(handler.phase) * .6 * k; h.legs[1].rotation.x = -Math.sin(handler.phase) * .6 * k;
   handler.throwT -= dt; handler.boneCd -= dt;
@@ -1093,7 +1102,7 @@ function fireShot(p) {
 function updateShots(dt) {
   for (const b of shots) {
     b.t -= dt; b.x += b.vx * dt; b.z += b.vz * dt; b.m.position.set(b.x, 1.25, b.z);
-    if (Math.hypot(b.x - dog.x, b.z - dog.z) < .65 && dog.y < 1.4) { b.t = 0; toast('🔫 밀수범의 총에 맞았어요! 옆으로 피하거나 점프하세요'); damage(); }
+    if (Math.hypot(b.x - dog.x, b.z - dog.z) < .65 && dog.y < 1.4) { b.t = 0; toast(t('ts_shot')); damage(); }
     else if (colliders.some(c => b.x > c.minX && b.x < c.maxX && b.z > c.minZ && b.z < c.maxZ && (c.topY ?? 99) > 1.2)) { b.t = 0; burst(b.x, 1.25, b.z, [new THREE.Color(0xbbbbbb)], 6, 1.5); }
   }
   shots = shots.filter(b => { if (b.t > 0) return true; world.remove(b.m); return false; });
@@ -1365,7 +1374,8 @@ class Person {
     const k = Math.min(1, sp / 2);
     this.legs[0].rotation.x = Math.sin(this.phase) * .6 * k; this.legs[1].rotation.x = -Math.sin(this.phase) * .6 * k;
     this.arms[0].rotation.x = -Math.sin(this.phase) * .5 * k; this.arms[1].rotation.x = Math.sin(this.phase) * .5 * k;
-    if (this.y > 0 || this.vy > 0) { this.vy -= 22 * dt; this.y += this.vy * dt; const gh = groundAt(this.x, this.z, this.r, Math.max(0, this.y)).h; if (this.y <= gh) { this.y = gh; this.vy = 0; } }
+    { const g2 = groundAt(this.x, this.z, this.r, this.y).h; if (g2 > this.y + .01 && g2 - this.y < .45 && this.vy <= 0) this.y = Math.min(g2, this.y + dt * 4); else if (g2 < this.y - .01 && this.vy === 0) this.vy = -.01; }
+    if (this.y > 0 || this.vy > 0 || this.vy < 0) { this.vy -= 22 * dt; this.y += this.vy * dt; const gh = groundAt(this.x, this.z, this.r, Math.max(0, this.y)).h; if (this.y <= gh) { this.y = gh; this.vy = 0; } }
     unstick(this, this.r, this.y);
     this.x = clamp(this.x, level.bounds.minX, level.bounds.maxX); this.z = clamp(this.z, level.bounds.minZ, level.bounds.maxZ);
     if (this.windup > 0) this.arms[0].rotation.x = this.arms[1].rotation.x = -2.6;
@@ -2026,6 +2036,11 @@ const ITEMS = {
   tvBox: [1, .4, (x, z) => { const [g, c] = pushGroup(x, z, 1, .4, .7, '가전제품(TV) 상자'); mesh(BOX(1, .66, .36), MAT.cardboard(), 0, .33, 0, g); mesh(BOX(.6, .36, .02), MAT.col(0x111111, .3), 0, .36, .19, g); return c; }],
   fishBox: [.8, .5, (x, z) => { const [g, c] = pushGroup(x, z, .8, .5, .4, '냉동 수산물 박스'); mesh(BOX(.8, .36, .5), MAT.col(0xf4f4f2, .6), 0, .18, 0, g); mesh(BOX(.81, .06, .51), MAT.col(0x2e86c1, .5), 0, .3, 0, g); return c; }],
   vase: [.6, .6, (x, z) => { const [g, c] = pushGroup(x, z, .6, .6, .9, '도자기 화분'); mesh(BOX(.4, .1, .4), MAT.col(0x8d5a3b, .6), 0, .05, 0, g); mesh(BOX(.56, .6, .56), MAT.col(0x3d7ab8, .3), 0, .4, 0, g); mesh(BOX(.36, .2, .36), MAT.col(0x3d7ab8, .3), 0, .8, 0, g); return c; }],
+  laundry: [.7, .7, (x, z) => { const [g, c] = pushGroup(x, z, .7, .7, .8, '세탁물 자루'); mesh(RBOX(.7, .7, .7, .2), MAT.fabric(0xe8e4d8), 0, .38, 0, g); mesh(BOX(.2, .15, .2), MAT.fabric(0xc9c2b2), 0, .8, 0, g); return c; }],
+  lunchbox: [.5, .35, (x, z) => { const [g, c] = pushGroup(x, z, .5, .35, .3, '도시락 가방'); mesh(RBOX(.5, .26, .35, .06), MAT.fabric(pick([0xe57373, 0x64b5f6, 0x81c784])), 0, .13, 0, g); mesh(BOX(.3, .06, .04), MAT.col(0x333333, .5), 0, .3, 0, g); return c; }],
+  souvenir: [.6, .45, (x, z) => { const [g, c] = pushGroup(x, z, .6, .45, .45, '기념품 상자'); mesh(BOX(.6, .4, .45), MAT.col(pick([0xd84a3a, 0x2c6fb7, 0xf4c542]), .5), 0, .2, 0, g); mesh(BOX(.62, .06, .1), MAT.col(0xffffff, .4), 0, .4, 0, g); return c; }],
+  beachBag: [.7, .45, (x, z) => { const [g, c] = pushGroup(x, z, .7, .45, .5, '비치백'); mesh(RBOX(.7, .45, .4, .08), MAT.fabric(pick([0xffb74d, 0x4fc3f7, 0xf48fb1])), 0, .23, 0, g); for (const sx of [-.2, .2]) mesh(BOX(.05, .3, .05), MAT.col(0xd7a86e, .6), sx, .55, 0, g); return c; }],
+  hanbokBag: [.6, .4, (x, z) => { const [g, c] = pushGroup(x, z, .6, .4, .5, '한복 대여 가방'); mesh(RBOX(.6, .5, .4, .08), MAT.fabric(0xb03a6a), 0, .25, 0, g); mesh(BOX(.62, .08, .42), MAT.col(0xf4c542, .4), 0, .3, 0, g); return c; }],
   vitamin: [.5, .4, (x, z) => { const [g, c] = pushGroup(x, z, .5, .4, .4, '건강보조식품 택배'); mesh(BOX(.5, .38, .4), MAT.cardboard(), 0, .19, 0, g); for (let i = 0; i < 3; i++) mesh(BOX(.1, .14, .1), MAT.col(0xffffff, .4), -.15 + i * .15, .45, 0, g); return c; }],
 };
 // ================= 지형지물 =================
@@ -2185,9 +2200,8 @@ function applyExtras(L) {
   for (const [k, n] of ex.decor || []) { const [w, d, mk] = DECOR[k]; for (let i = 0; i < n; i++) { const p = placeFree(L.bounds, w, d, 1, L.avoid); if (p) mk(p.x, p.z); } }
   if (L.relax) return;
   // 은닉 물품 20종 중 무작위: 맵 대표 물품 2종 + 나머지 중 4종, 종류마다 2~3개
-  const theme = (ex.items || []).map(i => i[0]).sort(() => rnd() - .5).slice(0, 2);
-  const kinds = theme.concat(Object.keys(ITEMS).filter(k => !theme.includes(k)).sort(() => rnd() - .5).slice(0, 4));
-  for (const k of kinds) { const [w, d, mk] = ITEMS[k], n = 2 + Math.floor(rnd() * 2); for (let i = 0; i < n; i++) { const p = placeFree(L.bounds, w, d, .8, L.avoid); if (p) L.search.push(mk(p.x, p.z)); } }
+  const list = (ex.items && ex.items.length ? ex.items : [['backpack', 3], ['dutyBag', 2]]);
+  for (const [k, n0] of list) { if (!ITEMS[k]) continue; const [w, d, mk] = ITEMS[k], n = Math.max(1, n0 + (rnd() < .5 ? 0 : 1)); for (let i = 0; i < n; i++) { const p = placeFree(L.bounds, w, d, .8, L.avoid); if (p) L.search.push(mk(p.x, p.z)); } }
 }
 const PLACE_NAME = { bag: '여행가방', crate: '나무상자', parcel: '택배 상자', container: '컨테이너', cage: '우편 롤 케이지', sack: '우편 자루', hatch: '화물칸' };
 const placeOf = c => c.label || PLACE_NAME[c.kind] || '물건';
@@ -2566,7 +2580,7 @@ const TILE = (b, g, r = 1 / 4) => () => std(0xffffff, .85, 0, { map: TEX.tile(b 
 const LANDMARK_LIST = [
   { name: '우체국', gate: true, icon: '📮', out: false, w: 60, d: 44, walls: 'wall', bg: 0xe7ecef, floor: TILE('#d9d4c8', '#b8b1a2', .25), obj: parcel, sky: [0xd03b2e, 0xfde2dc],
     staff: [{ kind: 'postal', route: [[-22, -15], [22, -15]], wait: 2 }, { kind: 'postal', route: [[18, -4], [18, 8]], wait: 2 }, { kind: 'customs', route: [[-10, 0], [10, 0]], wait: 2 }], people: { civ: 7, postal: 2, student: 2, smuggler: 2 },
-    items: [['cosmetics', 3], ['shoeBox', 3], ['teddy', 2]], who: '김우편 우체국장', short: '우체국 창구, 국제소포 포장대, 사서함 벽, 택배 컨베이어를 수색해요.',
+    items: [["cosmetics",2],["shoeBox",2],["teddy",1],["vitamin",2]], who: '김우편 우체국장', short: '우체국 창구, 국제소포 포장대, 사서함 벽, 택배 컨베이어를 수색해요.',
     intro: '동네 우체국이야! 해외로 보내는 국제소포 사이에 마약이 섞였다는 제보가 들어왔어.\n창구 뒤 소포 선반, 포장대, 컨베이어, 빨간 우체통까지 꼼꼼히 킁킁!',
     build(L) {
       for (let k = 0; k < 6; k++) { const x = -20 + k * 8; bx(x, 0, -12, 6.6, 1.1, 1.4, 0xf4f1ea); mesh(BOX(6.6, 1.3, .08), MAT.glass(), x, 1.8, -12.6); mesh(BOX(.8, .5, .2), glow(0xff5a4a, 1), x + 2.4, 2.8, -12.6); sign(['우편 접수', '국제 소포 EMS', '택배', '등기', '우체국 금융', '보험'][k], x, 3.3, -11.8, .42, 'rgba(200,40,30,.92)'); }
@@ -2583,7 +2597,7 @@ const LANDMARK_LIST = [
     } },
   { name: '교도소', gate: true, icon: '🔒', w: 76, d: 58, floor: 0x9a968d, obj: crate, sky: [0x6d7a88, 0xd0d6dc], st: 4, shape: [[-1, 1], [-1, -1], [1, -1], [1, 1]], rail: { h: 6, col: 0x8f8b84, t: .8 },
     staff: [{ kind: 'police', route: [[-30, -12], [30, -12]], wait: 2 }, { kind: 'police', route: [[-30, 14], [30, 14]], wait: 2 }, { kind: 'police', route: [[-32, -24], [-32, 24]], wait: 2 }], veh: [{ type: 'bus', route: [[-30, 20], [30, 20], [30, 18], [-30, 18]] }], people: { inmate: 6, civ: 3, smuggler: 3 },
-    items: [['shoeBox', 3], ['vitamin', 3], ['speaker', 2]], who: '최철문 교도소장', short: '높은 담장과 감시탑, 수용동, 운동장, 면회실을 순찰하며 몰래 반입되는 물품을 막아요.',
+    items: [["laundry",3],["lunchbox",2],["shoeBox",1],["vitamin",1]], who: '최철문 교도소장', short: '높은 담장과 감시탑, 수용동, 운동장, 면회실을 순찰하며 몰래 반입되는 물품을 막아요.',
     intro: '교도소 면회일이야. 영치품과 세탁물 상자에 마약과 무기를 숨겨 들여보내려는 사람들이 있대.\n감시탑 아래 높은 담장 안, 수용동·운동장·면회실을 꼼꼼히 순찰하자!',
     build(L) {
       for (const [x, z] of [[-35, -26], [35, -26], [-35, 26], [35, 26], [0, -26]]) { bx(x, 0, z, 3, 9, 3, 0x7d7a73); mesh(BOX(4.2, 2.2, 4.2), LMC(0x5b5a55), x, 10.1, z); mesh(BOX(4.4, .3, 4.4), LMC(0x3d3c38), x, 11.3, z); const sl = mesh(BOX(.6, .4, .6), glow(0xffee88, 1.6), x, 10.4, z + 2.1); envAnim.push(() => { sl.position.x = x + Math.sin(time + z) * 1.4; }); }
@@ -2597,7 +2611,7 @@ const LANDMARK_LIST = [
       for (const x of [-12, 12]) { bx(x, 0, 24, .2, 1, .2, 0xdddddd); mesh(BOX(5, .2, .2), LMC(0xe74c3c), x + (x < 0 ? 2.5 : -2.5), 1, 24); }
     } },
   { name: '서울역', icon: '🚉', w: 90, d: 64, floor: TILE('#c9c3b6', '#a9a294', .2), obj: luggage, sky: [0x5aa8ef, 0xe2f0fb], st: 3, veh: [{ type: 'taxi', route: [[-42, 13], [42, 13], [42, 11], [-42, 11]] }, { type: 'bus', route: [[42, 11], [-42, 11], [-42, 13], [42, 13]], start: 1 }],
-    people: { civ: 6, tourist: 3, student: 2, smuggler: 3 }, items: [['backpack', 4], ['golfBag', 2], ['guitarCase', 2]], who: '정기차 서울역장', short: '옛 서울역(붉은 벽돌·초록 돔), 유리 신역사, 하늘 정원 서울로7017, KTX 승강장을 순찰해요.',
+    people: { civ: 6, tourist: 3, student: 2, smuggler: 3 }, items: [["backpack",2],["golfBag",1],["guitarCase",1],["lunchbox",2]], who: '정기차 서울역장', short: '옛 서울역(붉은 벽돌·초록 돔), 유리 신역사, 하늘 정원 서울로7017, KTX 승강장을 순찰해요.',
     intro: '서울역이야! 1925년에 지어진 붉은 벽돌과 초록 돔의 옛 역사(문화역서울284) 옆에 유리로 된 새 역사가 있어.\n광장 위로는 공중 정원 길 서울로7017이 지나가고, 뒤쪽엔 KTX 승강장이 있어!',
     build(L) {
       bx(-24, 0, -12, 28, 8, 12, 0xa5473a); for (let k = 0; k < 9; k++) { mesh(BOX(1.6, 3.4, .1), LMC(0x2a3d52), -35 + k * 2.8, 3.6, -5.95); mesh(new THREE.CylinderGeometry(.8, .8, .1, 10, 1, false, 0, Math.PI), LMC(0xf1e6cf), -35 + k * 2.8, 5.3, -5.95).rotation.x = Math.PI / 2; }
@@ -2614,7 +2628,7 @@ const LANDMARK_LIST = [
     } },
   { name: 'KTX 열차 안', icon: '🚄', out: false, w: 12, d: 76, bg: 0xdfe6ea, floor: TILE('#4b5560', '#3c444d', .5), obj: luggage, ns: 6, sky: [0x86b6e0, 0xe8f2fa], shape: CAPSULE(1), shapeFloor: true, rail: { h: 3, col: 0xe8ecef, t: .3 }, st: 3,
     staff: [{ kind: 'attendant', route: [[0, -30], [0, 28]], wait: 2 }, { kind: 'customs', route: [[0, 30], [0, -20]], wait: 3 }], people: { civ: 6, student: 2, smuggler: 2 }, hide: { drug: 4, gun: 2 }, need: { drug: 3, gun: 1, smuggler: 2 },
-    items: [['backpack', 4], ['dutyBag', 2]], who: '한레일 KTX 열차팀장', short: '시속 300km로 달리는 KTX! 객실 좌석 밑, 짐칸, 칸 사이 통로를 수색해요.',
+    items: [["backpack",2],["dutyBag",1],["lunchbox",2]], who: '한레일 KTX 열차팀장', short: '시속 300km로 달리는 KTX! 객실 좌석 밑, 짐칸, 칸 사이 통로를 수색해요.',
     intro: '부산행 KTX 열차 안이야. 좁은 통로 양옆 좌석 아래와 선반, 객실 끝 짐칸에 밀수품이 숨어 있대.\n창밖으로 논밭과 산, 전봇대가 휙휙 지나가!',
     build(L) {
       for (let z = -28; z <= 24; z += 2.2) { if (Math.abs(z + 2) < 1.5 || Math.abs(z - 14) < 1.5) continue; for (const x of [-4.2, -3.2, 3.2, 4.2]) seatBlock(x, z, z < -6 ? 0x7a2a4a : 0x2e5fa8, Math.PI); }
@@ -2626,7 +2640,7 @@ const LANDMARK_LIST = [
       for (let k = 0; k < 3; k++) { const mt = mesh(BOX(30, 14, 10), LMC(0x6f8f9f), 0, 0, 0); const z0 = k * 40, sd = k % 2 ? -1 : 1; envAnim.push(() => { mt.position.set(sd * 40, 6, ((z0 - time * 6) % 120 + 180) % 120 - 60); }); }
     } },
   { name: '버스터미널', gate: true, icon: '🚌', w: 84, d: 60, floor: () => std(0xffffff, .9, 0, { map: TEX.asphalt([20, 20]) }), obj: luggage, sky: [0x4aa0e6, 0xdcefff], veh: [{ type: 'bus', route: [[-36, -6], [36, -6], [36, 0], [-36, 0]] }, { type: 'bus', route: [[-36, -6], [36, -6], [36, 0], [-36, 0]], start: 2 }],
-    people: { civ: 7, student: 3, merchant: 1, smuggler: 3 }, items: [['backpack', 4], ['cooler', 2], ['fruitBox', 2]], who: '오고속 버스터미널 소장', short: '고속버스 승차장, 짐칸, 대합실, 매표소, 택시 승강장을 수색해요. 버스 조심!',
+    people: { civ: 7, student: 3, merchant: 1, smuggler: 3 }, items: [["backpack",2],["cooler",1],["fruitBox",2],["lunchbox",1]], who: '오고속 버스터미널 소장', short: '고속버스 승차장, 짐칸, 대합실, 매표소, 택시 승강장을 수색해요. 버스 조심!',
     intro: '고속버스터미널이야. 전국으로 떠나는 버스 짐칸에 밀수품을 실으려 한대.\n승차장 번호판과 전광판을 보며 대합실과 매표소 주변을 확인하자. 버스가 다니는 길은 조심!',
     build(L) {
       for (let k = 0; k < 8; k++) { const x = -35 + k * 10; bx(x, 0, -20, 3.4, 3.2, 10.6, k % 2 ? 0xf4f4f2 : 0x2c6fb7); mesh(BOX(3.42, .9, 9.6), LMC(0x1d2f45), x, 2.4, -20); mesh(BOX(3.44, .4, 10.6), LMC(k % 2 ? 0x2c6fb7 : 0xf4f4f2), x, 1, -20); bx(x, 0, -13.6, 3, .25, 1, 0xffd54f, false); sign((k + 1) + '번 ' + ['서울', '부산', '대구', '광주', '대전', '강릉', '전주', '포항'][k], x, 5.6, -14.3, .45); }
@@ -2640,7 +2654,7 @@ const LANDMARK_LIST = [
     } },
   { name: '비행기 안', gate: true, icon: '🛫', out: false, w: 13, d: 70, bg: 0xe9edf1, floor: TILE('#3c4f6b', '#33445c', .5), obj: luggage, ns: 6, sky: [0x3a8fe0, 0xbfe0fb], shape: CAPSULE(1), shapeFloor: true, rail: { h: 3.2, col: 0xf0f2f4, t: .3 }, st: 3,
     staff: [{ kind: 'attendant', route: [[0, -26], [0, 26]], wait: 2.5 }, { kind: 'attendant', route: [[0, 20], [0, -18]], wait: 2.5 }], people: { civ: 8, tourist: 2, smuggler: 2 }, hide: { drug: 4, gun: 2 }, need: { drug: 3, gun: 1, smuggler: 2 },
-    items: [['backpack', 4], ['dutyBag', 3]], who: '하늘별 기장', chief: 'pilot', short: '하늘을 나는 여객기 안! 비즈니스석·일반석 좌석 밑, 갤리, 화장실 앞을 수색해요.',
+    items: [["backpack",2],["dutyBag",2],["cosmetics",1]], who: '하늘별 기장', chief: 'pilot', short: '하늘을 나는 여객기 안! 비즈니스석·일반석 좌석 밑, 갤리, 화장실 앞을 수색해요.',
     intro: '인천행 국제선 여객기 안이야. 착륙 전에 밀수범을 찾아야 해!\n앞쪽 비즈니스석, 3-3 일반석, 비상구, 갤리와 화장실 앞까지 꼼꼼히. 창밖 구름도 구경해!',
     build(L) {
       for (let z = -24; z <= -16; z += 2.6) for (const x of [-3.9, -2.4, 2.4, 3.9]) { const c = seatBlock(x, z, 0x7a2a4a, Math.PI); c.mesh.scale.set(1.5, 1.2, 1.4); }
@@ -2655,7 +2669,7 @@ const LANDMARK_LIST = [
       for (const sd of [-1, 1]) mesh(BOX(14, .3, 4), LMC(0xdfe4e8), sd * 13, 1, 2);
     } },
   { name: '명동', icon: '🛍', w: 84, d: 60, floor: TILE('#c8bfb0', '#a89f90', .3), obj: luggage, sky: [0x6aa8e8, 0xf2e6f0], st: 3,
-    people: { tourist: 6, merchant: 3, civ: 3, smuggler: 3 }, items: [['cosmetics', 4], ['dutyBag', 3], ['shoeBox', 2]], who: '윤쇼핑 명동 상인회장', short: '명동성당 아래 쇼핑 거리! 노점 거리, 화장품 가게, 환전소, 명동예술극장을 순찰해요.',
+    people: { tourist: 6, merchant: 3, civ: 3, smuggler: 3 }, items: [["cosmetics",2],["dutyBag",2],["shoeBox",1],["souvenir",1]], who: '윤쇼핑 명동 상인회장', short: '명동성당 아래 쇼핑 거리! 노점 거리, 화장품 가게, 환전소, 명동예술극장을 순찰해요.',
     intro: '명동 쇼핑 거리야. 가운데 길엔 떡볶이·회오리감자 노점이 줄지어 있고, 양옆엔 화장품 가게와 환전소가 가득해.\n북쪽 언덕 위에는 고딕 양식의 명동성당이 있어. 멀리 남산타워도 보여!',
     build(L) {
       const fac = [0xf8c8d8, 0xc8e0f0, 0xfff0c0, 0xd8f0d0, 0xe8d0f0, 0xffd8b0];
@@ -2669,7 +2683,7 @@ const LANDMARK_LIST = [
     } },
   { name: '경복궁', icon: '🏯', w: 96, d: 74, floor: 0xd8cfb8, obj: crate, sky: [0x5fb0ff, 0xf0f6ff], st: 3, shape: [[-1, 1], [-1, -1], [1, -1], [1, 1]], rail: { h: 4, col: 0xc9b8a0, t: .6 },
     staff: [{ kind: 'royalguard', route: [[-6, 26], [6, 26]], wait: 3 }, { kind: 'royalguard', route: [[-6, 10], [6, 10]], wait: 3 }, { kind: 'police', route: [[-40, 0], [40, 0]], wait: 2 }], people: { hanbok: 7, tourist: 3, royalguard: 2, smuggler: 3 },
-    items: [['vase', 3], ['statue', 2], ['teddy', 2]], who: '이궁궐 경복궁 관리소장', short: '광화문→흥례문→근정전, 연못 위 경회루와 향원정까지! 문화재 밀반출범을 잡아요.',
+    items: [["vase",2],["souvenir",2],["hanbokBag",2]], who: '이궁궐 경복궁 관리소장', short: '광화문→흥례문→근정전, 연못 위 경회루와 향원정까지! 문화재 밀반출범을 잡아요.',
     intro: '경복궁에 왔어. 정문 광화문 앞에선 수문장 교대식이 열리고, 흥례문을 지나면 왕이 나랏일을 보던 근정전이 있어.\n서쪽 연못 위 경회루, 북쪽 향원정까지 한복 입은 관람객 사이에서 밀수범을 찾자!',
     build(L) {
       mountainBack(-70, 0x587a4a, 7);
@@ -2679,13 +2693,14 @@ const LANDMARK_LIST = [
       bx(0, 0, -12, 32, .9, 24, 0xcfc6b2); bx(0, .9, -14, 26, .9, 18, 0xcfc6b2); stepsUp(0, 1, 4, 3, -1, .8, 0xcfc6b2); hanok(0, -14, 22, 12, 4.6, { tier: true, base: 0xcfc6b2 }); sign('근정전 勤政殿 (국보)', 0, 16.5, -7, .8);
       for (let k = 0; k < 6; k++) for (const sx of [-1, 1]) mesh(BOX(.4, .7, .3), LMC(0xbdb5a2), sx * 3, .35, 3 - k * 2.2);
       for (const [x, z, w, d] of [[0, -27, 44, 1.4], [-22, -12, 1.4, 30], [22, -12, 1.4, 30]]) { bx(x, 0, z, w, 2.6, d, 0xe4d8c0); hroof(x, 2.6, z, Math.max(1, w - 1), Math.max(1, d - 1)); }
-      pond(34, -18, 22, 18); for (let x = -7.5; x <= 7.5; x += 3) for (let z = -5; z <= 5; z += 2.5) mesh(BOX(.7, 3, .7), LMC(0xd9d2c4), 34 + x, 1.5, -18 + z); bx(34, 3, -18, 17, .5, 12, 0xcfc6b2, false); bx(34, 3.5, -18, 15, 2.4, 10, 0xeadfca, false); hroof(34, 5.9, -18, 15, 10); hroof(34, 7.6, -18, 10, 6); sign('경회루 慶會樓 (국보)', 34, 11, -11, .7);
-      pond(-34, -24, 14, 12); pavilion(-34, -26, 1, .3); hroof(-34, 3.6, -26, 2, 2); for (let k = 0; k < 6; k++) mesh(BOX(1.6, .25, 1.4), LMC(0x8b2e22), -34, .4, -21 + k * .9); sign('향원정 · 취향교', -34, 7, -22, .55);
-      for (let k = 0; k < 14; k++) { const x = k % 2 ? rr(-46, -26) : rr(26, 46), z = rr(-2, 18); pine(x, z); }
+      pond(-35, -16, 20, 18); for (let x = -7.5; x <= 7.5; x += 3) for (let z = -5; z <= 5; z += 2.5) mesh(BOX(.7, 3, .7), LMC(0xd9d2c4), -35 + x, 1.5, -16 + z); bx(-35, 3, -16, 17, .5, 12, 0xcfc6b2, false); bx(-35, 3.5, -16, 15, 2.4, 10, 0xeadfca, false); hroof(-35, 5.9, -16, 15, 10); hroof(-35, 7.6, -16, 10, 6); sign('경회루 慶會樓 (국보) · 서쪽 연못', -35, 11, -9, .7);
+      for (let k = 0; k < 5; k++) { const w = 9 - k * 1.5; bx(36, k * 2.6, -16, w, 2.6, w, 0xeadfca, k === 0); hroof(36, k * 2.6 + 2.2, -16, w - .6, w - .6); } sign('국립민속박물관 (동쪽)', 36, 16, -11, .6);
+      pond(8, -32, 14, 8); pavilion(8, -33, .9, .3); hroof(8, 3.3, -33, 1.8, 1.8); for (let k = 0; k < 4; k++) mesh(BOX(1.4, .25, 1.2), LMC(0x8b2e22), 8, .4, -29.2 + k * .9); sign('향원정 · 취향교 (북쪽)', 8, 7, -29, .55);
+      for (let k = 0; k < 14; k++) { const x = k % 2 ? rr(-46, -28) : rr(28, 46), z = rr(2, 18); pine(x, z); }
       flag(-8, 28, 0xd63a2a); flag(8, 28, 0x2c6fb7); flag(-5, 28, 0xffd54f); flag(5, 28, 0x27ae60);
     } },
   { name: '홍대', icon: '🎸', w: 82, d: 58, floor: TILE('#8e8a86', '#6f6b67', .3), obj: luggage, sky: [0x7a6ad8, 0xffd0e8], st: 3,
-    people: { busker: 3, student: 5, tourist: 2, smuggler: 3 }, items: [['guitarCase', 3], ['speaker', 3], ['backpack', 3]], who: '배버스킹 홍대 걷고싶은거리 상인회장', short: '버스킹 무대, 홍익대 정문, 홍대 놀이터, 경의선숲길, 그래피티 골목을 순찰해요.',
+    people: { busker: 3, student: 5, tourist: 2, smuggler: 3 }, items: [["guitarCase",2],["speaker",2],["backpack",2]], who: '배버스킹 홍대 걷고싶은거리 상인회장', short: '버스킹 무대, 홍익대 정문, 홍대 놀이터, 경의선숲길, 그래피티 골목을 순찰해요.',
     intro: '홍대 앞이야! 걷고싶은거리에선 버스킹 공연이 한창이고, 북쪽엔 홍익대학교 정문이 있어.\n홍대 놀이터 플리마켓, 옛 철길을 공원으로 바꾼 경의선숲길, 그래피티 골목까지 돌아보자!',
     build(L) {
       bx(-6, 0, -24, 3, 10, 3, 0xbfc3c7); bx(6, 0, -24, 3, 10, 3, 0xbfc3c7); mesh(BOX(18, 3, 3), LMC(0xbfc3c7), 0, 11.5, -24); mesh(BOX(16, .8, .2), LMC(0x1f3b6b), 0, 11.5, -22.4); sign('🎓 홍익대학교 정문', 0, 14.5, -22, .7);
@@ -2697,7 +2712,7 @@ const LANDMARK_LIST = [
       sign('🎸 HONGDAE 걷고싶은거리', 0, 6, 8, 1);
     } },
   { name: '롯데월드타워', icon: '🏙', w: 86, d: 64, floor: TILE('#d3d0c8', '#b6b2a8', .25), obj: luggage, sky: [0x4f9fe8, 0xe6f2fc], st: 3,
-    people: { tourist: 6, civ: 4, student: 2, smuggler: 3 }, items: [['dutyBag', 4], ['cosmetics', 3], ['wine', 2]], who: '서높이 롯데월드타워 운영총괄', short: '123층 555m 초고층 타워, 석촌호수 벚꽃길, 쇼핑몰, 아쿠아리움 앞 광장을 순찰해요.',
+    people: { tourist: 6, civ: 4, student: 2, smuggler: 3 }, items: [["dutyBag",2],["cosmetics",2],["wine",1],["souvenir",1]], who: '서높이 롯데월드타워 운영총괄', short: '123층 555m 초고층 타워, 석촌호수 벚꽃길, 쇼핑몰, 아쿠아리움 앞 광장을 순찰해요.',
     intro: '잠실의 123층, 555m 초고층 타워 앞이야! 붓끝처럼 뾰족하게 솟아 있고, 꼭대기엔 전망대 서울스카이가 있어.\n타워 옆엔 쇼핑몰과 아쿠아리움, 동쪽엔 벚꽃이 예쁜 석촌호수가 있어.',
     build(L) {
       const gl = MAT.col(0x9cc0da, .25, .3), fin = LMC(0xeef3f7);
@@ -2709,18 +2724,19 @@ const LANDMARK_LIST = [
       for (let k = 0; k < 12; k++) tree(-24 + (k % 2) * -3, -2 + k * 2.6, .8, 0xf2a7c3); for (let k = 0; k < 6; k++) tree(rr(16, 40), rr(6, 24), .8, 0xf2a7c3); flowers(28, 14, 16, 10, [0xf48fb1, 0xffffff, 0xffeb3b], 40);
     } },
   { name: '동대문', icon: '🧵', w: 86, d: 62, floor: TILE('#c7c2b9', '#a8a399', .3), obj: palletBox, sky: [0x5aa0e8, 0xeef4fb], st: 3,
-    people: { merchant: 4, tourist: 4, civ: 3, smuggler: 3 }, items: [['shoeBox', 3], ['cosmetics', 2], ['tvBox', 2]], who: '권패션 DDP 관장', short: '은빛 곡선 건물 DDP와 LED 장미정원, 옹성으로 둘러싸인 흥인지문, 청계천, 패션 시장을 순찰해요.',
+    people: { merchant: 4, tourist: 4, civ: 3, smuggler: 3 }, items: [["shoeBox",2],["cosmetics",2],["tvBox",1],["souvenir",1]], who: '권패션 DDP 관장', short: '은빛 곡선 건물 DDP와 LED 장미정원, 옹성으로 둘러싸인 흥인지문, 청계천, 패션 시장을 순찰해요.',
     intro: '동대문이야! 우주선 같은 은빛 곡선 건물 DDP 앞에는 밤마다 빛나는 LED 장미정원이 있어.\n동쪽엔 반달 모양 옹성으로 둘러싸인 보물 흥인지문, 앞으로는 청계천이 흘러. 패션 시장 원단 박스를 확인하자!',
     build(L) {
-      const ddp = new THREE.Mesh(new THREE.SphereGeometry(16, 28, 12, 0, Math.PI * 2, 0, Math.PI / 2), MAT.metal(0xc9ced3, .3)); ddp.scale.set(1.6, .45, 1); ddp.position.set(-12, 0, -16); world.add(ddp); addCol(-12, -16, 46, 28, null, { topY: 99 }); for (let k = 0; k < 40; k++) { const a = k / 40 * Math.PI * 2; mesh(BOX(.3, .3, .3), glow(0xbfe6ff, 1), -12 + Math.cos(a) * 25.4, 2.2, -16 + Math.sin(a) * 15.8).castShadow = false; } sign('DDP 동대문디자인플라자', -12, 9, -1, .8);
-      for (let x = -26; x <= 2; x += 1.4) for (let z = 3; z <= 8; z += 1.4) { const r = mesh(BOX(.35, .35, .35), glow(pick([0xffffff, 0xffd0e0, 0xfff4c0]), 1.4), x, .8 + Math.random() * .2, z); r.castShadow = false; bx(x, 0, z, .06, .8, .06, 0x3a7a3a, false); } sign('🌹 LED 장미정원', -12, 3.4, 9, .55);
-      for (let k = 0; k < 20; k++) { const a = Math.PI * (.15 + k / 19 * .7); bx(30 + Math.cos(a) * 11, 0, -14 + Math.sin(a) * 9, 2, 3.2, 2, 0xa9a497); } gateTop(30, -14, 14, 6, 4); sign('흥인지문 興仁之門 (보물) · 옹성', 30, 12, -7, .65);
-      pond(-22, 14, 36, 3.4, 0x6fb5d8); pond(24, 14, 32, 3.4, 0x6fb5d8); for (let k = 0; k < 7; k++) mesh(BOX(1, .3, .8), LMC(0xb9b2a5), -36 + k * 5, .2, 14); sign('청계천', 20, 2.4, 14, .5);
-      for (const sx of [-1, 1]) { building(sx * 38, 2, 9, 12, 26, sx < 0 ? 0x2c3e50 : 0x8e44ad, { lit: true }); neon(sx * 38, 18, 8.2, sx < 0 ? 'FASHION TOWER' : '패션몰 24H', sx < 0 ? '#4fd3ff' : '#ff4fa3'); }
-      building(10, -29, 40, 5, 5, 0xe2d6c4, { sign: '평화시장 · 원단 도매', sh: .55 }); for (let k = 0; k < 6; k++) stall(-30 + k * 9, 21, [0xd63a2a, 0x2c6fb7, 0x27ae60][k % 3], ['원단', '단추', '청바지', '모자', '신발', '가방'][k]);
+      gateTop(28, -24, 14, 6, 4); for (let k = 0; k < 18; k++) { const a = -Math.PI * (.12 + k / 17 * .76); bx(28 + Math.cos(a) * 10, 0, -24 + Math.sin(a) * -1 * 0 + Math.sin(a) * 6, 1.8, 3, 1.8, 0xa9a497); } sign('흥인지문 興仁之門 (보물) · 반달 옹성', 28, 12, -19, .65);
+      building(-22, -21, 40, 5, 5, 0xe2d6c4, { sign: '평화시장 · 원단 도매', sh: .55 });
+      pond(-21, -12, 38, 3.4, 0x6fb5d8); pond(25, -12, 34, 3.4, 0x6fb5d8); for (let k = 0; k < 8; k++) mesh(BOX(1, .3, .8), LMC(0xb9b2a5), -36 + k * 5, .2, -12); sign('청계천', 20, 2.4, -12, .5);
+      const ddp = new THREE.Mesh(new THREE.SphereGeometry(16, 28, 12, 0, Math.PI * 2, 0, Math.PI / 2), MAT.metal(0xc9ced3, .3)); ddp.scale.set(1.4, .45, .8); ddp.position.set(-14, 0, 3); world.add(ddp); addCol(-14, 3, 40, 22, null, { topY: 99 }); for (let k = 0; k < 40; k++) { const a = k / 40 * Math.PI * 2; mesh(BOX(.3, .3, .3), glow(0xbfe6ff, 1), -14 + Math.cos(a) * 22.6, 2.2, 3 + Math.sin(a) * 12.9).castShadow = false; } sign('DDP 동대문디자인플라자', -14, 9, 15, .8);
+      for (let x = -34; x <= -12; x += 1.4) for (let z = 17; z <= 22; z += 1.4) { const r = mesh(BOX(.35, .35, .35), glow(pick([0xffffff, 0xffd0e0, 0xfff4c0]), 1.4), x, .8 + Math.random() * .2, z); r.castShadow = false; bx(x, 0, z, .06, .8, .06, 0x3a7a3a, false); } sign('🌹 LED 장미정원', -23, 3.4, 23, .55);
+      building(38, 2, 9, 12, 26, 0x2c3e50, { lit: true }); neon(38, 18, 8.2, 'FASHION TOWER', '#4fd3ff'); building(38, 18, 9, 10, 20, 0x8e44ad, { lit: true }); neon(38, 14, 23.2, '패션몰 24H', '#ff4fa3');
+      for (let k = 0; k < 5; k++) stall(22, -4 + k * 5, [0xd63a2a, 0x2c6fb7, 0x27ae60][k % 3], ['원단', '단추', '청바지', '모자', '신발'][k]);
     } },
   { name: '광안리 해변', icon: '🌉', w: 90, d: 56, floor: 0xcdb98c, obj: luggage, sky: [0x3a9ae8, 0xd8f0ff], st: 3, shape: [[-1, 1], [-1, -.3], [-.8, -.6], [-.5, -.8], [0, -.88], [.5, -.8], [.8, -.6], [1, -.3], [1, 1]], outside: { col: 0x3d8fc4, y: .03, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
-    people: { tourist: 6, civ: 4, merchant: 1, smuggler: 3 }, items: [['cooler', 3], ['backpack', 3], ['fishBox', 2]], who: '부산바다 광안리해수욕장 관리소장', chief: 'crew', short: '반달 모양 광안리 해변! 바다 위 광안대교, 드론쇼, 민락수변공원, 회센터를 둘러보며 수색해요.',
+    people: { tourist: 6, civ: 4, merchant: 1, smuggler: 3 }, items: [["cooler",2],["beachBag",2],["fishBox",2]], who: '부산바다 광안리해수욕장 관리소장', chief: 'crew', short: '반달 모양 광안리 해변! 바다 위 광안대교, 드론쇼, 민락수변공원, 회센터를 둘러보며 수색해요.',
     intro: '부산 광안리 해수욕장이야. 반달 모양 모래사장 앞바다에 길이 7.4km, 2층짜리 광안대교가 떠 있어.\n밤엔 다리가 알록달록 빛나고 하늘엔 드론쇼가 펼쳐져! 동쪽 민락수변공원, 서쪽 회센터도 있어.',
     build(L) {
       seaNorth(-26); suspBridge(-90, -170, 170, 9, 34);
@@ -2736,7 +2752,7 @@ const LANDMARK_LIST = [
     } },
   { name: '숭례문', icon: '⛩', w: 84, d: 62, floor: () => std(0xffffff, .9, 0, { map: TEX.asphalt([20, 20]) }), obj: luggage, sky: [0x5fa8ec, 0xeaf3fb], veh: [{ type: 'taxi', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]] }, { type: 'bus', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 2 }, { type: 'car', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 1 }, { type: 'car', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 3 }],
     staff: [{ kind: 'royalguard', route: [[-4, 3], [4, 3]], wait: 3 }, { kind: 'police', route: [[-36, 24], [36, 24]], wait: 2 }], people: { merchant: 4, tourist: 4, civ: 3, smuggler: 3 },
-    items: [['vase', 2], ['backpack', 3], ['dutyBag', 2]], who: '남대문 숭례문 관리소장', short: '차들이 도는 광장 가운데 국보 숭례문! 남은 성곽, 남대문시장 골목을 순찰해요. 차 조심!',
+    items: [["vase",1],["fruitBox",2],["souvenir",2],["backpack",1]], who: '남대문 숭례문 관리소장', short: '차들이 도는 광장 가운데 국보 숭례문! 남은 성곽, 남대문시장 골목을 순찰해요. 차 조심!',
     intro: '서울의 남쪽 대문, 국보 숭례문이야! 두 층 지붕의 웅장한 문루와 양옆으로 남은 성곽이 있어.\n문 둘레로 차들이 빙빙 돌고, 서쪽엔 갈치조림·안경·그릇 가게가 가득한 남대문시장이 있어. 차 조심!',
     build(L) {
       floorPlane(48, 26, MAT.col(0xd8cfb8, .9), 0, -3, .01); for (let k = 0; k < 5; k++) mesh(BOX(1.2, .1, 4), LMC(0xffffff), -6 + k * 3, .02, 18).castShadow = false;
@@ -2747,7 +2763,7 @@ const LANDMARK_LIST = [
     } },
   { name: '수원화성', icon: '🏰', w: 96, d: 74, floor: 0xc9d6a0, obj: crate, sky: [0x5fb0ff, 0xf2f6e6], st: 4, shape: [[-.95, .7], [-1, .1], [-.85, -.5], [-.55, -.9], [0, -1], [.5, -.88], [.9, -.55], [1, 0], [.85, .65], [.4, .92], [-.3, .95], [-.7, .88]], rail: { h: 4.2, col: 0xb7ae98, t: .9, cren: true }, outside: { col: 0x7fa65a, y: .02 },
     staff: [{ kind: 'royalguard', route: [[-20, 18], [20, 18]], wait: 3 }, { kind: 'police', route: [[-30, -6], [30, -6]], wait: 2 }], veh: [{ type: 'dragon', route: [[-30, 12], [30, 12], [30, -8], [-30, -8]] }], people: { hanbok: 4, tourist: 4, student: 2, smuggler: 3 },
-    items: [['vase', 3], ['statue', 2], ['drum', 2]], who: '정조대왕 수원화성 사업소장', short: '세계유산 수원화성! 팔달문·장안문·화서문, 서북공심돈, 방화수류정, 봉돈, 화성행궁, 화성어차까지.',
+    items: [["vase",1],["drum",1],["hanbokBag",2],["souvenir",2]], who: '정조대왕 수원화성 사업소장', short: '세계유산 수원화성! 팔달문·장안문·화서문, 서북공심돈, 방화수류정, 봉돈, 화성행궁, 화성어차까지.',
     intro: '정조 때 쌓은 세계유산 수원화성이야. 바깥은 돌로, 안쪽은 흙으로 쌓은 성벽이 꼬불꼬불 이어져.\n남쪽 팔달문, 북쪽 장안문, 서쪽 화서문과 망루 서북공심돈, 연못 위 방화수류정, 연기 신호를 올리던 봉돈이 있어.\n용머리 화성어차도 다니니까 조심!',
     build(L) {
       gateTop(0, 22, 16, 6, 4.5, { tier: true }); sign('팔달문 八達門 (남문)', 0, 16, 25, .8);
@@ -2762,19 +2778,19 @@ const LANDMARK_LIST = [
     } },
   { name: '경주', icon: '🗿', w: 92, d: 70, floor: 0x9cc27a, obj: crate, sky: [0x6ab4f0, 0xf3eedb], st: 3,
     staff: [{ kind: 'monk', route: [[-30, -18], [-20, -18]], wait: 3 }, { kind: 'police', route: [[-36, 22], [36, 22]], wait: 2 }], people: { monk: 2, tourist: 5, student: 3, hanbok: 2, smuggler: 3 },
-    items: [['vase', 3], ['statue', 3]], who: '신라천년 경주 문화유산 관리소장', short: '천년 고도 경주! 첨성대, 대릉원 고분, 불국사와 다보탑·석가탑, 석굴암, 동궁과 월지, 황리단길까지.',
+    items: [["vase",2],["statue",1],["souvenir",2],["backpack",1]], who: '신라천년 경주 문화유산 관리소장', short: '천년 고도 경주! 첨성대, 대릉원 고분, 불국사와 다보탑·석가탑, 석굴암, 동궁과 월지, 황리단길까지.',
     intro: '신라의 서울 경주야! 별을 관측하던 첨성대, 커다란 왕릉이 모인 대릉원이 있어.\n불국사에는 청운교·백운교 돌계단과 다보탑·석가탑, 산 위 석굴암엔 커다란 부처님이 계셔.\n밤이 예쁜 동궁과 월지, 한옥 카페 거리 황리단길까지 문화재 도굴범을 막자!',
     build(L) {
       for (let k = 0; k < 27; k++) { const r = 2.6 - Math.sin(k / 27 * Math.PI) * .6 + (k < 4 ? .4 : 0); mesh(new THREE.CylinderGeometry(r * .97, r, .5, 16), LMC(0xd2c39e), 0, .25 + k * .5, -4); } addCol(0, -4, 5, 5, null, { topY: 99 }); bx(0, 13.5, -4, 3.4, .6, 3.4, 0xc4b48e, false); mesh(BOX(1, 1, .1), LMC(0x222222), 0, 7, -1.4); sign('첨성대 瞻星臺 (국보)', 0, 17, -2, .7); flowers(0, 6, 22, 6, [0xf48fb1, 0xffeb3b, 0xff7043, 0xba68c8], 70);
       for (const [x, z, r] of [[-30, 4, 9], [-14, 10, 6], [-40, -8, 6]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x6f9f4a)); m.scale.y = .55; m.position.set(x, 0, z); world.add(m); addCol(x, z, r * 1.5, r * 1.5, null, { topY: 99 }); } sign('대릉원 고분 (천마총)', -26, 8, 8, .6);
-      bx(-24, 0, -26, 30, 3, 6, 0xbfb6a4); stepsUp(-30, -22.5, 4, 8, -1, .4, 0xd2c8b4); stepsUp(-18, -22.5, 4, 8, -1, .4, 0xd2c8b4); sign('청운교 · 백운교', -24, 4.6, -22, .5); hanok(-24, -28, 20, 6, 3, { tier: true, base: 0xbfb6a4 }); for (const s of colliders.slice(-1)) s.minZ = s.minZ; sign('불국사 佛國寺', -24, 13, -24, .7);
+      bx(-24, 0, -26, 30, 3, 6, 0xbfb6a4); stepsUp(-30, -22.5, 4, 8, -1, .4, 0xd2c8b4); stepsUp(-18, -22.5, 4, 8, -1, .4, 0xd2c8b4); sign('청운교 · 백운교', -24, 4.6, -22, .5); hanok(-24, -28, 20, 6, 3, { tier: true, base: 0xbfb6a4 }); for (const s of colliders.slice(-1)) s.minZ = s.minZ; sign('불국사 佛國寺 · 자하문', -24, 13, -24, .7); hanok(-24, -33, 12, 3, 2.6, { tier: false, base: 0xbfb6a4 }); sign('대웅전', -24, 7, -31, .45); pavilion(-36, -27, .8, 3); sign('범영루', -36, 8, -25, .4);
       for (const [x, sga] of [[-34, 0], [-14, 1]]) { for (let k = 0; k < 3; k++) bx(x, k * 2.4, -16, 3.6 - k * .7, 1.6, 3.6 - k * .7, 0xbfb6a4, k === 0); for (let k = 0; k < 3; k++) mesh(BOX(5 - k * 1.1, .4, 5 - k * 1.1), LMC(0xa89e8c), x, 1.8 + k * 2.4, -16); mesh(BOX(.5, 2.4, .5), LMC(0xa89e8c), x, 8.8, -16); sign(sga ? '석가탑' : '다보탑', x, 11.5, -13.5, .55); }
       const cave = new THREE.Mesh(new THREE.SphereGeometry(8, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x9a948a)); cave.position.set(30, 0, -26); world.add(cave); addCol(30, -26, 12, 12, null, { topY: 99 }); bx(30, 0, -18.5, 4, 4, 2, 0x6d675e, false); statue(30, -19.4, 0xd9c9a0, true, 3.4); sign('석굴암 石窟庵 (국보)', 30, 10, -18, .65);
       pond(30, 8, 20, 12, 0x3f7fa8); for (const [x, z] of [[24, 2.4], [36, 2.4]]) { bx(x, 0, z, 6, .6, 3, 0xbfb6a4); pavilion(x, z, 1, .6); } for (let k = 0; k < 14; k++) mesh(BOX(.3, .3, .3), glow(0xffd27a, 1.2), 20 + k * 1.5, .5, 14.2).castShadow = false; sign('동궁과 월지 (안압지)', 30, 6, 2, .6);
       for (let k = 0; k < 4; k++) hanok(-38 + k * 8.5, 22, 6, 5, 2.4); sign('☕ 황리단길', -26, 7, 25, .6); for (let k = 0; k < 8; k++) tree(rr(14, 44), rr(20, 30), .9, 0x5f9a3e);
     } },
   { name: 'N서울타워', icon: '🗼', w: 80, d: 66, floor: 0x6f9a52, obj: luggage, sky: [0x5aa8ef, 0xf6e8d8], st: 3, shape: ELL(1, 1, 28), outside: { col: 0x3f6b3a, y: .02 }, rail: { h: 1.1, col: 0x8a6a4a, t: .2 },
-    people: { tourist: 6, student: 3, civ: 3, smuggler: 3 }, items: [['backpack', 4], ['teddy', 2], ['dutyBag', 2]], who: '남산 N서울타워 총지배인', short: '남산 꼭대기! N서울타워, 사랑의 자물쇠, 남산 봉수대, 팔각정, 케이블카, 서울 전망을 둘러봐요.',
+    people: { tourist: 6, student: 3, civ: 3, smuggler: 3 }, items: [["backpack",2],["teddy",2],["souvenir",2]], who: '남산 N서울타워 총지배인', short: '남산 꼭대기! N서울타워, 사랑의 자물쇠, 남산 봉수대, 팔각정, 케이블카, 서울 전망을 둘러봐요.',
     intro: '남산 꼭대기의 N서울타워야! 동그란 산 정상에서 서울이 한눈에 보여.\n사랑의 자물쇠 울타리, 옛날 연기로 신호를 보내던 남산 봉수대, 팔각정, 산 아래로 내려가는 케이블카도 있어!',
     build(L) {
       for (let k = 0; k < 16; k++) { const a = k / 16 * Math.PI * 2, r = rr(70, 110); building(Math.cos(a) * r, Math.sin(a) * r, rr(6, 12), rr(6, 12), rr(10, 40), pick([0xd4dbe2, 0xe8e2d8, 0xc0cad4]), { lit: true }); } mountainBack(-120, 0x587a4a, 6);
@@ -2786,7 +2802,7 @@ const LANDMARK_LIST = [
       for (const [x, z] of [[-10, 18], [10, -22], [-28, -4]]) { bx(x, 0, z, .4, 1.4, .4, 0x555555); mesh(BOX(.9, .4, .5), LMC(0x333333), x, 1.6, z); } for (let k = 0; k < 10; k++) pine(rr(-30, 30), rr(-28, -20));
     } },
   { name: '해운대', icon: '🏖', w: 100, d: 56, floor: 0xcdb98c, obj: luggage, sky: [0x2f9ef0, 0xd2efff], st: 3, shape: [[-1, 1], [-1, -.5], [-.6, -.7], [0, -.78], [.6, -.72], [.85, -.6], [1, -.2], [1, 1]], outside: { col: 0x3d8fc4, y: .03, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
-    people: { tourist: 7, civ: 4, student: 2, smuggler: 3 }, items: [['cooler', 3], ['fishBox', 2], ['backpack', 3]], who: '파도 해운대해수욕장 관리소장', chief: 'crew', short: '해운대 백사장! 엘시티·마린시티 초고층, 해변열차와 하늘 캡슐, 동백섬 누리마루, 모래조각, 멀리 광안대교.',
+    people: { tourist: 7, civ: 4, student: 2, smuggler: 3 }, items: [["cooler",2],["beachBag",2],["fishBox",1],["backpack",1]], who: '파도 해운대해수욕장 관리소장', chief: 'crew', short: '해운대 백사장! 엘시티·마린시티 초고층, 해변열차와 하늘 캡슐, 동백섬 누리마루, 모래조각, 멀리 광안대교.',
     intro: '대한민국 대표 해수욕장 해운대야! 1.5km 백사장 뒤로 초고층 빌딩 엘시티와 마린시티가 서 있어.\n동쪽 바닷가 절벽엔 알록달록 하늘 캡슐과 해변열차가 달리고, 서쪽 동백섬엔 누리마루 APEC하우스가 있어. 모래조각도 구경해!',
     build(L) {
       seaNorth(-24); suspBridge(-150, -320, 40, 9, 34);
@@ -2800,7 +2816,7 @@ const LANDMARK_LIST = [
     } },
   { name: '제주 한라산', icon: '🌋', w: 92, d: 92, floor: 0x6a8f4a, obj: crate, sky: [0x4fa6ee, 0xeaf6ff], st: 4, shape: ELL(1, 1, 30), outside: { col: 0x2f6b8f, y: .02, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
     staff: [{ kind: 'police', route: [[-30, 30], [30, 30]], wait: 2 }, { kind: 'haenyeo', route: [[30, 28], [36, 18]], wait: 3 }], people: { tourist: 5, haenyeo: 2, civ: 2, smuggler: 3 },
-    items: [['fruitBox', 4], ['cooler', 2], ['backpack', 2]], who: '고돌하르방 한라산국립공원 관리소장', short: '섬 가운데 한라산! 층층이 올라 백록담까지. 돌하르방, 돌담 감귤밭, 유채꽃, 오름, 조랑말, 해녀, 성산일출봉.',
+    items: [["fruitBox",3],["cooler",1],["backpack",2]], who: '고돌하르방 한라산국립공원 관리소장', short: '섬 가운데 한라산! 층층이 올라 백록담까지. 돌하르방, 돌담 감귤밭, 유채꽃, 오름, 조랑말, 해녀, 성산일출봉.',
     intro: '제주도 한라산이야! 섬 가운데 솟은 1,947m 화산 꼭대기엔 분화구 호수 백록담이 있어.\n산 아래엔 검은 돌담 감귤밭과 노란 유채꽃밭, 조랑말 목장이 있고, 바닷가엔 해녀 삼촌들, 멀리 성산일출봉도 보여!',
     build(L) {
       for (let k = 0; k < 26; k++) { const r = 30 - k * 1.08; const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r + .6, .35, 24), LMC(k > 20 ? 0x8a7d6a : new THREE.Color(0x5f8a45).lerp(new THREE.Color(0x7a8a5a), k / 26).getHex())); m.position.set(0, .175 + k * .35, -6); m.receiveShadow = true; world.add(m); addCol(0, -6, r * 1.42, r * 1.42, null, { topY: .35 * (k + 1), keep: true }); }
@@ -2811,37 +2827,50 @@ const LANDMARK_LIST = [
       flowers(30, -18, 14, 10, [0xffe23f, 0xfff06a, 0x9cc85a], 90); sign('🌼 유채꽃밭', 30, 3, -18, .5);
       for (const [x, z, r] of [[-28, -28, 5], [34, 2, 4]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x7a9a4a)); m.scale.y = .6; m.position.set(x, 0, z); world.add(m); addCol(x, z, r * 1.4, r * 1.4, null, { topY: 99 }); } sign('오름', -28, 5, -24, .5);
       for (const [x, z] of [[24, 20], [28, 24], [20, 26]]) horse(x, z, pick([0x8d5a3b, 0x5d4037, 0xd7ccc8])); sign('🐴 조랑말 목장', 24, 4, 22, .5);
-      for (let k = 0; k < 20; k++) { const a = k / 20 * Math.PI * 2; mesh(BOX(4, rr(6, 10), 4), LMC(0x6d6a4a), 70 + Math.cos(a) * 12, 3, -40 + Math.sin(a) * 12); } sign('성산일출봉 (세계유산)', 70, 14, -40, .9);
+      for (let r = 0; r < 4; r++) { const R = 18 - r * 2.2, h = 4 + r * 3; for (let k = 0; k < 28; k++) { const a = k / 28 * Math.PI * 2; const m = mesh(BOX(3.6, h, 3.6), LMC(r === 3 ? 0x6d6a4a : new THREE.Color(0x5f8a45).lerp(new THREE.Color(0x6d6a4a), r / 3).getHex()), 70 + Math.cos(a) * R, h / 2 - .6, -40 + Math.sin(a) * R); m.castShadow = false; } } const crater = new THREE.Mesh(new THREE.CircleGeometry(11, 24), LMC(0x7fa65a)); crater.rotation.x = -Math.PI / 2; crater.position.set(70, 4, -40); world.add(crater); sign('🌅 성산일출봉 (세계자연유산 · 분화구)', 70, 20, -40, 1);
     } },
   { name: '포항 스페이스워크', icon: '🎢', w: 88, d: 60, floor: 0x86b46a, obj: crate, sky: [0x4aa6ee, 0xe0f2ff], st: 3,
-    people: { tourist: 5, student: 3, civ: 3, smuggler: 3 }, items: [['fishBox', 3], ['cooler', 2], ['backpack', 3]], who: '철강 환호공원 관리소장', short: '롤러코스터 같은 333m 철제 산책로 스페이스워크, 영일만, 영일대 누각, 호미곶 상생의 손, 제철소 야경.',
+    people: { tourist: 5, student: 3, civ: 3, smuggler: 3 }, items: [["fishBox",2],["cooler",1],["backpack",2]], who: '철강 환호공원 관리소장', short: '롤러코스터 같은 333m 철제 산책로 스페이스워크, 영일만, 영일대 누각, 호미곶 상생의 손, 제철소 야경.',
     intro: '포항 환호공원의 스페이스워크야! 롤러코스터처럼 꼬인 길이 333m, 계단 717개짜리 철제 트랙을 걷는 작품이야.\n가운데 360도 고리는 지나갈 수 없게 만들어졌대. 영일만 바다 위 영일대 누각, 호미곶의 상생의 손, 바다 건너 제철소 불빛도 보여!',
     build(L) {
       seaNorth(-30, 0x3a86c0); floorPlane(120, 8, MAT.col(0xd9c79a, .9), 0, -27, .012);
-      for (let k = 0; k < 5; k++) { const m = new THREE.Mesh(new THREE.CylinderGeometry(26 - k * 4, 27 - k * 4, .35, 24), LMC(0x7aa85e)); m.position.set(0, .175 + k * .35, -8); world.add(m); addCol(0, -8, (26 - k * 4) * 1.4, (26 - k * 4) * 1.4, null, { topY: .35 * (k + 1) }); }
-      const P = [[-26, 2, 6], [-16, 9, -4], [-6, 16, -10], [2, 22, -8], [8, 20, -2], [10, 15, -6], [6, 12, -10], [2, 15, -6], [6, 21, -4], [14, 22, -8], [22, 14, 0], [28, 6, -6], [20, 3, -14]].map(([x, y, z]) => new THREE.Vector3(x, y, z - 8)); const cv = new THREE.CatmullRomCurve3(P), tube = new THREE.Mesh(new THREE.TubeGeometry(cv, 320, .55, 8, false), MAT.metal(0xd9dde2, .25)); tube.castShadow = true; world.add(tube);
-      for (let k = 0; k < 140; k++) { const p = cv.getPointAt(k / 140); if (k % 7 === 0) { const c = mesh(BOX(.25, p.y, .25), LMC(0x9aa3ab), p.x, p.y / 2, p.z); c.castShadow = false; } const l = mesh(BOX(.25, .25, .25), glow(0xffe7a0, 1.2), p.x, p.y + .7, p.z); l.castShadow = false; } sign('🎢 SPACE WALK 스페이스워크 333m · 계단 717개', 0, 28, -16, 1);
+      for (let k = 0; k < 4; k++) { const m = new THREE.Mesh(new THREE.CylinderGeometry(24 - k * 5, 25 - k * 5, .35, 24), LMC(0x7aa85e)); m.position.set(4, .175 + k * .35, -12); world.add(m); addCol(4, -12, (24 - k * 5) * 1.4, (24 - k * 5) * 1.4, null, { topY: .35 * (k + 1) }); }
+      const steel = MAT.metal(0xdfe3e8, .25), rail = MAT.metal(0xc9ced4, .3);
+      // ① 걸어 오르는 구간: 계단 한 칸 0.35m, 사람·탐지견·NPC 모두 올라갈 수 있다
+      const N = 38, walk = [];
+      for (let k = 0; k < N; k++) { const t = k / (N - 1), x = -32 + t * 30, z = 12 - t * 20 - Math.sin(t * Math.PI) * 6, h = .35 * (k + 1); walk.push([x, z, h]); }
+      walk.forEach(([x, z, h], k) => { const [nx, nz] = walk[Math.min(k + 1, N - 1)], [px, pz] = walk[Math.max(k - 1, 0)], a = Math.atan2(nx - px, nz - pz); const tread = mesh(BOX(1.8, .18, 1.05), steel, x, h - .09, z); tread.rotation.y = a; addCol(x, z, 1.5, 1.5, tread, { topY: h, keep: true }); for (const sd of [-1, 1]) { const ox = Math.cos(a) * .95 * sd, oz = -Math.sin(a) * .95 * sd; const p = mesh(BOX(.07, 1, .07), rail, x + ox, h + .5, z + oz); p.castShadow = false; const r = mesh(BOX(.06, .06, 1.1), rail, x + ox, h + 1, z + oz); r.rotation.y = a; r.castShadow = false; } if (k % 5 === 2) { const c = mesh(BOX(.35, h, .35), LMC(0xb8bec5), x, h / 2, z); c.rotation.z = (k % 2 ? .12 : -.12); c.castShadow = false; } if (k % 3 === 0) mesh(BOX(.2, .2, .2), glow(0xffe7a0, 1.3), x, h + .1, z).castShadow = false; });
+      const [tx, tz, th] = walk[N - 1]; addCol(tx + 1.6, tz - 1.6, 4, 4, null, { topY: th, keep: true }); for (const [ox, oz] of [[-1.5, -1.5], [1.5, 1.5], [-1.5, 1.5], [1.5, -1.5]]) mesh(BOX(.3, th, .3), LMC(0xb8bec5), tx + 1.6 + ox, th / 2, tz - 1.6 + oz).castShadow = false; for (const sd of [-1, 1]) mesh(BOX(4.2, .06, .06), MAT.metal(0xc9ced4, .3), tx + 1.6, th + 1, tz - 1.6 + sd * 2.1); mesh(BOX(4.2, .2, 4.2), steel, tx + 1.6, th, tz - 1.6); sign('🔭 스페이스워크 전망 포인트 (13m)', tx + 1.6, th + 3, tz - 1.6, .55);
+      // ② 위쪽 곡선 구간과 360도 고리 (실제처럼 고리는 지나갈 수 없다)
+      const P = [[tx + 3, th + .4, tz - 4], [tx + 8, th + 4, tz - 10], [tx + 16, th + 9, tz - 12], [tx + 24, th + 12, tz - 6], [tx + 26, th + 8, tz + 4], [tx + 18, th + 5, tz + 8], [tx + 10, th + 7, tz + 4]].map(([x, y, z]) => new THREE.Vector3(x, y, z));
+      const cv = new THREE.CatmullRomCurve3(P);
+      for (let k = 0; k <= 90; k++) { const p = cv.getPointAt(k / 90), q = cv.getPointAt(Math.min(1, k / 90 + .01)), a = Math.atan2(q.x - p.x, q.z - p.z); const tr = mesh(BOX(1.8, .16, .9), steel, p.x, p.y, p.z); tr.rotation.y = a; tr.castShadow = false; for (const sd of [-1, 1]) { const r = mesh(BOX(.06, .06, .95), rail, p.x + Math.cos(a) * .95 * sd, p.y + 1, p.z - Math.sin(a) * .95 * sd); r.rotation.y = a; r.castShadow = false; } if (k % 9 === 4) { const c = mesh(BOX(.35, p.y, .35), LMC(0xb8bec5), p.x, p.y / 2, p.z); c.rotation.x = (k % 2 ? .15 : -.15); c.castShadow = false; } if (k % 4 === 0) mesh(BOX(.2, .2, .2), glow(0xffe7a0, 1.3), p.x, p.y + .1, p.z).castShadow = false; }
+      const loop = new THREE.Group(); loop.position.set(tx + 22, th + 8, tz + 10); loop.rotation.y = .5; world.add(loop);
+      for (let k = 0; k < 48; k++) { const a = k / 48 * Math.PI * 2, x = Math.sin(a) * 7, y = -Math.cos(a) * 7 + 7; const tr = mesh(BOX(1.8, .16, .95), steel, 0, y - 7 + 7, x, loop); tr.rotation.x = -a; for (const sd of [-1, 1]) mesh(BOX(.07, .07, 1), rail, sd * .95, y + Math.cos(a) * 1, x + Math.sin(a) * 1, loop).rotation.x = -a; if (k % 6 === 0) mesh(BOX(.2, .2, .2), glow(0xffe7a0, 1.3), 0, y, x, loop).castShadow = false; }
+      for (const sd of [-1, 1]) { const c = mesh(BOX(.4, th + 8, .4), LMC(0xb8bec5), sd * 3, -(th + 8) / 2 + .2, 0, loop); c.rotation.x = sd * .1; }
+      sign('🎢 SPACE WALK 스페이스워크 · 길이 333m · 계단 717개 · 360° 고리는 통행 불가', tx + 14, th + 20, tz, .9);
       bx(-34, 0, -40, 1, 3, 12, 0x8a7d6a, false); pavilion(-34, -48, 1.2, 1.6); sign('영일대 누각', -34, 8, -44, .6);
-      const hand = new THREE.Group(); hand.position.set(52, -.3, -52); world.add(hand); const hm = LMC(0x8a7a64); mesh(BOX(3, 6, 1.4), hm, 0, 3, 0, hand); for (let k = 0; k < 4; k++) mesh(BOX(.65, 3.2 - Math.abs(k - 1.5) * .4, .7), hm, -1.1 + k * .74, 7.4, 0, hand); const th = mesh(BOX(.7, 2.2, .7), hm, 1.9, 4.6, 0, hand); th.rotation.z = -.6; sign('🖐 호미곶 상생의 손', 52, 12, -50, .7);
+      const hand = new THREE.Group(); hand.position.set(52, -.3, -52); world.add(hand); const hm = LMC(0x8a7a64); mesh(BOX(3, 6, 1.4), hm, 0, 3, 0, hand); for (let k = 0; k < 4; k++) mesh(BOX(.65, 3.2 - Math.abs(k - 1.5) * .4, .7), hm, -1.1 + k * .74, 7.4, 0, hand); const thb = mesh(BOX(.7, 2.2, .7), hm, 1.9, 4.6, 0, hand); thb.rotation.z = -.6; sign('🖐 호미곶 상생의 손', 52, 12, -50, .7);
       for (let k = 0; k < 6; k++) chimney(-60 + k * 18, -120, rr(18, 30)); for (let k = 0; k < 10; k++) { const b = mesh(BOX(rr(10, 20), rr(6, 12), 10), LMC(0x6d7a86), -70 + k * 15, 4, -130); b.castShadow = false; mesh(BOX(1, 1, .2), glow(0xffa94d, 1.5), -70 + k * 15, 6, -124.8).castShadow = false; } sign('🏭 제철소 (영일만 건너편)', 0, 34, -118, 1.2);
-      for (let k = 0; k < 10; k++) tree(k % 2 ? rr(-42, -24) : rr(24, 42), rr(10, 24), .8); building(-32, 20, 14, 8, 5, 0xe5e0d6, { sign: '포항시립미술관' });
+      for (let k = 0; k < 10; k++) tree(k % 2 ? rr(-42, -36) : rr(26, 42), rr(14, 26), .8); building(-32, 24, 14, 6, 5, 0xe5e0d6, { sign: '포항시립미술관' });
+      L.swRoute = walk.filter((_, k) => k % 4 === 0 || k === N - 1).map(([x, z]) => [x, z]);
     } },
   { name: '전주 한옥마을', icon: '🏡', w: 92, d: 70, floor: 0xd9cfb8, obj: crate, sky: [0x6ab0ee, 0xf6ecd8], st: 3,
-    people: { hanbok: 6, tourist: 3, merchant: 2, smuggler: 3 }, items: [['vase', 3], ['wine', 2], ['fruitBox', 2]], who: '한지 전주 한옥마을 관리소장', short: '기와지붕이 물결치는 한옥마을! 풍남문, 전동성당, 경기전, 오목대, 남천교 청연루, 한옥 골목을 순찰해요.',
+    people: { hanbok: 6, tourist: 3, merchant: 2, smuggler: 3 }, items: [["hanbokBag",2],["souvenir",2],["wine",1],["vase",1]], who: '한지 전주 한옥마을 관리소장', short: '기와지붕이 물결치는 한옥마을! 풍남문, 전동성당, 경기전, 오목대, 남천교 청연루, 한옥 골목을 순찰해요.',
     intro: '전주 한옥마을이야! 700채가 넘는 한옥 기와지붕이 물결처럼 이어지고, 한복 입은 여행객이 가득해.\n붉은 벽돌의 전동성당, 태조 어진을 모신 경기전, 언덕 위 오목대, 전주천 다리 위 누각 청연루, 남쪽 성문 풍남문까지!',
     build(L) {
-      for (let r = 0; r < 2; r++) for (let k = 0; k < 6; k++) { const x = -36 + k * 14 + (r % 2) * 4, z = -6 + r * 13; if (Math.abs(x) < 10 && r === 1) continue; hanok(x, z, 8, 6, 2.6); bx(x, 0, z + 5, 10, 1.4, .5, 0xb9a988); }
-      gateTop(0, -30, 14, 5, 4, { tier: true }); sign('풍남문 豐南門 (보물)', 0, 13, -27, .7);
-      bx(30, 0, -22, 12, 9, 12, 0x9c4a35); for (const x of [25.5, 34.5]) { bx(x, 0, -16, 2.6, 15, 2.6, 0x9c4a35); mesh(new THREE.SphereGeometry(1.4, 10, 6), LMC(0x4d6a5a), x, 15.6, -16); } mesh(new THREE.CylinderGeometry(1.4, 1.4, .2, 14), glow(0xffd27a, .7), 30, 7, -15.9).rotation.x = Math.PI / 2; sign('⛪ 전동성당 (1914)', 30, 19, -15, .6);
-      hanok(-28, -24, 12, 7, 3, { tier: true }); bx(-28, 0, -18, 16, 1.6, .5, 0xb9a988); sign('경기전 (태조 어진)', -28, 11, -19, .6);
-      stepsUp(-40, 16, 6, 8, -1, .7, 0x8a9a6a); bx(-40, 0, 7.6, 8, 2.8, 4, 0x8a9a6a); pavilion(-40, 8, 1, 2.8); sign('오목대', -40, 9.5, 11, .55);
-      pond(-22, 26, 30, 4, 0x6fb5d8); pond(26, 26, 30, 4, 0x6fb5d8); bx(14, 0, 26, 6, .35, 4.4, 0x9a8f7a); for (const sx of [-2, 2]) for (const sz of [-1.6, 1.6]) bx(14 + sx, .35, 26 + sz, .3, 2.6, .3, 0x8b2e22, false); hroof(14, 2.9, 26, 5, 3.6); sign('남천교 청연루', 14, 7, 28, .55);
-      stall(-14, 12, 0xd63a2a, '전주비빔밥'); stall(-6, 12, 0xf39c12, '한복대여'); stall(8, 6, 0x27ae60, '한지공예'); stall(16, 12, 0x8e44ad, '초코파이');
-      for (const z of [-12, 2]) lanternLine(-20, 20, z, 4.2, [0xff9a4a, 0xffd27a]); sign('🏡 전주 한옥마을', 0, 6, 18, 1);
+      for (let r = 0; r < 3; r++) for (let k = 0; k < 4; k++) { const x = -6 + k * 13 + (r % 2) * 4, z = -26 + r * 13; if (x > 42) continue; hanok(x, z, 8, 6, 2.6); bx(x, 0, z + 5, 10, 1.4, .5, 0xb9a988); }
+      hanok(-30, -26, 12, 7, 3, { tier: true }); bx(-30, 0, -20, 16, 1.6, .5, 0xb9a988); sign('경기전 (태조 어진) · 서쪽', -30, 11, -21, .6);
+      bx(-30, 0, -4, 12, 9, 12, 0x9c4a35); for (const x of [-34.5, -25.5]) { bx(x, 0, 2, 2.6, 15, 2.6, 0x9c4a35); mesh(new THREE.SphereGeometry(1.4, 10, 6), LMC(0x4d6a5a), x, 15.6, 2); } mesh(new THREE.CylinderGeometry(1.4, 1.4, .2, 14), glow(0xffd27a, .7), -30, 7, 2.1).rotation.x = Math.PI / 2; sign('⛪ 전동성당 (1914)', -30, 19, 3, .6);
+      gateTop(-30, 18, 14, 5, 4, { tier: true }); sign('풍남문 豐南門 (보물) · 남서쪽', -30, 13, 21, .7);
+      stepsUp(40, -12, 6, 8, -1, .7, 0x8a9a6a); bx(40, 0, -20.6, 8, 2.8, 4, 0x8a9a6a); pavilion(40, -20, 1, 2.8); sign('오목대 (동쪽 언덕)', 40, 9.5, -17, .55);
+      pond(-22, 28, 30, 4, 0x6fb5d8); pond(26, 28, 30, 4, 0x6fb5d8); bx(14, 0, 28, 6, .35, 4.4, 0x9a8f7a); for (const sx of [-2, 2]) for (const sz of [-1.6, 1.6]) bx(14 + sx, .35, 28 + sz, .3, 2.6, .3, 0x8b2e22, false); hroof(14, 2.9, 28, 5, 3.6); sign('전주천 남천교 청연루', 14, 7, 30, .55);
+      stall(10, 14, 0xd63a2a, '전주비빔밥'); stall(18, 14, 0xf39c12, '한복대여'); stall(26, 14, 0x27ae60, '한지공예'); stall(34, 14, 0x8e44ad, '초코파이');
+      for (const z of [-14, 0]) lanternLine(-4, 38, z, 4.2, [0xff9a4a, 0xffd27a]); sign('🏡 전주 한옥마을 (태조로)', 16, 6, 8, 1);
     } },
   { name: '광화문광장', icon: '🦁', w: 48, d: 100, floor: TILE('#cfc8b8', '#b3ab9a', .2), obj: luggage, sky: [0x5aa8ef, 0xeaf2fb], st: 3, shape: [[-.75, 1], [-.75, -.62], [-1, -.75], [-1, -1], [1, -1], [1, -.75], [.75, -.62], [.75, 1]], outside: { col: 0x4a4c50, y: .03 },
     staff: [{ kind: 'police', route: [[-12, 40], [-12, -30]], wait: 2 }, { kind: 'royalguard', route: [[-4, -40], [4, -40]], wait: 3 }], veh: [{ type: 'taxi', route: [[-21, 48], [-21, -30], [-23, -30], [-23, 48]] }, { type: 'bus', route: [[21, -30], [21, 48], [23, 48], [23, -30]] }], people: { tourist: 6, civ: 5, student: 3, smuggler: 3 },
-    items: [['backpack', 4], ['dutyBag', 2]], who: '세종 광화문광장 관리소장', short: '세종대왕·이순신 동상, 명량분수, 해치마당, 세종문화회관, 청계천 스프링, 북쪽 끝 광화문까지!',
+    items: [["backpack",2],["dutyBag",1],["speaker",1],["souvenir",1]], who: '세종 광화문광장 관리소장', short: '세종대왕·이순신 동상, 명량분수, 해치마당, 세종문화회관, 청계천 스프링, 북쪽 끝 광화문까지!',
     intro: '서울 한가운데 광화문광장이야! 남쪽엔 이순신 장군 동상과 명량분수, 가운데엔 황금빛 세종대왕 동상,\n북쪽 끝엔 경복궁 정문 광화문과 북악산이 보여. 옆에는 세종문화회관, 남쪽 끝엔 청계천의 소라 모양 조형물 스프링이 있어!',
     build(L) {
       gateTop(0, -44, 18, 6, 5, { tier: true }); sign('광화문 光化門', 0, 16, -40, .9); mountainBack(-110, 0x5a7a52, 5); for (const x of [-10, 10]) { bx(x, 0, -36, 1.6, 1.4, 2.6, 0xb9b2a5); mesh(BOX(1.2, 1.6, 2), LMC(0xc9c2b2), x, 2.2, -36); } sign('해치', 10, 4, -36, .45);
@@ -2849,12 +2878,12 @@ const LANDMARK_LIST = [
       statue(0, 22, 0x4a6b5a, false, 4); sign('충무공 이순신 장군 동상', 0, 9, 25, .6); for (const sx of [-1, 1]) { const tb = mesh(BOX(1.6, .8, 2.6), LMC(0x3a4a3a), sx * 3.6, .4, 22); tb.castShadow = false; } sign('거북선', 3.6, 1.6, 22, .4);
       for (let z = 28; z < 38; z += 2) for (const x of [-6, -3, 3, 6]) { mesh(BOX(.3, .1, .3), glow(0x9fdcff, 1), x, .06, z).castShadow = false; } const c = new THREE.Color(0xbfe8ff); envAnim.push(() => { if (Math.random() < .8) spawnP(pick2([-6, -3, 3, 6]), .2, rr(28, 38), 0, mr(4, 7), 0, c, 1); }); sign('명량분수', 0, 3, 33, .5);
       for (let z = -28; z <= 14; z += 7) for (const x of [-15, 15]) tree(x, z, .8); flowers(0, 6, 8, 6, [0xf44336, 0xffeb3b, 0xffffff, 0x2196f3], 40);
-      building(-34, -12, 14, 30, 14, 0xd9d2c4); columns(-26.8, -12, 7, 4, 10, 0xf2efe8, 'z', 1); sign('세종문화회관', -27, 16, -12, .7); building(34, -18, 14, 20, 30, 0xb7c4cf, { lit: true, sign: '정부서울청사', sh: .55 }); building(34, 12, 14, 14, 20, 0xcfd6dc, { lit: true });
+      building(-34, -12, 14, 30, 14, 0xd9d2c4); columns(-26.8, -12, 7, 4, 10, 0xf2efe8, 'z', 1); sign('세종문화회관', -27, 16, -12, .7); building(-34, -36, 14, 12, 30, 0xb7c4cf, { lit: true, sign: '정부서울청사', sh: .55 }); building(34, -18, 14, 20, 24, 0xc5ccd3, { lit: true, sign: 'KT 광화문빌딩', sh: .55 }); building(34, 12, 14, 14, 20, 0xcfd6dc, { lit: true });
       const sp = new THREE.Mesh(new THREE.TorusKnotGeometry(2.2, .5, 80, 8, 2, 3), LMC(0xff5a8a)); sp.position.set(14, 6, 44); sp.scale.set(1, 2, 1); world.add(sp); bx(14, 0, 44, 3, 1.4, 3, 0x8a8a80); sign('🐚 청계천 스프링', 14, 11.5, 44, .55);
     } },
   { name: '청와대', icon: '🏛', w: 92, d: 70, floor: 0x7fb05a, obj: crate, sky: [0x5fb0ff, 0xf0f6ff], st: 4,
     staff: [{ kind: 'soldier', route: [[-14, 26], [14, 26]], wait: 3 }, { kind: 'police', route: [[-36, 0], [36, 0]], wait: 2 }, { kind: 'soldier', route: [[-30, -22], [30, -22]], wait: 3 }], people: { tourist: 6, student: 3, civ: 2, smuggler: 3 },
-    items: [['vase', 2], ['statue', 2], ['backpack', 3]], who: '파란기와 청와대 관람 총책임자', short: '푸른 기와 본관, 영빈관, 춘추관, 녹지원 소나무, 상춘재, 분수대, 뒤로 북악산까지 순찰해요.',
+    items: [["vase",1],["souvenir",2],["backpack",2]], who: '파란기와 청와대 관람 총책임자', short: '푸른 기와 본관, 영빈관, 춘추관, 녹지원 소나무, 상춘재, 분수대, 뒤로 북악산까지 순찰해요.',
     intro: '푸른 기와 지붕으로 유명한 청와대야. 지금은 모두에게 열린 관람 공간이 되었지!\n본관 앞 넓은 잔디마당, 손님을 맞던 영빈관, 기자들이 모이던 춘추관, 큰 소나무가 있는 녹지원, 한옥 상춘재까지 둘러보자.',
     build(L) {
       mountainBack(-60, 0x4f7a42, 7); sign('북악산', 0, 42, -78, 1);
@@ -2869,7 +2898,7 @@ const LANDMARK_LIST = [
     } },
   { name: '국회의사당', icon: '🏛', w: 96, d: 72, floor: 0x7fb05a, obj: crate, sky: [0x5aa8ef, 0xeef4fb], st: 4,
     staff: [{ kind: 'police', route: [[-30, 20], [30, 20]], wait: 2 }, { kind: 'police', route: [[-40, -4], [40, -4]], wait: 2 }], people: { tourist: 4, student: 4, civ: 4, smuggler: 3 },
-    items: [['backpack', 3], ['speaker', 2], ['dutyBag', 2]], who: '여의도 국회사무총장', short: '초록 돔과 24개 기둥의 국회의사당, 해태상, 분수, 의원회관, 윤중로 벚꽃길, 한강과 63빌딩.',
+    items: [["backpack",2],["speaker",1],["dutyBag",1],["souvenir",1]], who: '여의도 국회사무총장', short: '초록 돔과 24개 기둥의 국회의사당, 해태상, 분수, 의원회관, 윤중로 벚꽃길, 한강과 63빌딩.',
     intro: '여의도 국회의사당이야! 지붕 위 커다란 초록 돔과 건물을 둘러싼 24개의 기둥이 특징이야.\n정문 해태상과 분수를 지나면 넓은 잔디광장, 옆엔 의원회관, 둘레엔 벚꽃 명소 윤중로가 있어. 뒤로는 한강과 황금빛 63빌딩!',
     build(L) {
       bx(0, 0, -18, 46, 1.6, 30, 0xd6d0c4); stepsUp(0, -2.6, 16, 4, 1, .7, 0xd6d0c4); bx(0, 1.6, -18, 36, 9, 20, 0xd8d2c6, false); addCol(0, -18, 46, 30, null, { topY: 99 }); for (let y = 3.2; y < 10; y += 2.6) mesh(BOX(36.1, .9, 18), LMC(0x3a4a5a), 0, y, -18);
@@ -2880,6 +2909,27 @@ const LANDMARK_LIST = [
       for (let z = -32; z <= 30; z += 4) for (const x of [-44, 44]) tree(x, z, .9, 0xf2a7c3); sign('🌸 윤중로 벚꽃길', -40, 5, 20, .55);
       const rw = TEX.water(); rw.repeat.set(30, 4); const han = new THREE.Mesh(new THREE.PlaneGeometry(500, 60), std(0xffffff, .2, 0, { map: rw, color: 0x4a8fbf })); han.rotation.x = -Math.PI / 2; han.position.set(0, -.2, -80); world.add(han); sign('한강', -20, 3, -60, .8);
       const t63 = new THREE.Group(); t63.position.set(-70, 0, -100); world.add(t63); for (let k = 0; k < 12; k++) mesh(BOX(10 - k * .3, 5, 7 - k * .2), MAT.metal(0xe0b14a, .25), 0, 2.5 + k * 5, 0, t63); sign('63빌딩', -70, 66, -96, 1);
+    } },
+  { name: '감천문화마을', icon: '🎨', w: 84, d: 70, floor: 0x9aa3ab, obj: crate, sky: [0x4aa6ee, 0xdff2ff], st: 3,
+    people: { tourist: 6, student: 3, merchant: 2, smuggler: 3 }, items: [["souvenir",2],["fishBox",1],["backpack",2]], who: '알록달록 감천문화마을 관리소장', short: '산비탈 계단식 알록달록 마을! 좁은 골목, 계단, 물고기 길표지, 전망대에서 바다를 내려다봐요.',
+    intro: '부산 감천문화마을이야! 산비탈을 따라 파랑·분홍·노랑 집들이 계단처럼 층층이 쌓여 있어.\n좁은 골목과 계단을 오르내리며, 물고기 모양 길 안내판을 따라가 봐. 꼭대기 전망대에선 바다가 보여!',
+    build(L) {
+      seaNorth(-80, 0x3d8fc4); const cols = [0x4fc3f7, 0xf48fb1, 0xfff176, 0x81c784, 0xffb74d, 0xba68c8, 0x90caf9];
+      for (let r = 0; r < 4; r++) { const z = 10 - r * 11, h = 1.4 * (r + 1); bx(0, 0, z - 5, 84, h, 11, new THREE.Color(0xb8b0a2).multiplyScalar(1 - r * .05).getHex()); for (const sx of [-24, 6, 30]) for (let k = 0; k < 4; k++) bx(sx + (r % 2) * 6, 0, z + .9 - k * .55, 3, r * 1.4 + .35 * (k + 1), .55, 0xd9d2c4); for (let k = 0; k < 7; k++) { const x = -38 + k * 11.4 + (r % 2) * 4; if (Math.abs(x - (-24 + (r % 2) * 6)) < 3.5 || Math.abs(x - (6 + (r % 2) * 6)) < 3.5 || Math.abs(x - (30 + (r % 2) * 6)) < 3.5) continue; const w = rr(4, 6), hh = rr(2.4, 3.6); bx(x, h, z - 7, w, hh, 4, pick(cols), false); addCol(x, z - 7, w, 4, null, { topY: h + hh }); mesh(BOX(w + .4, .3, 4.4), LMC(pick([0xd84a3a, 0x2c6fb7, 0x27ae60, 0xf4f4f2])), x, h + hh + .15, z - 7); mesh(BOX(.8, 1, .05), LMC(0x2a3d52), x - 1, h + 1.4, z - 4.97); } }
+      for (let k = 0; k < 8; k++) { const m = mesh(BOX(1.2, .5, .1), LMC(pick(cols)), -30 + k * 8, 1.6 + (k % 4) * 1.4, 4.8 - (k % 4) * 11); m.castShadow = false; } sign('🐟 물고기 길 안내판을 따라가요', 0, 3.2, 14, .5);
+      bx(0, 5.6, -36, 10, .3, 4, 0x9a948a, false); for (let x = -5; x <= 5; x += .8) mesh(BOX(.08, 1, .08), MAT.metal(0x888888), x, 6.4, -34.1); statue(-2, -36.5, 0xe8d9b0, true, 1.4); sign('🔭 감천 전망대 (바다 조망)', 0, 9, -35, .55);
+      for (let k = 0; k < 4; k++) stall(-30 + k * 18, 20, pick([0xd63a2a, 0x2c6fb7, 0x27ae60]), ['기념품', '어묵', '엽서', '공예'][k]); sign('🎨 감천문화마을 (부산의 마추픽추)', 0, 7, 18, 1);
+    } },
+  { name: '대전 한빛탑', icon: '🗼', w: 86, d: 66, floor: TILE('#cfc9bd', '#b0a99b', .25), obj: luggage, sky: [0x5aa8ef, 0xeef4fb], st: 3,
+    people: { tourist: 5, student: 5, civ: 2, smuggler: 3 }, items: [["backpack",2],["speaker",1],["souvenir",2]], who: '엑스포 한빛탑 관리소장', short: '1993 대전엑스포의 상징 한빛탑(93m), 음악분수, 엑스포다리와 갑천, 과학관 광장을 순찰해요.',
+    intro: '대전 엑스포과학공원의 한빛탑이야! 1993년 대전엑스포를 기념하는 높이 93m의 탑으로, 꼭대기 전망대에서 대전이 보여.\n밤엔 음악분수가 춤추고, 동쪽 갑천 위엔 아치가 멋진 엑스포다리가 있어.',
+    build(L) {
+      bx(0, 0, -16, 10, 3, 10, 0xd9d4c8); for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2 + Math.PI / 4; const leg = mesh(BOX(1.4, 30, 1.4), LMC(0xf4f4f2), Math.cos(a) * 3, 17, -16 + Math.sin(a) * 3); leg.rotation.z = Math.cos(a) * .08; leg.rotation.x = -Math.sin(a) * .08; } mesh(new THREE.CylinderGeometry(4.6, 3.6, 5, 16), MAT.glass(), 0, 34, -16); mesh(new THREE.CylinderGeometry(4.8, 4.8, .6, 16), LMC(0xdfe4e8), 0, 36.8, -16); mesh(new THREE.ConeGeometry(1.4, 22, 10), LMC(0xf4f4f2), 0, 48, -16); const tip = mesh(BOX(.6, .6, .6), glow(0x7fd3ff, 2), 0, 59.4, -16); envAnim.push(() => { tip.material.emissiveIntensity = 1.2 + Math.sin(time * 2); }); sign('한빛탑 93m · 전망대', 0, 40, -10, 1);
+      mesh(new THREE.CylinderGeometry(10, 10.4, .7, 28), LMC(0xbdb7aa), 0, .35, 4); addCol(0, 4, 15, 15, null, { topY: .7 }); const pool = new THREE.Mesh(new THREE.CircleGeometry(9.6, 28), std(0x7fc8ef, .1, 0, { transparent: true, opacity: .85 })); pool.rotation.x = -Math.PI / 2; pool.position.set(0, .72, 4); world.add(pool);
+      const jets = []; for (let k = 0; k < 12; k++) { const a = k / 12 * Math.PI * 2, m = mesh(BOX(.4, 1, .4), glow(0x9fdcff, 1.4), Math.cos(a) * 6, 1, 4 + Math.sin(a) * 6); m.castShadow = false; jets.push(m); } envAnim.push(() => { jets.forEach((m, k) => { const hgt = 1 + Math.max(0, Math.sin(time * 2.4 + k * .52)) * 7; m.scale.y = hgt; m.position.y = .7 + hgt / 2; m.material.emissive.setHSL(((time * .1) + k / 12) % 1, .8, .55); }); }); sign('🎵 음악분수', 0, 4, 14, .55);
+      pond(36, 0, 12, 66, 0x5aa0c8, false); for (const z of [-10, 10]) { for (let k = 0; k <= 20; k++) { const t = k / 20, y = Math.sin(t * Math.PI) * 8; mesh(BOX(.5, .5, .5), LMC(0xf4f4f2), 30 + t * 12, y + 1, z).castShadow = false; } } bx(36, 0, 0, 12, .5, 4, 0xc9c2b2, false); addCol(36, 0, 12, 4, null, { topY: .5, keep: true }); sign('엑스포다리 (갑천)', 36, 10, 0, .6);
+      building(-30, -18, 18, 14, 10, 0xe5e0d6, { glass: 0x6a9ab8, sign: '국립중앙과학관', sh: .6 }); building(-30, 8, 12, 10, 34, 0xc0cad4, { lit: true, sign: '엑스포 타워', sh: .5 });
+      for (let x = -40; x <= 20; x += 12) if (Math.abs(x) > 8) lamp(x, 20); flowers(-10, 22, 24, 4, [0xf44336, 0xffeb3b, 0xffffff], 40);
     } },
 ];
 const LANDMARK_START = LEVELS.length;
@@ -3242,7 +3292,7 @@ function applyTimeOfDay() {
   // 밤에는 바깥 맵에 가로등 불빛
   if (ph === 'night' && out) for (let k = 0; k < 8; k++) { const b = level.bounds, x = mr(b.minX + 6, b.maxX - 6), z = mr(b.minZ + 6, b.maxZ - 6), l = new THREE.PointLight(0xffd59a, 12, 18, 1.8); l.position.set(x, 6, z); world.add(l); }
   const [, city] = LANG_TZ[lang] || LANG_TZ.ko, hh = Math.floor(h), mm = String(Math.floor((h - hh) * 60)).padStart(2, '0');
-  setTimeout(() => toast((ph === 'night' ? '🌙' : ph === 'dusk' ? '🌇' : '☀') + ' ' + city + ' ' + hh + ':' + mm + ' · ' + (ph === 'night' ? '밤 작전' : ph === 'dusk' ? '노을 작전' : '낮 작전')), 2600);
+  setTimeout(() => toast(t('tod_' + ph).replace('{city}', city).replace('{time}', hh + ':' + mm)), 2600);
 }
 function pip(poly, x, z) { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, zi] = poly[i], [xj, zj] = poly[j]; if ((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; }
 function ELL(rx = 1, rz = 1, n = 32, cx = 0, cz = 0) { return Array.from({ length: n }, (_, i) => [cx + Math.cos(i / n * Math.PI * 2) * rx, cz + Math.sin(i / n * Math.PI * 2) * rz]); }
@@ -3266,6 +3316,18 @@ function edgeWall(L, h, col, thick = .35, cren = false) {
     const [ax, az] = P[i], [bx2, bz] = P[(i + 1) % P.length], len = Math.hypot(bx2 - ax, bz - az), m = mesh(BOX(len + thick, h, thick), MAT.col(col, .8), (ax + bx2) / 2, h / 2, (az + bz) / 2);
     m.rotation.y = -Math.atan2(bz - az, bx2 - ax); m.castShadow = h > 2;
     if (cren) for (let t = 1; t < len; t += 1.6) { const c = mesh(BOX(.7, .6, thick + .1), MAT.col(col, .8), ax + (bx2 - ax) * t / len, h + .3, az + (bz - az) * t / len); c.rotation.y = m.rotation.y; c.castShadow = false; }
+  }
+}
+// 맵 경계선: 바닥에 노랑·검정 안전띠
+let edgeTex = null;
+function boundaryLine(L) {
+  if (!edgeTex) { const c = document.createElement('canvas'); c.width = 64; c.height = 16; const g = c.getContext('2d'); g.fillStyle = '#ffcc00'; g.fillRect(0, 0, 64, 16); g.fillStyle = '#1a1a1a'; for (let x = -16; x < 64; x += 16) { g.beginPath(); g.moveTo(x, 16); g.lineTo(x + 8, 16); g.lineTo(x + 16, 0); g.lineTo(x + 8, 0); g.fill(); } edgeTex = new THREE.CanvasTexture(c); edgeTex.wrapS = THREE.RepeatWrapping; edgeTex.colorSpace = THREE.SRGBColorSpace; }
+  const b = L.bounds, P = L.poly || [[b.minX, b.minZ], [b.maxX, b.minZ], [b.maxX, b.maxZ], [b.minX, b.maxZ]];
+  for (let i = 0; i < P.length; i++) {
+    const [ax, az] = P[i], [bx2, bz] = P[(i + 1) % P.length], len = Math.hypot(bx2 - ax, bz - az); if (len < .1) continue;
+    const t = edgeTex.clone(); t.needsUpdate = true; t.repeat.set(len / 1.6, 1);
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(len + .5, .55), new THREE.MeshBasicMaterial({ map: t, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2 }));
+    m.rotation.x = -Math.PI / 2; m.rotation.z = -Math.atan2(bz - az, bx2 - ax); m.position.set((ax + bx2) / 2, .035, (az + bz) / 2); world.add(m);
   }
 }
 function applyShape(L, def) {
@@ -3306,6 +3368,7 @@ function loadLevel(i) {
   def.build(level);
   applyExtras(level);
   applyShape(level, def);
+  boundaryLine(level);
   // 담당 반장
   const off = new Person('chief', spawn.x + 2.6, spawn.z + 1, def.chief); off.wait = 1.5;
   const ol = textSprite('🎖 ' + def.who, { h: .38 }); ol.position.set(0, 2.5, 0); off.g.add(ol);
@@ -3319,6 +3382,7 @@ function loadLevel(i) {
   }
   for (const o of def.staff || []) { const p = new Person(o.kind, o.route[0][0], o.route[0][1]); p.route = o.route; p.ri = 0; p.waitAt = o.wait ?? .4; p.target = null; p.wait = mr(0, 1.5); }
   for (const o of def.vehicles || []) new Vehicle(o.type, o.route, o.start || 0);
+  if (level.swRoute) for (let k = 0; k < 3; k++) { const r = [...level.swRoute, ...[...level.swRoute].reverse().slice(1, -1)], p = new Person(k ? 'tourist' : 'student', r[0][0] - k, r[0][1] + 1); p.route = r; p.ri = k * 3; p.waitAt = .3; p.target = null; p.wait = k * 2; }
   // 넓어진 구역마다 순찰 직원 2명 + 이용객 3명
   const stK = (def.staff || []).map(o => o.kind).filter(k => k !== 'handler'), civK = Object.keys(def.people).filter(k => k !== 'smuggler' && k !== 'boss');
   for (const r of level.zoneRects || []) {
@@ -3329,7 +3393,7 @@ function loadLevel(i) {
   }
   { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); xray = null;
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
-  xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
+  helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
   if (def.relax) mpJoin(); else mpLeave();
   if (people.some(p => p.look && p.villain)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
   // 밀수품 숨기기
@@ -3340,7 +3404,7 @@ function loadLevel(i) {
   Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: Math.min(7, Math.max(3, dog.hp || 0)), boost: 0, hurt: 0, fetch: null, idleT: 0, jumps: 0, prop: null, prevIdle: null });
   Object.assign(handler, { x: spawn.x, z: spawn.z + 1.9, y: 0, vy: 0, dir: Math.PI, boneCd: 0 });
   for (const b of bones) scene.remove(b.m); bones.length = 0;
-  balls = []; for (let k = 0; k < (level.scaled ? 10 : 3); k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
+  balls = []; for (let k = 0; k < (level.scaled ? 12 : 4); k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
   yaw = 0; camPos.set(spawn.x, 6, spawn.z + 9);
   levelTime = 0; levelScore = 0; keys = {};
   renderQuest(); playMusic(def.music);
@@ -3351,7 +3415,7 @@ function startLevel(i) {
   if (LEVELS[i].landmark) { /* 명소 순찰: 작전 점수와 따로 */ }
   else if (!runActive || runCleared.has(i) || LEVELS[i].relax) { runScore = 0; runTime = 0; runStage = 0; runCleared = new Set(); totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = LEVELS[i].relax ? null : startServerRun(i); dog.hp = 3; }
   if (!LEVELS[i].landmark) runActive = !LEVELS[i].relax;
-  if (i === 5 && runCleared.size < 5) setTimeout(() => toast('ℹ 한 번의 작전에서 맵 1~5를 모두 깨고 보스를 잡아야 온라인 랭킹 점수가 올라가요'), 4500);
+  if (i === 5 && runCleared.size < 5) setTimeout(() => toast(t('ts_boss_rank')), 4500);
   hideAll(); loadLevel(i);
   $('topbar').classList.remove('hidden');
   const intro = () => showDialog(lang !== 'ko' ? t('intro').replace('{map}', mapName(i)).replace('{dog}', dogName) : scaleNums(LEVELS[i].intro) + (level.scaled ? '\n\n🗺 이번 맵은 A~D 구역까지 넓어졌어. 미니맵을 보며 구석구석 수색해!' : ''), null, LEVELS[i].who);
@@ -3371,7 +3435,7 @@ function closeDialog() {
 }
 function renderQuest() {
   if (!level) return;
-  $('qzone').textContent = level.gate ? `🛃 추가 관문 · ${mapName(levelIdx)}` : level.landmark ? `🇰🇷 명소 순찰 · ${mapName(levelIdx)}` : level.relax ? `🌅 HIDDEN MAP · ${mapName(levelIdx)}` : `${level.icon} MAP ${levelIdx + 1}/6 · ${mapName(levelIdx)}`;
+  $('qzone').textContent = level.gate ? `${t('qz_gate')} · ${mapName(levelIdx)}` : level.landmark ? `${t('qz_lm')} · ${mapName(levelIdx)}` : level.relax ? `🌅 HIDDEN MAP · ${mapName(levelIdx)}` : `${level.icon} MAP ${levelIdx + 1}/6 · ${mapName(levelIdx)}`;
   $('qtitle').textContent = mapName(levelIdx); $('qdesc').textContent = lang === 'ko' ? scaleNums(level.short) + (level.scaled ? ' · 🗺 A~D 구역까지 넓어졌어요!' : '') : t('s' + levelIdx);
   $('qgoals').innerHTML = Object.entries(level.need).map(([k, n]) => { const v = Math.min(lvStats[k] || 0, n); return `<div class="goal ${v >= n ? 'done' : ''}"><span>${t('g_' + k)}</span><b>${v}/${n}</b></div>`; }).join('');
 }
@@ -3401,7 +3465,7 @@ function levelClear() {
   const timeBonus = Math.max(0, Math.round(((level.scaled ? 600 : 240) - levelTime) * 2));
   levelScore += 300 + timeBonus;
   const coinsGot = Math.max(5, Math.round(levelScore / 25)); wallet.coins += coinsGot; store.set(walletKey(), wallet);
-  if (level.landmark) { const p0 = getProg(); if (!p0.best[levelIdx] || levelTime < p0.best[levelIdx]) p0.best[levelIdx] = Math.round(levelTime); store.set(progKey(), p0); checkBadges(); $('clrSub').textContent = '🇰🇷 명소 순찰 완료'; $('clrTitle').textContent = level.icon + ' ' + mapName(levelIdx) + ' 순찰 성공!'; $('clrStats').innerHTML = '⏱ <b>' + fmtTime(levelTime) + '</b><br>⭐ 점수 <b>' + levelScore + '</b><br>🦴 간식 +' + coinsGot + '<br><small>명소 맵 점수는 온라인 랭킹과 별도예요</small>'; $('clear').classList.remove('hidden'); return; }
+  if (level.landmark) { const p0 = getProg(); if (!p0.best[levelIdx] || levelTime < p0.best[levelIdx]) p0.best[levelIdx] = Math.round(levelTime); store.set(progKey(), p0); checkBadges(); $('clrSub').textContent = level.gate ? t('qz_gate') : t('clr_lm_sub'); $('clrTitle').textContent = level.icon + ' ' + mapName(levelIdx) + ' ' + t('clr_lm_title'); $('clrStats').innerHTML = '⏱ <b>' + fmtTime(levelTime) + '</b><br>⭐ ' + t('clr_score') + ' <b>' + levelScore + '</b><br>🦴 ' + t('clr_snack') + ' +' + coinsGot + '<br><small>' + t('clr_lm_note') + '</small>'; $('clear').classList.remove('hidden'); return; }
   runScore += levelScore; runTime += levelTime;
   runCleared.add(levelIdx); runStage = runCleared.size;
   const prog = getProg();
@@ -3491,14 +3555,14 @@ function showMaps(paused = false) {
   pausedGame = paused && !!level;
   hideAll(); state = 'maps'; $('topbar').classList.add('hidden');
   const prog = getProg();
-  $('mapsWho').textContent = `🕵 ${playerNick || playerId} 핸들러 · 누적 ${runScore}점` + (runActive ? ` · 이번 작전 ${runCleared.size}/6` : '');
+  $('mapsWho').textContent = t('who_fmt').replace('{nick}', playerNick || playerId).replace('{score}', runScore) + (runActive ? t('run_fmt').replace('{n}', runCleared.size) : '');
   const lmGate = LEVELS.map((L, i) => i).filter(i => LEVELS[i].gate), lmRest = LEVELS.map((L, i) => i).filter(i => LEVELS[i].landmark && !LEVELS[i].gate);
   const order = [0, 1, 2, 3, 4, ...lmGate, 5, 6, ...lmRest];
   $('mapGrid').innerHTML = order.map(i => [LEVELS[i], i]).map(([L, i]) => {
     const locked = L.hidden ? prog.best[5] === undefined : i === 5 ? ![0, 1, 2, 3, 4].every(k => prog.best[k] !== undefined || runCleared.has(k)) : false, cleared = !L.hidden && prog.best[i] !== undefined, inRun = runActive && runCleared.has(i);
     const cur = pausedGame && i === levelIdx;
     const st = cur ? t('st_cur') : locked ? (L.hidden ? t('st_lockH') : t('st_lockB')) : inRun ? t('st_run') : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
-    return (i === lmRest[0] ? `<div class="mapsep">🇰🇷 대한민국 명소 순찰 · ${lmRest.length}곳 <small>(자유 플레이 · 온라인 랭킹 미반영)</small></div>` : '') + `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.hidden && locked ? "❓" : L.icon}</span><span class="no">${L.hidden ? "HIDDEN" : L.gate ? "추가 관문 " + (lmGate.indexOf(i) + 1) : L.landmark ? "명소 " + (lmRest.indexOf(i) + 1) : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(5 - L.diff.stars)}</span></button>`;
+    return (i === lmRest[0] ? `<div class="mapsep">${t('sep_lm').replace('{n}', lmRest.length)} <small>${t('sep_note')}</small></div>` : '') + `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.hidden && locked ? "❓" : L.icon}</span><span class="no">${L.hidden ? "HIDDEN" : L.gate ? t("lbl_gate") + " " + (lmGate.indexOf(i) + 1) : L.landmark ? t("lbl_lm") + " " + (lmRest.indexOf(i) + 1) : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(5 - L.diff.stars)}</span></button>`;
   }).join('');
   renderBadges(); renderShop();
   $('pauseRow').classList.toggle('hidden', !pausedGame); $('btnResumeTop').classList.toggle('hidden', !pausedGame);
@@ -3559,7 +3623,7 @@ function restoreLogin() {
   if (store.get('k9pcons', false)) { $('pcons').checked = true; $('age14').checked = true; }
   loadSavedDog(id); $('nick').value = store.get('k9nick:' + id, '') || '';
   const known = id && store.get('k9dog:' + id, null);
-  if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || id) + ' 핸들러 · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true);
+  if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || id) + ' ' + t('hd_word') + ' · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true);
 }
 $('btnCharEdit').onclick = () => showCharBox(true);
 loadSavedDog(store.get('k9id', ''));
@@ -3570,13 +3634,13 @@ const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
   const isMail = EMAIL_RE.test(v);
-  if (!guest && !isMail && !/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr('아이디는 이메일 주소로 입력해 주세요 (예: dkslek123@google.com)');
-  if (!guest && (!$('pcons').checked || !$('age14').checked)) return loginErr('개인정보 수집·이용 안내를 읽고 [필수] 두 곳에 체크해 주세요. 동의하지 않으면 👀 체험하기로 할 수 있어요.');
+  if (!guest && !isMail && !/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr(t('err_email'));
+  if (!guest && (!$('pcons').checked || !$('age14').checked)) return loginErr(t('err_consent'));
   if (!guest && pw.length < 4) return loginErr(t('err_pw'));
   if (!$('agree').checked) return loginErr(t('err_agree'));
   const dn = $('dname').value.trim(), nk = $('nick').value.trim() || v;
   if (!/^[가-힣A-Za-z0-9 ]{1,8}$/.test(dn)) { showCharBox(true); return loginErr(t('err_dog')); }
-  if (!/^[가-힣A-Za-z0-9_ ]{1,10}$/.test(nk)) { showCharBox(true); return loginErr('핸들러 닉네임은 한글·영문·숫자 1~10자로 정해주세요'); }
+  if (!/^[가-힣A-Za-z0-9_ ]{1,10}$/.test(nk)) { showCharBox(true); return loginErr(t('err_nick')); }
   ac(); actx.resume?.(); setMusic(musicOn);
   $('btnLogin').disabled = true; loginErr('확인 중…');
   let res = 'offline';
@@ -3587,7 +3651,7 @@ async function login() {
   loginErr('');
   playerId = guest ? 'guest_' + nk : v; playerNick = nk; store.set('k9nick:' + v, nk); setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; if (!guest) store.set('k9id', $('remember').checked ? v : ''); store.set('k9agree', $('agree').checked); if (!guest) store.set('k9pcons', true); runScore = 0; runActive = false;
   if (serverOn() && playerPw) rpc('set_profile', { p_id: v, p_pw: pw, p_nick: nk, p_dog: dn, p_consent: true }).catch(() => { });
-  if (guest) toast('👀 체험 모드예요 · 랭킹에 올라가지 않고 이 기기에만 저장돼요');
+  if (guest) toast(t('ts_guest'));
   if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
   if (res === 'offline' && !guest) toast('📡 랭킹 서버에 연결하지 못해 이 기기에만 기록돼요');
   showMaps();
@@ -3596,12 +3660,12 @@ $('btnLogin').onclick = login;
 $('btnGuest').onclick = () => { login.guest = true; login(); };
 $('btnDelMe').onclick = async () => {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value;
-  if (!v || pw.length < 4) return loginErr('삭제하려면 아이디(이메일)와 비밀번호를 먼저 입력하세요');
-  if (!confirm('정말 내 정보를 모두 삭제할까요?\n이메일·비밀번호·닉네임·랭킹 기록이 서버에서 지워지고 되돌릴 수 없어요.')) return;
+  if (!v || pw.length < 4) return loginErr(t('del_need'));
+  if (!confirm(t('del_confirm'))) return;
   let ok = false; try { const r = await rpc('delete_me', { p_id: v, p_pw: pw }); ok = r.ok && await r.json(); } catch { }
-  if (!ok) return loginErr('삭제하지 못했어요. 아이디와 비밀번호를 확인해 주세요.');
+  if (!ok) return loginErr(t('del_fail'));
   for (const k of ['k9id', 'k9nick:' + v, 'k9dog:' + v, 'k9hand:' + v, 'k9pcons']) store.set(k, k === 'k9id' ? '' : null);
-  $('pid').value = ''; $('ppw').value = ''; loginErr('🗑 내 정보가 모두 삭제되었어요.'); renderRanking($('rankMini'), await fetchRanking(100));
+  $('pid').value = ''; $('ppw').value = ''; loginErr(t('del_done')); renderRanking($('rankMini'), await fetchRanking(100));
 };
 for (const id of ['pid', 'ppw', 'dname', 'nick']) $(id).addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 $('btnLogout').onclick = showLogin;
@@ -3627,20 +3691,28 @@ function reveal(c) {
   SFX.found(); toast(lang === 'ko' ? `${info.emoji} ${placeOf(c)} 속 ${info.name} 적발! 세관 단속반 출동…` : `${info.emoji} ${t('i_' + c.hidden)} ${t('ts_found')}`);
   burst(p.x, c.topY, p.z, [info.color, WHITE], 30, 3);
 }
-let leakT = 0;
+let leakT = 0, helpT = 30;
+// 하트 공·X-ray가 일정 시간마다 새로 나타난다 (기본 36초 → 20% 빠르게 30초)
+function updateHelp(dt) {
+  if (!level || level.relax) return;
+  helpT -= dt; if (helpT > 0) return; helpT = 30;
+  const live = balls.filter(b => !b.got).length;
+  if ((!xray || xray.got) && Math.random() < .45) { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; toast(t('ts_newx')); } return; }
+  if (live < (level.scaled ? 12 : 4)) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) { balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); toast(t('ts_newball')); } }
+}
 function updateLeak(dt) {
   if (!level || level.relax) return;
   leakT += dt;
   const lim = (level.scaled ? 70 : 50) / (.8 + .1 * level.diff.stars);
-  if (leakT < lim) { if (leakT > lim - 10 && leakT - dt <= lim - 10) toast('⏳ 10초 안에 밀수품을 못 찾으면 통관돼 버려요!'); return; }
+  if (leakT < lim) { if (leakT > lim - 10 && leakT - dt <= lim - 10) toast(t('ts_leak_warn')); return; }
   leakT = 0;
   const left = hidden.filter(c => !c.revealed && c.hidden);
   if (!left.length) return;
   const spare = left.filter(c => left.filter(o => o.hidden === c.hidden).length > (level.need[c.hidden] || 0) - (lvStats[c.hidden] || 0));
-  const c = pick2(spare.length ? spare : left), info = ITEM[c.hidden];
+  const c = pick2(spare.length ? spare : left), info = ITEM[c.hidden], type0 = c.hidden;
   if (spare.length) { hidden.splice(hidden.indexOf(c), 1); c.hidden = null; }
   addScore(-200); totals.mistakes++; combo = 0; shake = .3; SFX.bad ? SFX.bad() : tone(160, .4, 'sawtooth', .08, 80);
-  showDialog(`🚨 경보! ${info.emoji} ${info.name}이(가) 세관을 몰래 통과해 시중으로 유출됐어요…\n\n감점 −200점\n\n탐지견과 함께 서둘러 수색하세요! 시간이 지날수록 밀수품이 계속 빠져나가요.`, null, level.who);
+  showDialog(t('dlg_leak').replace('{item}', lang === 'ko' ? info.emoji + ' ' + info.name : info.emoji + ' ' + t('i_' + (c.hidden || type0))), null, level.who);
 }
 function destroyItem(c) {
   const p = center(c), info = ITEM[c.hidden];
@@ -3779,7 +3851,8 @@ function updateDog(dt) {
     dog.y = gnd.h; dog.vy = 0; dog.grounded = true; dog.jumps = 0; dog.autoJump = false; dog.flipT = 0;
     if (gnd.on && gnd.on.tramp) { dog.vy = 9.5; dog.grounded = false; dog.jumps = 1; SFX.jump(); if (Math.random() < .3) floatText('🤸 통통!', dog.x, dog.y + 1.6, dog.z, { h: .4 }); }
     if (gnd.on && gnd.on.belt) moveCircle(dog, gnd.on.belt * dt, 0, .5, false, dog.y);
-  } else dog.grounded = false;
+  } else if (dog.grounded && dog.vy <= 0 && dog.y - gnd.h < .45) { dog.y = gnd.h; dog.vy = 0; }
+  else dog.grounded = false;
 
   // 사람과 겹치지 않기
   dog.tackleCd -= dt;
@@ -3813,7 +3886,8 @@ function updateDog(dt) {
   scentShown = lerp(scentShown, strength, Math.min(1, dt * 6));
 
   // 애니메이션
-  const m = dogM; m.g.position.set(dog.x, dog.y, dog.z); m.g.rotation.y = dog.dir;
+  dog.ry = dog.grounded && dog.ry !== undefined && Math.abs(dog.y - dog.ry) < .9 ? dog.ry + (dog.y - dog.ry) * Math.min(1, dt * 9) : dog.y;
+  const m = dogM; m.g.position.set(dog.x, dog.ry, dog.z); m.g.rotation.y = dog.dir;
   dog.phase += dt * (2 + dog.speed * 2.2);
   const lk = dog.grounded ? Math.min(1, dog.speed / 4) : 0;
   const offs = [0, Math.PI, Math.PI, 0];
@@ -4028,7 +4102,7 @@ function loop() {
   requestAnimationFrame(loop);
   const dt = Math.min(clock.getDelta(), .05); time += dt;
   if (state === 'play') {
-    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
+    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
     for (const p of people) p.update(dt);
   } else if (state === 'intro') {
     updateIntro(dt); for (const p of people) p.update(dt);
@@ -4060,8 +4134,8 @@ setMusic(musicOn);
 showLogin();
 const I18N_EL = [
   [() => $('login').querySelector('.sub'), 'ls_sub'], [() => $('login').querySelector('h1'), 'ls_h1'], [() => $('login').querySelector('p'), 'ls_p'],
-  [() => document.querySelector('label[for=pid]'), 'ls_id'], [() => document.querySelector('label[for=ppw]'), 'ls_pw'], [() => document.querySelector('label[for=dname]'), 'ls_dog'],
-  [() => $('breeds').previousElementSibling, 'ls_breed'], [() => $('jobs').previousElementSibling, 'ls_hand'], [() => $('btnLogin'), 'ls_login'], [() => $('rankMini').previousElementSibling, 'ls_top'],
+  [() => $('lbId'), 'ls_id'], [() => $('lbRemember'), 'ls_remember'], [() => $('pvTitle'), 'pv_title'], [() => $('pvMore'), 'pv_more'], [() => $('pvBody'), 'pv_body'], [() => $('pvC1'), 'pv_c1'], [() => $('pvC2'), 'pv_c2'], [() => $('lbNick'), 'ls_nick'], [() => $('btnCharEdit'), 'ls_edit'], [() => $('btnGuest'), 'b_guest'], [() => $('btnDelMe'), 'b_delme'], [() => $('btnRankAll'), 'b_rankall'], [() => $('btnResumeTop'), 'b_resume'], [() => document.querySelector('label[for=ppw]'), 'ls_pw'], [() => document.querySelector('label[for=dname]'), 'ls_dog'],
+  [() => $('breeds').previousElementSibling, 'ls_breed'], [() => $('jobs').previousElementSibling, 'ls_hand'], [() => $('btnLogin'), 'ls_login'], [() => $('topTxt'), 'ls_top'],
   [() => { const n = $('login').querySelectorAll('.notice'); return n[n.length - 2]; }, 'ls_ad'], [() => { const n = $('login').querySelectorAll('.notice'); return n[n.length - 1]; }, 'ls_note'],
   [() => $('agreeTxt'), 'agree'], [() => $('ageTxt'), 'age'],
   [() => $('maps').querySelector('h1'), 'mp_h1'], [() => $('maps').querySelector('p'), 'mp_p'], [() => $('btnRankOpen'), 'b_rank'], [() => $('btnLogout'), 'b_logout'], [() => $('btnResume'), 'b_resume'], [() => $('btnRestartMap'), 'b_restart'],
@@ -4076,7 +4150,7 @@ function applyLang() {
   for (const [get, key] of I18N_EL) set(get(), key);
   document.querySelectorAll('.ctl:not(.touchonly)').forEach(el => set(el, 'ht_ctl'));
   document.querySelectorAll('.ctl.touchonly').forEach(el => set(el, 'ht_touch'));
-  for (const [id, key] of [['pid', 'ph_id'], ['ppw', 'ph_pw'], ['dname', 'ph_dog']]) { const el = $(id); if (el.dataset.kop === undefined) el.dataset.kop = el.placeholder; el.placeholder = lang === 'ko' ? el.dataset.kop : (DICT[lang]?.[key] ?? el.dataset.kop); }
+  for (const [id, key] of [['pid', 'ph_id'], ['ppw', 'ph_pw'], ['dname', 'ph_dog'], ['nick', 'ph_nick']]) { const el = $(id); if (el.dataset.kop === undefined) el.dataset.kop = el.placeholder; el.placeholder = lang === 'ko' ? el.dataset.kop : (DICT[lang]?.[key] ?? el.dataset.kop); }
   $('btnMode').textContent = t(twoP ? 'mode2' : 'mode1');
   document.documentElement.lang = lang;
   document.querySelectorAll('.card').forEach(c => c.dir = lang === 'ar' ? 'rtl' : 'ltr');
