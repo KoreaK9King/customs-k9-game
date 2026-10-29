@@ -89,7 +89,7 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 .langbtn{border:2px solid #d6cdb8;border-radius:8px;background:#fff;padding:3px 7px;display:flex;gap:5px;align-items:center;font-size:12px;cursor:pointer;color:var(--ink);font-family:inherit}
 .langbtn.on{border-color:var(--navy);background:#eaf2fb;font-weight:700}.langbtn svg{width:22px;height:15px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
 .agreebox{margin-top:12px;background:#eef6ea;border-radius:10px;padding:10px;font-size:13.5px;line-height:1.5}.agreebox input{width:20px;height:20px;vertical-align:middle}#ageTxt{margin-top:6px;font-weight:700;color:#2e7d32}
-#pid,#ppw,#dname{font-size:20px;padding:10px 14px;border-radius:12px;border:2px solid #c9bfa8;width:100%;box-sizing:border-box;font-family:inherit;background:#fff;color:var(--ink)}
+#pid,#ppw,#dname,#nick,input#nick{font-size:20px;padding:10px 14px;border-radius:12px;border:2px solid #c9bfa8;width:100%;box-sizing:border-box;font-family:inherit;background:#fff;color:var(--ink)}
 #pidErr{color:#c0392b;font-size:13px;min-height:18px;margin-top:4px}
 .rank{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
 .rank th{font-size:12px;color:var(--muted);text-align:left;padding:4px 6px;border-bottom:1px solid #e3d9c3}
@@ -161,11 +161,29 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div class="sub">관세청 일일 특강 교육 게임</div>
  <h1>🐕 탐지견 킁킁 게임</h1>
  <p>나만의 <b>탐지견</b>을 만들어 공항부터 보세창고까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
- <label for="pid" style="font-weight:700;color:var(--navy)">플레이어 아이디</label>
- <input id="pid" maxlength="12" placeholder="한글·영문·숫자 2~12자" autocomplete="off">
+ <label for="pid" style="font-weight:700;color:var(--navy)">🔑 아이디 <small style="font-weight:500;color:var(--muted)">(이메일 주소 · 랭킹에 공개되지 않아요)</small></label>
+ <input id="pid" type="email" inputmode="email" maxlength="60" placeholder="예: dkslek123@google.com" autocomplete="email">
  <label for="ppw" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">비밀번호</label>
- <input id="ppw" type="password" maxlength="32" placeholder="4자 이상 · 처음 접속이면 지금 정한 비밀번호로 가입돼요" autocomplete="off">
- <label for="dname" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">🐕 나만의 탐지견 이름</label>
+ <input id="ppw" type="password" maxlength="32" placeholder="4자 이상 · 처음 접속이면 지금 정한 비밀번호로 가입돼요" autocomplete="current-password">
+ <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:14px;font-weight:700;color:var(--navy)"><input type="checkbox" id="remember" checked style="width:18px;height:18px"> 아이디 기억하기 <small style="font-weight:500;color:var(--muted)">(다음부터 비밀번호만 입력)</small></label>
+ <div class="notice" style="font-size:13px;line-height:1.65;margin-top:10px;background:#f4f7fb">
+  <b>📋 개인정보(이메일) 수집·이용 안내</b>
+  <details><summary style="cursor:pointer;color:var(--navy);font-weight:700">자세히 보기</summary>
+  · <b>수집 항목</b>: 이메일 주소(아이디), 비밀번호(복호화할 수 없게 암호화해 저장), 핸들러 닉네임, 탐지견 이름, 게임 기록(점수·시간)<br>
+  · <b>이용 목적</b>: 로그인과 기록 저장, 랭킹 표시. 랭킹에는 <b>닉네임과 탐지견 이름만</b> 보이고 이메일은 공개되지 않아요. 광고·홍보 메일을 보내지 않아요.<br>
+  · <b>보관 기간</b>: 직접 삭제할 때까지. 아래 <b>🗑 내 정보 삭제</b>를 누르면 바로 모두 지워져요.<br>
+  · <b>보관 장소</b>: 게임 랭킹 서버(Supabase, 서울 리전). '아이디 기억하기'를 켜면 이 기기 브라우저에도 이메일이 저장돼요.<br>
+  · <b>동의하지 않을 권리</b>: 동의하지 않아도 <b>👀 체험하기</b>로 게임을 할 수 있어요(랭킹 미반영, 이 기기에만 저장).<br>
+  · <b>만 14세 미만</b>은 법에 따라 <b>보호자(법정대리인)의 동의</b>가 필요해요. 보호자와 함께 읽고 동의해 주세요.
+  </details>
+  <label style="display:flex;gap:6px;align-items:flex-start;margin-top:6px"><input type="checkbox" id="pcons" style="width:18px;height:18px;flex:none"> <span><b>[필수]</b> 위 개인정보(이메일) 수집·이용에 동의해요</span></label>
+  <label style="display:flex;gap:6px;align-items:flex-start;margin-top:4px"><input type="checkbox" id="age14" style="width:18px;height:18px;flex:none"> <span><b>[필수]</b> 만 14세 이상이에요 · 만 14세 미만이면 보호자가 함께 읽고 동의했어요</span></label>
+ </div>
+ <div id="charSum" class="notice hidden" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px"><span id="charSumTxt"></span><button class="alt" id="btnCharEdit" style="font-size:13px;padding:6px 10px;border-radius:10px">✏ 캐릭터 바꾸기</button></div>
+ <div id="charBox">
+ <label for="nick" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">🧑‍✈️ 핸들러 닉네임 <small style="font-weight:500;color:var(--muted)">(게임·랭킹에 보이는 이름)</small></label>
+ <input id="nick" maxlength="10" placeholder="예: 번개반장, 킁킁대장 (1~10자)" autocomplete="nickname">
+ <label for="dname" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">🐕 나만의 탐지견 닉네임</label>
  <input id="dname" maxlength="8" placeholder="예: 보리, 번개, 레오 (1~8자)" autocomplete="off">
  <div style="font-weight:700;color:var(--navy);margin-top:10px">견종 선택</div>
  <div id="breeds" role="radiogroup" aria-label="견종 선택"></div>
@@ -174,9 +192,11 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div id="jobs" role="radiogroup" aria-label="핸들러 직업"></div>
  <div id="skins" role="radiogroup" aria-label="피부색"></div>
  <div id="jobInfo" class="notice" style="margin-top:6px;font-size:13px"></div>
+ </div>
  <div id="pidErr"></div>
  <div class="agreebox"><label><input type="checkbox" id="agree"> <span id="agreeTxt">✅ 게임 이용 안내에 동의해요 · 친구에게 친절하게, 비밀번호는 비밀! (이 게임은 개인정보를 수집하지 않아요)</span></label><div id="ageTxt">🎮 이용 등급: 전체 이용가 (권장 만 7세 이상 · 자체 기준)</div></div>
- <div class="row"><button class="big" id="btnLogin">접속하기</button></div>
+ <div class="row"><button class="big" id="btnLogin">접속하기</button><button class="big alt" id="btnGuest">👀 체험하기</button></div>
+ <div style="text-align:right;margin-top:4px"><button class="alt" id="btnDelMe" style="font-size:12px;padding:5px 10px;border-radius:9px">🗑 내 정보 삭제</button></div>
  <h2 style="margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">🏆 TOP 100 랭킹 <button class="alt" id="btnRankAll" style="font-size:13px;padding:6px 12px;border-radius:10px">📋 전체 랭킹 보기</button></h2>
  <div class="rankwrap" id="rankMini"></div>
  <div class="notice" style="background:#13335a;color:#fff;font-size:13px">📢 <b style="color:#f4c542">관세청 공익광고</b> · 마약·총기 밀수 신고는 <b style="color:#f4c542">☎ 125</b> (관세청 밀수신고센터) · 여행자 휴대품은 자진신고하세요</div>
@@ -977,7 +997,7 @@ function setHandlerLook(job, skin) {
   handlerJob = JOBS[job] ? job : 'customs'; handlerSkin = skin;
   handlerM.g.traverse(o => { if (o.geometry) o.geometry.dispose(); });
   scene.remove(handlerM.g); handlerM = makePerson(handlerJob, { skin: SKIN_TONES[skin] ?? SKIN_TONES[1], elite: true }); handlerM.ring.visible = false; scene.add(handlerM.g);
-  handlerLabel = null; setHandlerLabel(playerId || '나의');
+  handlerLabel = null; setHandlerLabel(playerNick || playerId || '나의');
 }
 var handlerLabel = null;
 function setHandlerLabel(name) { if (handlerLabel) disposeSprite(handlerLabel); handlerLabel = textSprite('🧑‍✈️ ' + name + ' 핸들러', { h: .34 }); handlerLabel.position.y = 2.45; handlerM.g.add(handlerLabel); }
@@ -1126,6 +1146,15 @@ function makePerson(kind, opt = {}) {
   else if (kind === 'crew') { shirt = 0xf4f4f2; pants = 0xe8e8e4; }
   else if (kind === 'smuggler') { shirt = pick([0x2c2c34, 0x4a3b2a, 0x3d4a3d, 0x5d4037]); pants = 0x222222; }
   else if (kind === 'boss') { shirt = 0x4b2370; pants = 0x1a1a1a; }
+  else if (kind === 'hanbok') { shirt = pick([0xf48fb1, 0xfff59d, 0x81d4fa, 0xa5d6a7, 0xffffff]); pants = pick([0xd81b60, 0x1e88e5, 0x8e24aa, 0x43a047]); }
+  else if (kind === 'royalguard') { shirt = 0xb0242a; pants = 0xb0242a; }
+  else if (kind === 'haenyeo') { shirt = 0x1a1a1a; pants = 0x1a1a1a; }
+  else if (kind === 'busker') { shirt = pick([0xff4fa3, 0x222222, 0xffd54f]); pants = 0x2a3d66; }
+  else if (kind === 'student') { shirt = 0xf4f4f2; pants = 0x1f2a44; }
+  else if (kind === 'monk') { shirt = 0x8a8a80; pants = 0x8a8a80; }
+  else if (kind === 'inmate') { shirt = 0x7b9cc2; pants = 0x7b9cc2; }
+  else if (kind === 'merchant') { shirt = pick([0xc0392b, 0x2e86c1, 0x27ae60]); pants = 0x3a3a3a; }
+  else if (kind === 'tourist') { shirt = pick([0xff8a65, 0x4dd0e1, 0xffee58, 0xba68c8]); pants = 0xd7ccc8; }
   else { shirt = 0x1f3b6b; pants = 0x1f2a3a; }
   const shirtM = MAT.fabric(shirt), pantsM = MAT.fabric(pants), gold = MAT.metal(0xf4c542, .3);
   const legs = [], arms = [];
@@ -1160,6 +1189,15 @@ function makePerson(kind, opt = {}) {
   if (kind === 'worker' || kind === 'handler') { H(BOX(.52, .14, .52), MAT.shell(kind === 'worker' ? 0xf1c40f : 0xffffff), 0, .3, 0); mesh(BOX(.52, .3, .28), MAT.col(0xd8f53a, .4), 0, 1.22, 0, body); mesh(BOX(.53, .05, .29), MAT.col(0xeeeeee, .2), 0, 1.15, 0, body); }
   if (kind === 'postal') { H(BOX(.5, .1, .5), MAT.col(0x1f7a5a, .5), 0, .28, 0); mesh(BOX(.36, .28, .28), MAT.cardboard(), 0, 1.12, .3, body); }
   if (kind === 'smuggler' || kind === 'boss' || (kind === 'civ' && rnd() < .4)) mesh(BOX(.12, .32, .42), kind === 'civ' ? MAT.shell(pick(bagColors)) : MAT.col(0x5a3a1a, .45), .52, .72, 0, body);
+  if (kind === 'hanbok') { mesh(BOX(.62, .7, .5), MAT.fabric(pants), 0, .55, 0, body); H(BOX(.46, .1, .46), MAT.col(0x222222, .6), 0, .27, -.06); }
+  if (kind === 'royalguard') { H(BOX(.9, .06, .9), MAT.col(0x111111, .6), 0, .26, 0); H(BOX(.42, .26, .42), MAT.col(0x111111, .6), 0, .4, 0); mesh(BOX(.54, .1, .3), MAT.col(0x2a5db0, .6), 0, .95, 0, body); mesh(BOX(.08, 1.6, .08), MAT.col(0x6d4c2f, .7), .5, .9, .2, body); }
+  if (kind === 'haenyeo') { H(BOX(.52, .14, .52), MAT.col(0x1a1a1a, .4), 0, .22, 0); H(BOX(.4, .14, .04), MAT.col(0x9fd3ff, .1, .3), 0, .05, .26); mesh(BOX(.5, .5, .5), MAT.col(0xff7a1a, .5), .5, .7, -.3, body); }
+  if (kind === 'busker') mesh(BOX(.3, .9, .12), MAT.col(0xa0522d, .5), .1, 1.05, .2, body);
+  if (kind === 'student') { mesh(BOX(.52, .4, .28), MAT.col(0x1f2a44, .6), 0, 1.25, 0, body); mesh(BOX(.4, .5, .2), MAT.col(pick([0xe74c3c, 0x3498db, 0x2ecc71]), .6), 0, 1.15, -.24, body); }
+  if (kind === 'monk') H(BOX(.5, .06, .5), skin, 0, .26, 0);
+  if (kind === 'inmate') mesh(BOX(.2, .12, .03), MAT.col(0xffffff, .5), -.13, 1.35, .14, body);
+  if (kind === 'merchant') mesh(BOX(.52, .62, .04), MAT.col(0xf4f4f2, .6), 0, 1.0, .145, body);
+  if (kind === 'tourist') { H(BOX(.56, .1, .56), MAT.col(0xf4e1a8, .6), 0, .27, 0); H(BOX(.34, .14, .34), MAT.col(0xf4e1a8, .6), 0, .36, 0); mesh(BOX(.2, .14, .12), MAT.col(0x222222, .4), 0, 1.25, .2, body); }
   if (kind === 'boss') g.scale.setScalar(1.22);
   const ring = new THREE.Mesh(new THREE.RingGeometry(.55, .8, 4), new THREE.MeshBasicMaterial({ color: 0xff3030, transparent: true, opacity: .8, side: THREE.DoubleSide, depthWrite: false, toneMapped: false }));
   ring.rotation.x = -Math.PI / 2; ring.rotation.z = Math.PI / 4; ring.position.y = .05; ring.visible = false; g.add(ring);
@@ -1169,6 +1207,15 @@ function makePerson(kind, opt = {}) {
 const people = [];
 const pick2 = a => a[Math.floor(Math.random() * a.length)];
 const LINES = {
+  hanbok: ['한복 입고 궁궐 오면 입장 무료래!', '사진 찍어 주실래요? 📸', '치마가 예쁘지?', '탐지견도 한복 입혀주고 싶다~'],
+  royalguard: ['수문장 교대식이 곧 시작됩니다!', '궁궐을 지키는 수문장이오.', '둥! 둥! 북소리에 맞춰라!'],
+  haenyeo: ['숨비소리~ 휘이~', '오늘 전복 많이 잡았수다!', '제주 바당은 우리가 지켜!'],
+  busker: ['🎸 다음 곡은 신청곡!', '박수 한 번 주세요~!', '오늘 공연 재밌었나요?'],
+  student: ['수행평가 언제 내지?', '현장체험학습 왔어요!', '탐지견이다! 진짜 멋있다!'],
+  monk: ['성불하세요 🙏', '천년의 시간을 느껴보세요.', '마음이 고요해지는 곳이지요.'],
+  inmate: ['면회 언제 오지…', '운동 시간이 제일 좋아.', '저는 아무것도 몰라요!'],
+  merchant: ['골라 골라! 싸요 싸!', '어서 오세요~ 구경하세요!', '이거 하나 맛보고 가요!'],
+  tourist: ['여기가 그 유명한 곳이구나!', '인증샷 필수! 📸', '지도 앱이 어디 있더라…'],
   civ: ['비행기에서 한숨도 못 잤어…', '내 가방 어디 갔지?', '와, 탐지견이다! 귀여워🐶', '면세점 들렀다 갈까?', '택시는 어디서 타요?', '배고프다, 뭐 먹을래?', '여행 진짜 재밌었어!', '사진 한 장 찍자📷'],
   worker: ['오늘 물량 엄청 많네', '지게차 지나가요!', '점심 뭐 먹지?', '이 화물은 3번 구역으로!', '허리 아프다…'],
   handler: ['안전 제일!', '팔레트 하나 더!', '이쪽으로 옮겨 주세요', '수고하십니다!'],
@@ -1338,7 +1385,7 @@ class Vehicle {
     this.type = type; this.route = route; this.ri = start % route.length;
     [this.x, this.z] = route[this.ri];
     const nx = route[(this.ri + 1) % route.length]; this.dir = Math.atan2(nx[0] - this.x, nx[1] - this.z);
-    this.speed = (type === 'truck' ? 4.6 : 3) * (level.diff.vehicle || 1); this.cur = 0; this.honk = 0;
+    this.speed = (type === 'truck' || type === 'car' || type === 'taxi' ? 4.6 : type === 'bus' ? 3.8 : type === 'dragon' ? 2.2 : 3) * (level.diff.vehicle || 1); this.cur = 0; this.honk = 0;
     const g = this.g = new THREE.Group(); world.add(g);
     if (type === 'forklift') {
       this.len = 3; this.wid = 1.5;
@@ -1351,6 +1398,20 @@ class Vehicle {
       mesh(BOX(1.1, .14, 1.1), MAT.wood(), 0, .35, 1.5, g); mesh(BOX(1, .7, 1), MAT.cardboard(), 0, .77, 1.5, g);
       for (const sx of [-.66, .66]) for (const sz of [-.8, .5]) mesh(CYL(.3, .3, .24), MAT.col(0x111111, .8), sx, .3, sz, g).rotation.z = Math.PI / 2;
       const d = makePerson('handler'); d.g.scale.setScalar(.85); d.g.position.set(0, .35, -.3); for (const l of d.legs) l.rotation.x = -1.4; g.add(d.g);
+    } else if (type === 'bus') {
+      this.len = 10; this.wid = 2.6; const c = pick([0x2c6fb7, 0x27ae60, 0xf4f4f2, 0xd63a2a]);
+      mesh(BOX(2.5, 2.6, 10), MAT.col(0xf4f4f2, .4), 0, 1.75, 0, g); mesh(BOX(2.52, .5, 10.02), MAT.col(c, .4), 0, 1, 0, g); mesh(BOX(2.54, .9, 9.4), MAT.col(0x1b2833, .1, .3), 0, 2.4, 0, g); mesh(BOX(2.3, 1, .05), MAT.col(0x1b2833, .1, .3), 0, 2.2, 5.01, g);
+      for (const sz of [3.4, -3.4]) for (const sx of [-1.2, 1.2]) mesh(CYL(.5, .5, .35), MAT.col(0x111111, .8), sx, .5, sz, g).rotation.z = Math.PI / 2;
+    } else if (type === 'car' || type === 'taxi') {
+      this.len = 4.4; this.wid = 2; const c = type === 'taxi' ? 0xff8c1a : pick([0xf4f4f2, 0x222222, 0x9aa3ab, 0x2c6fb7, 0xc0392b]);
+      mesh(BOX(1.9, .8, 4.2), MAT.col(c, .35, .2), 0, .75, 0, g); mesh(BOX(1.7, .7, 2.2), MAT.col(c, .35, .2), 0, 1.5, -.2, g); mesh(BOX(1.72, .5, 2.1), MAT.col(0x1b2833, .1, .3), 0, 1.55, -.2, g);
+      if (type === 'taxi') mesh(BOX(.6, .25, .3), MAT.col(0xffffff, .4), 0, 2, -.2, g);
+      for (const sz of [1.4, -1.4]) for (const sx of [-.95, .95]) mesh(CYL(.35, .35, .25), MAT.col(0x111111, .8), sx, .35, sz, g).rotation.z = Math.PI / 2;
+    } else if (type === 'dragon') {
+      this.len = 9; this.wid = 2; const gd = MAT.col(0xe0a82e, .4), rd = MAT.col(0xb0242a, .5);
+      mesh(BOX(1.8, 1.6, 2.6), gd, 0, 1.1, 3, g); mesh(BOX(1.2, 1, 1.4), gd, 0, 2.2, 4, g); for (const sx of [-.45, .45]) mesh(BOX(.15, .8, .15), gd, sx, 3, 3.6, g);
+      for (const z of [0, -3]) { mesh(BOX(1.8, 1.4, 2.6), rd, 0, 1.1, z, g); mesh(BOX(2, .2, 2.8), gd, 0, 2.4, z, g); }
+      for (const sz of [3, 0, -3]) for (const sx of [-.9, .9]) mesh(CYL(.3, .3, .2), MAT.col(0x111111, .8), sx, .3, sz, g).rotation.z = Math.PI / 2;
     } else {
       this.len = 8.4; this.wid = 2.5;
       mesh(RBOX(2.4, 2.3, 2, .2), MAT.col(pick([0x2e86c1, 0xc0392b, 0xf4f4f2]), .4), 0, 1.75, 3, g);
@@ -2471,8 +2532,23 @@ function stall(x, z, col, txt) { bx(x, 0, z, 3, 1, 1.6, 0xe9d8b8); mesh(BOX(3.4,
 function neon(x, y, z, txt, c = '#ff4fa3') { const s = textSprite(txt, { h: .7, bg: 'rgba(20,10,30,.88)', color: c }); s.position.set(x, y, z); world.add(s); }
 function statue(x, z, col, seat, h = 3) { bx(x, 0, z, 3, 2, 3, 0x8e8a80); const g = new THREE.Group(); g.position.set(x, 2, z); world.add(g); const m = LMC(col); mesh(BOX(1.4, seat ? 1.2 : 2.2, 1), m, 0, seat ? .6 : 1.1, 0, g); mesh(BOX(.8, .8, .8), m, 0, seat ? 1.6 : 2.6, 0, g); if (seat) mesh(BOX(1.8, .6, 1.6), m, 0, .3, .3, g); if (!seat) mesh(BOX(.25, 2.4, .25), m, .9, 1.4, .2, g); g.scale.setScalar(h / 3); }
 
+
+function pond(x, z, w, d, col = 0x4f9fd0, block = true) { const t = TEX.water(); t.repeat.set(Math.max(1, w / 6), Math.max(1, d / 6)); const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), std(0xffffff, .2, 0, { map: t, color: col })); m.rotation.x = -Math.PI / 2; m.position.set(x, .05, z); world.add(m); if (block) addCol(x, z, w, d, null, { topY: 99 }); for (const [ex, ez, ew, ed] of [[0, -d / 2, w + .6, .3], [0, d / 2, w + .6, .3], [-w / 2, 0, .3, d], [w / 2, 0, .3, d]]) bx(x + ex, .02, z + ez, ew, .35, ed, 0x9a948a, false); return m; }
+function stepsUp(x, z0, w, n, dir = -1, sd = .8, col = 0xb9b2a5) { for (let k = 0; k < n; k++) bx(x, 0, z0 + dir * k * sd, w, .35 * (k + 1), sd, col); return .35 * n; }
+function flowers(x, z, w, d, cols, n = 50) { for (let k = 0; k < n; k++) { const m = mesh(BOX(.4, .35, .4), LMC(pick(cols)), x + rr(-w / 2, w / 2), .18, z + rr(-d / 2, d / 2)); m.castShadow = false; } }
+function fountain(x, z, r = 3, col = 0xbdb7aa) { mesh(new THREE.CylinderGeometry(r, r + .3, .7, 20), LMC(col), x, .35, z); addCol(x, z, r * 1.5, r * 1.5, null, { topY: .7 }); const w = new THREE.Mesh(new THREE.CircleGeometry(r - .3, 20), std(0x7fc8ef, .1, 0, { transparent: true, opacity: .85 })); w.rotation.x = -Math.PI / 2; w.position.set(x, .72, z); world.add(w); const c = new THREE.Color(0xbfe8ff); envAnim.push(() => { if (Math.random() < .7) spawnP(x + mr(-.3, .3), 1, z + mr(-.3, .3), mr(-1.5, 1.5), mr(5, 8), mr(-1.5, 1.5), c, 1.1); }); }
+function pavilion(x, z, s = 1, y = 0, roof = 0x3b3f45) { for (const sx of [-1, 1]) for (const sz of [-1, 1]) bx(x + sx * 1.6 * s, y, z + sz * 1.6 * s, .3 * s, 2.6 * s, .3 * s, 0x8b2e22, y < .5); bx(x, y, z, 3.8 * s, .3, 3.8 * s, 0x9a8f7a, false); bx(x, y + 2.3 * s, z, 3.9 * s, .35, 3.9 * s, 0x2f7d5b, false); hroof(x, y + 2.6 * s, z, 3 * s, 3 * s, roof); }
+function spire(x, z, w, h, col, rc = 0x4d5a52) { bx(x, 0, z, w, h, w, col); mesh(new THREE.ConeGeometry(w * .75, h * .5, 4), LMC(rc), x, h + h * .25, z).rotation.y = Math.PI / 4; mesh(BOX(.15, 1.6, .15), LMC(0xf4c542), x, h + h * .5 + .8, z); mesh(BOX(.9, .15, .15), LMC(0xf4c542), x, h + h * .5 + 1.1, z); }
+function chimney(x, z, h, col = 0xb0b0b0) { bx(x, 0, z, 2, h, 2, col); for (let y = h * .2; y < h; y += h * .25) mesh(BOX(2.1, .6, 2.1), LMC(0xd84a3a), x, y, z); const c = new THREE.Color(0xdddddd); envAnim.push(dt => { if (Math.random() < dt * 5) spawnP(x, h + .5, z, mr(-.3, .3), 1.5, mr(-.3, .3), c, 2.5); }); }
+function skyline(z, n = 14, hmin = 10, hmax = 40, x0 = -140, gap = 20) { for (let k = 0; k < n; k++) building(x0 + k * gap + rr(-4, 4), z + rr(-6, 6), rr(8, 14), rr(8, 12), rr(hmin, hmax), pick([0xd4dbe2, 0xe8e2d8, 0xc0cad4, 0xb7c4cf, 0xe6d9c8]), { lit: true }); }
+function flag(x, z, col, h = 4) { bx(x, 0, z, .15, h, .15, 0x6d4c2f); const fl = mesh(BOX(.05, .9, 1.3), LMC(col), x, h - .5, z + .7); fl.castShadow = false; envAnim.push(() => { fl.rotation.y = Math.sin(time * 3 + x) * .3; }); }
+function columns(x, z, n, gap, h, col = 0xf2efe8, axis = 'x', w = .8) { for (let k = 0; k < n; k++) { const o = (k - (n - 1) / 2) * gap; bx(axis === 'x' ? x + o : x, 0, axis === 'x' ? z : z + o, w, h, w, col); } }
+function lanternLine(x0, x1, z, y, cols = [0xff6f61, 0xffd54f, 0x4fc3f7]) { for (let x = x0, k = 0; x <= x1; x += 1.6, k++) { const l = mesh(BOX(.4, .5, .4), glow(cols[k % cols.length], 1.2), x, y - Math.sin((x - x0) / (x1 - x0) * Math.PI) * .6, z); l.castShadow = false; } }
+function horse(x, z, col = 0x8d5a3b) { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rr(0, 6); world.add(g); const m = LMC(col); mesh(BOX(.8, .8, 1.8), m, 0, 1.2, 0, g); mesh(BOX(.5, .9, .5), m, 0, 1.8, .9, g); mesh(BOX(.4, .4, .7), m, 0, 2.1, 1.3, g); for (const sx of [-.3, .3]) for (const sz of [-.7, .7]) mesh(BOX(.22, .9, .22), m, sx, .45, sz, g); addCol(x, z, 1.4, 1.4, g, { topY: 1.6 }); }
+function rockWall(x0, z0, x1, z1, col = 0x3a3a3a) { const len = Math.hypot(x1 - x0, z1 - z0), n = Math.ceil(len / .9); for (let k = 0; k < n; k++) { const t = k / n, m = mesh(BOX(rr(.7, 1), rr(.7, 1.1), rr(.6, .9)), LMC(col), x0 + (x1 - x0) * t, .4, z0 + (z1 - z0) * t); m.castShadow = false; } addCol((x0 + x1) / 2, (z0 + z1) / 2, Math.abs(x1 - x0) + .8, Math.abs(z1 - z0) + .8, null, { topY: 1 }); }
+function partition(z, hw = 6, aisle = 1.1, col = 0xdfe6ea) { for (const sd of [-1, 1]) bx(sd * (aisle + (hw - aisle) / 2), 0, z, hw - aisle, 2.8, .25, col); mesh(BOX(aisle * 2, .5, .25), LMC(col), 0, 2.55, z); }
 const LMDEF = (o) => ({
-  landmark: true, sc: 1, diff: { stars: o.st ?? 2, speed: .95 + (o.st ?? 2) * .06, flee: 1, hp: o.st > 3 ? 3 : 2, bossHp: 5, sniff: 27 - (o.st ?? 2) * 1.5, vehicle: 1 },
+  landmark: true, gate: o.gate, sc: 1, diff: { stars: o.st ?? 2, speed: .95 + (o.st ?? 2) * .06, flee: 1, hp: o.st > 3 ? 3 : 2, bossHp: 5, sniff: 27 - (o.st ?? 2) * 1.5, vehicle: 1 },
   extras: { decor: o.decor || [], items: o.items || [['backpack', 3], ['dutyBag', 2]] }, name: o.name, icon: o.icon, w: o.w ?? 80, d: o.d ?? 60, outdoor: o.out !== false, bg: o.bg ?? 0xcfe3ef, music: o.music ?? 1 + (o.n % 7), sky: o.sky, shape: o.shape, outside: o.outside, rail: o.rail,
   staff: o.staff || [{ kind: 'police', route: [[-(o.w ?? 80) / 2 + 6, (o.d ?? 60) / 2 - 4], [(o.w ?? 80) / 2 - 6, (o.d ?? 60) / 2 - 4]], wait: 2 }, { kind: 'customs', route: [[-12, 8], [12, 8]], wait: 2 }],
   vehicles: o.veh || [], people: o.people || { civ: 9, smuggler: 3 }, hide: o.hide || { drug: 4, gun: 3 }, need: o.need || { drug: 3, gun: 2, smuggler: 2 },
@@ -2481,114 +2557,330 @@ const LMDEF = (o) => ({
     if (o.floor !== false) { if (L.poly && o.shapeFloor) shapeFloor(L, typeof o.floor === 'function' ? o.floor() : MAT.col(o.floor ?? 0xbfb6a6, .9)); else floorPlane(o.floorW ?? 700, o.floorD ?? 700, typeof o.floor === 'function' ? o.floor() : MAT.col(o.floor ?? 0xbfb6a6, .9), 0, 0, .004); }
     if (o.walls) walls(L, o.walls);
     o.build(L);
+    { const sx = 0, sz = (o.d ?? 60) / 2 - 6; for (const c of [...colliders]) { if (c.keep || c.topY < .5) continue; if (c.maxX > sx - 2.5 && c.minX < sx + 2.5 && c.maxZ > sz - 3 && c.minZ < sz + 4) { colliders.splice(colliders.indexOf(c), 1); if (c.mesh) c.mesh.visible = false; } } }
     L.search = (L.search || []).concat(scatter(L, o.ns ?? 14, o.obj ?? luggage, 1.2, 1.2));
     L.search.push(...colliders.filter(c => c.kind === 'seat' && !L.search.includes(c)));
   },
 });
 const TILE = (b, g, r = 1 / 4) => () => std(0xffffff, .85, 0, { map: TEX.tile(b + g, b, g, 16, [r, r]) });
 const LANDMARK_LIST = [
-  { name: '우체국', icon: '📮', out: false, w: 60, d: 44, walls: 'wall', bg: 0xe7ecef, floor: TILE('#d9d4c8', '#b8b1a2', .25), obj: parcel, sky: [0xd03b2e, 0xfde2dc],
-    staff: [{ kind: 'postal', route: [[-20, -8], [20, -8]], wait: 2 }, { kind: 'postal', route: [[-24, 12], [24, 12]], wait: 2 }, { kind: 'customs', route: [[0, -2], [0, 14]], wait: 2 }], people: { civ: 8, postal: 2, smuggler: 2 },
-    items: [['cosmetics', 3], ['shoeBox', 3], ['teddy', 2]], who: '김우편 우체국장', chief: 'postal', short: '우체국 창구와 소포 선반에서 수상한 국제우편을 찾아요.',
-    intro: '동네 우체국이야! 해외로 보내는 소포 사이에 마약이 섞였다는 제보가 들어왔어.\n빨간 우체통과 창구 뒤 소포 선반을 꼼꼼히 킁킁!',
-    build(L) { for (let k = 0; k < 6; k++) { bx(-20 + k * 8, 0, -15, 6, 1.1, 1.4, 0xf4f1ea); sign(['우편 접수', '국제 소포', '택배', 'EMS', '금융 창구', '보험'][k], -20 + k * 8, 2.4, -14.3, .45, 'rgba(200,40,30,.92)'); } for (const x of [-24, -16, -8, 8, 16, 24]) { bx(x, 0, -20, 5, 3.5, 1, 0x8d7b62); for (let y = .6; y < 3.4; y += .8) mesh(BOX(4.6, .5, .6), MAT.cardboard(), x, y, -19.8); } for (let k = 0; k < 10; k++) bx(-27 + k * 1.2, 0, 2, 1, 2.6, .8, 0xb08d57); for (const x of [-10, 0, 10]) { bx(x, 0, 18, .9, 1.4, .9, 0xd63a2a); mesh(BOX(1, .35, 1), LMC(0xd63a2a), x, 1.55, 18); } for (const x of [-16, 16]) bench(x, 8); sign('📮 대한민국 우체국 POST OFFICE', 0, 5, -19, 1.1, 'rgba(200,40,30,.95)'); } },
-  { name: '교도소', icon: '🔒', w: 76, d: 58, floor: 0x9a968d, obj: crate, sky: [0x6d7a88, 0xd0d6dc], st: 4, shape: [[-1, 1], [-1, -1], [1, -1], [1, 1]], rail: { h: 6, col: 0x8f8b84, t: .8 },
-    staff: [{ kind: 'police', route: [[-30, -20], [30, -20]], wait: 2 }, { kind: 'police', route: [[-30, 10], [30, 10]], wait: 2 }, { kind: 'police', route: [[-34, -24], [-34, 24]], wait: 2 }], people: { worker: 4, civ: 3, smuggler: 3 },
-    items: [['shoeBox', 3], ['vitamin', 3], ['speaker', 2]], who: '최철문 교도소장', chief: 'police', short: '교도소로 몰래 반입되는 마약·무기를 막아요. 면회실과 세탁물 상자를 수색!',
-    intro: '교도소 면회일이야. 영치품과 세탁물 상자에 몰래 마약과 무기를 숨겨 들여보내려는 사람들이 있대.\n높은 담장 안을 꼼꼼히 순찰하자!',
-    build(L) { for (const [x, z] of [[-35, -26], [35, -26], [-35, 26], [35, 26]]) { bx(x, 0, z, 3, 9, 3, 0x7d7a73); mesh(BOX(4, 2, 4), LMC(0x5b5a55), x, 10, z); mesh(BOX(.5, .5, .5), glow(0xffee88), x, 11.3, z); } for (const x of [-22, 0, 22]) { building(x, -18, 16, 8, 7, 0x8a8f94, { glass: 0x2a2f36 }); for (let k = -7; k <= 7; k += 1) mesh(BOX(.1, 2, .1), MAT.metal(0x333333), x + k, 2.6, -13.9); } bx(0, 0, 4, 10, .1, 8, 0xc45a3a, false); for (const x of [-4, 4]) { bx(x, 0, 4, .3, 3.2, .3, 0xeeeeee); mesh(BOX(1.6, 1, .1), LMC(0xffffff), x, 3.2, 4); } building(-24, 14, 12, 8, 4, 0xb7b2a8, { sign: '면회실 VISIT' }); building(24, 14, 12, 8, 4, 0xb7b2a8, { sign: '영치품 접수' }); sign('🔒 교도소 — 반입 금지 물품 단속 중', 0, 8, -24, 1); } },
-  { name: '서울역', icon: '🚉', w: 90, d: 64, floor: TILE('#c9c3b6', '#a9a294', .2), obj: luggage, sky: [0x5aa8ef, 0xe2f0fb], st: 3, veh: [{ type: 'truck', route: [[-40, 26], [40, 26]] }],
-    items: [['backpack', 4], ['golfBag', 2], ['guitarCase', 2]], who: '정기차 서울역장', chief: 'attendant', short: '옛 서울역(붉은 벽돌·초록 돔)과 KTX 승강장에서 밀수범을 찾아요.',
-    intro: '서울역이야! 1925년에 지어진 붉은 벽돌과 초록 돔의 옛 역사 옆에 유리로 된 새 역사가 있어.\nKTX 승강장의 여행가방을 수색하자!',
-    build(L) { bx(-22, 0, -14, 26, 8, 12, 0xa5473a); for (let k = 0; k < 8; k++) mesh(BOX(1.4, 3.2, .1), LMC(0xf1e6cf), -33 + k * 3.1, 3.4, -7.95); bx(-22, 8, -14, 9, 2, 9, 0xd9d0bd, false); mesh(new THREE.SphereGeometry(4.6, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x4f8a6e), -22, 10, -14); for (const x of [-32, -12]) { bx(x, 8, -14, 3, 2.5, 3, 0xd9d0bd, false); mesh(new THREE.SphereGeometry(1.5, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x4f8a6e), x, 10.5, -14); } sign('문화역서울 284 (옛 서울역)', -22, 16, -7.5, .8); building(20, -16, 34, 12, 11, 0x9fb7c9, { glass: 0x5d8fb4, sign: '🚉 서울역 SEOUL STATION', sh: 1 }); for (const z of [-28, -24]) { bx(0, 0, z, 80, .9, 2.6, 0xb3b0a8); } for (const z of [-26]) for (let k = 0; k < 5; k++) { const x = -32 + k * 16; bx(x, .9, z, 15, 2.6, 2.2, 0xf4f4f2, false); mesh(BOX(15.02, .5, 2.22), LMC(0x2b5fa8), x, 2.3, z); } for (let x = -36; x <= 36; x += 12) lamp(x, 0); sign('KTX', -10, 5, -26, .9, 'rgba(30,80,160,.92)'); } },
-  { name: 'KTX 열차 안', icon: '🚄', out: false, w: 12, d: 76, sc: 1, bg: 0xdfe6ea, floor: TILE('#4b5560', '#3c444d', .5), obj: luggage, ns: 6, sky: [0x86b6e0, 0xe8f2fa], shape: CAPSULE(1), shapeFloor: true, rail: { h: 3, col: 0xe8ecef, t: .3 }, st: 3,
-    staff: [{ kind: 'attendant', route: [[0, -32], [0, 32]], wait: 2 }, { kind: 'customs', route: [[0, 30], [0, -20]], wait: 3 }], people: { civ: 8, smuggler: 2 }, hide: { drug: 4, gun: 2 }, need: { drug: 3, gun: 1, smuggler: 2 },
-    items: [['backpack', 4], ['dutyBag', 2]], who: '한레일 KTX 열차팀장', chief: 'attendant', short: '달리는 KTX 객실! 좁은 통로에서 좌석 밑과 선반의 가방을 수색해요.',
-    intro: '부산행 KTX 열차 안이야. 좁은 통로 양옆 좌석 아래와 짐칸에 밀수품이 숨어 있대.\n통로가 좁으니 승객과 부딪히지 않게 조심!',
-    build(L) { for (let z = -30; z <= 24; z += 2.2) for (const x of [-4.2, -3.2, 3.2, 4.2]) seatBlock(x, z, 0x2e5fa8, Math.PI); for (const sd of [-1, 1]) { mesh(BOX(.2, 1.4, 64), LMC(0x9fd3ff), sd * 5.6, 2, -3); mesh(BOX(2, .15, 64), LMC(0xbfc6cc), sd * 4.3, 2.6, -3); } envAnim.push(dt => { L.trainT = (L.trainT || 0) + dt; }); for (let k = 0; k < 14; k++) { const t = mesh(BOX(2, 3, 2), LMC(0x4f8a4a), 0, 0, 0); const z0 = rr(-40, 40), sd = Math.random() < .5 ? -1 : 1; envAnim.push(dt => { t.position.set(sd * rr(9, 9.1), 1.5, ((z0 - (time * 25)) % 80 + 120) % 80 - 40); }); } sign('🚄 KTX 서울 → 부산', 0, 3.4, -34, .6); } },
-  { name: '버스터미널', icon: '🚌', w: 84, d: 60, floor: () => std(0xffffff, .9, 0, { map: TEX.asphalt([20, 20]) }), obj: luggage, sky: [0x4aa0e6, 0xdcefff], veh: [{ type: 'truck', route: [[-36, -2], [36, -2], [36, 4], [-36, 4]] }],
-    items: [['backpack', 4], ['cooler', 2], ['fruitBox', 2]], who: '오고속 버스터미널 소장', chief: 'worker', short: '고속버스 짐칸과 대합실 가방을 수색해요. 버스가 지나가니 조심!',
-    intro: '고속버스터미널이야. 전국으로 떠나는 버스 짐칸에 밀수품을 실으려 한대.\n버스가 다니는 길은 조심해서 건너!',
-    build(L) { for (let k = 0; k < 8; k++) { const x = -35 + k * 10; bx(x, 0, -20, 3.6, 3.4, 10, k % 2 ? 0xf4f4f2 : 0x2c6fb7); mesh(BOX(3.62, 1, 8), LMC(0x1d2f45), x, 2.4, -20); sign(['서울', '부산', '대구', '광주', '대전', '강릉', '전주', '포항'][k] + ' 行', x, 4.4, -14.8, .45); bx(x, 0, -13.5, 3, .25, 1, 0xffd54f, false); } building(0, 22, 50, 10, 6, 0xd7d2c6, { glass: 0x4f87b6, sign: '🚌 고속버스터미널 대합실' }); for (const x of [-20, -8, 4, 16]) bench(x, 14); for (const x of [-30, 30]) bx(x, 0, 12, 4, 1.2, 1.6, 0xb04a3a); sign('매표소 TICKET', -30, 3, 12, .5); } },
-  { name: '비행기 안', icon: '🛫', out: false, w: 13, d: 70, bg: 0xe9edf1, floor: TILE('#3c4f6b', '#33445c', .5), obj: luggage, ns: 6, sky: [0x3a8fe0, 0xbfe0fb], shape: CAPSULE(1), shapeFloor: true, rail: { h: 3.2, col: 0xf0f2f4, t: .3 }, st: 3,
-    staff: [{ kind: 'attendant', route: [[0, -30], [0, 28]], wait: 2.5 }, { kind: 'attendant', route: [[0, 20], [0, -24]], wait: 2.5 }, { kind: 'pilot', route: [[0, -33], [1, -33]], wait: 5 }], people: { civ: 9, smuggler: 2 }, hide: { drug: 4, gun: 2 }, need: { drug: 3, gun: 1, smuggler: 2 },
-    items: [['backpack', 4], ['dutyBag', 3]], who: '하늘별 기장', chief: 'pilot', short: '하늘을 나는 비행기 안! 좌석 밑과 승객 가방을 수색해요.',
-    intro: '인천행 국제선 기내야. 착륙 전에 밀수범을 찾아야 해!\n3-3 좌석 사이 통로를 따라 수색하자. 창밖 구름도 구경하고!',
-    build(L) { for (let z = -26; z <= 26; z += 2) for (const x of [-4.6, -3.7, -2.8, 2.8, 3.7, 4.6]) seatBlock(x, z, z < -18 ? 0x7a2a4a : 0x34507a, Math.PI); for (const sd of [-1, 1]) { mesh(BOX(1.6, .7, 56), LMC(0xf4f4f2), sd * 4.5, 2.8, 0); for (let z = -26; z <= 26; z += 2) mesh(BOX(.1, .6, .5), glow(0xbfe6ff, .6), sd * 6.3, 1.6, z); } bx(0, 0, -31, 10, 1.1, 2, 0xd0d4d8); sign('✈ GALLEY', 0, 2.4, -31, .45); for (let k = 0; k < 10; k++) { const c = mesh(BOX(rr(4, 8), 1.2, rr(3, 6)), LMC(0xffffff), 0, -3, 0); const z0 = rr(-40, 40), sd = Math.random() < .5 ? -1 : 1; envAnim.push(() => { c.position.set(sd * 12, -1.5, ((z0 - time * 9) % 90 + 135) % 90 - 45); }); } } },
+  { name: '우체국', gate: true, icon: '📮', out: false, w: 60, d: 44, walls: 'wall', bg: 0xe7ecef, floor: TILE('#d9d4c8', '#b8b1a2', .25), obj: parcel, sky: [0xd03b2e, 0xfde2dc],
+    staff: [{ kind: 'postal', route: [[-22, -15], [22, -15]], wait: 2 }, { kind: 'postal', route: [[18, -4], [18, 8]], wait: 2 }, { kind: 'customs', route: [[-10, 0], [10, 0]], wait: 2 }], people: { civ: 7, postal: 2, student: 2, smuggler: 2 },
+    items: [['cosmetics', 3], ['shoeBox', 3], ['teddy', 2]], who: '김우편 우체국장', short: '우체국 창구, 국제소포 포장대, 사서함 벽, 택배 컨베이어를 수색해요.',
+    intro: '동네 우체국이야! 해외로 보내는 국제소포 사이에 마약이 섞였다는 제보가 들어왔어.\n창구 뒤 소포 선반, 포장대, 컨베이어, 빨간 우체통까지 꼼꼼히 킁킁!',
+    build(L) {
+      for (let k = 0; k < 6; k++) { const x = -20 + k * 8; bx(x, 0, -12, 6.6, 1.1, 1.4, 0xf4f1ea); mesh(BOX(6.6, 1.3, .08), MAT.glass(), x, 1.8, -12.6); mesh(BOX(.8, .5, .2), glow(0xff5a4a, 1), x + 2.4, 2.8, -12.6); sign(['우편 접수', '국제 소포 EMS', '택배', '등기', '우체국 금융', '보험'][k], x, 3.3, -11.8, .42, 'rgba(200,40,30,.92)'); }
+      for (const x of [-24, -16, -8, 0, 8, 16, 24]) { bx(x, 0, -19, 6, 3.6, 1, 0x8d7b62); for (let y = .7; y < 3.4; y += .8) mesh(BOX(5.6, .55, .6), MAT.cardboard(), x, y, -18.8); }
+      for (let r = 0; r < 4; r++) for (let k = 0; k < 7; k++) mesh(BOX(1.1, .55, .1), LMC(0xc9a35a), -28.4, .8 + r * .65, -8 + k * 1.2).rotation.y = Math.PI / 2; bx(-29, 0, -4.4, .6, 3.4, 9, 0x8d6e4a); sign('사서함 P.O.BOX', -27, 4, -4.4, .45);
+      bx(-27, 0, 8, 1.4, 2.4, 1.2, 0x3b6fb7); mesh(BOX(.9, .6, .05), glow(0x9fdcff, .8), -26.3, 1.7, 8.6); sign('ATM', -27, 3, 8, .4);
+      for (let k = 0; k < 3; k++) bx(20, 0, -6 + k * 3.4, 4, 1, 2.6, 0xd8c8a8); sign('📦 소포 포장대', 20, 2.4, -2.6, .45);
+      bx(26, 0, 2, 1.6, .9, 18, 0x3a3e42); for (let k = 0; k < 6; k++) mesh(BOX(1, .5, 1), MAT.cardboard(), 26, 1.15, -5 + k * 3); sign('택배 컨베이어', 26, 2.4, 8, .4);
+      bx(10, 0, 10, .8, 1.3, .6, 0xd8d2c4); mesh(BOX(.6, .4, .05), glow(0xffd54f, .9), 10, 1.1, 10.32); sign('🎫 번호표', 10, 2.1, 10, .4);
+      for (const x of [-16, -10]) bench(x, 4); for (const x of [-16, -10]) bench(x, 9);
+      for (const x of [-12, 12]) { bx(x, 0, 18, .9, 1.4, .9, 0xd63a2a); mesh(BOX(1, .35, 1), LMC(0xd63a2a), x, 1.55, 18); mesh(BOX(.5, .08, .05), LMC(0x222222), x, 1.1, 18.46); }
+      for (let z = -16; z <= 16; z += 8) mesh(BOX(40, .15, .6), glow(0xfff8e0, .8), 0, 5.4, z).castShadow = false;
+      sign('📮 대한민국 우체국 KOREA POST', 0, 5, -18.4, 1.1, 'rgba(200,40,30,.95)'); sign('EMS 국제특급', 20, 4.2, -18.4, .5);
+    } },
+  { name: '교도소', gate: true, icon: '🔒', w: 76, d: 58, floor: 0x9a968d, obj: crate, sky: [0x6d7a88, 0xd0d6dc], st: 4, shape: [[-1, 1], [-1, -1], [1, -1], [1, 1]], rail: { h: 6, col: 0x8f8b84, t: .8 },
+    staff: [{ kind: 'police', route: [[-30, -12], [30, -12]], wait: 2 }, { kind: 'police', route: [[-30, 14], [30, 14]], wait: 2 }, { kind: 'police', route: [[-32, -24], [-32, 24]], wait: 2 }], veh: [{ type: 'bus', route: [[-30, 20], [30, 20], [30, 18], [-30, 18]] }], people: { inmate: 6, civ: 3, smuggler: 3 },
+    items: [['shoeBox', 3], ['vitamin', 3], ['speaker', 2]], who: '최철문 교도소장', short: '높은 담장과 감시탑, 수용동, 운동장, 면회실을 순찰하며 몰래 반입되는 물품을 막아요.',
+    intro: '교도소 면회일이야. 영치품과 세탁물 상자에 마약과 무기를 숨겨 들여보내려는 사람들이 있대.\n감시탑 아래 높은 담장 안, 수용동·운동장·면회실을 꼼꼼히 순찰하자!',
+    build(L) {
+      for (const [x, z] of [[-35, -26], [35, -26], [-35, 26], [35, 26], [0, -26]]) { bx(x, 0, z, 3, 9, 3, 0x7d7a73); mesh(BOX(4.2, 2.2, 4.2), LMC(0x5b5a55), x, 10.1, z); mesh(BOX(4.4, .3, 4.4), LMC(0x3d3c38), x, 11.3, z); const sl = mesh(BOX(.6, .4, .6), glow(0xffee88, 1.6), x, 10.4, z + 2.1); envAnim.push(() => { sl.position.x = x + Math.sin(time + z) * 1.4; }); }
+      for (let x = -37; x <= 37; x += 1.2) for (const z of [-28.6, 28.6]) mesh(new THREE.TorusGeometry(.35, .06, 4, 8), MAT.metal(0x888888), x, 6.4, z).castShadow = false;
+      for (const x of [-22, 22]) { building(x, -18, 16, 8, 8, 0x8a8f94, { glass: 0x2a2f36 }); for (let k = -7; k <= 7; k++) mesh(BOX(.1, 2.4, .1), MAT.metal(0x333333), x + k, 2.8, -13.9); for (let k = -7; k <= 7; k++) mesh(BOX(.1, 2.4, .1), MAT.metal(0x333333), x + k, 5.4, -13.9); sign(x < 0 ? '1수용동' : '2수용동', x, 9.4, -13.8, .6); }
+      const tr = new THREE.Mesh(new THREE.RingGeometry(9, 11, 32), MAT.col(0xc45a3a, .9)); tr.rotation.x = -Math.PI / 2; tr.scale.set(1.5, 1, 1); tr.position.set(0, .02, 0); world.add(tr); floorPlane(26, 16, MAT.col(0x6f9a4a, .9), 0, 0, .015);
+      for (const x of [-8, 8]) { bx(x, 0, 0, .3, 3.4, .3, 0xeeeeee); mesh(BOX(1.6, 1.1, .1), LMC(0xffffff), x + (x < 0 ? .6 : -.6), 3.3, 0).rotation.y = Math.PI / 2; mesh(new THREE.TorusGeometry(.35, .05, 4, 10), LMC(0xff6a00), x + (x < 0 ? 1 : -1), 3, 0).rotation.x = Math.PI / 2; }
+      building(-26, 10, 12, 8, 4, 0xb7b2a8, { sign: '면회실 VISIT' }); for (let k = 0; k < 4; k++) mesh(BOX(2, 1.4, .08), MAT.glass(), -30.5 + k * 3, 1.6, 14.05);
+      building(26, 10, 12, 8, 4, 0xb7b2a8, { sign: '영치품 접수' }); for (let k = 0; k < 5; k++) mesh(BOX(1, .8, 1), MAT.cardboard(), 21 + k * 2.4, .4, 15.4);
+      for (const x of [-14, 14]) { bx(x, 0, 26.5, 1.4, 5, 1.4, 0x6d6a63); } mesh(BOX(29, 1, 1.4), LMC(0x6d6a63), 0, 4.6, 26.5); sign('🔒 OO교도소 — 반입 금지 물품 단속 중', 0, 7, 26.5, .9);
+      for (const x of [-12, 12]) { bx(x, 0, 24, .2, 1, .2, 0xdddddd); mesh(BOX(5, .2, .2), LMC(0xe74c3c), x + (x < 0 ? 2.5 : -2.5), 1, 24); }
+    } },
+  { name: '서울역', icon: '🚉', w: 90, d: 64, floor: TILE('#c9c3b6', '#a9a294', .2), obj: luggage, sky: [0x5aa8ef, 0xe2f0fb], st: 3, veh: [{ type: 'taxi', route: [[-42, 13], [42, 13], [42, 11], [-42, 11]] }, { type: 'bus', route: [[42, 11], [-42, 11], [-42, 13], [42, 13]], start: 1 }],
+    people: { civ: 6, tourist: 3, student: 2, smuggler: 3 }, items: [['backpack', 4], ['golfBag', 2], ['guitarCase', 2]], who: '정기차 서울역장', short: '옛 서울역(붉은 벽돌·초록 돔), 유리 신역사, 하늘 정원 서울로7017, KTX 승강장을 순찰해요.',
+    intro: '서울역이야! 1925년에 지어진 붉은 벽돌과 초록 돔의 옛 역사(문화역서울284) 옆에 유리로 된 새 역사가 있어.\n광장 위로는 공중 정원 길 서울로7017이 지나가고, 뒤쪽엔 KTX 승강장이 있어!',
+    build(L) {
+      bx(-24, 0, -12, 28, 8, 12, 0xa5473a); for (let k = 0; k < 9; k++) { mesh(BOX(1.6, 3.4, .1), LMC(0x2a3d52), -35 + k * 2.8, 3.6, -5.95); mesh(new THREE.CylinderGeometry(.8, .8, .1, 10, 1, false, 0, Math.PI), LMC(0xf1e6cf), -35 + k * 2.8, 5.3, -5.95).rotation.x = Math.PI / 2; }
+      mesh(BOX(28.2, .5, 12.2), LMC(0xf1e6cf), -24, 4, -12); mesh(BOX(28.2, .6, 12.2), LMC(0xf1e6cf), -24, 7.8, -12);
+      bx(-24, 8, -12, 9, 2, 9, 0xd9d0bd, false); mesh(new THREE.SphereGeometry(4.6, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x4f8a6e), -24, 10, -12); mesh(BOX(.3, 2, .3), LMC(0x3d6a56), -24, 15.4, -12);
+      for (const x of [-34, -14]) { bx(x, 8, -12, 3, 2.6, 3, 0xd9d0bd, false); mesh(new THREE.SphereGeometry(1.5, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x4f8a6e), x, 10.6, -12); }
+      mesh(new THREE.CylinderGeometry(1, 1, .2, 20), LMC(0xffffff), -24, 9, -7.4).rotation.x = Math.PI / 2; sign('문화역서울 284 (옛 서울역사)', -24, 17, -5.6, .75);
+      building(22, -14, 34, 12, 12, 0x9fb7c9, { glass: 0x5d8fb4, sign: '🚉 서울역 SEOUL STATION', sh: 1 }); mesh(BOX(34.2, .6, 3), LMC(0xd9dde2), 22, 12.3, -7.6);
+      for (let x = -44; x <= 44; x += 1) { const p = mesh(BOX(1.05, .5, 4), LMC(0xd9d4c8), x, 7, 4); p.castShadow = false; } for (let x = -40; x <= 40; x += 10) bx(x, 0, 4, 1, 6.8, 1, 0x9aa3ab); for (let x = -42; x <= 42; x += 4) { mesh(new THREE.CylinderGeometry(.7, .6, .8, 10), LMC(0xf4f4f2), x, 7.6, 4 + (x % 8 ? 1.2 : -1.2)); mesh(BOX(1, 1, 1), LMC(0x4f9a4a), x, 8.4, 4 + (x % 8 ? 1.2 : -1.2)); } mesh(BOX(90, .2, .2), glow(0x7fd3ff, 1), 0, 7.3, 6.1).castShadow = false; sign('🌳 서울로7017 (하늘 정원 보행길)', 22, 10, 4, .65);
+      statue(-36, 20, 0x5a5a5a, false, 3); sign('강우규 의사 동상', -36, 6.5, 22, .5);
+      for (const z of [-28, -22]) bx(0, 0, z, 84, .9, 2.4, 0xb3b0a8); for (const z of [-25]) { for (let k = 0; k < 4; k++) { const x = -30 + k * 20; bx(x, .9, z, 18, 2.6, 2.2, 0xf4f4f2, false); mesh(BOX(18.02, .5, 2.22), LMC(0x2b5fa8), x, 2.3, z); mesh(BOX(18.04, .6, 2.24), LMC(0x1b2833), x, 2.9, z); } mesh(new THREE.ConeGeometry(1.1, 3, 4), LMC(0xf4f4f2), 40, 2.2, z).rotation.z = -Math.PI / 2; }
+      for (let x = -40; x <= 40; x += 8) { bx(x, 0, -31, .3, 4, .3, 0x777777); } mesh(BOX(86, .3, 6), LMC(0x8a9099), 0, 4.2, -28.5); sign('KTX 승강장 PLATFORM', 0, 5.6, -22, .7, 'rgba(30,80,160,.92)');
+      for (let x = -40; x <= 40; x += 12) if (Math.abs(x) > 8) lamp(x, 18);
+    } },
+  { name: 'KTX 열차 안', icon: '🚄', out: false, w: 12, d: 76, bg: 0xdfe6ea, floor: TILE('#4b5560', '#3c444d', .5), obj: luggage, ns: 6, sky: [0x86b6e0, 0xe8f2fa], shape: CAPSULE(1), shapeFloor: true, rail: { h: 3, col: 0xe8ecef, t: .3 }, st: 3,
+    staff: [{ kind: 'attendant', route: [[0, -30], [0, 28]], wait: 2 }, { kind: 'customs', route: [[0, 30], [0, -20]], wait: 3 }], people: { civ: 6, student: 2, smuggler: 2 }, hide: { drug: 4, gun: 2 }, need: { drug: 3, gun: 1, smuggler: 2 },
+    items: [['backpack', 4], ['dutyBag', 2]], who: '한레일 KTX 열차팀장', short: '시속 300km로 달리는 KTX! 객실 좌석 밑, 짐칸, 칸 사이 통로를 수색해요.',
+    intro: '부산행 KTX 열차 안이야. 좁은 통로 양옆 좌석 아래와 선반, 객실 끝 짐칸에 밀수품이 숨어 있대.\n창밖으로 논밭과 산, 전봇대가 휙휙 지나가!',
+    build(L) {
+      for (let z = -28; z <= 24; z += 2.2) { if (Math.abs(z + 2) < 1.5 || Math.abs(z - 14) < 1.5) continue; for (const x of [-4.2, -3.2, 3.2, 4.2]) seatBlock(x, z, z < -6 ? 0x7a2a4a : 0x2e5fa8, Math.PI); }
+      partition(-6.5); partition(13.6); sign('🚪 7호차 ↔ 8호차', 0, 3.2, -6.5, .4); sign('특실 FIRST', 0, 3.2, -26, .45, 'rgba(120,30,70,.9)');
+      for (const sd of [-1, 1]) { mesh(BOX(.2, 1.4, 64), LMC(0x9fd3ff), sd * 5.6, 2, -3); mesh(BOX(2, .15, 64), LMC(0xbfc6cc), sd * 4.3, 2.6, -3); }
+      for (const z of [-32, 29]) for (const sd of [-1, 1]) { bx(sd * 4, 0, z, 2.4, 2.4, 1.6, 0x9aa3ab); for (let y = .5; y < 2.2; y += .8) mesh(BOX(2, .6, 1.2), MAT.shell(pick(bagColors)), sd * 4, y, z); }
+      sign('🧳 짐칸', -4, 3, 29, .4); mesh(BOX(4, .6, .1), glow(0xff6a3a, 1), 0, 2.9, -34.5); sign('KTX 서울 → 부산 · 300km/h', 0, 3.6, -34, .5);
+      for (let k = 0; k < 24; k++) { const kind = k % 3, z0 = rr(-40, 40), sd = Math.random() < .5 ? -1 : 1, m = kind === 0 ? mesh(BOX(2, 3, 2), LMC(0x4f8a4a), 0, 0, 0) : kind === 1 ? mesh(BOX(.25, 6, .25), LMC(0x6d4c2f), 0, 0, 0) : mesh(BOX(6, .2, 5), LMC(pick([0x9cc85a, 0xd9c45a])), 0, 0, 0); const xo = kind === 1 ? 8 : rr(9, 14), y = kind === 0 ? 1.5 : kind === 1 ? 3 : -.3; envAnim.push(() => { m.position.set(sd * xo, y, ((z0 - time * 30) % 80 + 120) % 80 - 40); }); }
+      for (let k = 0; k < 3; k++) { const mt = mesh(BOX(30, 14, 10), LMC(0x6f8f9f), 0, 0, 0); const z0 = k * 40, sd = k % 2 ? -1 : 1; envAnim.push(() => { mt.position.set(sd * 40, 6, ((z0 - time * 6) % 120 + 180) % 120 - 60); }); }
+    } },
+  { name: '버스터미널', gate: true, icon: '🚌', w: 84, d: 60, floor: () => std(0xffffff, .9, 0, { map: TEX.asphalt([20, 20]) }), obj: luggage, sky: [0x4aa0e6, 0xdcefff], veh: [{ type: 'bus', route: [[-36, -6], [36, -6], [36, 0], [-36, 0]] }, { type: 'bus', route: [[-36, -6], [36, -6], [36, 0], [-36, 0]], start: 2 }],
+    people: { civ: 7, student: 3, merchant: 1, smuggler: 3 }, items: [['backpack', 4], ['cooler', 2], ['fruitBox', 2]], who: '오고속 버스터미널 소장', short: '고속버스 승차장, 짐칸, 대합실, 매표소, 택시 승강장을 수색해요. 버스 조심!',
+    intro: '고속버스터미널이야. 전국으로 떠나는 버스 짐칸에 밀수품을 실으려 한대.\n승차장 번호판과 전광판을 보며 대합실과 매표소 주변을 확인하자. 버스가 다니는 길은 조심!',
+    build(L) {
+      for (let k = 0; k < 8; k++) { const x = -35 + k * 10; bx(x, 0, -20, 3.4, 3.2, 10.6, k % 2 ? 0xf4f4f2 : 0x2c6fb7); mesh(BOX(3.42, .9, 9.6), LMC(0x1d2f45), x, 2.4, -20); mesh(BOX(3.44, .4, 10.6), LMC(k % 2 ? 0x2c6fb7 : 0xf4f4f2), x, 1, -20); bx(x, 0, -13.6, 3, .25, 1, 0xffd54f, false); sign((k + 1) + '번 ' + ['서울', '부산', '대구', '광주', '대전', '강릉', '전주', '포항'][k], x, 5.6, -14.3, .45); }
+      mesh(BOX(84, .4, 5), LMC(0x9aa3ab), 0, 4.8, -13); for (let x = -40; x <= 40; x += 8) bx(x, 0, -11, .3, 4.6, .3, 0x777777);
+      for (const sx of [-1, 1]) { building(sx * 22, 22, 26, 10, 6, 0xd7d2c6, { glass: 0x4f87b6 }); } sign('🚌 고속버스터미널 대합실', 0, 8, 17, 1);
+      bx(-30, 0, 15, 6, 1.2, 1.6, 0xb04a3a); mesh(BOX(6, 1.4, .1), MAT.glass(), -30, 2, 14.4); sign('🎫 매표소', -30, 3.2, 15, .5);
+      mesh(BOX(10, 3, .3), LMC(0x111111), 22, 9.5, 16.8); for (let r = 0; r < 4; r++) mesh(BOX(9, .45, .05), glow(r % 2 ? 0xffb34d : 0x7dff6a, 1), 22, 10.6 - r * .7, 16.6).castShadow = false; sign('출발 안내 DEPARTURES', 22, 11.6, 16.6, .45);
+      building(34, 8, 8, 6, 3.6, 0xf4f4f2, { sign: '🏪 편의점 24' }); mesh(BOX(8.1, .5, 6.1), LMC(0x6f3ab0), 34, 3.2, 8);
+      for (const x of [-18, -12, 12, 18]) bench(x, 10);
+      for (let k = 0; k < 3; k++) { const g = new THREE.Group(); g.position.set(-38, 0, 2 + k * 5); world.add(g); mesh(BOX(1.9, .8, 4.2), LMC(0xff8c1a), 0, .75, 0, g); mesh(BOX(1.7, .7, 2.2), LMC(0xff8c1a), 0, 1.5, -.2, g); mesh(BOX(.6, .25, .3), LMC(0xffffff), 0, 2, -.2, g); addCol(-38, 2 + k * 5, 2, 4.4, g, { topY: 1.8 }); } sign('🚕 택시 승강장', -38, 3.4, 8, .5);
+    } },
+  { name: '비행기 안', gate: true, icon: '🛫', out: false, w: 13, d: 70, bg: 0xe9edf1, floor: TILE('#3c4f6b', '#33445c', .5), obj: luggage, ns: 6, sky: [0x3a8fe0, 0xbfe0fb], shape: CAPSULE(1), shapeFloor: true, rail: { h: 3.2, col: 0xf0f2f4, t: .3 }, st: 3,
+    staff: [{ kind: 'attendant', route: [[0, -26], [0, 26]], wait: 2.5 }, { kind: 'attendant', route: [[0, 20], [0, -18]], wait: 2.5 }], people: { civ: 8, tourist: 2, smuggler: 2 }, hide: { drug: 4, gun: 2 }, need: { drug: 3, gun: 1, smuggler: 2 },
+    items: [['backpack', 4], ['dutyBag', 3]], who: '하늘별 기장', chief: 'pilot', short: '하늘을 나는 여객기 안! 비즈니스석·일반석 좌석 밑, 갤리, 화장실 앞을 수색해요.',
+    intro: '인천행 국제선 여객기 안이야. 착륙 전에 밀수범을 찾아야 해!\n앞쪽 비즈니스석, 3-3 일반석, 비상구, 갤리와 화장실 앞까지 꼼꼼히. 창밖 구름도 구경해!',
+    build(L) {
+      for (let z = -24; z <= -16; z += 2.6) for (const x of [-3.9, -2.4, 2.4, 3.9]) { const c = seatBlock(x, z, 0x7a2a4a, Math.PI); c.mesh.scale.set(1.5, 1.2, 1.4); }
+      for (let z = -12; z <= 26; z += 2) { if (Math.abs(z - 4) < 1.2) continue; for (const x of [-4.6, -3.7, -2.8, 2.8, 3.7, 4.6]) seatBlock(x, z, 0x34507a, Math.PI); }
+      partition(-14.2, 6.3, 1.2, 0xe4e7ea); sign('일반석 ECONOMY', 0, 3.3, -14.2, .4); sign('비즈니스 BUSINESS', 0, 3.3, -26, .45, 'rgba(120,30,70,.9)');
+      for (const sd of [-1, 1]) { mesh(BOX(1.6, .7, 56), LMC(0xf4f4f2), sd * 4.5, 2.8, 0); for (let z = -26; z <= 26; z += 2) mesh(BOX(.1, .6, .5), glow(0xbfe6ff, .6), sd * 6.3, 1.6, z); mesh(BOX(.1, .5, 1), glow(0x3fe08a, 1.4), sd * 6.2, 2.4, 4); }
+      sign('🚪 비상구 EXIT', 0, 3, 4, .45, 'rgba(30,140,70,.92)');
+      bx(0, 0, -30, 10, 1.1, 2, 0xd0d4d8); for (let k = 0; k < 4; k++) mesh(BOX(1, 1.6, .2), LMC(0x9aa3ab), -3 + k * 2, 2.1, -30.9); sign('✈ GALLEY 갤리', 0, 3, -30, .45);
+      for (const sd of [-1, 1]) { bx(sd * 4.2, 0, 30, 2.4, 2.6, 2, 0xe4e7ea); sign('🚻', sd * 4.2, 3, 30, .45); }
+      const cart = mesh(BOX(.9, 1.1, 1.2), LMC(0xb9c0c6), 0, .6, 0); envAnim.push(() => { cart.position.z = Math.sin(time * .2) * 18; });
+      for (let k = 0; k < 12; k++) { const c = mesh(BOX(rr(4, 9), 1.4, rr(3, 7)), LMC(0xffffff), 0, -3, 0); const z0 = rr(-40, 40), sd = Math.random() < .5 ? -1 : 1, xo = rr(10, 22); envAnim.push(() => { c.position.set(sd * xo, -1.5 + Math.sin(z0) * 2, ((z0 - time * 9) % 90 + 135) % 90 - 45); }); }
+      for (const sd of [-1, 1]) mesh(BOX(14, .3, 4), LMC(0xdfe4e8), sd * 13, 1, 2);
+    } },
   { name: '명동', icon: '🛍', w: 84, d: 60, floor: TILE('#c8bfb0', '#a89f90', .3), obj: luggage, sky: [0x6aa8e8, 0xf2e6f0], st: 3,
-    items: [['cosmetics', 4], ['dutyBag', 3], ['shoeBox', 2]], who: '윤쇼핑 명동 상인회장', short: '쇼핑 거리 명동! 노점과 화장품 가게 사이에서 밀수품을 찾아요.',
-    intro: '명동 쇼핑 거리야. 화장품 가게와 길거리 음식 노점이 가득해.\n쇼핑백 속에 숨긴 밀수품을 찾고, 북쪽 명동성당도 구경해!',
-    build(L) { for (const z of [-6, 12]) for (let k = 0; k < 7; k++) { const x = -36 + k * 12; building(x, z + (z < 0 ? -6 : 8), 10, 8, rr(8, 16), [0xe8d6c0, 0xd9c7b8, 0xc8d6e0, 0xf0e0e8][k % 4], { lit: true }); neon(x, 5, z + (z < 0 ? -1.8 : 3.8), ['COSMETIC', '화장품', 'K-POP', '닭강정', 'CAFE', '환전', 'SALE'][k], ['#ff4fa3', '#4fd3ff', '#ffd54f', '#7dff6a'][k % 4]); } for (let k = 0; k < 6; k++) stall(-25 + k * 10, 3, [0xd63a2a, 0x2c6fb7, 0xf39c12][k % 3], ['떡볶이', '호떡', '닭꼬치', '계란빵', '붕어빵', '회오리감자'][k]); bx(0, 0, -26, 14, 10, 8, 0x9c4a35); bx(0, 0, -21.5, 3.6, 18, 3.6, 0x9c4a35); mesh(new THREE.ConeGeometry(2.6, 6, 4), LMC(0x4d5a52), 0, 21, -21.5).rotation.y = Math.PI / 4; sign('⛪ 명동성당', 0, 26, -21, .8); sign('🛍 MYEONGDONG 명동', 0, 7, 20, 1); } },
+    people: { tourist: 6, merchant: 3, civ: 3, smuggler: 3 }, items: [['cosmetics', 4], ['dutyBag', 3], ['shoeBox', 2]], who: '윤쇼핑 명동 상인회장', short: '명동성당 아래 쇼핑 거리! 노점 거리, 화장품 가게, 환전소, 명동예술극장을 순찰해요.',
+    intro: '명동 쇼핑 거리야. 가운데 길엔 떡볶이·회오리감자 노점이 줄지어 있고, 양옆엔 화장품 가게와 환전소가 가득해.\n북쪽 언덕 위에는 고딕 양식의 명동성당이 있어. 멀리 남산타워도 보여!',
+    build(L) {
+      const fac = [0xf8c8d8, 0xc8e0f0, 0xfff0c0, 0xd8f0d0, 0xe8d0f0, 0xffd8b0];
+      for (const sx of [-1, 1]) for (let k = 0; k < 4; k++) { const z = -16 + k * 9, x = sx * 26; building(x, z, 14, 7, rr(9, 16), fac[(k + (sx > 0 ? 3 : 0)) % 6], { lit: true }); neon(x - sx * 7.6, 4.5, z, [['COSMETIC 화장품', '환전 EXCHANGE', 'K-POP STORE', '카페 CAFE'], ['FACE MASK SALE', 'SNEAKERS', '면세점 DUTY FREE', '닭강정']][sx > 0 ? 1 : 0][k], ['#ff4fa3', '#4fd3ff', '#ffd54f', '#7dff6a'][k]); mesh(BOX(.3, 2.6, 6), LMC(fac[k]), x - sx * 7.1, 1.3, z); }
+      building(-26, 20, 14, 8, 8, 0xe8dcc4); columns(-26, 15.8, 4, 3, 6, 0xf4efe4); sign('🎭 명동예술극장', -26, 9.4, 16, .55);
+      for (let k = 0; k < 5; k++) stall(k % 2 ? 4.5 : -4.5, -18 + k * 6, [0xd63a2a, 0x2c6fb7, 0xf39c12, 0x27ae60, 0x8e44ad][k], ['떡볶이', '회오리감자', '닭꼬치', '계란빵', '호떡'][k]);
+      for (const z of [-14, -2, 10]) lanternLine(-18, 18, z, 6.4);
+      stepsUp(0, -21.5, 12, 3, -1, 1); bx(0, 1.05, -28, 16, 9, 9, 0x9c4a35, false); addCol(0, -28, 16, 9, null, { topY: 99 }); mesh(new THREE.CylinderGeometry(1.6, 1.6, .2, 16), glow(0xffd27a, .8), 0, 6, -23.4).rotation.x = Math.PI / 2; spire(0, -23.6, 3.6, 18, 0x9c4a35); bx(-7, 0, -28, 2, 12, 2, 0x8a4030); bx(7, 0, -28, 2, 12, 2, 0x8a4030); sign('⛪ 명동성당 (1898)', 0, 28, -23, .8);
+      const nt = new THREE.Group(); nt.position.set(30, 0, -120); world.add(nt); mesh(BOX(30, 20, 20), LMC(0x587a4a), 0, 10, 0, nt); mesh(new THREE.CylinderGeometry(1, 1.6, 26, 10), LMC(0xf0f0f0), 0, 33, 0, nt); mesh(new THREE.CylinderGeometry(3, 2.4, 3, 12), LMC(0xdfe4e8), 0, 47, 0, nt);
+      sign('🛍 MYEONGDONG 명동 쇼핑거리', 0, 7.5, 12, 1);
+    } },
   { name: '경복궁', icon: '🏯', w: 96, d: 74, floor: 0xd8cfb8, obj: crate, sky: [0x5fb0ff, 0xf0f6ff], st: 3, shape: [[-1, 1], [-1, -1], [1, -1], [1, 1]], rail: { h: 4, col: 0xc9b8a0, t: .6 },
-    staff: [{ kind: 'soldier', route: [[-10, 30], [10, 30]], wait: 3 }, { kind: 'police', route: [[-40, 0], [40, 0]], wait: 2 }], people: { civ: 10, smuggler: 3 },
-    items: [['vase', 3], ['statue', 2], ['teddy', 2]], who: '이궁궐 경복궁 관리소장', short: '조선 궁궐 경복궁! 근정전과 경회루 주변에서 문화재 밀반출범을 잡아요.',
-    intro: '경복궁에 왔어. 왕이 나랏일을 보던 근정전과 연못 위 경회루가 있어.\n문화재를 몰래 빼돌리려는 밀수범이 숨어들었대!',
-    build(L) { gateTop(0, 22, 16, 5, 4.5, { tier: true }); sign('광화문 光化門', 0, 15, 25, .9); bx(0, 0, -8, 30, .9, 22, 0xcfc6b2); bx(0, .9, -10, 24, .9, 16, 0xcfc6b2, false); hanok(0, -10, 20, 12, 4, { tier: true, base: 0xcfc6b2 }); sign('근정전 勤政殿', 0, 15, -3, .8); const pw = TEX.water(); pw.repeat.set(4, 3); const pond = new THREE.Mesh(new THREE.PlaneGeometry(22, 16), std(0xffffff, .2, 0, { map: pw, color: 0x5aa0c8 })); pond.rotation.x = -Math.PI / 2; pond.position.set(32, .05, -22); world.add(pond); addCol(32, -22, 22, 16, null, { topY: 99 }); for (let x = -6; x <= 6; x += 3) for (let z = -3; z <= 3; z += 3) mesh(BOX(.6, 3, .6), LMC(0xd9d2c4), 32 + x, 1.5, -22 + z); hanok(32, -22, 15, 9, 2.5, { base: 0xd9d2c4, door: false }); for (const c of colliders.slice(-1)) c.minX = c.minX; sign('경회루 慶會樓', 32, 9, -16, .7); for (const x of [-36, -24, 24]) hanok(x, 14, 10, 7, 2.8); for (let k = 0; k < 10; k++) pine(rr(-44, -28), rr(-34, -2)); } },
+    staff: [{ kind: 'royalguard', route: [[-6, 26], [6, 26]], wait: 3 }, { kind: 'royalguard', route: [[-6, 10], [6, 10]], wait: 3 }, { kind: 'police', route: [[-40, 0], [40, 0]], wait: 2 }], people: { hanbok: 7, tourist: 3, royalguard: 2, smuggler: 3 },
+    items: [['vase', 3], ['statue', 2], ['teddy', 2]], who: '이궁궐 경복궁 관리소장', short: '광화문→흥례문→근정전, 연못 위 경회루와 향원정까지! 문화재 밀반출범을 잡아요.',
+    intro: '경복궁에 왔어. 정문 광화문 앞에선 수문장 교대식이 열리고, 흥례문을 지나면 왕이 나랏일을 보던 근정전이 있어.\n서쪽 연못 위 경회루, 북쪽 향원정까지 한복 입은 관람객 사이에서 밀수범을 찾자!',
+    build(L) {
+      mountainBack(-70, 0x587a4a, 7);
+      gateTop(0, 22, 18, 5, 4.5, { tier: true }); sign('광화문 光化門', 0, 15, 25, .9); for (const x of [-12, 12]) { bx(x, 0, 25, 1.6, 1.4, 2.6, 0xb9b2a5); mesh(BOX(1.2, 1.6, 2), LMC(0xc9c2b2), x, 2.2, 25); }
+      gateTop(0, 8, 14, 4, 3.6); sign('흥례문 興禮門', 0, 11.5, 10.5, .6);
+      for (const [x, w] of [[-20, 24], [20, 24]]) { bx(x, 0, 8, w, 2.6, 1.4, 0xe4d8c0); hroof(x, 2.6, 8, w - 1, 1.2); }
+      bx(0, 0, -12, 32, .9, 24, 0xcfc6b2); bx(0, .9, -14, 26, .9, 18, 0xcfc6b2); stepsUp(0, 1, 4, 3, -1, .8, 0xcfc6b2); hanok(0, -14, 22, 12, 4.6, { tier: true, base: 0xcfc6b2 }); sign('근정전 勤政殿 (국보)', 0, 16.5, -7, .8);
+      for (let k = 0; k < 6; k++) for (const sx of [-1, 1]) mesh(BOX(.4, .7, .3), LMC(0xbdb5a2), sx * 3, .35, 3 - k * 2.2);
+      for (const [x, z, w, d] of [[0, -27, 44, 1.4], [-22, -12, 1.4, 30], [22, -12, 1.4, 30]]) { bx(x, 0, z, w, 2.6, d, 0xe4d8c0); hroof(x, 2.6, z, Math.max(1, w - 1), Math.max(1, d - 1)); }
+      pond(34, -18, 22, 18); for (let x = -7.5; x <= 7.5; x += 3) for (let z = -5; z <= 5; z += 2.5) mesh(BOX(.7, 3, .7), LMC(0xd9d2c4), 34 + x, 1.5, -18 + z); bx(34, 3, -18, 17, .5, 12, 0xcfc6b2, false); bx(34, 3.5, -18, 15, 2.4, 10, 0xeadfca, false); hroof(34, 5.9, -18, 15, 10); hroof(34, 7.6, -18, 10, 6); sign('경회루 慶會樓 (국보)', 34, 11, -11, .7);
+      pond(-34, -24, 14, 12); pavilion(-34, -26, 1, .3); hroof(-34, 3.6, -26, 2, 2); for (let k = 0; k < 6; k++) mesh(BOX(1.6, .25, 1.4), LMC(0x8b2e22), -34, .4, -21 + k * .9); sign('향원정 · 취향교', -34, 7, -22, .55);
+      for (let k = 0; k < 14; k++) { const x = k % 2 ? rr(-46, -26) : rr(26, 46), z = rr(-2, 18); pine(x, z); }
+      flag(-8, 28, 0xd63a2a); flag(8, 28, 0x2c6fb7); flag(-5, 28, 0xffd54f); flag(5, 28, 0x27ae60);
+    } },
   { name: '홍대', icon: '🎸', w: 82, d: 58, floor: TILE('#8e8a86', '#6f6b67', .3), obj: luggage, sky: [0x7a6ad8, 0xffd0e8], st: 3,
-    items: [['guitarCase', 3], ['speaker', 3], ['backpack', 3]], who: '배버스킹 홍대 걷고싶은거리 상인회장', short: '버스킹의 거리 홍대! 공연 장비 케이스 속 밀수품을 찾아요.',
-    intro: '홍대 앞 걷고 싶은 거리야. 버스킹 공연과 그래피티 벽이 가득해.\n기타 케이스와 스피커 박스를 수상하게 쓰는 사람이 있대!',
-    build(L) { for (let k = 0; k < 7; k++) building(-36 + k * 12, -20, 10, 9, rr(6, 13), [0x3d3d4f, 0x5b3a6b, 0x2f4f5f, 0x6b4a3a][k % 4], { lit: true }); for (let k = 0; k < 7; k++) neon(-36 + k * 12, 4.5, -15.3, ['LIVE', 'CLUB', '버스킹', 'ART', 'COFFEE', 'PUB', 'DANCE'][k], ['#ff4fa3', '#4fd3ff', '#ffd54f', '#7dff6a', '#ff8a4f'][k % 5]); bx(0, 0, 2, 10, .6, 6, 0x333333); for (const x of [-4, 4]) bx(x, .6, 0, 1, 2, 1, 0x111111, false); for (let k = 0; k < 12; k++) mesh(BOX(2.6, 2.4, .3), LMC([0xff4fa3, 0x4fd3ff, 0xffd54f, 0x7dff6a, 0xb388ff][k % 5]), -33 + k * 6, 1.2, 22).castShadow = false; bx(0, 0, 22, 74, 3, .4, 0x777777); bx(-26, 0, 8, 2, 8, 2, 0xb8b8b8); bx(-18, 0, 8, 2, 8, 2, 0xb8b8b8); bx(-22, 6, 8, 10, 2, 2, 0xb8b8b8, false); sign('🎓 대학 정문', -22, 10, 9.2, .5); sign('🎸 HONGDAE 홍대 걷고싶은거리', 0, 6, 10, 1); } },
+    people: { busker: 3, student: 5, tourist: 2, smuggler: 3 }, items: [['guitarCase', 3], ['speaker', 3], ['backpack', 3]], who: '배버스킹 홍대 걷고싶은거리 상인회장', short: '버스킹 무대, 홍익대 정문, 홍대 놀이터, 경의선숲길, 그래피티 골목을 순찰해요.',
+    intro: '홍대 앞이야! 걷고싶은거리에선 버스킹 공연이 한창이고, 북쪽엔 홍익대학교 정문이 있어.\n홍대 놀이터 플리마켓, 옛 철길을 공원으로 바꾼 경의선숲길, 그래피티 골목까지 돌아보자!',
+    build(L) {
+      bx(-6, 0, -24, 3, 10, 3, 0xbfc3c7); bx(6, 0, -24, 3, 10, 3, 0xbfc3c7); mesh(BOX(18, 3, 3), LMC(0xbfc3c7), 0, 11.5, -24); mesh(BOX(16, .8, .2), LMC(0x1f3b6b), 0, 11.5, -22.4); sign('🎓 홍익대학교 정문', 0, 14.5, -22, .7);
+      for (let k = 0; k < 3; k++) for (const sx of [-1, 1]) { const x = sx * (16 + k * 9); building(x, -20, 8, 8, rr(6, 13), [0x3d3d4f, 0x5b3a6b, 0x2f4f5f, 0x6b4a3a][(k + (sx > 0 ? 2 : 0)) % 4], { lit: true }); neon(x, 4.5, -15.8, ['LIVE', 'CLUB', 'ART', 'COFFEE', 'PUB', 'DANCE'][k * 2 + (sx > 0 ? 1 : 0)], ['#ff4fa3', '#4fd3ff', '#ffd54f', '#7dff6a', '#ff8a4f', '#b388ff'][k * 2 + (sx > 0 ? 1 : 0)]); }
+      bx(12, 0, -4, 10, .6, 6, 0x333333); for (const x of [8.2, 15.8]) bx(x, .6, -6, 1, 2.2, 1, 0x111111, false); for (let k = 0; k < 6; k++) { const l = mesh(BOX(.4, .4, .4), glow([0xff4fa3, 0x4fd3ff, 0xffd54f][k % 3], 2), 8 + k * 1.6, 4, -7); l.castShadow = false; envAnim.push(() => { l.material.emissiveIntensity = 1 + Math.sin(time * 6 + k) * 1; }); } sign('🎤 버스킹 무대', 12, 5.2, -4, .6);
+      for (const x of [22, 26, 30]) { bx(x, 0, 10, .25, 3, .25, 0xe74c3c); bx(x + 2, 0, 10, .25, 3, .25, 0xe74c3c); mesh(BOX(2.3, .2, .2), LMC(0xe74c3c), x + 1, 3, 10); } bx(34, 0, 12, 2, 1.6, 5, 0x4fc3f7); sign('🛝 홍대 놀이터 · 프리마켓', 28, 4.6, 12, .55); for (let k = 0; k < 4; k++) stall(20 + k * 5, 18, [0xff4fa3, 0x4fd3ff, 0xffd54f, 0x7dff6a][k], ['수공예', '액세서리', '빈티지', '그림']);
+      for (let z = -12; z <= 24; z += 2) { mesh(BOX(.2, .15, 2.1), MAT.metal(0x6d5a4a), -33, .08, z); mesh(BOX(.2, .15, 2.1), MAT.metal(0x6d5a4a), -31, .08, z); mesh(BOX(2.8, .1, .3), LMC(0x5d4037), -32, .05, z); } for (let k = 0; k < 8; k++) tree(k % 2 ? -37 : -27, -10 + k * 4.5, .8); sign('🌳 경의선숲길 (연트럴파크)', -32, 5, 6, .55);
+      for (let k = 0; k < 8; k++) { const m = mesh(BOX(4, 3, .4), LMC([0xff4fa3, 0x4fd3ff, 0xffd54f, 0x7dff6a, 0xb388ff][k % 5]), -20 + (k % 4) * 4.2, 1.5, k < 4 ? 4 : -10); m.castShadow = false; } bx(-14, 0, 4, 17, 3, .3, 0x777777); sign('🎨 그래피티 골목', -14, 4, 4.4, .5);
+      sign('🎸 HONGDAE 걷고싶은거리', 0, 6, 8, 1);
+    } },
   { name: '롯데월드타워', icon: '🏙', w: 86, d: 64, floor: TILE('#d3d0c8', '#b6b2a8', .25), obj: luggage, sky: [0x4f9fe8, 0xe6f2fc], st: 3,
-    items: [['dutyBag', 4], ['cosmetics', 3], ['wine', 2]], who: '서높이 롯데월드타워 운영총괄', short: '123층 초고층 타워 아래 광장과 면세점 앞을 순찰해요.',
-    intro: '잠실의 123층, 555m 초고층 타워 앞이야. 하늘 끝까지 뾰족하게 솟아 있지!\n면세점 쇼핑백과 관광객 가방을 수색해.',
-    build(L) { for (let k = 0; k < 14; k++) { const w = 12 - k * .72; bx(0, k * 7, -16, w, 7, w, 0xcfd8e0, k === 0); mesh(BOX(w + .1, .4, w + .1), LMC(0x9fb7c9), 0, k * 7 + 6.8, -16); } mesh(BOX(1.4, 10, 1.4), LMC(0xdfe6ec), 0, 103, -16); mesh(BOX(.6, .6, .6), glow(0xff4040, 2), 0, 108.5, -16); building(-28, -14, 20, 12, 8, 0xdcd6cc, { sign: '면세점 DUTY FREE' }); const lw = TEX.water(); lw.repeat.set(6, 3); const lake = new THREE.Mesh(new THREE.PlaneGeometry(26, 18), std(0xffffff, .2, 0, { map: lw, color: 0x5aa0c8 })); lake.rotation.x = -Math.PI / 2; lake.position.set(30, .05, -10); world.add(lake); addCol(30, -10, 26, 18, null, { topY: 99 }); sign('석촌호수', 30, 3, 0, .6); for (let k = 0; k < 10; k++) tree(rr(16, 42), rr(2, 8), .8, 0xf2a7c3); sign('🏙 LOTTE WORLD TOWER 555m', 0, 9, -8, 1); } },
+    people: { tourist: 6, civ: 4, student: 2, smuggler: 3 }, items: [['dutyBag', 4], ['cosmetics', 3], ['wine', 2]], who: '서높이 롯데월드타워 운영총괄', short: '123층 555m 초고층 타워, 석촌호수 벚꽃길, 쇼핑몰, 아쿠아리움 앞 광장을 순찰해요.',
+    intro: '잠실의 123층, 555m 초고층 타워 앞이야! 붓끝처럼 뾰족하게 솟아 있고, 꼭대기엔 전망대 서울스카이가 있어.\n타워 옆엔 쇼핑몰과 아쿠아리움, 동쪽엔 벚꽃이 예쁜 석촌호수가 있어.',
+    build(L) {
+      const gl = MAT.col(0x9cc0da, .25, .3), fin = LMC(0xeef3f7);
+      for (let k = 0; k < 24; k++) { const w = 13 - Math.pow(k / 24, 1.6) * 10.5, y = k * 4.6; bx(0, y, -18, w, 4.6, w, gl, k === 0); for (const sx of [-1, 1]) for (const sz of [-1, 1]) mesh(BOX(.35, 4.6, .35), fin, sx * w / 2, y + 2.3, -18 + sz * w / 2); }
+      mesh(BOX(4.4, .6, 4.4), glow(0x9fe0ff, 1.2), 0, 111, -18).castShadow = false; for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2, b = mesh(BOX(.3, 14, .3), fin, Math.cos(a) * 1.4, 118, -18 + Math.sin(a) * 1.4); b.rotation.z = Math.cos(a) * .08; b.rotation.x = Math.sin(a) * .08; } mesh(BOX(.5, .5, .5), glow(0xff4040, 2), 0, 125.5, -18); sign('서울스카이 SEOUL SKY 전망대', 0, 114, -10, 1.2);
+      for (const sx of [-1, 1]) { building(sx * 24, -14, 18, 16, 9, 0xdcd6cc, { glass: 0x6a9ab8, sign: sx < 0 ? '🛍 롯데월드몰' : '🐠 아쿠아리움', sh: .6 }); mesh(BOX(18.4, .6, 16.4), LMC(0xc9b48a), sx * 24, 9.3, -14); }
+      fountain(0, 2, 3.4); sign('🏙 LOTTE WORLD TOWER 555m', 0, 8, -6, 1);
+      pond(-38, 14, 22, 26, 0x5a9ec8); const boat = mesh(BOX(1.6, .8, 3), LMC(0xffffff), -38, .5, 14); envAnim.push(() => { boat.position.set(-38 + Math.sin(time * .2) * 6, .4, 14 + Math.cos(time * .2) * 8); boat.rotation.y = time * .2; }); sign('석촌호수', -38, 3, 2, .6);
+      for (let k = 0; k < 12; k++) tree(-24 + (k % 2) * -3, -2 + k * 2.6, .8, 0xf2a7c3); for (let k = 0; k < 6; k++) tree(rr(16, 40), rr(6, 24), .8, 0xf2a7c3); flowers(28, 14, 16, 10, [0xf48fb1, 0xffffff, 0xffeb3b], 40);
+    } },
   { name: '동대문', icon: '🧵', w: 86, d: 62, floor: TILE('#c7c2b9', '#a8a399', .3), obj: palletBox, sky: [0x5aa0e8, 0xeef4fb], st: 3,
-    items: [['shoeBox', 3], ['cosmetics', 2], ['tvBox', 2]], who: '권패션 DDP 관장', short: '은빛 곡선 건물 DDP와 흥인지문, 밤새 열리는 패션 시장을 순찰해요.',
-    intro: '동대문이야! 우주선 같은 은빛 곡선 건물 DDP와 보물 흥인지문이 있어.\n옷 원단 박스 속에 짝퉁과 밀수품이 숨어 있대.',
-    build(L) { const ddp = new THREE.Mesh(new THREE.SphereGeometry(16, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), MAT.metal(0xc9ced3, .3)); ddp.scale.set(1.6, .45, 1); ddp.position.set(-12, 0, -16); world.add(ddp); addCol(-12, -16, 44, 26, null, { topY: 99 }); sign('DDP 동대문디자인플라자', -12, 9, -2, .8); bx(28, 0, -16, 22, 3, 14, 0xa9a497); gateTop(28, -16, 14, 6, 4); sign('흥인지문 興仁之門', 28, 12, -9, .7); for (let k = 0; k < 6; k++) building(-34 + k * 13, 20, 11, 8, rr(8, 14), [0xe2d6c4, 0xc9d4de, 0xe6c9c9][k % 3], { lit: true, sign: ['밤시장', '원단', '의류도매', '쇼핑몰', '액세서리', '신발'][k], sh: .45 }); } },
+    people: { merchant: 4, tourist: 4, civ: 3, smuggler: 3 }, items: [['shoeBox', 3], ['cosmetics', 2], ['tvBox', 2]], who: '권패션 DDP 관장', short: '은빛 곡선 건물 DDP와 LED 장미정원, 옹성으로 둘러싸인 흥인지문, 청계천, 패션 시장을 순찰해요.',
+    intro: '동대문이야! 우주선 같은 은빛 곡선 건물 DDP 앞에는 밤마다 빛나는 LED 장미정원이 있어.\n동쪽엔 반달 모양 옹성으로 둘러싸인 보물 흥인지문, 앞으로는 청계천이 흘러. 패션 시장 원단 박스를 확인하자!',
+    build(L) {
+      const ddp = new THREE.Mesh(new THREE.SphereGeometry(16, 28, 12, 0, Math.PI * 2, 0, Math.PI / 2), MAT.metal(0xc9ced3, .3)); ddp.scale.set(1.6, .45, 1); ddp.position.set(-12, 0, -16); world.add(ddp); addCol(-12, -16, 46, 28, null, { topY: 99 }); for (let k = 0; k < 40; k++) { const a = k / 40 * Math.PI * 2; mesh(BOX(.3, .3, .3), glow(0xbfe6ff, 1), -12 + Math.cos(a) * 25.4, 2.2, -16 + Math.sin(a) * 15.8).castShadow = false; } sign('DDP 동대문디자인플라자', -12, 9, -1, .8);
+      for (let x = -26; x <= 2; x += 1.4) for (let z = 3; z <= 8; z += 1.4) { const r = mesh(BOX(.35, .35, .35), glow(pick([0xffffff, 0xffd0e0, 0xfff4c0]), 1.4), x, .8 + Math.random() * .2, z); r.castShadow = false; bx(x, 0, z, .06, .8, .06, 0x3a7a3a, false); } sign('🌹 LED 장미정원', -12, 3.4, 9, .55);
+      for (let k = 0; k < 20; k++) { const a = Math.PI * (.15 + k / 19 * .7); bx(30 + Math.cos(a) * 11, 0, -14 + Math.sin(a) * 9, 2, 3.2, 2, 0xa9a497); } gateTop(30, -14, 14, 6, 4); sign('흥인지문 興仁之門 (보물) · 옹성', 30, 12, -7, .65);
+      pond(-22, 14, 36, 3.4, 0x6fb5d8); pond(24, 14, 32, 3.4, 0x6fb5d8); for (let k = 0; k < 7; k++) mesh(BOX(1, .3, .8), LMC(0xb9b2a5), -36 + k * 5, .2, 14); sign('청계천', 20, 2.4, 14, .5);
+      for (const sx of [-1, 1]) { building(sx * 38, 2, 9, 12, 26, sx < 0 ? 0x2c3e50 : 0x8e44ad, { lit: true }); neon(sx * 38, 18, 8.2, sx < 0 ? 'FASHION TOWER' : '패션몰 24H', sx < 0 ? '#4fd3ff' : '#ff4fa3'); }
+      building(10, -29, 40, 5, 5, 0xe2d6c4, { sign: '평화시장 · 원단 도매', sh: .55 }); for (let k = 0; k < 6; k++) stall(-30 + k * 9, 21, [0xd63a2a, 0x2c6fb7, 0x27ae60][k % 3], ['원단', '단추', '청바지', '모자', '신발', '가방'][k]);
+    } },
   { name: '광안리 해변', icon: '🌉', w: 90, d: 56, floor: 0xcdb98c, obj: luggage, sky: [0x3a9ae8, 0xd8f0ff], st: 3, shape: [[-1, 1], [-1, -.3], [-.8, -.6], [-.5, -.8], [0, -.88], [.5, -.8], [.8, -.6], [1, -.3], [1, 1]], outside: { col: 0x3d8fc4, y: .03, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
-    items: [['cooler', 3], ['backpack', 3], ['fishBox', 2]], who: '부산바다 광안리해수욕장 관리소장', chief: 'crew', short: '반달 모양 광안리 해변! 바다 위 광안대교를 바라보며 수색해요.',
-    intro: '부산 광안리 해수욕장이야. 반달 모양 모래사장 앞바다에 길이 7.4km, 2층으로 된 광안대교가 떠 있어.\n밤에는 다리가 알록달록 빛나! 피서객 아이스박스를 확인하자.',
-    build(L) { seaNorth(-26); suspBridge(-90, -170, 170, 9, 34); for (let k = 0; k < 9; k++) building(-40 + k * 10, 27, 9, 6, rr(10, 22), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true }); for (let k = 0; k < 8; k++) { const x = -32 + k * 9, z = rr(-8, 6); bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(2, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0x7dff6a][k % 4]), x, 2.8, z); } for (let x = -40; x <= 40; x += 10) lamp(x, 20); sign('🌉 광안리 해수욕장 · 광안대교', 0, 6, 14, 1); } },
-  { name: '숭례문', icon: '⛩', w: 84, d: 62, floor: () => std(0xffffff, .9, 0, { map: TEX.asphalt([20, 20]) }), obj: luggage, sky: [0x5fa8ec, 0xeaf3fb], veh: [{ type: 'truck', route: [[-34, 18], [34, 18], [34, -22], [-34, -22]] }, { type: 'truck', route: [[-34, 18], [34, 18], [34, -22], [-34, -22]], start: 2 }],
-    items: [['vase', 2], ['backpack', 3], ['dutyBag', 2]], who: '남대문 숭례문 관리소장', short: '국보 숭례문 주변 광장과 남대문시장 골목을 순찰해요. 차를 조심!',
-    intro: '서울의 남쪽 대문, 국보 숭례문이야! 두 층 지붕의 웅장한 문루가 있어.\n옆 남대문시장 상인 짐 사이에 밀수품이 있대. 도로의 차 조심!',
-    build(L) { floorPlane(40, 26, MAT.col(0xd8cfb8, .9), 0, -2, .01); gateTop(0, -6, 18, 7, 5, { tier: true }); sign('숭례문 崇禮門 (국보)', 0, 17, -2, .9); for (let k = 0; k < 8; k++) { building(-36 + k * 10, 28, 9, 6, rr(12, 24), [0xd4dbe2, 0xe8e2d8, 0xc0cad4][k % 3]); } for (let k = 0; k < 6; k++) stall(-30 + k * 12, 10, [0xd63a2a, 0x2c6fb7][k % 2], ['남대문시장', '안경', '그릇', '인삼', '모자', '김'][k]); for (const x of [-18, 18]) for (const z of [-14, 8]) tree(x, z, .9); } },
+    people: { tourist: 6, civ: 4, merchant: 1, smuggler: 3 }, items: [['cooler', 3], ['backpack', 3], ['fishBox', 2]], who: '부산바다 광안리해수욕장 관리소장', chief: 'crew', short: '반달 모양 광안리 해변! 바다 위 광안대교, 드론쇼, 민락수변공원, 회센터를 둘러보며 수색해요.',
+    intro: '부산 광안리 해수욕장이야. 반달 모양 모래사장 앞바다에 길이 7.4km, 2층짜리 광안대교가 떠 있어.\n밤엔 다리가 알록달록 빛나고 하늘엔 드론쇼가 펼쳐져! 동쪽 민락수변공원, 서쪽 회센터도 있어.',
+    build(L) {
+      seaNorth(-26); suspBridge(-90, -170, 170, 9, 34);
+      const dots = []; for (let k = 0; k < 60; k++) { const m = mesh(BOX(.8, .8, .8), glow(pick([0x7fd3ff, 0xff7fd0, 0xffe27f]), 2), 0, 0, 0); m.castShadow = false; dots.push(m); } envAnim.push(() => { const ph = (time * .1) % 1; dots.forEach((m, k) => { const a = k / 60 * Math.PI * 2, heart = [16 * Math.pow(Math.sin(a), 3), 13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)]; const ring = [Math.cos(a) * 16, Math.sin(a) * 16], u = (Math.sin(ph * Math.PI * 2) + 1) / 2; m.position.set(heart[0] * u + ring[0] * (1 - u), 40 + (heart[1] * u + ring[1] * (1 - u)) * .9, -70); }); }); sign('🛸 드론 라이트쇼', 0, 62, -70, 1);
+      for (let k = 0; k < 9; k++) building(-40 + k * 10, 38, 9, 6, rr(10, 22), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true });
+      for (let k = 0; k < 8; k++) { const x = -30 + k * 8.4; if (Math.abs(x) < 6) continue; const z = rr(-6, 4); bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(2, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0x7dff6a][k % 4]), x, 2.8, z); }
+      for (let k = 0; k < 5; k++) bx(36, 0, -6 + k * 2, 12, .35 * (k + 1), 2, 0xbdb7aa); sign('민락수변공원', 36, 4, -2, .55);
+      building(-36, 14, 12, 8, 5, 0x5d8fb4, { glass: 0x2a5070, sign: '🐟 회센터' }); for (let k = 0; k < 4; k++) mesh(BOX(2.4, 1.2, .1), std(0x7fc8ef, .1, 0, { transparent: true, opacity: .6 }), -40 + k * 2.6, 1, 18.1);
+      bx(-18, 0, -14, 2, .3, 2, 0xffffff); for (const sx of [-.8, .8]) bx(-18 + sx, 0, -14, .2, 3, .2, 0xffffff, false); mesh(BOX(2.4, 1.4, 2.4), LMC(0xe74c3c), -18, 3.4, -14); sign('🛟 안전요원', -18, 5, -14, .4);
+      for (let k = 0; k < 4; k++) { const m = mesh(BOX(.5, 2.4, .15), LMC([0xff7043, 0x4fc3f7, 0xffeb3b, 0x7dff6a][k]), 18 + k * .7, 1.2, 4); m.rotation.z = .2; } sign('🏄 서핑', 19, 3.4, 4, .4);
+      for (const [x, ch] of [[-6, 'B'], [-3, 'U'], [0, 'S'], [3, 'A'], [6, 'N']]) sign(ch, x, 1, -12, .9, 'rgba(210,180,120,.95)');
+      for (let x = -40; x <= 40; x += 10) if (Math.abs(x) > 6) lamp(x, 22);
+    } },
+  { name: '숭례문', icon: '⛩', w: 84, d: 62, floor: () => std(0xffffff, .9, 0, { map: TEX.asphalt([20, 20]) }), obj: luggage, sky: [0x5fa8ec, 0xeaf3fb], veh: [{ type: 'taxi', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]] }, { type: 'bus', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 2 }, { type: 'car', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 1 }, { type: 'car', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 3 }],
+    staff: [{ kind: 'royalguard', route: [[-4, 3], [4, 3]], wait: 3 }, { kind: 'police', route: [[-36, 24], [36, 24]], wait: 2 }], people: { merchant: 4, tourist: 4, civ: 3, smuggler: 3 },
+    items: [['vase', 2], ['backpack', 3], ['dutyBag', 2]], who: '남대문 숭례문 관리소장', short: '차들이 도는 광장 가운데 국보 숭례문! 남은 성곽, 남대문시장 골목을 순찰해요. 차 조심!',
+    intro: '서울의 남쪽 대문, 국보 숭례문이야! 두 층 지붕의 웅장한 문루와 양옆으로 남은 성곽이 있어.\n문 둘레로 차들이 빙빙 돌고, 서쪽엔 갈치조림·안경·그릇 가게가 가득한 남대문시장이 있어. 차 조심!',
+    build(L) {
+      floorPlane(48, 26, MAT.col(0xd8cfb8, .9), 0, -3, .01); for (let k = 0; k < 5; k++) mesh(BOX(1.2, .1, 4), LMC(0xffffff), -6 + k * 3, .02, 18).castShadow = false;
+      gateTop(0, -6, 18, 7, 5, { tier: true }); sign('숭례문 崇禮門 (국보 제1호)', 0, 17, -2, .9); for (const sx of [-1, 1]) { bx(sx * 15, 0, -6, 10, 4, 4, 0xa9a497); for (let k = 0; k < 6; k++) mesh(BOX(.8, .6, 4.1), LMC(0xa9a497), sx * (11 + k * 1.6), 4.3, -6); }
+      for (let k = 0; k < 6; k++) building(-36 + k * 14, -30, 12, 6, rr(14, 30), [0xd4dbe2, 0xe8e2d8, 0xc0cad4][k % 3], { lit: true }); sign('대한상공회의소', 22, 26, -27, .6);
+      for (let k = 0; k < 6; k++) stall(-38, -14 + k * 5, [0xd63a2a, 0x2c6fb7][k % 2], ['갈치조림', '안경', '그릇', '인삼', '모자', '김'][k]); sign('남대문시장', -38, 6, 4, .7); lanternLine(-40, -36, 2, 5.5);
+      for (const [x, z] of [[-16, 6], [16, 6], [-16, -16], [16, -16]]) tree(x, z, .9); flowers(0, 6, 30, 3, [0xf44336, 0xffeb3b, 0xffffff], 40);
+    } },
   { name: '수원화성', icon: '🏰', w: 96, d: 74, floor: 0xc9d6a0, obj: crate, sky: [0x5fb0ff, 0xf2f6e6], st: 4, shape: [[-.95, .7], [-1, .1], [-.85, -.5], [-.55, -.9], [0, -1], [.5, -.88], [.9, -.55], [1, 0], [.85, .65], [.4, .92], [-.3, .95], [-.7, .88]], rail: { h: 4.2, col: 0xb7ae98, t: .9, cren: true }, outside: { col: 0x7fa65a, y: .02 },
-    staff: [{ kind: 'soldier', route: [[-20, 20], [20, 20]], wait: 3 }, { kind: 'police', route: [[-30, -6], [30, -6]], wait: 2 }], people: { civ: 9, smuggler: 3 },
-    items: [['vase', 3], ['statue', 2], ['drum', 2]], who: '정조대왕 수원화성 사업소장', short: '꼬불꼬불 성곽 안 수원화성! 팔달문·화서문·공심돈 주변을 순찰해요.',
-    intro: '정조 때 쌓은 세계유산 수원화성이야. 바깥은 돌로, 안쪽은 흙으로 쌓은 성벽이 꼬불꼬불 이어져.\n남쪽 팔달문, 서쪽 화서문과 망루 서북공심돈을 지나며 수색하자!',
-    build(L) { gateTop(0, 22, 16, 6, 4.5, { tier: true }); sign('팔달문 八達門 (남문)', 0, 16, 25, .8); gateTop(-44, 2, 6, 12, 4.2); sign('화서문 華西門', -42, 12, 2, .6); bx(-40, 0, -14, 6, 8, 6, 0xb7ae98); bx(-40, 8, -14, 6.4, .5, 6.4, 0x8b2e22, false); hroof(-40, 9.6, -14, 4.6, 4.6); sign('서북공심돈', -40, 14, -10.5, .55); hanok(0, -24, 14, 8, 3, { tier: true }); sign('화성행궁', 0, 12, -19, .6); for (let k = 0; k < 8; k++) { const x = -30 + k * 8; bx(x, 0, 6, 4, .1, 4, 0xe74c3c, false); } for (let k = 0; k < 12; k++) tree(rr(-30, 30), rr(-12, 20), .8); } },
+    staff: [{ kind: 'royalguard', route: [[-20, 18], [20, 18]], wait: 3 }, { kind: 'police', route: [[-30, -6], [30, -6]], wait: 2 }], veh: [{ type: 'dragon', route: [[-30, 12], [30, 12], [30, -8], [-30, -8]] }], people: { hanbok: 4, tourist: 4, student: 2, smuggler: 3 },
+    items: [['vase', 3], ['statue', 2], ['drum', 2]], who: '정조대왕 수원화성 사업소장', short: '세계유산 수원화성! 팔달문·장안문·화서문, 서북공심돈, 방화수류정, 봉돈, 화성행궁, 화성어차까지.',
+    intro: '정조 때 쌓은 세계유산 수원화성이야. 바깥은 돌로, 안쪽은 흙으로 쌓은 성벽이 꼬불꼬불 이어져.\n남쪽 팔달문, 북쪽 장안문, 서쪽 화서문과 망루 서북공심돈, 연못 위 방화수류정, 연기 신호를 올리던 봉돈이 있어.\n용머리 화성어차도 다니니까 조심!',
+    build(L) {
+      gateTop(0, 22, 16, 6, 4.5, { tier: true }); sign('팔달문 八達門 (남문)', 0, 16, 25, .8);
+      gateTop(0, -33, 16, 6, 4.5, { tier: true }); sign('장안문 長安門 (북문)', 0, 16, -30, .8);
+      gateTop(-44, 2, 6, 12, 4.2); sign('화서문 華西門', -42, 12, 2, .6); bx(-40, 0, -14, 6, 8, 6, 0xb7ae98); for (let y = 2; y < 8; y += 2) for (const sx of [-1, 1]) mesh(BOX(.1, .6, .6), LMC(0x3a3a3a), -40 + sx * 3.02, y, -14); bx(-40, 8, -14, 6.4, .5, 6.4, 0x8b2e22, false); hroof(-40, 9.6, -14, 4.6, 4.6); sign('서북공심돈 (망루)', -40, 14, -10.5, .55);
+      pond(30, -22, 14, 10); bx(32, 0, -26, 6, 3, 5, 0x8a8a80); pavilion(32, -26, 1, 3); sign('방화수류정 · 용연', 30, 10, -18, .6);
+      bx(40, 0, 8, 5, 3, 8, 0xb7ae98); for (let k = 0; k < 5; k++) chimney(40, 4.6 + k * 1.4 - 2.8, 4.6, 0xb7ae98); sign('봉돈 (봉화 신호대)', 40, 8, 13, .55);
+      hanok(-6, -18, 16, 8, 3, { tier: true }); sign('화성행궁', -6, 11.5, -13.5, .6);
+      for (let k = 0; k < 4; k++) { bx(-28 + k * 3, 0, -2, .2, 1.8, .2, 0x6d4c2f); mesh(new THREE.CylinderGeometry(.8, .8, .15, 16), LMC([0xd63a2a, 0xffd54f, 0x2c6fb7, 0xffffff][k % 4]), -28 + k * 3, 1.6, -2).rotation.x = Math.PI / 2; } sign('🏹 연무대 활쏘기', -24, 3.4, -2, .5);
+      for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2, x = Math.cos(a) * 42, z = Math.sin(a) * 31; flag(x, z, [0xd63a2a, 0xffd54f, 0x2c6fb7, 0x27ae60, 0xffffff][k % 5], 6); }
+      for (let k = 0; k < 10; k++) tree(rr(-30, 30), rr(-10, 8), .8);
+    } },
   { name: '경주', icon: '🗿', w: 92, d: 70, floor: 0x9cc27a, obj: crate, sky: [0x6ab4f0, 0xf3eedb], st: 3,
-    items: [['vase', 3], ['statue', 3]], who: '신라천년 경주 문화유산 관리소장', short: '천년 고도 경주! 첨성대와 고분, 석탑 사이에서 문화재 도굴범을 잡아요.',
-    intro: '신라의 서울 경주야. 별을 관측하던 첨성대와 커다란 왕릉, 다보탑·석가탑이 있어.\n문화재를 훔쳐 해외로 빼돌리려는 도굴범을 막자!',
-    build(L) { for (let k = 0; k < 27; k++) { const r = 2.6 - Math.sin(k / 27 * Math.PI) * .6 + (k < 4 ? .4 : 0); mesh(new THREE.CylinderGeometry(r * .97, r, .5, 16), LMC(0xd2c39e), 0, .25 + k * .5, -8); } addCol(0, -8, 5, 5, null, { topY: 99 }); bx(0, 13.5, -8, 3.4, .6, 3.4, 0xc4b48e, false); mesh(BOX(1, 1, .1), LMC(0x222222), 0, 7, -5.4); sign('첨성대 瞻星臺', 0, 17, -6, .7); for (const [x, z, r] of [[-30, -20, 9], [-14, -26, 7], [28, -22, 10], [34, 4, 7]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x6f9f4a)); m.scale.y = .55; m.position.set(x, 0, z); world.add(m); addCol(x, z, r * 1.5, r * 1.5, null, { topY: 99 }); } sign('대릉원 고분', -22, 8, -18, .6); for (const [x, s] of [[-14, 0], [14, 1]]) { for (let k = 0; k < 3; k++) bx(x, k * 2.6, 12, 4 - k * .8, 1.8, 4 - k * .8, 0xbfb6a4, k === 0); for (let k = 0; k < 3; k++) mesh(BOX(5.4 - k * 1.2, .4, 5.4 - k * 1.2), LMC(0xa89e8c), x, 1.9 + k * 2.6, 12); mesh(BOX(.5, 2.4, .5), LMC(0xa89e8c), x, 9.6, 12); sign(s ? '석가탑' : '다보탑', x, 12, 14.5, .55); } for (let k = 0; k < 10; k++) tree(rr(-40, 40), rr(16, 28), .9, 0x5f9a3e); } },
+    staff: [{ kind: 'monk', route: [[-30, -18], [-20, -18]], wait: 3 }, { kind: 'police', route: [[-36, 22], [36, 22]], wait: 2 }], people: { monk: 2, tourist: 5, student: 3, hanbok: 2, smuggler: 3 },
+    items: [['vase', 3], ['statue', 3]], who: '신라천년 경주 문화유산 관리소장', short: '천년 고도 경주! 첨성대, 대릉원 고분, 불국사와 다보탑·석가탑, 석굴암, 동궁과 월지, 황리단길까지.',
+    intro: '신라의 서울 경주야! 별을 관측하던 첨성대, 커다란 왕릉이 모인 대릉원이 있어.\n불국사에는 청운교·백운교 돌계단과 다보탑·석가탑, 산 위 석굴암엔 커다란 부처님이 계셔.\n밤이 예쁜 동궁과 월지, 한옥 카페 거리 황리단길까지 문화재 도굴범을 막자!',
+    build(L) {
+      for (let k = 0; k < 27; k++) { const r = 2.6 - Math.sin(k / 27 * Math.PI) * .6 + (k < 4 ? .4 : 0); mesh(new THREE.CylinderGeometry(r * .97, r, .5, 16), LMC(0xd2c39e), 0, .25 + k * .5, -4); } addCol(0, -4, 5, 5, null, { topY: 99 }); bx(0, 13.5, -4, 3.4, .6, 3.4, 0xc4b48e, false); mesh(BOX(1, 1, .1), LMC(0x222222), 0, 7, -1.4); sign('첨성대 瞻星臺 (국보)', 0, 17, -2, .7); flowers(0, 6, 22, 6, [0xf48fb1, 0xffeb3b, 0xff7043, 0xba68c8], 70);
+      for (const [x, z, r] of [[-30, 4, 9], [-14, 10, 6], [-40, -8, 6]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x6f9f4a)); m.scale.y = .55; m.position.set(x, 0, z); world.add(m); addCol(x, z, r * 1.5, r * 1.5, null, { topY: 99 }); } sign('대릉원 고분 (천마총)', -26, 8, 8, .6);
+      bx(-24, 0, -26, 30, 3, 6, 0xbfb6a4); stepsUp(-30, -22.5, 4, 8, -1, .4, 0xd2c8b4); stepsUp(-18, -22.5, 4, 8, -1, .4, 0xd2c8b4); sign('청운교 · 백운교', -24, 4.6, -22, .5); hanok(-24, -28, 20, 6, 3, { tier: true, base: 0xbfb6a4 }); for (const s of colliders.slice(-1)) s.minZ = s.minZ; sign('불국사 佛國寺', -24, 13, -24, .7);
+      for (const [x, sga] of [[-34, 0], [-14, 1]]) { for (let k = 0; k < 3; k++) bx(x, k * 2.4, -16, 3.6 - k * .7, 1.6, 3.6 - k * .7, 0xbfb6a4, k === 0); for (let k = 0; k < 3; k++) mesh(BOX(5 - k * 1.1, .4, 5 - k * 1.1), LMC(0xa89e8c), x, 1.8 + k * 2.4, -16); mesh(BOX(.5, 2.4, .5), LMC(0xa89e8c), x, 8.8, -16); sign(sga ? '석가탑' : '다보탑', x, 11.5, -13.5, .55); }
+      const cave = new THREE.Mesh(new THREE.SphereGeometry(8, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x9a948a)); cave.position.set(30, 0, -26); world.add(cave); addCol(30, -26, 12, 12, null, { topY: 99 }); bx(30, 0, -18.5, 4, 4, 2, 0x6d675e, false); statue(30, -19.4, 0xd9c9a0, true, 3.4); sign('석굴암 石窟庵 (국보)', 30, 10, -18, .65);
+      pond(30, 8, 20, 12, 0x3f7fa8); for (const [x, z] of [[24, 2.4], [36, 2.4]]) { bx(x, 0, z, 6, .6, 3, 0xbfb6a4); pavilion(x, z, 1, .6); } for (let k = 0; k < 14; k++) mesh(BOX(.3, .3, .3), glow(0xffd27a, 1.2), 20 + k * 1.5, .5, 14.2).castShadow = false; sign('동궁과 월지 (안압지)', 30, 6, 2, .6);
+      for (let k = 0; k < 4; k++) hanok(-38 + k * 8.5, 22, 6, 5, 2.4); sign('☕ 황리단길', -26, 7, 25, .6); for (let k = 0; k < 8; k++) tree(rr(14, 44), rr(20, 30), .9, 0x5f9a3e);
+    } },
   { name: 'N서울타워', icon: '🗼', w: 80, d: 66, floor: 0x6f9a52, obj: luggage, sky: [0x5aa8ef, 0xf6e8d8], st: 3, shape: ELL(1, 1, 28), outside: { col: 0x3f6b3a, y: .02 }, rail: { h: 1.1, col: 0x8a6a4a, t: .2 },
-    items: [['backpack', 4], ['teddy', 2], ['dutyBag', 2]], who: '남산 N서울타워 총지배인', short: '남산 꼭대기 원형 광장! 사랑의 자물쇠와 팔각정 주변을 순찰해요.',
-    intro: '남산 꼭대기의 N서울타워야. 동그란 산 정상 광장에서 서울이 한눈에 보여!\n사랑의 자물쇠 울타리와 팔각정 주변 관광객 가방을 확인하자.',
-    build(L) { mountainBack(-60, 0x587a4a, 7); bx(0, 0, -8, 4, 3, 4, 0xe9e6df); for (let k = 0; k < 10; k++) mesh(new THREE.CylinderGeometry(1.4 - k * .06, 1.6 - k * .06, 3.4, 12), LMC(0xf0f0f0), 0, 3 + k * 3.4 + 1.7, -8); mesh(new THREE.CylinderGeometry(4.4, 3.4, 4.5, 16), LMC(0xdfe4e8), 0, 39, -8); mesh(new THREE.CylinderGeometry(4.5, 4.5, 1, 16), glow(0x9fd3ff, .6), 0, 38.4, -8); mesh(new THREE.CylinderGeometry(.4, .6, 14, 8), LMC(0xd84a3a), 0, 48, -8); sign('🗼 N SEOUL TOWER', 0, 57, -8, 1); for (let k = 0; k < 10; k++) { const a = Math.PI * .1 + k * .18, x = Math.cos(a) * 22, z = Math.sin(a) * 18; bx(x, 0, z, 3, 1.2, .2, 0x888888); for (let j = 0; j < 8; j++) mesh(BOX(.22, .22, .1), LMC([0xff5a8a, 0xffd54f, 0x4fc3f7, 0xb388ff][j % 4]), x - 1.2 + j * .34, rr(.3, 1.1), z + .15).castShadow = false; } sign('💕 사랑의 자물쇠', 14, 3, 16, .5); hanok(-20, 6, 6, 6, 2.6, { door: false }); sign('팔각정', -20, 8, 10, .55); for (let k = 0; k < 10; k++) pine(rr(-30, 30), rr(-28, -18)); } },
+    people: { tourist: 6, student: 3, civ: 3, smuggler: 3 }, items: [['backpack', 4], ['teddy', 2], ['dutyBag', 2]], who: '남산 N서울타워 총지배인', short: '남산 꼭대기! N서울타워, 사랑의 자물쇠, 남산 봉수대, 팔각정, 케이블카, 서울 전망을 둘러봐요.',
+    intro: '남산 꼭대기의 N서울타워야! 동그란 산 정상에서 서울이 한눈에 보여.\n사랑의 자물쇠 울타리, 옛날 연기로 신호를 보내던 남산 봉수대, 팔각정, 산 아래로 내려가는 케이블카도 있어!',
+    build(L) {
+      for (let k = 0; k < 16; k++) { const a = k / 16 * Math.PI * 2, r = rr(70, 110); building(Math.cos(a) * r, Math.sin(a) * r, rr(6, 12), rr(6, 12), rr(10, 40), pick([0xd4dbe2, 0xe8e2d8, 0xc0cad4]), { lit: true }); } mountainBack(-120, 0x587a4a, 6);
+      bx(0, 0, -8, 5, 3, 5, 0xe9e6df); for (let k = 0; k < 10; k++) mesh(new THREE.CylinderGeometry(1.4 - k * .06, 1.6 - k * .06, 3.4, 12), LMC(0xf0f0f0), 0, 3 + k * 3.4 + 1.7, -8); mesh(new THREE.CylinderGeometry(4.4, 3.4, 4.5, 16), LMC(0xdfe4e8), 0, 39, -8); mesh(new THREE.CylinderGeometry(4.5, 4.5, 1, 16), glow(0x9fd3ff, .6), 0, 38.4, -8); mesh(new THREE.CylinderGeometry(.4, .6, 14, 8), LMC(0xd84a3a), 0, 48, -8); const tl = mesh(BOX(.6, .6, .6), glow(0xff4040, 2), 0, 55.4, -8); envAnim.push(() => { tl.material.emissiveIntensity = 1 + Math.sin(time * 3); }); sign('🗼 N SEOUL TOWER', 0, 58, -8, 1);
+      for (let k = 0; k < 12; k++) { const a = Math.PI * .1 + k * .16, x = Math.cos(a) * 24, z = Math.sin(a) * 20; bx(x, 0, z, 3, 1.2, .2, 0x888888); for (let j = 0; j < 9; j++) mesh(BOX(.22, .22, .1), LMC([0xff5a8a, 0xffd54f, 0x4fc3f7, 0xb388ff][j % 4]), x - 1.2 + j * .3, rr(.3, 1.1), z + .15).castShadow = false; } sign('💕 사랑의 자물쇠', 14, 3, 18, .5); for (let k = 0; k < 20; k++) mesh(BOX(.3, .3, .3), LMC([0xff5a8a, 0xffd54f, 0x4fc3f7][k % 3]), 18 + rr(-1, 1), 1 + k * .15, 6 + rr(-1, 1)); bx(18, 0, 6, .6, 3.4, .6, 0x6d4c2f); sign('자물쇠 나무', 18, 4.6, 6, .4);
+      for (let k = 0; k < 5; k++) { bx(-22 + k * 3, 0, -14, 2.4, 1.6, 2.4, 0x9a948a); mesh(new THREE.CylinderGeometry(.6, .9, 1.6, 8), LMC(0x9a948a), -22 + k * 3, 2.4, -14); } sign('남산 봉수대 (봉화 신호)', -16, 4.6, -11.5, .55);
+      hanok(-22, 8, 6, 6, 2.6, { door: false }); sign('팔각정', -22, 8, 12, .55);
+      for (let k = 0; k <= 40; k++) { const t = k / 40; mesh(BOX(1.6, .08, .08), LMC(0x333333), 30 + t * 50, 10 - t * 18, 14 + t * 30).rotation.y = -.5; } const cab = mesh(BOX(2, 1.6, 2.4), LMC(0xd84a3a), 0, 0, 0); envAnim.push(() => { const t = (Math.sin(time * .15) + 1) / 2; cab.position.set(30 + t * 50, 8.6 - t * 18, 14 + t * 30); }); bx(28, 0, 12, 6, 4, 6, 0xd9d4c8); sign('🚡 남산 케이블카', 28, 6, 12, .55);
+      for (const [x, z] of [[-10, 18], [10, -22], [-28, -4]]) { bx(x, 0, z, .4, 1.4, .4, 0x555555); mesh(BOX(.9, .4, .5), LMC(0x333333), x, 1.6, z); } for (let k = 0; k < 10; k++) pine(rr(-30, 30), rr(-28, -20));
+    } },
   { name: '해운대', icon: '🏖', w: 100, d: 56, floor: 0xcdb98c, obj: luggage, sky: [0x2f9ef0, 0xd2efff], st: 3, shape: [[-1, 1], [-1, -.5], [-.6, -.7], [0, -.78], [.6, -.72], [.85, -.6], [1, -.2], [1, 1]], outside: { col: 0x3d8fc4, y: .03, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
-    items: [['cooler', 3], ['fishBox', 2], ['backpack', 3]], who: '파도 해운대해수욕장 관리소장', chief: 'crew', short: '부산 해운대 백사장! 뒤로는 초고층 빌딩, 멀리 광안대교가 보여요.',
-    intro: '대한민국 대표 해수욕장 해운대야! 길게 뻗은 백사장 뒤로 초고층 빌딩이 줄지어 서 있어.\n동쪽엔 동백섬, 멀리 바다엔 광안대교가 보여. 파라솔 아래 가방을 확인해!',
-    build(L) { seaNorth(-24); suspBridge(-150, -320, 40, 9, 34); for (let k = 0; k < 3; k++) building(-38 + k * 9, 24, 8, 8, 60 + k * 10, 0xcfdbe6, { glass: 0x7fa6c8, lit: true }); for (let k = 0; k < 7; k++) building(-4 + k * 8, 25, 7, 6, rr(18, 36), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true }); sign('엘시티 & 마린시티', -30, 74, 20, .9); for (let k = 0; k < 18; k++) { const x = -44 + k * 5.2, z = rr(-8, 8); bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(1.8, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0xffffff][k % 4]), x, 2.8, z); } const isl = new THREE.Mesh(new THREE.SphereGeometry(16, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x3f7a3a)); isl.scale.y = .45; isl.position.set(72, -.3, -26); world.add(isl); sign('동백섬', 70, 10, -20, .7); sign('🏖 HAEUNDAE BEACH 해운대', 0, 6, 14, 1); } },
+    people: { tourist: 7, civ: 4, student: 2, smuggler: 3 }, items: [['cooler', 3], ['fishBox', 2], ['backpack', 3]], who: '파도 해운대해수욕장 관리소장', chief: 'crew', short: '해운대 백사장! 엘시티·마린시티 초고층, 해변열차와 하늘 캡슐, 동백섬 누리마루, 모래조각, 멀리 광안대교.',
+    intro: '대한민국 대표 해수욕장 해운대야! 1.5km 백사장 뒤로 초고층 빌딩 엘시티와 마린시티가 서 있어.\n동쪽 바닷가 절벽엔 알록달록 하늘 캡슐과 해변열차가 달리고, 서쪽 동백섬엔 누리마루 APEC하우스가 있어. 모래조각도 구경해!',
+    build(L) {
+      seaNorth(-24); suspBridge(-150, -320, 40, 9, 34);
+      for (let k = 0; k < 3; k++) building(18 + k * 10, 40, 8, 8, 70 + k * 12, 0xcfdbe6, { glass: 0x7fa6c8, lit: true }); sign('엘시티 LCT', 28, 96, 36, 1); for (let k = 0; k < 7; k++) building(-44 + k * 8, 42, 7, 6, rr(24, 46), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true }); sign('마린시티', -20, 50, 38, .9);
+      for (let r = 0; r < 2; r++) for (let k = 0; k < 14; k++) { const x = -44 + k * 6.4, z = -8 + r * 7; if (Math.abs(x) < 7 && z > 8) continue; bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(1.8, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0xffffff][(k + r) % 4]), x, 2.8, z); }
+      for (let z = -40; z <= 30; z += 1) mesh(BOX(1.2, .2, 1.05), LMC(0x7a6a5a), 56, 6, z).castShadow = false; for (let z = -40; z <= 30; z += 8) mesh(BOX(.6, 6, .6), LMC(0x9aa3ab), 56, 3, z); const caps = []; for (let k = 0; k < 6; k++) { const c = mesh(BOX(1.6, 1.6, 1.8), LMC([0xff5a5a, 0xffd54f, 0x4fc3f7, 0x7dff6a, 0xb388ff, 0xff9a4a][k]), 56, 7.1, 0); caps.push(c); } envAnim.push(() => { caps.forEach((c, k) => { c.position.z = ((time * 2 + k * 4) % 70) - 40; }); }); sign('🚃 해변열차 · 스카이캡슐', 52, 10, -6, .6); const cliff = mesh(BOX(14, 5, 90), LMC(0x6d6a5e), 64, 2.5, -6); cliff.castShadow = false;
+      const isl = new THREE.Mesh(new THREE.SphereGeometry(16, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x3f7a3a)); isl.scale.y = .45; isl.position.set(-72, -.3, -26); world.add(isl); mesh(new THREE.CylinderGeometry(4, 5, 3, 10), LMC(0xeef1f4), -72, 7.5, -26); mesh(new THREE.ConeGeometry(5.4, 2, 10), LMC(0x9aa3ab), -72, 10, -26); sign('동백섬 · 누리마루 APEC하우스', -70, 14, -22, .65);
+      bx(20, 0, -2, 4, 2, 4, 0xd9c49a); for (let k = 0; k < 4; k++) mesh(BOX(1, 2, 1), LMC(0xd9c49a), 18.5 + (k % 2) * 3, 3, -3.5 + Math.floor(k / 2) * 3); sign('🏰 모래조각 축제', 20, 5.6, -2, .5); bx(-22, 0, -2, 5, 1.4, 3.4, 0xd9c49a); mesh(BOX(1.6, 1, 1.4), LMC(0xd9c49a), -22, 1.6, -4); sign('🐢 모래 거북', -22, 3.4, -2, .45);
+      bx(-6, 0, -14, 2, .3, 2, 0xffffff); for (const sx of [-.8, .8]) bx(-6 + sx, 0, -14, .2, 3, .2, 0xffffff, false); mesh(BOX(2.4, 1.4, 2.4), LMC(0xe74c3c), -6, 3.4, -14);
+      sign('🏖 HAEUNDAE BEACH 해운대', 0, 6, 10, 1);
+    } },
   { name: '제주 한라산', icon: '🌋', w: 92, d: 92, floor: 0x6a8f4a, obj: crate, sky: [0x4fa6ee, 0xeaf6ff], st: 4, shape: ELL(1, 1, 30), outside: { col: 0x2f6b8f, y: .02, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
-    staff: [{ kind: 'police', route: [[-30, 30], [30, 30]], wait: 2 }, { kind: 'customs', route: [[-36, 0], [-30, 20]], wait: 2 }], people: { civ: 8, smuggler: 3 },
-    items: [['fruitBox', 4], ['cooler', 2], ['backpack', 2]], who: '고돌하르방 한라산국립공원 관리소장', short: '섬 한가운데 우뚝 솟은 한라산! 계단처럼 오르며 정상 백록담까지 수색해요.',
-    intro: '제주도 한라산이야! 섬 가운데 솟은 1,947m 화산 꼭대기엔 분화구 호수 백록담이 있어.\n층층이 올라가며 등산객 배낭과 감귤 상자를 확인하자. 돌하르방도 찾아봐!',
-    build(L) { for (let k = 0; k < 22; k++) { const r = 30 - k * 1.25; const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r + .6, .35, 24), LMC(k > 17 ? 0x8a7d6a : new THREE.Color(0x5f8a45).lerp(new THREE.Color(0x7a8a5a), k / 22).getHex())); m.position.set(0, .175 + k * .35, -6); m.receiveShadow = true; world.add(m); addCol(0, -6, r * 1.42, r * 1.42, null, { topY: .35 * (k + 1), keep: true, round: r }); } const lw = TEX.water(); lw.repeat.set(2, 2); const lake = new THREE.Mesh(new THREE.CircleGeometry(2.6, 18), std(0xffffff, .2, 0, { map: lw, color: 0x3fa0c8 })); lake.rotation.x = -Math.PI / 2; lake.position.set(0, 7.75, -6); world.add(lake); sign('백록담 白鹿潭 1,947m', 0, 11, -6, .7); for (const [x, z] of [[-14, 34], [14, 34], [36, 14]]) { bx(x, 0, z, 1.2, 2.6, 1, 0x5a5550); mesh(BOX(1.4, .6, 1.2), LMC(0x4a4540), x, 2.9, z); } sign('돌하르방', -14, 4, 35, .5); for (let k = 0; k < 14; k++) { const a = k / 14 * Math.PI * 2, x = Math.cos(a) * 38, z = Math.sin(a) * 38; if (z > 26 && Math.abs(x) < 8) continue; tree(x, z, .7, 0x3f7f2f); mesh(BOX(.4, .4, .4), LMC(0xff9a1f), x + .6, 2.4, z + .6); } sign('🍊 감귤밭', 30, 4, 26, .5); } },
+    staff: [{ kind: 'police', route: [[-30, 30], [30, 30]], wait: 2 }, { kind: 'haenyeo', route: [[30, 28], [36, 18]], wait: 3 }], people: { tourist: 5, haenyeo: 2, civ: 2, smuggler: 3 },
+    items: [['fruitBox', 4], ['cooler', 2], ['backpack', 2]], who: '고돌하르방 한라산국립공원 관리소장', short: '섬 가운데 한라산! 층층이 올라 백록담까지. 돌하르방, 돌담 감귤밭, 유채꽃, 오름, 조랑말, 해녀, 성산일출봉.',
+    intro: '제주도 한라산이야! 섬 가운데 솟은 1,947m 화산 꼭대기엔 분화구 호수 백록담이 있어.\n산 아래엔 검은 돌담 감귤밭과 노란 유채꽃밭, 조랑말 목장이 있고, 바닷가엔 해녀 삼촌들, 멀리 성산일출봉도 보여!',
+    build(L) {
+      for (let k = 0; k < 26; k++) { const r = 30 - k * 1.08; const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r + .6, .35, 24), LMC(k > 20 ? 0x8a7d6a : new THREE.Color(0x5f8a45).lerp(new THREE.Color(0x7a8a5a), k / 26).getHex())); m.position.set(0, .175 + k * .35, -6); m.receiveShadow = true; world.add(m); addCol(0, -6, r * 1.42, r * 1.42, null, { topY: .35 * (k + 1), keep: true }); }
+      const lake = new THREE.Mesh(new THREE.CircleGeometry(2.4, 18), std(0xffffff, .2, 0, { map: TEX.water(), color: 0x3fa0c8 })); lake.rotation.x = -Math.PI / 2; lake.position.set(0, 9.15, -6); world.add(lake); for (let k = 0; k < 16; k++) { const a = k / 16 * Math.PI * 2; mesh(BOX(1, 1, 1), LMC(0x6d6050), Math.cos(a) * 3.2, 9.4, -6 + Math.sin(a) * 3.2); } sign('백록담 白鹿潭 1,947m', 0, 12, -6, .7);
+      for (let k = 0; k < 12; k++) { const a = k / 12 * Math.PI * 2; mesh(BOX(.5, .5, .5), LMC(0xffffff), Math.cos(a) * 20, 3.8, -6 + Math.sin(a) * 20).castShadow = false; } sign('🥾 성판악 탐방로', 18, 5, 6, .5);
+      for (const [x, z] of [[-14, 34], [14, 34], [36, 14], [-36, 14]]) { bx(x, 0, z, 1.2, 2.6, 1, 0x5a5550); mesh(BOX(1.4, .6, 1.2), LMC(0x4a4540), x, 2.9, z); mesh(BOX(.3, .3, .1), LMC(0x3a3530), x - .25, 2.2, z + .52); mesh(BOX(.3, .3, .1), LMC(0x3a3530), x + .25, 2.2, z + .52); } sign('돌하르방', -14, 4, 35, .5);
+      rockWall(-40, -6, -28, -6); rockWall(-40, 6, -28, 6); for (let k = 0; k < 6; k++) { const x = -38 + (k % 3) * 4.6, z = -3 + Math.floor(k / 3) * 6; tree(x, z, .6, 0x3f7f2f); mesh(BOX(.4, .4, .4), LMC(0xff9a1f), x + .6, 2.1, z + .6); } sign('🍊 돌담 감귤밭', -34, 4, 0, .5);
+      flowers(30, -18, 14, 10, [0xffe23f, 0xfff06a, 0x9cc85a], 90); sign('🌼 유채꽃밭', 30, 3, -18, .5);
+      for (const [x, z, r] of [[-28, -28, 5], [34, 2, 4]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x7a9a4a)); m.scale.y = .6; m.position.set(x, 0, z); world.add(m); addCol(x, z, r * 1.4, r * 1.4, null, { topY: 99 }); } sign('오름', -28, 5, -24, .5);
+      for (const [x, z] of [[24, 20], [28, 24], [20, 26]]) horse(x, z, pick([0x8d5a3b, 0x5d4037, 0xd7ccc8])); sign('🐴 조랑말 목장', 24, 4, 22, .5);
+      for (let k = 0; k < 20; k++) { const a = k / 20 * Math.PI * 2; mesh(BOX(4, rr(6, 10), 4), LMC(0x6d6a4a), 70 + Math.cos(a) * 12, 3, -40 + Math.sin(a) * 12); } sign('성산일출봉 (세계유산)', 70, 14, -40, .9);
+    } },
   { name: '포항 스페이스워크', icon: '🎢', w: 88, d: 60, floor: 0x86b46a, obj: crate, sky: [0x4aa6ee, 0xe0f2ff], st: 3,
-    items: [['fishBox', 3], ['cooler', 2], ['backpack', 3]], who: '철강 환호공원 관리소장', short: '롤러코스터 같은 333m 철제 산책로 스페이스워크와 영일만 바다를 순찰해요.',
-    intro: '포항 환호공원의 스페이스워크야! 롤러코스터처럼 꼬인 길이 333m 철제 트랙을 계단으로 걷는 작품이야.\n가운데 360도 고리는 지나갈 수 없게 만들어졌대. 영일만 바다도 보여!',
-    build(L) { seaNorth(-30, 0x3a86c0); for (let k = 0; k < 5; k++) { const m = new THREE.Mesh(new THREE.CylinderGeometry(26 - k * 4, 27 - k * 4, .35, 24), LMC(0x7aa85e)); m.position.set(0, .175 + k * .35, -8); world.add(m); addCol(0, -8, (26 - k * 4) * 1.4, (26 - k * 4) * 1.4, null, { topY: .35 * (k + 1) }); } const P = [[-26, 2, 6], [-16, 9, -4], [-6, 16, -10], [2, 22, -8], [6, 18, -2], [4, 12, -6], [0, 18, -14], [6, 23, -10], [14, 20, -2], [22, 12, 2], [28, 6, -6], [20, 3, -14]].map(([x, y, z]) => new THREE.Vector3(x, y, z - 8)); const cv = new THREE.CatmullRomCurve3(P), tube = new THREE.Mesh(new THREE.TubeGeometry(cv, 300, .55, 8, false), MAT.metal(0xd9dde2, .25)); tube.castShadow = true; world.add(tube); for (let k = 0; k < 120; k++) { const p = cv.getPointAt(k / 120); if (k % 6 === 0) { const c = mesh(BOX(.25, p.y, .25), LMC(0x9aa3ab), p.x, p.y / 2, p.z); c.castShadow = false; } const l = mesh(BOX(.25, .25, .25), glow(0xffe7a0, 1.2), p.x, p.y + .7, p.z); l.castShadow = false; } sign('🎢 SPACE WALK 스페이스워크 333m', 0, 28, -16, 1); for (let k = 0; k < 12; k++) tree(rr(-40, 40), rr(14, 26), .8); building(-30, 22, 14, 8, 5, 0xe5e0d6, { sign: '포항시립미술관' }); } },
+    people: { tourist: 5, student: 3, civ: 3, smuggler: 3 }, items: [['fishBox', 3], ['cooler', 2], ['backpack', 3]], who: '철강 환호공원 관리소장', short: '롤러코스터 같은 333m 철제 산책로 스페이스워크, 영일만, 영일대 누각, 호미곶 상생의 손, 제철소 야경.',
+    intro: '포항 환호공원의 스페이스워크야! 롤러코스터처럼 꼬인 길이 333m, 계단 717개짜리 철제 트랙을 걷는 작품이야.\n가운데 360도 고리는 지나갈 수 없게 만들어졌대. 영일만 바다 위 영일대 누각, 호미곶의 상생의 손, 바다 건너 제철소 불빛도 보여!',
+    build(L) {
+      seaNorth(-30, 0x3a86c0); floorPlane(120, 8, MAT.col(0xd9c79a, .9), 0, -27, .012);
+      for (let k = 0; k < 5; k++) { const m = new THREE.Mesh(new THREE.CylinderGeometry(26 - k * 4, 27 - k * 4, .35, 24), LMC(0x7aa85e)); m.position.set(0, .175 + k * .35, -8); world.add(m); addCol(0, -8, (26 - k * 4) * 1.4, (26 - k * 4) * 1.4, null, { topY: .35 * (k + 1) }); }
+      const P = [[-26, 2, 6], [-16, 9, -4], [-6, 16, -10], [2, 22, -8], [8, 20, -2], [10, 15, -6], [6, 12, -10], [2, 15, -6], [6, 21, -4], [14, 22, -8], [22, 14, 0], [28, 6, -6], [20, 3, -14]].map(([x, y, z]) => new THREE.Vector3(x, y, z - 8)); const cv = new THREE.CatmullRomCurve3(P), tube = new THREE.Mesh(new THREE.TubeGeometry(cv, 320, .55, 8, false), MAT.metal(0xd9dde2, .25)); tube.castShadow = true; world.add(tube);
+      for (let k = 0; k < 140; k++) { const p = cv.getPointAt(k / 140); if (k % 7 === 0) { const c = mesh(BOX(.25, p.y, .25), LMC(0x9aa3ab), p.x, p.y / 2, p.z); c.castShadow = false; } const l = mesh(BOX(.25, .25, .25), glow(0xffe7a0, 1.2), p.x, p.y + .7, p.z); l.castShadow = false; } sign('🎢 SPACE WALK 스페이스워크 333m · 계단 717개', 0, 28, -16, 1);
+      bx(-34, 0, -40, 1, 3, 12, 0x8a7d6a, false); pavilion(-34, -48, 1.2, 1.6); sign('영일대 누각', -34, 8, -44, .6);
+      const hand = new THREE.Group(); hand.position.set(52, -.3, -52); world.add(hand); const hm = LMC(0x8a7a64); mesh(BOX(3, 6, 1.4), hm, 0, 3, 0, hand); for (let k = 0; k < 4; k++) mesh(BOX(.65, 3.2 - Math.abs(k - 1.5) * .4, .7), hm, -1.1 + k * .74, 7.4, 0, hand); const th = mesh(BOX(.7, 2.2, .7), hm, 1.9, 4.6, 0, hand); th.rotation.z = -.6; sign('🖐 호미곶 상생의 손', 52, 12, -50, .7);
+      for (let k = 0; k < 6; k++) chimney(-60 + k * 18, -120, rr(18, 30)); for (let k = 0; k < 10; k++) { const b = mesh(BOX(rr(10, 20), rr(6, 12), 10), LMC(0x6d7a86), -70 + k * 15, 4, -130); b.castShadow = false; mesh(BOX(1, 1, .2), glow(0xffa94d, 1.5), -70 + k * 15, 6, -124.8).castShadow = false; } sign('🏭 제철소 (영일만 건너편)', 0, 34, -118, 1.2);
+      for (let k = 0; k < 10; k++) tree(k % 2 ? rr(-42, -24) : rr(24, 42), rr(10, 24), .8); building(-32, 20, 14, 8, 5, 0xe5e0d6, { sign: '포항시립미술관' });
+    } },
   { name: '전주 한옥마을', icon: '🏡', w: 92, d: 70, floor: 0xd9cfb8, obj: crate, sky: [0x6ab0ee, 0xf6ecd8], st: 3,
-    items: [['vase', 3], ['wine', 2], ['fruitBox', 2]], who: '한지 전주 한옥마을 관리소장', short: '기와지붕이 물결치는 전주 한옥마을! 골목과 전동성당 주변을 순찰해요.',
-    intro: '전주 한옥마을이야. 700채가 넘는 한옥 기와지붕이 물결처럼 이어지고,\n붉은 벽돌의 전동성당과 태조 어진을 모신 경기전도 있어. 골목골목 수색!',
-    build(L) { for (let r = 0; r < 3; r++) for (let k = 0; k < 6; k++) { const x = -36 + k * 14 + (r % 2) * 4, z = -24 + r * 14; hanok(x, z, 8, 6, 2.6); bx(x, 0, z + 5, 10, 1.4, .5, 0xb9a988); } bx(30, 0, 22, 12, 9, 10, 0x9c4a35); for (const x of [25.5, 34.5]) { bx(x, 0, 18, 2.6, 15, 2.6, 0x9c4a35); mesh(new THREE.SphereGeometry(1.4, 10, 6), LMC(0x4d6a5a), x, 15.6, 18); } sign('⛪ 전동성당', 30, 19, 18, .6); hanok(-28, 20, 12, 7, 3, { tier: true }); sign('경기전', -28, 11, 24, .6); for (let k = 0; k < 8; k++) { const x = -10 + k * 4; mesh(BOX(1, 1, 1), glow(0xff9a4a, 1), x, 3, 8).castShadow = false; bx(x, 0, 8, .1, 2.6, .1, 0x555555, false); } sign('🏡 전주 한옥마을', 0, 6, 12, 1); } },
+    people: { hanbok: 6, tourist: 3, merchant: 2, smuggler: 3 }, items: [['vase', 3], ['wine', 2], ['fruitBox', 2]], who: '한지 전주 한옥마을 관리소장', short: '기와지붕이 물결치는 한옥마을! 풍남문, 전동성당, 경기전, 오목대, 남천교 청연루, 한옥 골목을 순찰해요.',
+    intro: '전주 한옥마을이야! 700채가 넘는 한옥 기와지붕이 물결처럼 이어지고, 한복 입은 여행객이 가득해.\n붉은 벽돌의 전동성당, 태조 어진을 모신 경기전, 언덕 위 오목대, 전주천 다리 위 누각 청연루, 남쪽 성문 풍남문까지!',
+    build(L) {
+      for (let r = 0; r < 2; r++) for (let k = 0; k < 6; k++) { const x = -36 + k * 14 + (r % 2) * 4, z = -6 + r * 13; if (Math.abs(x) < 10 && r === 1) continue; hanok(x, z, 8, 6, 2.6); bx(x, 0, z + 5, 10, 1.4, .5, 0xb9a988); }
+      gateTop(0, -30, 14, 5, 4, { tier: true }); sign('풍남문 豐南門 (보물)', 0, 13, -27, .7);
+      bx(30, 0, -22, 12, 9, 12, 0x9c4a35); for (const x of [25.5, 34.5]) { bx(x, 0, -16, 2.6, 15, 2.6, 0x9c4a35); mesh(new THREE.SphereGeometry(1.4, 10, 6), LMC(0x4d6a5a), x, 15.6, -16); } mesh(new THREE.CylinderGeometry(1.4, 1.4, .2, 14), glow(0xffd27a, .7), 30, 7, -15.9).rotation.x = Math.PI / 2; sign('⛪ 전동성당 (1914)', 30, 19, -15, .6);
+      hanok(-28, -24, 12, 7, 3, { tier: true }); bx(-28, 0, -18, 16, 1.6, .5, 0xb9a988); sign('경기전 (태조 어진)', -28, 11, -19, .6);
+      stepsUp(-40, 16, 6, 8, -1, .7, 0x8a9a6a); bx(-40, 0, 7.6, 8, 2.8, 4, 0x8a9a6a); pavilion(-40, 8, 1, 2.8); sign('오목대', -40, 9.5, 11, .55);
+      pond(-22, 26, 30, 4, 0x6fb5d8); pond(26, 26, 30, 4, 0x6fb5d8); bx(14, 0, 26, 6, .35, 4.4, 0x9a8f7a); for (const sx of [-2, 2]) for (const sz of [-1.6, 1.6]) bx(14 + sx, .35, 26 + sz, .3, 2.6, .3, 0x8b2e22, false); hroof(14, 2.9, 26, 5, 3.6); sign('남천교 청연루', 14, 7, 28, .55);
+      stall(-14, 12, 0xd63a2a, '전주비빔밥'); stall(-6, 12, 0xf39c12, '한복대여'); stall(8, 6, 0x27ae60, '한지공예'); stall(16, 12, 0x8e44ad, '초코파이');
+      for (const z of [-12, 2]) lanternLine(-20, 20, z, 4.2, [0xff9a4a, 0xffd27a]); sign('🏡 전주 한옥마을', 0, 6, 18, 1);
+    } },
   { name: '광화문광장', icon: '🦁', w: 48, d: 100, floor: TILE('#cfc8b8', '#b3ab9a', .2), obj: luggage, sky: [0x5aa8ef, 0xeaf2fb], st: 3, shape: [[-.75, 1], [-.75, -.62], [-1, -.75], [-1, -1], [1, -1], [1, -.75], [.75, -.62], [.75, 1]], outside: { col: 0x4a4c50, y: .03 },
-    staff: [{ kind: 'police', route: [[-12, 40], [-12, -30]], wait: 2 }, { kind: 'police', route: [[12, -30], [12, 40]], wait: 2 }], people: { civ: 11, smuggler: 3 },
-    items: [['backpack', 4], ['dutyBag', 2]], who: '세종 광화문광장 관리소장', short: '긴 광장 끝 광화문까지! 세종대왕·이순신 장군 동상 사이를 순찰해요.',
-    intro: '서울 한가운데 광화문광장이야. 남쪽엔 이순신 장군 동상, 가운데엔 황금빛 세종대왕 동상,\n북쪽 끝엔 경복궁의 정문 광화문이 있어. 길쭉한 광장을 쭉 걸으며 수색하자!',
-    build(L) { gateTop(0, -44, 18, 6, 5, { tier: true }); sign('광화문 光化門', 0, 16, -40, .9); mountainBack(-110, 0x5a7a52, 5); statue(0, -6, 0xd4a537, true, 4.2); sign('세종대왕 동상', 0, 8, -3, .6); statue(0, 22, 0x4a6b5a, false, 4); sign('충무공 이순신 장군 동상', 0, 9, 25, .6); for (let z = 30; z < 42; z += 2.4) for (const x of [-6, -3, 0, 3, 6]) mesh(BOX(.3, .1, .3), glow(0x9fdcff, 1), x, .06, z).castShadow = false; for (const z of [-30, -18, 8, 34]) for (const x of [-16, 16]) tree(x, z, .8); } },
+    staff: [{ kind: 'police', route: [[-12, 40], [-12, -30]], wait: 2 }, { kind: 'royalguard', route: [[-4, -40], [4, -40]], wait: 3 }], veh: [{ type: 'taxi', route: [[-21, 48], [-21, -30], [-23, -30], [-23, 48]] }, { type: 'bus', route: [[21, -30], [21, 48], [23, 48], [23, -30]] }], people: { tourist: 6, civ: 5, student: 3, smuggler: 3 },
+    items: [['backpack', 4], ['dutyBag', 2]], who: '세종 광화문광장 관리소장', short: '세종대왕·이순신 동상, 명량분수, 해치마당, 세종문화회관, 청계천 스프링, 북쪽 끝 광화문까지!',
+    intro: '서울 한가운데 광화문광장이야! 남쪽엔 이순신 장군 동상과 명량분수, 가운데엔 황금빛 세종대왕 동상,\n북쪽 끝엔 경복궁 정문 광화문과 북악산이 보여. 옆에는 세종문화회관, 남쪽 끝엔 청계천의 소라 모양 조형물 스프링이 있어!',
+    build(L) {
+      gateTop(0, -44, 18, 6, 5, { tier: true }); sign('광화문 光化門', 0, 16, -40, .9); mountainBack(-110, 0x5a7a52, 5); for (const x of [-10, 10]) { bx(x, 0, -36, 1.6, 1.4, 2.6, 0xb9b2a5); mesh(BOX(1.2, 1.6, 2), LMC(0xc9c2b2), x, 2.2, -36); } sign('해치', 10, 4, -36, .45);
+      statue(0, -8, 0xd4a537, true, 4.2); sign('세종대왕 동상', 0, 8, -5, .6); for (let k = 0; k < 4; k++) mesh(BOX(1.2, 1, .8), LMC(0x7a6a4a), -3 + k * 2, .5, -3.8);
+      statue(0, 22, 0x4a6b5a, false, 4); sign('충무공 이순신 장군 동상', 0, 9, 25, .6); for (const sx of [-1, 1]) { const tb = mesh(BOX(1.6, .8, 2.6), LMC(0x3a4a3a), sx * 3.6, .4, 22); tb.castShadow = false; } sign('거북선', 3.6, 1.6, 22, .4);
+      for (let z = 28; z < 38; z += 2) for (const x of [-6, -3, 3, 6]) { mesh(BOX(.3, .1, .3), glow(0x9fdcff, 1), x, .06, z).castShadow = false; } const c = new THREE.Color(0xbfe8ff); envAnim.push(() => { if (Math.random() < .8) spawnP(pick2([-6, -3, 3, 6]), .2, rr(28, 38), 0, mr(4, 7), 0, c, 1); }); sign('명량분수', 0, 3, 33, .5);
+      for (let z = -28; z <= 14; z += 7) for (const x of [-15, 15]) tree(x, z, .8); flowers(0, 6, 8, 6, [0xf44336, 0xffeb3b, 0xffffff, 0x2196f3], 40);
+      building(-34, -12, 14, 30, 14, 0xd9d2c4); columns(-26.8, -12, 7, 4, 10, 0xf2efe8, 'z', 1); sign('세종문화회관', -27, 16, -12, .7); building(34, -18, 14, 20, 30, 0xb7c4cf, { lit: true, sign: '정부서울청사', sh: .55 }); building(34, 12, 14, 14, 20, 0xcfd6dc, { lit: true });
+      const sp = new THREE.Mesh(new THREE.TorusKnotGeometry(2.2, .5, 80, 8, 2, 3), LMC(0xff5a8a)); sp.position.set(14, 6, 44); sp.scale.set(1, 2, 1); world.add(sp); bx(14, 0, 44, 3, 1.4, 3, 0x8a8a80); sign('🐚 청계천 스프링', 14, 11.5, 44, .55);
+    } },
   { name: '청와대', icon: '🏛', w: 92, d: 70, floor: 0x7fb05a, obj: crate, sky: [0x5fb0ff, 0xf0f6ff], st: 4,
-    staff: [{ kind: 'soldier', route: [[-14, 26], [14, 26]], wait: 3 }, { kind: 'police', route: [[-36, 0], [36, 0]], wait: 2 }, { kind: 'soldier', route: [[-30, -20], [30, -20]], wait: 3 }], people: { civ: 9, smuggler: 3 },
-    items: [['vase', 2], ['statue', 2], ['backpack', 3]], who: '파란기와 청와대 관람 총책임자', short: '푸른 기와의 청와대 본관과 넓은 잔디마당을 순찰해요.',
-    intro: '푸른 기와 지붕으로 유명한 청와대야. 지금은 모두에게 열린 관람 공간이 되었지!\n뒤로는 북악산, 앞으로는 넓은 잔디마당. 관람객 사이 밀수범을 찾자!',
-    build(L) { mountainBack(-60, 0x4f7a42, 7); bx(0, 0, -18, 40, 1.2, 16, 0xe9e4d8); hanok(0, -18, 30, 10, 5, { roof: 0x2f6fb7, wall: 0xf4f1ea, band: 0x2f7d5b }); for (const x of [-22, 22]) hanok(x, -18, 10, 8, 3.6, { roof: 0x2f6fb7, wall: 0xf4f1ea }); sign('청와대 본관 (푸른 기와)', 0, 14, -12, .8); floorPlane(60, 26, MAT.col(0x6fa84a, .9), 0, 12, .01); for (const x of [-28, -14, 14, 28]) pine(x, 2, 1.2); bx(0, 0, 32, 8, 3, 1, 0xc9c2b2); sign('🏛 청와대 관람 입구', 0, 4.4, 33, .7); } },
+    staff: [{ kind: 'soldier', route: [[-14, 26], [14, 26]], wait: 3 }, { kind: 'police', route: [[-36, 0], [36, 0]], wait: 2 }, { kind: 'soldier', route: [[-30, -22], [30, -22]], wait: 3 }], people: { tourist: 6, student: 3, civ: 2, smuggler: 3 },
+    items: [['vase', 2], ['statue', 2], ['backpack', 3]], who: '파란기와 청와대 관람 총책임자', short: '푸른 기와 본관, 영빈관, 춘추관, 녹지원 소나무, 상춘재, 분수대, 뒤로 북악산까지 순찰해요.',
+    intro: '푸른 기와 지붕으로 유명한 청와대야. 지금은 모두에게 열린 관람 공간이 되었지!\n본관 앞 넓은 잔디마당, 손님을 맞던 영빈관, 기자들이 모이던 춘추관, 큰 소나무가 있는 녹지원, 한옥 상춘재까지 둘러보자.',
+    build(L) {
+      mountainBack(-60, 0x4f7a42, 7); sign('북악산', 0, 42, -78, 1);
+      bx(0, 0, -20, 40, 1.2, 16, 0xe9e4d8); stepsUp(0, -11.6, 10, 3, 1, .6, 0xe9e4d8); hanok(0, -20, 30, 10, 5, { roof: 0x2f6fb7, wall: 0xf4f1ea, band: 0x2f7d5b, tier: true }); for (const x of [-22, 22]) hanok(x, -20, 10, 8, 3.6, { roof: 0x2f6fb7, wall: 0xf4f1ea }); sign('청와대 본관 (푸른 기와 15만 장)', 0, 18, -14, .8);
+      floorPlane(60, 22, MAT.col(0x6fa84a, .9), 0, 2, .01);
+      bx(-36, 0, 6, 16, 7, 10, 0xf2efe8); columns(-36, 11.4, 9, 1.8, 7, 0xffffff, 'x', .7); mesh(BOX(17, 1, 11), LMC(0x2f6fb7), -36, 7.4, 6); sign('영빈관', -36, 10, 12, .6);
+      building(36, 6, 14, 10, 6, 0xe9e4d8); hroof(36, 6, 6, 13, 9, 0x3b3f45); sign('춘추관 (프레스센터)', 36, 10, 12, .6);
+      const big = new THREE.Group(); big.position.set(20, 0, 18); world.add(big); mesh(BOX(1.2, 5, 1.2), LMC(0x7a4a2a), 0, 2.5, 0, big); for (let k = 0; k < 4; k++) mesh(BOX(7 - k * 1.2, 1.2, 6 - k), LMC(0x2f6b3a), (k % 2 ? 1 : -1) * .6, 5 + k * 1.1, 0, big); addCol(20, 18, 1.4, 1.4, big, { topY: 99 }); sign('녹지원 반송 (170살 소나무)', 20, 11.5, 18, .55);
+      hanok(-22, 20, 10, 6, 2.8); sign('상춘재 (한옥 영빈 공간)', -22, 8.6, 24, .55);
+      fountain(-12, 30, 3); sign('청와대 앞 분수대', -12, 4, 30, .5); bx(14, 0, 32, 10, 3, 1, 0xc9c2b2); sign('🏛 청와대 관람 입구 (정문)', 14, 4.4, 33, .6);
+      for (const x of [-30, -14, 8, 30]) pine(x, -6, 1.1);
+    } },
   { name: '국회의사당', icon: '🏛', w: 96, d: 72, floor: 0x7fb05a, obj: crate, sky: [0x5aa8ef, 0xeef4fb], st: 4,
-    staff: [{ kind: 'police', route: [[-30, 20], [30, 20]], wait: 2 }, { kind: 'police', route: [[-40, -4], [40, -4]], wait: 2 }], people: { civ: 9, smuggler: 3 },
-    items: [['backpack', 3], ['speaker', 2], ['dutyBag', 2]], who: '여의도 국회사무총장', short: '초록 돔과 24개 기둥의 국회의사당 앞 광장을 순찰해요.',
-    intro: '여의도 국회의사당이야. 지붕 위 커다란 초록 돔과 건물을 둘러싼 24개의 기둥이 특징이야.\n정문 해태상 옆을 지나 넓은 잔디광장을 수색하자!',
-    build(L) { bx(0, 0, -18, 44, 1.6, 28, 0xe8e4dc); bx(0, 1.6, -18, 36, 9, 20, 0xefece6, false); addCol(0, -18, 44, 28, null, { topY: 99 }); for (let k = 0; k < 8; k++) for (const sz of [-1, 1]) mesh(BOX(1, 9, 1), LMC(0xf7f5f0), -17.5 + k * 5, 6.1, -18 + sz * 10.6); for (let k = 0; k < 4; k++) for (const sx of [-1, 1]) mesh(BOX(1, 9, 1), LMC(0xf7f5f0), sx * 18.6, 6.1, -26 + k * 5.3); bx(0, 10.6, -18, 38, .8, 22, 0xdedad2, false); bx(0, 11.4, -18, 20, 2, 14, 0xe8e4dc, false); const dome = new THREE.Mesh(new THREE.SphereGeometry(9, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), MAT.metal(0x4f8a6e, .45)); dome.position.set(0, 13.4, -18); world.add(dome); sign('국회의사당 NATIONAL ASSEMBLY', 0, 26, -6, .9); for (const x of [-8, 8]) { bx(x, 0, 30, 2, 1.4, 2.4, 0x9a968c); mesh(BOX(1.4, 1.6, 2), LMC(0xbab5aa), x, 2.2, 30); } sign('해태상', 0, 4, 31, .5); for (let k = 0; k < 10; k++) tree(rr(-44, 44), rr(6, 22), .9, 0x5f9a3e); const rw = TEX.water(); rw.repeat.set(30, 4); const han = new THREE.Mesh(new THREE.PlaneGeometry(500, 60), std(0xffffff, .2, 0, { map: rw, color: 0x4a8fbf })); han.rotation.x = -Math.PI / 2; han.position.set(0, -.2, -80); world.add(han); } },
+    staff: [{ kind: 'police', route: [[-30, 20], [30, 20]], wait: 2 }, { kind: 'police', route: [[-40, -4], [40, -4]], wait: 2 }], people: { tourist: 4, student: 4, civ: 4, smuggler: 3 },
+    items: [['backpack', 3], ['speaker', 2], ['dutyBag', 2]], who: '여의도 국회사무총장', short: '초록 돔과 24개 기둥의 국회의사당, 해태상, 분수, 의원회관, 윤중로 벚꽃길, 한강과 63빌딩.',
+    intro: '여의도 국회의사당이야! 지붕 위 커다란 초록 돔과 건물을 둘러싼 24개의 기둥이 특징이야.\n정문 해태상과 분수를 지나면 넓은 잔디광장, 옆엔 의원회관, 둘레엔 벚꽃 명소 윤중로가 있어. 뒤로는 한강과 황금빛 63빌딩!',
+    build(L) {
+      bx(0, 0, -18, 46, 1.6, 30, 0xd6d0c4); stepsUp(0, -2.6, 16, 4, 1, .7, 0xd6d0c4); bx(0, 1.6, -18, 36, 9, 20, 0xd8d2c6, false); addCol(0, -18, 46, 30, null, { topY: 99 }); for (let y = 3.2; y < 10; y += 2.6) mesh(BOX(36.1, .9, 18), LMC(0x3a4a5a), 0, y, -18);
+      for (let k = 0; k < 8; k++) for (const sz of [-1, 1]) mesh(BOX(1.1, 9, 1.1), LMC(0xefebe3), -17.5 + k * 5, 6.1, -18 + sz * 10.8); for (let k = 0; k < 4; k++) for (const sx of [-1, 1]) mesh(BOX(1.1, 9, 1.1), LMC(0xefebe3), sx * 18.8, 6.1, -25.8 + k * 5.2);
+      bx(0, 10.6, -18, 39, .8, 23, 0xcfc9bc, false); bx(0, 11.4, -18, 20, 2, 14, 0xd6d0c4, false); const dome = new THREE.Mesh(new THREE.SphereGeometry(9, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), MAT.metal(0x4f8a6e, .45)); dome.position.set(0, 13.4, -18); world.add(dome); sign('국회의사당 NATIONAL ASSEMBLY (기둥 24개)', 0, 26, -6, .9);
+      for (const x of [-8, 8]) { bx(x, 0, 28, 2, 1.4, 2.4, 0x9a968c); mesh(BOX(1.4, 1.6, 2), LMC(0xbab5aa), x, 2.2, 28); mesh(BOX(.8, .8, .8), LMC(0xbab5aa), x, 3.4, 28.8); } sign('해태상', 8, 5, 29, .5); fountain(0, 12, 4); sign('국회 분수', 0, 4, 12, .5);
+      building(36, -20, 14, 22, 14, 0xd6d0c4, { glass: 0x4f6a80, sign: '의원회관', sh: .6 }); building(-36, -20, 14, 14, 8, 0xd6d0c4, { glass: 0x4f6a80, sign: '국회도서관', sh: .6 });
+      for (let z = -32; z <= 30; z += 4) for (const x of [-44, 44]) tree(x, z, .9, 0xf2a7c3); sign('🌸 윤중로 벚꽃길', -40, 5, 20, .55);
+      const rw = TEX.water(); rw.repeat.set(30, 4); const han = new THREE.Mesh(new THREE.PlaneGeometry(500, 60), std(0xffffff, .2, 0, { map: rw, color: 0x4a8fbf })); han.rotation.x = -Math.PI / 2; han.position.set(0, -.2, -80); world.add(han); sign('한강', -20, 3, -60, .8);
+      const t63 = new THREE.Group(); t63.position.set(-70, 0, -100); world.add(t63); for (let k = 0; k < 12; k++) mesh(BOX(10 - k * .3, 5, 7 - k * .2), MAT.metal(0xe0b14a, .25), 0, 2.5 + k * 5, 0, t63); sign('63빌딩', -70, 66, -96, 1);
+    } },
 ];
 const LANDMARK_START = LEVELS.length;
 LANDMARK_LIST.forEach((o, n) => LEVELS.push(LMDEF({ ...o, n })));
@@ -2609,7 +2901,7 @@ async function mpJoin() {
   try {
     const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm');
     const sb = createClient(RANK_CFG.url, SB_ANON, { realtime: { params: { eventsPerSecond: 20 } } });
-    const me = playerId || 'guest' + Math.floor(Math.random() * 9999), key = me + ':' + Math.random().toString(36).slice(2, 6);
+    const me = playerNick || playerId || 'guest' + Math.floor(Math.random() * 9999), key = me + ':' + Math.random().toString(36).slice(2, 6);
     const ch = sb.channel('k9-hidden', { config: { broadcast: { self: false }, presence: { key } } });
     mp = { sb, ch, others: new Map(), sendT: 0, me, key };
     ch.on('broadcast', { event: 'pos' }, ({ payload }) => mpRecv(payload))
@@ -2832,7 +3124,7 @@ $('btnSnap').onclick = () => {
   cv.width = W; cv.height = Hh + band; const g = cv.getContext('2d');
   g.drawImage(src, 0, 0); g.fillStyle = '#0f2236'; g.fillRect(0, Hh, W, band);
   g.textBaseline = 'middle'; g.fillStyle = '#f4c542'; g.font = `${Math.round(band * .36)}px Jua, sans-serif`;
-  g.fillText(`🐕 ${dogName} & 🧑‍✈️ ${playerId} 핸들러`, band * .4, Hh + band * .36);
+  g.fillText(`🐕 ${dogName} & 🧑‍✈️ ${playerNick || playerId} 핸들러`, band * .4, Hh + band * .36);
   g.fillStyle = '#ffffff'; g.font = `${Math.round(band * .24)}px Jua, sans-serif`;
   g.fillText(`탐지견 킁킁 게임 · ${level.name} · ${new Date().toLocaleDateString('ko-KR')}`, band * .4, Hh + band * .74);
   const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = `탐지견_${dogName}.png`; document.body.appendChild(a); a.click(); a.remove();
@@ -2845,7 +3137,7 @@ $('btnSnap').onclick = () => {
 // ================= 게임 상태 =================
 let state = 'login', time = 0, levelTime = 0, levelScore = 0, runScore = 0, runTime = 0, runActive = false, runCleared = new Set(), runStage = 0, shake = 0;
 let level = null, levelIdx = 0, hidden = [], lvStats = {}, totals = { items: 0, arrests: 0, mistakes: 0 };
-let playerId = store.get('k9id', '');
+let playerId = store.get('k9id', ''), playerNick = store.get('k9nick:' + store.get('k9id', ''), '') || store.get('k9id', '');
 const LABEL = { drug: '💊 마약 적발', gun: '🔫 총기 적발', smuggler: '🕶 밀수범 체포', boss: '👑 보스 체포' };
 const progKey = () => 'k9prog:' + playerId;
 const getProg = () => store.get(progKey(), { unlocked: 0, best: {} });
@@ -3079,7 +3371,7 @@ function closeDialog() {
 }
 function renderQuest() {
   if (!level) return;
-  $('qzone').textContent = level.landmark ? `🇰🇷 명소 순찰 · ${mapName(levelIdx)}` : level.relax ? `🌅 HIDDEN MAP · ${mapName(levelIdx)}` : `${level.icon} MAP ${levelIdx + 1}/6 · ${mapName(levelIdx)}`;
+  $('qzone').textContent = level.gate ? `🛃 추가 관문 · ${mapName(levelIdx)}` : level.landmark ? `🇰🇷 명소 순찰 · ${mapName(levelIdx)}` : level.relax ? `🌅 HIDDEN MAP · ${mapName(levelIdx)}` : `${level.icon} MAP ${levelIdx + 1}/6 · ${mapName(levelIdx)}`;
   $('qtitle').textContent = mapName(levelIdx); $('qdesc').textContent = lang === 'ko' ? scaleNums(level.short) + (level.scaled ? ' · 🗺 A~D 구역까지 넓어졌어요!' : '') : t('s' + levelIdx);
   $('qgoals').innerHTML = Object.entries(level.need).map(([k, n]) => { const v = Math.min(lvStats[k] || 0, n); return `<div class="goal ${v >= n ? 'done' : ''}"><span>${t('g_' + k)}</span><b>${v}/${n}</b></div>`; }).join('');
 }
@@ -3127,7 +3419,7 @@ async function win() {
   state = 'win'; setTimeout(() => toast('🌅 히든맵 「노을 활주로」가 열렸어요! 맵 선택에서 확인하세요'), 600);
   const grade = runScore >= 5200 ? 'S' : runScore >= 4300 ? 'A' : runScore >= 3400 ? 'B' : 'C';
   $('wgrade').textContent = grade;
-  $('wstats').innerHTML = `🕵 ${esc(playerId)} · ⏱ 총 작전 시간 <b>${fmtTime(runTime)}</b><br>⭐ 최종 점수 <b>${runScore}</b><br>🔍 적발·폐기 <b>${totals.items}건</b> · 🚔 체포 <b>${totals.arrests}명</b> · ⚠ 실수 <b>${totals.mistakes}회</b>`;
+  $('wstats').innerHTML = `🕵 ${esc(playerNick || playerId)} · ⏱ 총 작전 시간 <b>${fmtTime(runTime)}</b><br>⭐ 최종 점수 <b>${runScore}</b><br>🔍 적발·폐기 <b>${totals.items}건</b> · 🚔 체포 <b>${totals.arrests}명</b> · ⚠ 실수 <b>${totals.mistakes}회</b>`;
   $('win').classList.remove('hidden'); playMusic(0);
   renderRanking($('rankWin'), await fetchRanking(100));
 }
@@ -3149,7 +3441,7 @@ function startServerRun(i) {
 async function reportClear(stage, stageScore, score, reached, secs) {
   const local = store.get('k9rank', []);
   const me = local.find(r => r.player_id === playerId);
-  if (!me) local.push({ player_id: playerId, score, stage: reached, secs });
+  if (!me) local.push({ player_id: playerId, nick: playerNick, dog: dogName, score, stage: reached, secs });
   else if (score > me.score || (score === me.score && secs < me.secs)) Object.assign(me, { score, stage: reached, secs });
   store.set('k9rank', local);
   if (!serverOn() || !runToken) return;
@@ -3166,14 +3458,14 @@ async function reportClear(stage, stageScore, score, reached, secs) {
 async function fetchRanking(max = 100) {
   if (serverOn()) {
     try {
-      const r = await fetch(RANK_CFG.url + '/rest/v1/rankings?select=player_id,score,stage,secs,title&order=score.desc,secs.asc&limit=' + max, { headers: sbHeaders() });
+      const r = await fetch(RANK_CFG.url + '/rest/v1/rankings?select=nick,dog,score,stage,secs,title&order=score.desc,secs.asc&limit=' + max, { headers: sbHeaders() });
       if (r.ok) return { list: await r.json(), online: true };
     } catch { }
   }
   return { list: store.get('k9rank', []).sort((a, b) => b.score - a.score || a.secs - b.secs), online: false };
 }
 function renderRanking(el, { list, online }, limit = 1e9) {
-  const rows = list.slice(0, limit).map((r, i) => `<tr class="${r.player_id === playerId ? 'me' : ''}"><td>${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${r.title ? `<small style="color:#b07a00">${esc(r.title)}</small> ` : ''}${esc(r.player_id)}</td><td class="n">${r.stage}/6</td><td class="n">${fmtTime(r.secs)}</td><td class="n">${r.score}</td></tr>`).join('');
+  const rows = list.slice(0, limit).map((r, i) => `<tr class="${(r.player_id ? r.player_id === playerId : r.nick === playerNick && r.dog === dogName) ? 'me' : ''}"><td>${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${r.title ? `<small style="color:#b07a00">${esc(r.title)}</small> ` : ''}${esc(r.nick || '핸들러')} <small style="color:#8a6d3b">🐕 ${esc(r.dog || '탐지견')}</small></td><td class="n">${r.stage}/6</td><td class="n">${fmtTime(r.secs)}</td><td class="n">${r.score}</td></tr>`).join('');
   el.innerHTML = list.length ? `<table class="rank"><tr>${t('rk_cols').split('|').map((h, i) => `<th${i > 1 ? ' class="n"' : ''}>${h}</th>`).join('')}</tr>${rows}</table>` : '<p style="font-size:14px;color:var(--muted)">아직 기록이 없어요. 첫 번째 주인공이 되어보세요!</p>';
   if (el.id === 'rankFull') $('rankSrv').textContent = online ? `🌐 온라인 랭킹 — 1위부터 전체 ${list.length}명` : '📱 이 기기에 저장된 기록만 표시 중 (온라인 랭킹 서버 미연결)';
 }
@@ -3189,7 +3481,7 @@ $('btnRankClose').onclick = () => { $('rank').classList.add('hidden'); state = r
 // ================= 접속 / 맵 선택 화면 =================
 async function showLogin() {
   hideAll(); state = 'login'; $('topbar').classList.add('hidden');
-  $('login').classList.remove('hidden'); $('pid').value = playerId;
+  $('login').classList.remove('hidden'); restoreLogin();
   renderRanking($('rankMini'), await fetchRanking(100));
 }
 let pausedGame = false, seenHowto = false, howtoCb = null;
@@ -3199,12 +3491,14 @@ function showMaps(paused = false) {
   pausedGame = paused && !!level;
   hideAll(); state = 'maps'; $('topbar').classList.add('hidden');
   const prog = getProg();
-  $('mapsWho').textContent = `🕵 플레이어: ${playerId} · 누적 ${runScore}점` + (runActive ? ` · 이번 작전 ${runCleared.size}/6` : '');
-  $('mapGrid').innerHTML = LEVELS.map((L, i) => {
+  $('mapsWho').textContent = `🕵 ${playerNick || playerId} 핸들러 · 누적 ${runScore}점` + (runActive ? ` · 이번 작전 ${runCleared.size}/6` : '');
+  const lmGate = LEVELS.map((L, i) => i).filter(i => LEVELS[i].gate), lmRest = LEVELS.map((L, i) => i).filter(i => LEVELS[i].landmark && !LEVELS[i].gate);
+  const order = [0, 1, 2, 3, 4, ...lmGate, 5, 6, ...lmRest];
+  $('mapGrid').innerHTML = order.map(i => [LEVELS[i], i]).map(([L, i]) => {
     const locked = L.hidden ? prog.best[5] === undefined : i === 5 ? ![0, 1, 2, 3, 4].every(k => prog.best[k] !== undefined || runCleared.has(k)) : false, cleared = !L.hidden && prog.best[i] !== undefined, inRun = runActive && runCleared.has(i);
     const cur = pausedGame && i === levelIdx;
     const st = cur ? t('st_cur') : locked ? (L.hidden ? t('st_lockH') : t('st_lockB')) : inRun ? t('st_run') : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
-    return (i === LANDMARK_START ? `<div class="mapsep">🇰🇷 대한민국 명소 순찰 · 23곳 <small>(자유 플레이 · 온라인 랭킹 미반영)</small></div>` : '') + `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.hidden && locked ? "❓" : L.icon}</span><span class="no">${L.hidden ? "HIDDEN" : L.landmark ? "명소 " + (i - LANDMARK_START + 1) : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(5 - L.diff.stars)}</span></button>`;
+    return (i === lmRest[0] ? `<div class="mapsep">🇰🇷 대한민국 명소 순찰 · ${lmRest.length}곳 <small>(자유 플레이 · 온라인 랭킹 미반영)</small></div>` : '') + `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.hidden && locked ? "❓" : L.icon}</span><span class="no">${L.hidden ? "HIDDEN" : L.gate ? "추가 관문 " + (lmGate.indexOf(i) + 1) : L.landmark ? "명소 " + (lmRest.indexOf(i) + 1) : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(5 - L.diff.stars)}</span></button>`;
   }).join('');
   renderBadges(); renderShop();
   $('pauseRow').classList.toggle('hidden', !pausedGame); $('btnResumeTop').classList.toggle('hidden', !pausedGame);
@@ -3258,32 +3552,58 @@ $('jobs').addEventListener('click', e => { const t = e.target.closest('[data-j]'
 $('skins').addEventListener('click', e => { const t = e.target.closest('[data-s]'); if (t) { pickSkin = +t.dataset.s; renderJobs(); } });
 function loadSavedDog(id) {
   const hsave = store.get('k9hand:' + id, null) || store.get('k9hand:last', null); if (hsave) { pickJob = hsave.job; pickSkin = hsave.skin; } renderJobs(); const d = store.get('k9dog:' + id, null) || store.get('k9dog:last', null); if (d) { $('dname').value = d.name; pickBreed = d.breed; } renderBreeds(); }
+function showCharBox(open) { $('charBox').classList.toggle('hidden', !open); $('charSum').classList.toggle('hidden', open); }
+function restoreLogin() {
+  const id = store.get('k9id', ''); $('pid').value = id; $('remember').checked = true;
+  if (store.get('k9agree', false)) $('agree').checked = true;
+  if (store.get('k9pcons', false)) { $('pcons').checked = true; $('age14').checked = true; }
+  loadSavedDog(id); $('nick').value = store.get('k9nick:' + id, '') || '';
+  const known = id && store.get('k9dog:' + id, null);
+  if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || id) + ' 핸들러 · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true);
+}
+$('btnCharEdit').onclick = () => showCharBox(true);
 loadSavedDog(store.get('k9id', ''));
-$('pid').addEventListener('change', () => { const d = store.get('k9dog:' + $('pid').value.trim(), null); if (d) { $('dname').value = d.name; pickBreed = d.breed; renderBreeds(); } });
+$('pid').addEventListener('change', () => { const id = $('pid').value.trim(), d = store.get('k9dog:' + id, null); if (d) { $('dname').value = d.name; pickBreed = d.breed; renderBreeds(); } $('nick').value = store.get('k9nick:' + id, '') || ''; });
 const rpc = (name, body) => fetch(RANK_CFG.url + '/rest/v1/rpc/' + name, { method: 'POST', headers: sbHeaders(), body: JSON.stringify(body) });
 const loginErr = t => { $('pidErr').textContent = t; };
+const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
-  const v = $('pid').value.trim(), pw = $('ppw').value;
-  if (!/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr(t('err_id'));
-  if (pw.length < 4) return loginErr(t('err_pw'));
+  const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
+  const isMail = EMAIL_RE.test(v);
+  if (!guest && !isMail && !/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr('아이디는 이메일 주소로 입력해 주세요 (예: dkslek123@google.com)');
+  if (!guest && (!$('pcons').checked || !$('age14').checked)) return loginErr('개인정보 수집·이용 안내를 읽고 [필수] 두 곳에 체크해 주세요. 동의하지 않으면 👀 체험하기로 할 수 있어요.');
+  if (!guest && pw.length < 4) return loginErr(t('err_pw'));
   if (!$('agree').checked) return loginErr(t('err_agree'));
-  const dn = $('dname').value.trim();
-  if (!/^[가-힣A-Za-z0-9 ]{1,8}$/.test(dn)) return loginErr(t('err_dog'));
+  const dn = $('dname').value.trim(), nk = $('nick').value.trim() || v;
+  if (!/^[가-힣A-Za-z0-9 ]{1,8}$/.test(dn)) { showCharBox(true); return loginErr(t('err_dog')); }
+  if (!/^[가-힣A-Za-z0-9_ ]{1,10}$/.test(nk)) { showCharBox(true); return loginErr('핸들러 닉네임은 한글·영문·숫자 1~10자로 정해주세요'); }
   ac(); actx.resume?.(); setMusic(musicOn);
   $('btnLogin').disabled = true; loginErr('확인 중…');
   let res = 'offline';
-  if (serverOn()) { try { const r = await rpc('login_player', { p_id: v, p_pw: pw }); if (r.ok) res = await r.json(); } catch { } }
+  if (serverOn() && !guest) { try { const r = await rpc('login_player', { p_id: v, p_pw: pw }); if (r.ok) res = await r.json(); } catch { } }
   $('btnLogin').disabled = false;
   if (res === 'bad') return loginErr(t('err_bad'));
   if (res === 'locked') return loginErr('비밀번호를 여러 번 틀려서 5분간 잠겼어요. 잠시 후 다시 시도하세요.');
   loginErr('');
-  playerId = v; setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; store.set('k9id', v); runScore = 0; runActive = false;
+  playerId = guest ? 'guest_' + nk : v; playerNick = nk; store.set('k9nick:' + v, nk); setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; if (!guest) store.set('k9id', $('remember').checked ? v : ''); store.set('k9agree', $('agree').checked); if (!guest) store.set('k9pcons', true); runScore = 0; runActive = false;
+  if (serverOn() && playerPw) rpc('set_profile', { p_id: v, p_pw: pw, p_nick: nk, p_dog: dn, p_consent: true }).catch(() => { });
+  if (guest) toast('👀 체험 모드예요 · 랭킹에 올라가지 않고 이 기기에만 저장돼요');
   if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
-  if (res === 'offline') toast('📡 랭킹 서버에 연결하지 못해 이 기기에만 기록돼요');
+  if (res === 'offline' && !guest) toast('📡 랭킹 서버에 연결하지 못해 이 기기에만 기록돼요');
   showMaps();
 }
 $('btnLogin').onclick = login;
-for (const id of ['pid', 'ppw', 'dname']) $(id).addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+$('btnGuest').onclick = () => { login.guest = true; login(); };
+$('btnDelMe').onclick = async () => {
+  const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value;
+  if (!v || pw.length < 4) return loginErr('삭제하려면 아이디(이메일)와 비밀번호를 먼저 입력하세요');
+  if (!confirm('정말 내 정보를 모두 삭제할까요?\n이메일·비밀번호·닉네임·랭킹 기록이 서버에서 지워지고 되돌릴 수 없어요.')) return;
+  let ok = false; try { const r = await rpc('delete_me', { p_id: v, p_pw: pw }); ok = r.ok && await r.json(); } catch { }
+  if (!ok) return loginErr('삭제하지 못했어요. 아이디와 비밀번호를 확인해 주세요.');
+  for (const k of ['k9id', 'k9nick:' + v, 'k9dog:' + v, 'k9hand:' + v, 'k9pcons']) store.set(k, k === 'k9id' ? '' : null);
+  $('pid').value = ''; $('ppw').value = ''; loginErr('🗑 내 정보가 모두 삭제되었어요.'); renderRanking($('rankMini'), await fetchRanking(100));
+};
+for (const id of ['pid', 'ppw', 'dname', 'nick']) $(id).addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 $('btnLogout').onclick = showLogin;
 $('btnRankOpen').onclick = openRank;
 $('dok').onclick = closeDialog;
@@ -3657,6 +3977,7 @@ function updateCamera(dt) {
   if (shake > 0) { shake -= dt; camera.position.x += mr(-1, 1) * shake * .5; camera.position.y += mr(-1, 1) * shake * .5; }
   camera.lookAt(tx, ty, tz);
   if (state === 'photo') camera.lookAt((dog.x + handler.x) / 2, dog.y + .9, (dog.z + handler.z) / 2);
+  if (window.__view) { const v = window.__view; camera.position.set(v[0], v[1], v[2]); camera.lookAt(v[3], v[4], v[5]); }
   if (level && level.ship) camera.rotateZ(Math.sin(time * .7) * .03);
   if (level && level.sunset) sun.position.set(tx - 40, 14, tz - 30); else sun.position.set(tx + 22, 45, tz + 16); sun.target.position.set(tx, 0, tz);
 }
