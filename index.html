@@ -3,12 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>관세청 탐지견</title>
+<title>탐지견 킁킁 게임</title>
+<meta name="description" content="킁킁! 탐지견이 되어 공항·항만에서 숨은 마약과 총기를 찾고 밀수범을 잡는 3D 블록 게임">
+<meta property="og:type" content="website">
+<meta property="og:title" content="🐕 탐지견 킁킁 게임">
+<meta property="og:description" content="킁킁! 숨은 밀수품을 찾아라 · 탐지견 3D 어드벤처 (관세청 일일 특강 교육 게임)">
+<meta property="og:image" content="https://koreak9king.github.io/customs-k9-game/og.png">
+<meta property="og:url" content="https://koreak9king.github.io/customs-k9-game/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://koreak9king.github.io/customs-k9-game/og.png">
 <meta name="theme-color" content="#0f2236">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="관세청 탐지견">
+<meta name="apple-mobile-web-app-title" content="탐지견 킁킁">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* 단일 다크 테마: 3D 캔버스 전체화면 + 가장자리 HUD + 중앙 카드 오버레이 */
@@ -36,6 +44,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 .lbl{font-size:12px;opacity:.85;white-space:nowrap}
 #toast{top:calc(96px + var(--st));left:50%;transform:translateX(-50%);font-family:Jua,sans-serif;font-size:22px;background:rgba(0,0,0,.6);padding:8px 18px;border-radius:24px;opacity:0;transition:opacity .25s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1}
+#coverTitle{position:fixed;z-index:40;left:0;right:0;top:7%;text-align:center;font-family:Jua,sans-serif;pointer-events:none}
+#coverTitle .ct1{font-size:min(11vw,92px);color:#fff;text-shadow:0 6px 0 #13335a,0 0 24px rgba(0,0,0,.5)}
+#coverTitle .ct2{font-size:min(4.4vw,34px);color:#f4c542;text-shadow:0 3px 0 #13335a;margin-top:6px}
 #mission{top:calc(52px + var(--st));left:50%;transform:translateX(-50%);background:rgba(170,30,30,.92);font-family:Jua,sans-serif;font-size:18px;padding:6px 16px;border-radius:12px;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;border:2px solid #ffd54f}
 #combo{top:calc(140px + var(--st));left:50%;transform:translateX(-50%);font-family:Jua,sans-serif;font-size:28px;color:#ff7043;text-shadow:0 2px 0 #000}
 #photoBar{position:fixed;z-index:8;left:50%;bottom:calc(16px + var(--sb));transform:translateX(-50%);display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:max-content;max-width:94vw}
@@ -137,7 +148,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
 <div id="login" class="overlay"><div class="card">
  <img id="logo" src="logo.png" alt="관세청" style="display:block;max-height:56px;max-width:60%;margin:0 auto 10px" onerror="this.remove()">
  <div class="sub">관세청 일일 특강 교육 게임</div>
- <h1>🐕 관세청 탐지견: 6대 관문 대작전</h1>
+ <h1>🐕 탐지견 킁킁 게임</h1>
  <p>나만의 <b>탐지견</b>을 만들어 공항부터 보세창고까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
  <label for="pid" style="font-weight:700;color:var(--navy)">플레이어 아이디</label>
  <input id="pid" maxlength="12" placeholder="한글·영문·숫자 2~12자" autocomplete="off">
@@ -201,7 +212,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
   <kbd>킁킁</kbd><span>꾹 눌러 냄새 맡기</span><kbd>왕왕</kbd><span>짖어서 적발 / 밀수범 공격</span><kbd>뼈다귀</kbd><span>핸들러가 뼈다귀 던지기</span>
   <kbd>화면 드래그</kbd><span>카메라 회전</span>
  </div>
- <p style="font-size:14px;margin:6px 0">❤️ 하트 3개 · 깨끗한 물건을 적발하거나, 시민을 맞히거나, 차량에 부딪히면 하트가 줄어요. 🎾 공을 주우면 회복! 밀수범 체력이 0이 되면 체포됩니다.</p>
+ <p style="font-size:14px;margin:6px 0">❤️ 하트 3개로 시작해 최대 7개까지 모아요(🎾 공·돌발 미션) · 깨끗한 물건을 적발하거나, 시민을 맞히거나, 차량에 부딪히면 하트가 줄어요. 🎾 공을 주우면 회복! 밀수범 체력이 0이 되면 체포됩니다.</p>
  <div class="row"><button class="big" id="btnHowtoOk">알겠어요! 출동!</button></div>
 </div></div>
 <div id="dlg" class="overlay hidden"><div class="card">
@@ -862,7 +873,7 @@ class Person {
     this.hp = kind === 'boss' ? level.diff.bossHp : kind === 'smuggler' ? level.diff.hp : 1;
     this.stun = 0; this.glow = 0; this.target = null; this.wait = mr(0, 2); this.dir = mr(0, 6);
     this.phase = mr(0, 6); this.blocked = 0; this.turn = 0; this.turnT = 0; this.alerted = false;
-    this.arrested = false; this.dead = false; this.r = kind === 'boss' ? .5 : .4;
+    this.arrested = false; this.dead = false; this.y = 0; this.vy = 0; this.r = kind === 'boss' ? .5 : .4;
     this.g.position.set(x, 0, z); world.add(this.g); people.push(this);
   }
   say(line) {
@@ -872,6 +883,23 @@ class Person {
     this.bubble.position.y = 2.75; this.g.add(this.bubble); this.bubbleT = 2.8;
   }
   lines() { return LINES[this.look || this.kind] || LINES.civ; }
+  findEscape(awx, awz) {
+    // 12방향을 살펴 막히지 않고 탐지견에게서 먼 쪽을 고른다 (낮은 장애물은 점프로 넘을 수 있음)
+    const b = level.bounds; let best = null, bs = -1e9, low = false;
+    for (let k = 0; k < 12; k++) {
+      const a = k / 12 * Math.PI * 2, dx = Math.sin(a), dz = Math.cos(a);
+      let free = true, lowHit = false;
+      for (const t of [1, 2.2]) {
+        const px = this.x + dx * t, pz = this.z + dz * t;
+        if (px < b.minX || px > b.maxX || pz < b.minZ || pz > b.maxZ) { free = false; break; }
+        const c = colliders.find(c => !c.disabled && c.topY > this.y + STEP && distToBox(px, pz, c) < this.r);
+        if (c) { if (c.topY < 1.3) lowHit = true; else { free = false; break; } }
+      }
+      const sc = (dx * awx + dz * awz) * 2 + (free ? 3 : -10) - (lowHit ? .5 : 0);
+      if (sc > bs) { bs = sc; best = [dx, dz]; low = lowHit; }
+    }
+    return { dir: best || [awx, awz], low };
+  }
   startAct() {
     this.act = null;
     if (this.villain || this.route) { if (Math.random() < .35) this.say(pick2(this.lines())); return; }
@@ -909,9 +937,25 @@ class Person {
       flee = true;
       if (!this.alerted) { this.alerted = true; floatText('!?', this.x, 2.6, this.z, { color: '#ff6b6b' }); if (!this.look || Math.random() < .5) this.say(pick2(LINES[this.kind === 'boss' ? 'bossFlee' : 'flee'])); }
       let ax = dx / d, az = dz / d;
-      if (this.blocked > .25) { this.turn = Math.random() < .5 ? 1 : -1; this.turnT = .8; this.blocked = 0; }
-      if (this.turnT > 0) { this.turnT -= dt; const a = this.turn * 1.3, c = Math.cos(a), s = Math.sin(a); [ax, az] = [ax * c - az * s, ax * s + az * c]; }
-      sp = (this.kind === 'boss' ? 6.6 : 5.0) * level.diff.speed; vx = ax * sp; vz = az * sp;
+      if (this.blocked > .2) {
+        const e = this.findEscape(ax, az); this.escDir = e.dir; this.escT = 1.2; this.blocked = 0;
+        if (e.low && this.y === 0) { this.vy = 6.8; floatText('폴짝!', this.x, 2.4, this.z, { h: .4 }); }
+      }
+      if (this.escT > 0) { this.escT -= dt; [ax, az] = this.escDir; }
+      this.dashCd = (this.dashCd ?? mr(2, 5)) - dt;
+      if (this.dashCd <= 0) { this.dashT = 1; this.dashCd = mr(4, 7); floatText('💨 슝!', this.x, 2.4, this.z, { h: .4 }); }
+      if (this.dashT > 0) { this.dashT -= dt; if (Math.random() < .5) spawnP(this.x, .2, this.z, mr(-1, 1), .6, mr(-1, 1), DUST, .4); }
+      sp = (this.kind === 'boss' ? 6.6 : 5.0) * level.diff.speed * (this.dashT > 0 ? 1.8 : 1); vx = ax * sp; vz = az * sp;
+      // 반격: 보스는 항상, 부하는 2단계 이상 맵에서 몰렸을 때
+      this.atkCd = (this.atkCd ?? 2) - dt;
+      const canAtk = this.kind === 'boss' || (level.diff.stars >= 2 && (this.escT > 0 || d < 2));
+      if (this.windup > 0) {
+        this.windup -= dt; sp = 0; vx = vz = 0;
+        if (this.windup <= 0) {
+          floatText('👊', this.x, 2.2, this.z, { h: .6 });
+          if (Math.hypot(this.x - dog.x, this.z - dog.z) < 2 && dog.y < 1.5) { moveCircle(dog, -dx / d * 1.6, -dz / d * 1.6, .5, false, dog.y); toast(this.kind === 'boss' ? '👊 보스의 공격! 조심하세요' : '👊 밀수범의 반격!'); damage(); }
+        }
+      } else if (canAtk && d < 1.7 && this.atkCd <= 0) { this.windup = .45; this.atkCd = this.kind === 'boss' ? 2.5 : 4; floatText('😠 !', this.x, 2.6, this.z, { h: .45, color: '#ff6b6b' }); }
     } else {
       if (d > fleeR + 4) this.alerted = false;
       if (this.wait > 0) { this.wait -= dt; this.idleAct(dt); }
@@ -925,7 +969,7 @@ class Person {
     }
     if (sp > 0) {
       const ox = this.x, oz = this.z;
-      moveCircle(this, vx * dt, vz * dt, this.r, false);
+      moveCircle(this, vx * dt, vz * dt, this.r, false, this.y);
       const moved = Math.hypot(this.x - ox, this.z - oz);
       if (moved < sp * dt * .3) {
         this.blocked += dt; this.stuck = (this.stuck || 0) + dt;
@@ -938,12 +982,14 @@ class Person {
     const k = Math.min(1, sp / 2);
     this.legs[0].rotation.x = Math.sin(this.phase) * .6 * k; this.legs[1].rotation.x = -Math.sin(this.phase) * .6 * k;
     this.arms[0].rotation.x = -Math.sin(this.phase) * .5 * k; this.arms[1].rotation.x = Math.sin(this.phase) * .5 * k;
-    unstick(this, this.r, 0);
+    if (this.y > 0 || this.vy > 0) { this.vy -= 22 * dt; this.y += this.vy * dt; const gh = groundAt(this.x, this.z, this.r, Math.max(0, this.y)).h; if (this.y <= gh) { this.y = gh; this.vy = 0; } }
+    unstick(this, this.r, this.y);
     this.x = clamp(this.x, level.bounds.minX, level.bounds.maxX); this.z = clamp(this.z, level.bounds.minZ, level.bounds.maxZ);
+    if (this.windup > 0) this.arms[0].rotation.x = this.arms[1].rotation.x = -2.6;
     if (this.wait > 0 && this.act === 'phone') this.arms[1].rotation.x = -2.6;
     if (this.wait > 0 && this.act === 'talk') this.arms[0].rotation.x = -.5 + Math.sin(time * 5 + this.phase) * .4;
     if (!this.bubble && Math.random() < dt * (this.kind === 'chief' ? .22 : .015)) this.say(pick2(this.lines()));
-    this.g.position.set(this.x, Math.abs(Math.sin(this.phase)) * .05 * k, this.z);
+    this.g.position.set(this.x, this.y + Math.abs(Math.sin(this.phase)) * .05 * k, this.z);
     this.g.rotation.y = this.dir;
   }
 }
@@ -1108,18 +1154,7 @@ function floorPlane(w, d, mat, x = 0, z = 0, y = 0) {
 function walls(L, kind, skipNorth = false) {
   const { w, d } = L, h = kind === 'glass' ? 3.2 : kind === 'fence' ? 2 : 3.6;
   const mat = kind === 'glass' ? MAT.glass() : kind === 'fence' ? MAT.metal(0x7c8a90, .5) : MAT.col(0xb9b3a6, .9);
-  const seg = (x, z, sw, sd) => {
-    if (kind === 'fence') {
-      addCol(x, z, sw, sd, null, { topY: 2 });
-      const len = Math.max(sw, sd), along = sw > sd;
-      for (let t = -len / 2; t <= len / 2; t += 3) mesh(CYL(.05, .05, 2, 8), mat, x + (along ? t : 0), 1, z + (along ? 0 : t));
-      for (const y of [.1, 1, 1.95]) mesh(BOX(along ? sw : .06, .05, along ? .06 : sd), mat, x, y, z);
-      const net = mesh(BOX(along ? sw : .02, 1.8, along ? .02 : sd), M('net', () => std(0x9aa5aa, .6, .6, { transparent: true, opacity: .25 })), x, 1, z); net.castShadow = false;
-    } else {
-      const m = solid(x, z, sw, sd, h, mat);
-      if (kind === 'glass') { m.mesh.castShadow = false; mesh(BOX(sw + .02, .12, sd + .02), MAT.metal(0x8a959c), x, h, z); mesh(BOX(sw + .02, .1, sd + .02), MAT.metal(0x8a959c), x, .05, z); }
-    }
-  };
+  const seg = (x, z, sw, sd) => addCol(x, z, sw, sd, null, { topY: 99 });
   if (!skipNorth) seg(0, -d / 2, w + 1, .4);
   seg(0, d / 2, w + 1, .4); seg(-w / 2, 0, .4, d + 1); seg(w / 2, 0, .4, d + 1);
 }
@@ -1790,7 +1825,7 @@ function updateFun(dt) {
   } else {
     mission.t -= dt; const done = mission.t <= 0;
     $('mission').textContent = `${mission.d.text}  ⏱ ${Math.max(0, Math.ceil(mission.t))}초`;
-    if (mission.d.check(mission, done)) { addScore(200); ach.missions = (ach.missions || 0) + 1; toast('✅ 돌발 미션 성공! +200점'); SFX.quest(); endMission(); }
+    if (mission.d.check(mission, done)) { addScore(200); dog.hp = Math.min(7, dog.hp + 1); ach.missions = (ach.missions || 0) + 1; toast('✅ 돌발 미션 성공! +200점 ❤️+1'); SFX.quest(); endMission(); }
     else if (done) { toast('⌛ 돌발 미션 실패… 다음 기회에!'); endMission(); }
   }
 }
@@ -1844,7 +1879,7 @@ $('btnSnap').onclick = () => {
   g.textBaseline = 'middle'; g.fillStyle = '#f4c542'; g.font = `${Math.round(band * .36)}px Jua, sans-serif`;
   g.fillText(`🐕 ${dogName} & 🧑‍✈️ ${playerId} 핸들러`, band * .4, Hh + band * .36);
   g.fillStyle = '#ffffff'; g.font = `${Math.round(band * .24)}px Jua, sans-serif`;
-  g.fillText(`관세청 탐지견 · ${level.name} · ${new Date().toLocaleDateString('ko-KR')}`, band * .4, Hh + band * .74);
+  g.fillText(`탐지견 킁킁 게임 · ${level.name} · ${new Date().toLocaleDateString('ko-KR')}`, band * .4, Hh + band * .74);
   const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = `탐지견_${dogName}.png`; document.body.appendChild(a); a.click(); a.remove();
   tone(1200, .08, 'square', .1);
   const fl = document.createElement('div'); fl.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:30;pointer-events:none;transition:opacity .4s'; document.body.appendChild(fl);
@@ -1906,7 +1941,7 @@ function loadLevel(i) {
   for (const [type, n] of Object.entries(def.hide)) for (let k = 0; k < n && pool.length; k++) { const c = pool.pop(); c.hidden = type; hidden.push(c); }
   // 초기화
   lvStats = { drug: 0, gun: 0, smuggler: 0, boss: 0 };
-  Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: 3, boost: 0, hurt: 0, fetch: null, idleT: 0, jumps: 0, prop: null, prevIdle: null });
+  Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: Math.min(7, Math.max(3, dog.hp || 0)), boost: 0, hurt: 0, fetch: null, idleT: 0, jumps: 0, prop: null, prevIdle: null });
   Object.assign(handler, { x: spawn.x, z: spawn.z + 1.9, y: 0, vy: 0, dir: Math.PI, boneCd: 0 });
   for (const b of bones) scene.remove(b.m); bones.length = 0;
   balls = []; for (let k = 0; k < 3; k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
@@ -1916,7 +1951,7 @@ function loadLevel(i) {
 }
 
 function startLevel(i) {
-  if (i !== runNext || i === 0) { runScore = 0; runTime = 0; runStage = 0; totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = startServerRun(i); }
+  if (i !== runNext || i === 0) { runScore = 0; runTime = 0; runStage = 0; totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = startServerRun(i); dog.hp = 3; }
   runNext = i;
   hideAll(); loadLevel(i);
   $('topbar').classList.remove('hidden');
@@ -2021,13 +2056,13 @@ async function reportClear(stage, stageScore, score, reached, secs) {
 async function fetchRanking() {
   if (serverOn()) {
     try {
-      const r = await fetch(RANK_CFG.url + '/rest/v1/rankings?select=player_id,score,stage,secs,title&order=score.desc,secs.asc&limit=50', { headers: sbHeaders() });
+      const r = await fetch(RANK_CFG.url + '/rest/v1/rankings?select=player_id,score,stage,secs,title&order=score.desc,secs.asc&limit=100', { headers: sbHeaders() });
       if (r.ok) return { list: await r.json(), online: true };
     } catch { }
   }
   return { list: store.get('k9rank', []).sort((a, b) => b.score - a.score || a.secs - b.secs), online: false };
 }
-function renderRanking(el, { list, online }, limit = 50) {
+function renderRanking(el, { list, online }, limit = 100) {
   const rows = list.slice(0, limit).map((r, i) => `<tr class="${r.player_id === playerId ? 'me' : ''}"><td>${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${r.title ? `<small style="color:#b07a00">${esc(r.title)}</small> ` : ''}${esc(r.player_id)}</td><td class="n">MAP ${r.stage}</td><td class="n">${fmtTime(r.secs)}</td><td class="n">${r.score}</td></tr>`).join('');
   el.innerHTML = list.length ? `<table class="rank"><tr><th>순위</th><th>아이디</th><th class="n">도달</th><th class="n">시간</th><th class="n">점수</th></tr>${rows}</table>` : '<p style="font-size:14px;color:var(--muted)">아직 기록이 없어요. 첫 번째 주인공이 되어보세요!</p>';
   if (el.id === 'rankFull') $('rankSrv').textContent = online ? '🌐 온라인 랭킹 — 모든 플레이어 기록' : '📱 이 기기에 저장된 기록만 표시 중 (온라인 랭킹 서버 미연결)';
@@ -2210,14 +2245,18 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => { keys[e.code] = false; });
 addEventListener('blur', () => { keys = {}; });
 const cvs = renderer.domElement;
-cvs.addEventListener('pointerdown', e => { dragging = { id: e.pointerId, x: e.clientX, y: e.clientY }; cvs.setPointerCapture(e.pointerId); });
-cvs.addEventListener('pointermove', e => {
-  if (!dragging || dragging.id !== e.pointerId) return;
-  yaw -= (e.clientX - dragging.x) * .006; pitch = clamp(pitch + (e.clientY - dragging.y) * .004, .12, 1.2);
-  dragging.x = e.clientX; dragging.y = e.clientY;
+const ptrs = new Map(); let pinch = null;
+cvs.addEventListener('pointerdown', e => {
+  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); cvs.setPointerCapture(e.pointerId);
+  if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), cam: camDist }; }
 });
-cvs.addEventListener('pointerup', () => dragging = null);
-cvs.addEventListener('pointercancel', () => dragging = null);
+cvs.addEventListener('pointermove', e => {
+  const p = ptrs.get(e.pointerId); if (!p) return;
+  if (ptrs.size >= 2 && pinch) { p.x = e.clientX; p.y = e.clientY; const [a, b] = [...ptrs.values()]; camDist = clamp(pinch.cam * pinch.d / Math.max(20, Math.hypot(a.x - b.x, a.y - b.y)), 3.5, 22); return; }
+  yaw -= (e.clientX - p.x) * .006; pitch = clamp(pitch + (e.clientY - p.y) * .004, .12, 1.2); p.x = e.clientX; p.y = e.clientY;
+});
+const ptrEnd = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; };
+cvs.addEventListener('pointerup', ptrEnd); cvs.addEventListener('pointercancel', ptrEnd);
 cvs.addEventListener('wheel', e => { camDist = clamp(camDist + e.deltaY * .01, 4.5, 18); }, { passive: true });
 cvs.addEventListener('contextmenu', e => e.preventDefault());
 const joy = $('joy'), knob = $('knob'); let joyId = null;
@@ -2289,7 +2328,7 @@ function updateDog(dt) {
     if (d < .85) moveCircle(dog, dx / d * (.85 - d), dz / d * (.85 - d), .5, false, dog.y);
   }
 
-  for (const b of balls) { if (b.got) continue; b.m.position.y = .5 + Math.sin(time * 3 + b.x) * .15; b.m.rotation.y += dt * 3; if (Math.hypot(b.x - dog.x, b.z - dog.z) < 1 && dog.y < 1.2) { b.got = true; ballsGot++; world.remove(b.m); dog.hp = Math.min(3, dog.hp + 1); dog.boost = 6; SFX.found(); burst(b.x, .6, b.z, [new THREE.Color(0xc8e632), WHITE], 25, 3); toast('🎾 공 획득! 체력 +1 · 6초간 스피드 업'); } }
+  for (const b of balls) { if (b.got) continue; b.m.position.y = .5 + Math.sin(time * 3 + b.x) * .15; b.m.rotation.y += dt * 3; if (Math.hypot(b.x - dog.x, b.z - dog.z) < 1 && dog.y < 1.2) { b.got = true; ballsGot++; world.remove(b.m); dog.hp = Math.min(7, dog.hp + 1); dog.boost = 6; SFX.found(); burst(b.x, .6, b.z, [new THREE.Color(0xc8e632), WHITE], 25, 3); toast('🎾 공 획득! 체력 +1 · 6초간 스피드 업'); } }
   if (barkQ && dog.barkCd <= 0) bark();
   barkQ = false; dog.barkCd -= dt;
 
@@ -2520,7 +2559,7 @@ function loop() {
   hudTick -= dt;
   if (hudTick <= 0) {
     hudTick = 1 / 30; drawMinimap();
-    $('stam').firstChild.style.width = dog.stamina + '%'; $('hp').textContent = '❤️'.repeat(Math.max(0, dog.hp)) + '🖤'.repeat(3 - Math.max(0, dog.hp));
+    $('stam').firstChild.style.width = dog.stamina + '%'; $('hp').textContent = '❤️'.repeat(Math.max(0, dog.hp)) + '🖤'.repeat(Math.max(0, 3 - dog.hp));
     $('scent').firstChild.style.width = (scentShown * 100).toFixed(0) + '%';
     $('score').textContent = '⭐ ' + (runScore + levelScore);
     $('clock').textContent = '⏱ ' + fmtTime(levelTime);
@@ -2530,6 +2569,16 @@ function loop() {
 loop();
 setMusic(musicOn);
 showLogin();
+window.__cover = () => {
+  hideAll(); setDog('beagle', '킁킁이'); loadLevel(4); state = 'photo'; photoPose = 4.1;
+  const sp = level.spawn; Object.assign(dog, { x: sp.x, z: sp.z - 2, dir: 0 }); Object.assign(handler, { x: sp.x + 1.7, z: sp.z - 3.2, dir: 0 }); photoDir = 0;
+  people.forEach(p => p.g.visible = false); setTimeout(() => scene.traverse(o => { if (o.isSprite) o.visible = false; }), 300);
+  document.body.classList.add('photo'); $('photoBar').classList.add('hidden'); $('topbar').classList.add('hidden');
+  const d = document.createElement('div'); d.id = 'coverTitle';
+  d.innerHTML = '<div class="ct1">🐕 탐지견 킁킁 게임</div><div class="ct2">킁킁! 숨은 밀수품을 찾아라 · K9 3D 어드벤처</div>';
+  document.body.appendChild(d);
+};
+if (location.hash === '#cover') setTimeout(() => window.__cover(), 300);
 window.__game = { dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
 </script>
 </body>
