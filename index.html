@@ -235,8 +235,8 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  <div id="badges"></div>
  <div id="shop"></div>
  <div class="row" id="pauseRow"><button class="big" id="btnResume">▶ 게임으로 돌아가기</button><button class="big alt" id="btnRestartMap">🔄 이 맵 다시 시작</button></div>
- <div class="row"><button class="big alt" id="btnMode">👤 1인 모드 (눌러서 2인 협동 모드로)</button></div>
- <div class="row" id="teamRow" style="flex-wrap:wrap;gap:6px;align-items:center"><b style="color:var(--navy)">👥 팀 방</b><select id="teamSize" style="font-size:15px;padding:6px;border-radius:8px"><option value="1">1명</option><option value="2">2명</option><option value="3" selected>3명</option><option value="4">4명</option><option value="5">5명</option></select><button class="alt" id="btnTeamNew" style="font-size:14px;padding:8px 12px;border-radius:10px">방 만들기</button><input id="teamCode" dir="ltr" placeholder="방 코드 (예: 4821-3)" maxlength="6" style="width:150px;font-size:15px;padding:7px;border-radius:8px;border:2px solid #d6cdb8"><button class="alt" id="btnTeamJoin" style="font-size:14px;padding:8px 12px;border-radius:10px">참가</button><button class="alt hidden" id="btnTeamOut" style="font-size:14px;padding:8px 12px;border-radius:10px">나가기</button></div>
+ <div class="row hidden"><button class="big alt" id="btnMode">👤 1인 모드 (눌러서 2인 협동 모드로)</button></div>
+ <div class="row" id="teamRow" style="flex-wrap:wrap;gap:6px;align-items:center"><b style="color:var(--navy)">👥 팀 방</b><span style="font-size:13px;color:var(--muted)">(최대 5명)</span><input type="hidden" id="teamSize" value="5"><button class="alt" id="btnTeamNew" style="font-size:14px;padding:8px 12px;border-radius:10px">방 만들기</button><input id="teamCode" dir="ltr" placeholder="방 번호 (예: 1234)" maxlength="6" style="width:150px;font-size:15px;padding:7px;border-radius:8px;border:2px solid #d6cdb8"><button class="alt" id="btnTeamJoin" style="font-size:14px;padding:8px 12px;border-radius:10px">참가</button><button class="alt hidden" id="btnTeamOut" style="font-size:14px;padding:8px 12px;border-radius:10px">나가기</button></div>
  <div class="sub" id="teamInfo" style="text-align:center;min-height:1em"></div>
  <div id="teamList" style="display:flex;flex-direction:column;gap:6px;margin:6px 0"></div>
  <div class="row"><button class="big alt" id="btnRankOpen">🏆 랭킹 보기</button><button class="big alt" id="btnLogout">아이디 변경</button></div>
@@ -316,7 +316,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030030131';
+const BUILD = '20261030031032';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -1222,6 +1222,20 @@ function updateBones(dt) {
     if (hit.villain) hitVillain(hit, '🦴 명중!');
     else { hit.stun = .8; addScore(-50); totals.mistakes++; toast('😵 일반인을 맞혔어요! 부상 (-50)'); SFX.error(); damage(); }
   }
+}
+// 3단 점프(공중 덤블링) 후 착지: 주변 범인에게 충격파 데미지, 일반인은 잠깐 휘청
+function groundSlam(gy) {
+  const R = 4.2 * (.9 + .03 * ST().bark); let hit = 0;
+  floatText('💥 쿵!', dog.x, gy + 2.2, dog.z, { h: .7, color: '#ff7043' }); shake = .5; tone(70, .35, 'sawtooth', .12, 40); tone(140, .2, 'square', .08, 60, .05);
+  for (let k = 0; k < 36; k++) { const a = k / 36 * Math.PI * 2; spawnP(dog.x + Math.cos(a) * .6, gy + .15, dog.z + Math.sin(a) * .6, Math.cos(a) * 7, .8, Math.sin(a) * 7, k % 2 ? DUST : new THREE.Color(0xffb74d), .6); }
+  const ring = new THREE.Mesh(new THREE.RingGeometry(.3, .6, 32), new THREE.MeshBasicMaterial({ color: 0xffb74d, transparent: true, opacity: .8, side: THREE.DoubleSide })); ring.rotation.x = -Math.PI / 2; ring.position.set(dog.x, gy + .08, dog.z); world.add(ring);
+  let rt = 0; const fx = () => { rt += 1 / 60; ring.scale.setScalar(1 + rt * 16); ring.material.opacity = Math.max(0, .8 - rt * 2.4); if (rt < .35) requestAnimationFrame(fx); else { world.remove(ring); ring.geometry.dispose(); ring.material.dispose(); } }; requestAnimationFrame(fx);
+  for (const p of people) {
+    if (p.dead || p.arrested) continue; const d = Math.hypot(p.x - dog.x, p.z - dog.z); if (d > R || Math.abs((p.y || 0) - gy) > 2.5) continue;
+    if (p.villain) { hit++; hitVillain(p, '💥 쿵!'); if (!p.dead && !p.arrested) p.stun = Math.max(p.stun, 2.2); }
+    else p.stun = Math.max(p.stun, .6);
+  }
+  if (hit > 1) floatText('🔥 ' + hit + '명 동시 타격!', dog.x, gy + 3, dog.z, { h: .5, color: '#ffd54f' });
 }
 function hitVillain(p, label) {
   p.hp--; p.stun = Math.max(p.stun, p.kind === "boss" ? 1.1 : 1.6); p.glow = 4; shake = .2; SFX.hit(); addScore(30);
@@ -2931,21 +2945,37 @@ function smallRoads(L) {
   for (const [list, W] of [[L.vehicles || [], 4.2], [L.staff || [], 1.8]]) for (const o of list) { const R = o.route; if (!R || R.length < 2) continue; for (let i = 0; i < R.length; i++) { const [ax, az] = R[i], [bx2, bz] = R[(i + 1) % R.length]; L.mmRoads = (L.mmRoads || []).concat([[ax, az, bx2, bz, W, false, true]]); } }
   for (const o of L.vehicles || []) {
     if (!(o.type === 'dragon' || o.road)) continue;
-    const R = o.route, W = 3.6;
+    const R = o.route, asph = o.road === 'asphalt', W = asph ? 4.6 : 3.6;
     for (let i = 0; i < R.length; i++) {
       const [ax, az] = R[i], [bx2, bz] = R[(i + 1) % R.length], len = Math.hypot(bx2 - ax, bz - az); if (len < .5) continue;
       const ry = Math.atan2(bx2 - ax, bz - az), cx = (ax + bx2) / 2, cz = (az + bz) / 2;
-      const m = mesh(BOX(W, .04, len + W), MAT.col(0x9a948a, .95), cx, .028, cz); m.rotation.y = ry; m.receiveShadow = true;
+      const m = mesh(BOX(W, .04, len + W), MAT.col(asph ? 0x3a3d42 : 0x9a948a, .95), cx, .028, cz); m.rotation.y = ry; m.receiveShadow = true;
+      if (asph) { for (let u = -len / 2 + 2; u < len / 2 - 2; u += 5) { const dsh = mesh(BOX(.18, .02, 2.2), MAT.col(0xf4f4f2, .6), cx + Math.sin(ry) * u, .06, cz + Math.cos(ry) * u); dsh.rotation.y = ry; } L.mmRoads = (L.mmRoads || []).concat([[ax, az, bx2, bz, W, false]]); continue; }
       for (const sd of [-1, 1]) { const c = mesh(BOX(.25, .12, len + W), MAT.col(0x6f6a62, .9), cx + Math.cos(ry) * sd * W / 2, .06, cz - Math.sin(ry) * sd * W / 2); c.rotation.y = ry; }
       L.mmRoads = (L.mmRoads || []).concat([[ax, az, bx2, bz, W, false]]);
     }
   }
 }
+// 차가 다니는 길 위에 놓인 작은 소품(나무·주차 차량·팔레트·간판 기둥)은 치운다
+function clearRoadProps(L) {
+  const HW = { bus: 1.6, truck: 1.55, yt: 1.55, car: 1.3, taxi: 1.3, dragon: 1.3, forklift: 1.1, moto: .8 }, segs = [];
+  for (const o of L.vehicles || []) { const R = o.route; if (!R || R.length < 2) continue; for (let i = 0; i < R.length; i++) segs.push([...R[i], ...R[(i + 1) % R.length], HW[o.type] || 1.3]); }
+  if (!segs.length) return;
+  const B = new THREE.Box3(), hitSeg = b => segs.some(([ax, az, bx2, bz, hw]) => { for (const px of [b.min.x, (b.min.x + b.max.x) / 2, b.max.x]) for (const pz of [b.min.z, (b.min.z + b.max.z) / 2, b.max.z]) if (segDist(px, pz, ax, az, bx2, bz) < hw) return true; return false; });
+  for (const o of [...world.children]) {
+    if (o.isLight || o.isSprite) continue; B.setFromObject(o); if (B.isEmpty()) continue;
+    const sx = B.max.x - B.min.x, sz = B.max.z - B.min.z, sy = B.max.y - B.min.y;
+    if ((Math.max(sx, sz) > 4.5 && !(Math.min(sx, sz) <= 1 && Math.max(sx, sz) <= 8)) || sy < .3 || B.min.y > 3 || B.max.y < .3 || !hitSeg(B)) continue;
+    world.remove(o); for (let i = colliders.length - 1; i >= 0; i--) { const c = colliders[i]; let m = c.mesh; while (m && m !== o) m = m.parent; if (m === o) colliders.splice(i, 1); }
+  }
+}
+const _rb = new THREE.Box3();
 function ringRoad(L, kind) {
   const band = Math.min(L.w - L.w0, L.d - L.d0) / 2; let rx = (L.w0 / 2 + L.w / 2) / 2, rz = (L.d0 / 2 + L.d / 2) / 2;
   { let best = 1e9; for (const t of [.5, .4, .6, .3, .7, .22, .78]) { const cx = L.w0 / 2 + t * (L.w - L.w0) / 2, cz = L.d0 / 2 + t * (L.d - L.d0) / 2, segs = [[-cx, -cz, cx, -cz, 7], [cx, -cz, cx, cz, 7], [cx, cz, -cx, cz, 7], [-cx, cz, -cx, -cz, 7]], T = { mmRoads: segs };
     let hits = colliders.filter(c => !c.disabled && !c.pushable && c.topY > .6 && onRoad(T, (c.minX + c.maxX) / 2, (c.minZ + c.maxZ) / 2, c.maxX - c.minX, c.maxZ - c.minZ, .5)).length;
-    if (slopes.length) for (const [ax, az, bx2, bz] of segs) { const len = Math.hypot(bx2 - ax, bz - az); for (let u = 0; u <= len; u += 2) if (slopeH(ax + (bx2 - ax) * u / len, az + (bz - az) * u / len) > .05) hits += 3; } if (hits < best) { best = hits; rx = cx; rz = cz; } if (!hits) break; } }
+    if (slopes.length) for (const [ax, az, bx2, bz] of segs) { const len = Math.hypot(bx2 - ax, bz - az); for (let u = 0; u <= len; u += 2) if (slopeH(ax + (bx2 - ax) * u / len, az + (bz - az) * u / len) > .05) hits += 3; }
+    for (const o of world.children) { if (o.isLight || o.isSprite) continue; _rb.setFromObject(o); if (_rb.isEmpty() || _rb.max.y - _rb.min.y < .6 || _rb.min.y > 3 || Math.max(_rb.max.x - _rb.min.x, _rb.max.z - _rb.min.z) > 60) continue; if (onRoad(T, (_rb.min.x + _rb.max.x) / 2, (_rb.min.z + _rb.max.z) / 2, _rb.max.x - _rb.min.x, _rb.max.z - _rb.min.z, .3)) hits++; } if (hits < best) { best = hits; rx = cx; rz = cz; } if (!hits) break; } }
   if (band < 14) return;
   if (L.inside && ![[-rx, -rz], [rx, -rz], [rx, rz], [-rx, rz]].every(([x, z]) => L.inside(x, z))) return polyRoad(L, kind);
   const trail = kind === 'mountain', W = trail ? 3 : 7, col = trail ? 0x8a6f4a : 0x3a3d42;
@@ -2974,10 +3004,10 @@ function outerFill(L, kind) {
   const put = (w, d, mk) => { for (let t = 0; t < 40; t++) { const p = placeFree(b, w, d, 1.2, L.avoid); if (p && inRing(p.x, p.z) && !onRoad(L, p.x, p.z, w, d, 1)) { mk(p.x, p.z); return; } } };
   const K = {
     city: [[2.4, 4.6, (x, z) => parkedCar(x, z)], [4, 2, (x, z) => busStop(x, z)], [10.5, 10.5, (x, z) => building(x, z, rr(7, 10), rr(7, 10), rr(8, 18), pick([0xd4dbe2, 0xe8e2d8, 0xc0cad4, 0xe6d9c8]), { lit: true })], [2, 2, (x, z) => tree(x, z, .8)], [4, 1, (x, z) => bench(x, z)], [1, 1, (x, z) => lamp(x, z)], [3.5, 2, (x, z) => stall(x, z, pick([0xd63a2a, 0x2c6fb7, 0x27ae60]), pick(['커피', '김밥', '분식', '편의점']))]],
-    heritage: [[2, 2, (x, z) => pine(x, z)], [8, 6, (x, z) => hanok(x, z, rr(6, 9), rr(5, 6), 2.6)], [1, 1, (x, z) => lamp(x, z)], [3, 3, (x, z) => flowers(x, z, 3, 3, [0xf48fb1, 0xffeb3b, 0xffffff], 12)]],
+    heritage: [[2, 2, (x, z) => pine(x, z)], [11, 9, (x, z) => hanok(x, z, rr(6, 9), rr(5, 6), 2.6)], [1, 1, (x, z) => lamp(x, z)], [3, 3, (x, z) => flowers(x, z, 3, 3, [0xf48fb1, 0xffeb3b, 0xffffff], 12)]],
     park: [[2.4, 4.6, (x, z) => parkedCar(x, z)], [2, 2, (x, z) => tree(x, z, rr(.7, 1))], [3, 3, (x, z) => flowers(x, z, 4, 3, [0xf44336, 0xffeb3b, 0xba68c8, 0xffffff], 16)], [4, 1, (x, z) => bench(x, z)], [1, 1, (x, z) => lamp(x, z)]],
     mountain: [[2, 2, (x, z) => pine(x, z, rr(.9, 1.3))], [2, 2, (x, z) => tree(x, z, .8, 0x3f7f2f)], [1.6, 1.6, (x, z) => { const m = mesh(BOX(rr(1, 2), rr(.6, 1.4), rr(1, 2)), LMC(0x5a5550), x, .4, z); m.rotation.y = rr(0, 3); addCol(x, z, 1.6, 1.6, m, { topY: 1.2 }); }]],
-    village: [[2.4, 4.6, (x, z) => parkedCar(x, z)], [7, 6, (x, z) => hanok(x, z, rr(5, 7), rr(4, 5), 2.4)], [2, 2, (x, z) => tree(x, z, .7)], [1, 1, (x, z) => lamp(x, z)], [3.5, 2, (x, z) => stall(x, z, pick([0xd63a2a, 0xf39c12]), pick(['기념품', '간식', '공예']))]],
+    village: [[2.4, 4.6, (x, z) => parkedCar(x, z)], [10, 9, (x, z) => hanok(x, z, rr(5, 7), rr(4, 5), 2.4)], [2, 2, (x, z) => tree(x, z, .7)], [1, 1, (x, z) => lamp(x, z)], [3.5, 2, (x, z) => stall(x, z, pick([0xd63a2a, 0xf39c12]), pick(['기념품', '간식', '공예']))]],
   }[kind] || [];
   for (let k = 0; k < n && K.length; k++) { const [w, d, mk] = K[k % K.length]; put(w, d, mk); }
 }
@@ -3031,7 +3061,7 @@ const LANDMARK_LIST = [
       sign('📮 대한민국 우체국 KOREA POST', 0, 5, -18.4, 1.1, 'rgba(200,40,30,.95)'); sign('EMS 국제특급', 20, 4.2, -18.4, .5);
     } },
   { name: '교도소', gate: true, icon: '🔒', w: 76, d: 58, floor: FLOOR(() => TEX.concrete('prison', '#9a968d', [.25, .25])), mmCol: 0x9a968d, obj: crate, sky: [0x6d7a88, 0xd0d6dc], st: 4, shape: [[-1, 1], [-1, -1], [1, -1], [1, 1]], rail: { h: 6, col: 0x8f8b84, t: .8 },
-    staff: [{ kind: 'police', route: [[-30, -12], [30, -12]], wait: 2 }, { kind: 'police', route: [[-30, 14], [30, 14]], wait: 2 }, { kind: 'police', route: [[-32, -24], [-32, 24]], wait: 2 }], veh: [{ type: 'bus', route: [[-30, 20], [30, 20], [30, 18], [-30, 18]] }], people: { inmate: 6, civ: 3, smuggler: 3 },
+    staff: [{ kind: 'police', route: [[-30, -12], [30, -12]], wait: 2 }, { kind: 'police', route: [[-30, 14], [30, 14]], wait: 2 }, { kind: 'police', route: [[-32, -24], [-32, 24]], wait: 2 }], veh: [{ type: 'bus', road: true, route: [[-24, 22], [24, 22], [24, 20.5], [-24, 20.5]] }], people: { inmate: 6, civ: 3, smuggler: 3 },
     items: [["book",3],["laundry",3],["lunchbox",2]], who: '최철문 교도소장', short: '높은 담장과 감시탑, 수용동, 운동장, 면회실을 순찰하며 몰래 반입되는 물품을 막아요.',
     intro: '교도소 면회일이야. 영치품과 세탁물 상자에 마약과 무기를 숨겨 들여보내려는 사람들이 있대.\n감시탑 아래 높은 담장 안, 수용동·운동장·면회실을 꼼꼼히 순찰하자!',
     build(L) {
@@ -3045,7 +3075,7 @@ const LANDMARK_LIST = [
       for (const x of [-14, 14]) { bx(x, 0, 26.5, 1.4, 5, 1.4, 0x6d6a63); } mesh(BOX(29, 1, 1.4), LMC(0x6d6a63), 0, 4.6, 26.5); sign('🔒 OO교도소 — 반입 금지 물품 단속 중', 0, 7, 26.5, .9);
       for (const x of [-12, 12]) { bx(x, 0, 24, .2, 1, .2, 0xdddddd); mesh(BOX(5, .2, .2), LMC(0xe74c3c), x + (x < 0 ? 2.5 : -2.5), 1, 24); }
     } },
-  { name: '서울역', fill: 'city', icon: '🚉', w: 90, d: 64, floor: TILE('#c9c3b6', '#a9a294', .2), obj: luggage, sky: [0x5aa8ef, 0xe2f0fb], st: 3, veh: [{ type: 'taxi', route: [[-42, 13], [42, 13], [42, 11], [-42, 11]] }, { type: 'bus', route: [[42, 11], [-42, 11], [-42, 13], [42, 13]], start: 1 }],
+  { name: '서울역', fill: 'city', icon: '🚉', w: 90, d: 64, floor: TILE('#c9c3b6', '#a9a294', .2), obj: luggage, sky: [0x5aa8ef, 0xe2f0fb], st: 3, veh: [{ type: 'taxi', road: 'asphalt', route: [[-42, 13], [42, 13], [42, 10.5], [-42, 10.5]] }, { type: 'bus', route: [[42, 10.5], [-42, 10.5], [-42, 13], [42, 13]], start: 1 }],
     people: { civ: 6, tourist: 3, student: 2, smuggler: 3 }, items: [["coinLocker",3],["trashBin",2],["backpack",2],["golfBag",1]], who: '정기차 서울역장', short: '옛 서울역(붉은 벽돌·초록 돔), 유리 신역사, 하늘 정원 서울로7017, KTX 승강장을 순찰해요.',
     intro: '서울역이야! 1925년에 지어진 붉은 벽돌과 초록 돔의 옛 역사(문화역서울284) 옆에 유리로 된 새 역사가 있어.\n광장 위로는 공중 정원 길 서울로7017이 지나가고, 뒤쪽엔 KTX 승강장이 있어!',
     build(L) {
@@ -3354,7 +3384,7 @@ const LANDMARK_LIST = [
       for (const z of [-14, 0]) lanternLine(-4, 38, z, 4.2, [0xff9a4a, 0xffd27a]); sign('🏡 전주 한옥마을 (태조로)', 16, 6, 8, 1);
     } },
   { name: '광화문광장', fill: 'city', icon: '🦁', w: 48, d: 100, floor: TILE('#cfc8b8', '#b3ab9a', .2), obj: luggage, sky: [0x5aa8ef, 0xeaf2fb], st: 3, shape: [[-.75, 1], [-.75, -.62], [-1, -.75], [-1, -1], [1, -1], [1, -.75], [.75, -.62], [.75, 1]], outside: { col: 0x4a4c50, y: .03 },
-    staff: [{ kind: 'police', route: [[-12, 40], [-12, -30]], wait: 2 }, { kind: 'royalguard', route: [[-4, -40], [4, -40]], wait: 3 }], veh: [{ type: 'taxi', route: [[-33, 80], [-33, -48], [-37, -48], [-37, 80]], start: 0 }, { type: 'bus', route: [[33, -48], [33, 80], [37, 80], [37, -48]], start: 0 }, { type: 'car', route: [[-33, 80], [-33, -48], [-37, -48], [-37, 80]], start: 1 }, { type: 'car', route: [[33, -48], [33, 80], [37, 80], [37, -48]], start: 1 }, { type: 'moto', route: [[-33, 80], [-33, -48], [-37, -48], [-37, 80]], start: 2 }, { type: 'taxi', route: [[33, -48], [33, 80], [37, 80], [37, -48]], start: 2 }, { type: 'bus', route: [[-33, 80], [-33, -48], [-37, -48], [-37, 80]], start: 3 }, { type: 'car', route: [[33, -48], [33, 80], [37, 80], [37, -48]], start: 3 }], people: { tourist: 6, civ: 5, student: 3, smuggler: 3 },
+    staff: [{ kind: 'police', route: [[-12, 40], [-12, -30]], wait: 2 }, { kind: 'royalguard', route: [[-4, -40], [4, -40]], wait: 3 }], veh: [{ type: 'taxi', road: 'asphalt', route: [[-19.5, 80], [-19.5, -48], [-23.5, -48], [-23.5, 80]], start: 0 }, { type: 'bus', road: 'asphalt', route: [[19.5, -48], [19.5, 80], [23.5, 80], [23.5, -48]], start: 0 }, { type: 'car', route: [[-19.5, 80], [-19.5, -48], [-23.5, -48], [-23.5, 80]], start: 1 }, { type: 'car', route: [[19.5, -48], [19.5, 80], [23.5, 80], [23.5, -48]], start: 1 }, { type: 'moto', route: [[-19.5, 80], [-19.5, -48], [-23.5, -48], [-23.5, 80]], start: 2 }, { type: 'taxi', route: [[19.5, -48], [19.5, 80], [23.5, 80], [23.5, -48]], start: 2 }, { type: 'bus', route: [[-19.5, 80], [-19.5, -48], [-23.5, -48], [-23.5, 80]], start: 3 }, { type: 'car', route: [[19.5, -48], [19.5, 80], [23.5, 80], [23.5, -48]], start: 3 }], people: { tourist: 6, civ: 5, student: 3, smuggler: 3 },
     items: [["flowerPot",3],["trashBin",2],["backpack",2]], who: '세종 광화문광장 관리소장', short: '세종대왕·이순신 동상, 명량분수, 해치마당, 세종문화회관, 청계천 스프링, 북쪽 끝 광화문까지!',
     intro: '서울 한가운데 광화문광장이야! 남쪽엔 이순신 장군 동상과 명량분수, 가운데엔 황금빛 세종대왕 동상,\n북쪽 끝엔 경복궁 정문 광화문과 북악산이 보여. 옆에는 세종문화회관, 남쪽 끝엔 청계천의 소라 모양 조형물 스프링이 있어!',
     build(L) {
@@ -3477,15 +3507,15 @@ let mp = null;
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rd3hzbmR5Ym9qdmp1d2xtZWl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMDE4NDMsImV4cCI6MjEwODY3Nzg0M30.W-ltwTtWmibN6ec_mlkjad7QvN2fFCcOkFxHl3abbZw';
 // 팀 방: 같은 코드끼리 같은 맵에서 함께, 찾은 물건·체포는 팀 공동 목표로 합산
 let team = null;
-function teamSet(code, size) {
-  team = code ? { code, size } : null; try { team ? sessionStorage.setItem('k9team', code + '-' + size) : sessionStorage.removeItem('k9team'); } catch { }
-  $('teamInfo').innerHTML = team ? '👥 팀 방 <b>' + code + '-' + size + '</b> · 최대 ' + size + '명 · 같은 코드를 친구에게 알려 주고 같은 맵을 고르세요!' : '혼자 하거나, 방을 만들어 친구와 같은 맵을 함께 수색해요 (맵이 넓으니 나눠서!)';
+function teamSet(code, size, host = false) {
+  team = code ? { code, size, host } : null; try { team ? sessionStorage.setItem('k9team', code + '-' + size + (host ? '-h' : '')) : sessionStorage.removeItem('k9team'); } catch { }
+  $('teamInfo').innerHTML = team ? '✅ 팀 방 <b style="font-size:16px">' + code + '</b> 에 들어와 있어요 (최대 5명)<br>친구에게 방 번호 <b>' + code + '</b> 를 알려 주세요 → 친구가 아래 목록에서 방을 누르거나 번호를 넣고 [참가] → <b>모두 같은 맵</b>을 고르면 함께 플레이!' : '<b>👥 함께 하는 방법</b> ① 방 번호(숫자 3~6자리, 비워 두면 자동)를 넣고 [방 만들기] (최대 5명) ② 친구는 아래 목록에서 방을 누르거나 같은 번호를 넣고 [참가] ③ 모두 같은 맵을 고르면 함께 수색해요. 방 없이 맵을 고르면 혼자 플레이해요.';
   $('btnTeamOut').classList.toggle('hidden', !team); if (mp) mpLeave(); lobbyTrack(); renderRooms();
 }
-$('btnTeamNew').onclick = () => { if (!playerId) { toast('로그인한 핸들러만 팀 방을 만들 수 있어요'); return; } const sz = +$('teamSize').value, code = String(1000 + Math.floor(Math.random() * 9000)); $('teamCode').value = code + '-' + sz; teamSet(code, sz); toast('👥 방 ' + code + '-' + sz + ' 을(를) 만들었어요!'); };
-$('btnTeamJoin').onclick = () => { const m = $('teamCode').value.trim().match(/^(\d{4})-?([1-5])?$/); if (!m) { toast('방 코드를 확인해 주세요 (예: 4821-3)'); return; } if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } teamSet(m[1], +(m[2] || 5)); toast('👥 방 ' + m[1] + ' 에 참가했어요! 같은 맵을 고르세요'); };
+$('btnTeamNew').onclick = () => { if (!playerId) { toast('로그인한 핸들러만 팀 방을 만들 수 있어요'); return; } const sz = 5, typed = ($('teamCode').value.trim().match(/^(\d{3,6})/) || [])[1]; if ($('teamCode').value.trim() && !typed) { toast('방 번호는 숫자 3~6자리로 넣어 주세요 (비워 두면 자동)'); return; } if (typed && lobbyRooms.some(r => r.code === typed)) { toast('이미 있는 방 번호예요. 아래 목록에서 눌러 참가하거나 다른 번호를 넣어 주세요'); return; } const code = typed || String(1000 + Math.floor(Math.random() * 9000)); $('teamCode').value = code; teamSet(code, sz, true); toast('👥 방 ' + code + ' 을(를) 만들었어요! 친구에게 번호를 알려 주세요'); };
+$('btnTeamJoin').onclick = () => { const m = $('teamCode').value.trim().match(/^(\d{3,6})(?:-([1-5]))?$/); if (!m) { toast('방 번호(숫자 3~6자리)를 넣어 주세요'); return; } if (!m[2]) { const r = lobbyRooms.find(q => q.code === m[1]); if (r) m[2] = r.size; } if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } teamSet(m[1], 5); toast('👥 방 ' + m[1] + ' 에 참가했어요! 같은 맵을 고르세요'); };
 $('btnTeamOut').onclick = () => { $('teamCode').value = ''; teamSet(null); };
-try { const v = sessionStorage.getItem('k9team'), m = v && v.match(/^(\d{4})-([1-5])$/); if (m) { $('teamCode').value = v; setTimeout(() => teamSet(m[1], +m[2]), 0); } else setTimeout(() => teamSet(null), 0); } catch { }
+try { const v = sessionStorage.getItem('k9team'), m = v && v.match(/^(\d{3,6})-([1-5])(-h)?$/); if (m) { $('teamCode').value = m[1]; setTimeout(() => teamSet(m[1], 5, !!m[3]), 0); } else setTimeout(() => teamSet(null), 0); } catch { }
 const mpCap = () => team ? team.size : 5;
 // 로비: 열린 팀 방을 모두가 볼 수 있게 (이메일은 보내지 않고 닉네임만)
 let lobby = null, lobbyRooms = [];
@@ -3496,17 +3526,19 @@ async function lobbyJoin() {
     const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm');
     const sb = createClient(RANK_CFG.url, SB_ANON), key = Math.random().toString(36).slice(2, 10);
     const ch = sb.channel('k9-lobby', { config: { presence: { key } } }); Object.assign(lobby, { sb, ch, key });
-    ch.on('presence', { event: 'sync' }, () => { const R = {}; for (const v of Object.values(ch.presenceState())) { const e = v[0]; if (!e || !e.code) continue; const r = R[e.code] || (R[e.code] = { code: e.code, size: e.size, n: 0, host: e.nick, map: e.map, t: e.t }); r.n++; if (e.t < r.t) { r.t = e.t; r.host = e.nick; } if (e.map !== null && e.map !== undefined) r.map = e.map; } lobbyRooms = Object.values(R).sort((a, b) => a.t - b.t); renderRooms(); })
+    ch.on('broadcast', { event: 'closeRoom' }, ({ payload }) => { if (team && payload && payload.code === team.code && !team.host) { $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); toast('🗑 방장이 방을 삭제했어요. 혼자 플레이로 바뀌었어요'); } lobbyRooms = lobbyRooms.filter(r => r.code !== (payload && payload.code)); renderRooms(); })
+      .on('presence', { event: 'sync' }, () => { const R = {}; for (const v of Object.values(ch.presenceState())) { const e = v[0]; if (!e || !e.code) continue; const r = R[e.code] || (R[e.code] = { code: e.code, size: e.size, n: 0, host: e.nick, map: e.map, t: e.t }); r.n++; if (e.t < r.t) { r.t = e.t; r.host = e.nick; } if (e.map !== null && e.map !== undefined) r.map = e.map; } lobbyRooms = Object.values(R).sort((a, b) => a.t - b.t); renderRooms(); })
       .subscribe(st => { if (st === 'SUBSCRIBED') { lobby.on = true; lobbyTrack(); } });
   } catch { }
 }
 function lobbyTrack() { if (!lobby || !lobby.on) return; if (!lobby.ch) return; try { team ? lobby.ch.track({ code: team.code, size: team.size, nick: dispName().slice(0, 12), map: state === 'play' || pausedGame ? levelIdx : null, t: team.t || (team.t = Date.now()) }) : lobby.ch.untrack(); } catch { } }
 function renderRooms() {
   const el = $('teamList'); if (!el) return;
-  const list = lobbyRooms.filter(r => !team || r.code !== team.code);
-  el.innerHTML = !list.length ? '<div class="sub" style="text-align:center;opacity:.75">지금 열린 팀 방이 없어요 · 그냥 맵을 고르면 혼자 플레이해요</div>' : '<div style="font-weight:800;color:var(--navy)">📋 열린 팀 방 (눌러서 참가)</div>' + list.map(r => { const full = r.n >= r.size, L = LEVELS[r.map]; return '<button class="alt roomBtn" data-c="' + r.code + '" data-s="' + r.size + '" data-m="' + (r.map ?? '') + '" ' + (full ? 'disabled' : '') + ' style="font-size:14px;padding:8px 10px;border-radius:10px;text-align:left;display:flex;justify-content:space-between;gap:8px' + (full ? ';opacity:.5' : '') + '"><span>👥 <b>' + r.code + '</b> · ' + String(r.host).replace(/[<>&"]/g, '') + ' 님의 방 · ' + (L ? L.icon + ' ' + t('m' + r.map) : '맵 고르는 중') + '</span><span>' + r.n + '/' + r.size + (full ? ' 꽉 참' : ' 참가 ▶') + '</span></button>'; }).join('');
+  const list = lobbyRooms.filter(r => !team || r.code !== team.code), mine = team && (lobbyRooms.find(r => r.code === team.code) || { n: 1, size: team.size, map: null });
+  const mineHtml = mine ? '<div style="background:#fff1bf;border:2px solid #e0a800;border-radius:10px;padding:7px 10px;font-size:14px;color:var(--ink);display:flex;justify-content:space-between"><span>' + (team.host ? '⭐ 내가 만든 방 ' : '👥 참가 중인 방 ') + '<b>' + team.code + '</b> · ' + (LEVELS[mine.map] ? LEVELS[mine.map].icon + ' ' + t('m' + mine.map) : '맵을 고르세요') + '</span><span>' + mine.n + '/' + team.size + '명 ' + (mine.n < 2 ? '· 친구 기다리는 중' : '') + (team.host ? ' <button class="alt" id="btnRoomDel" style="font-size:12px;padding:3px 8px;border-radius:8px;margin-left:6px">🗑 방 삭제</button>' : ' <button class="alt" id="btnRoomLeave" style="font-size:12px;padding:3px 8px;border-radius:8px;margin-left:6px">🚪 나가기</button>') + '</span></div>' : '';
+  el.innerHTML = mineHtml + (!list.length ? '<div class="sub" style="text-align:center;opacity:.75">' + (team ? '다른 열린 방은 없어요' : '지금 열린 팀 방이 없어요 · 그냥 맵을 고르면 혼자 플레이해요') + '</div>' : '<div style="font-weight:800;color:var(--navy)">📋 열린 팀 방 (눌러서 참가)</div>' + list.map(r => { const full = r.n >= r.size, L = LEVELS[r.map]; return '<button class="alt roomBtn" data-c="' + r.code + '" data-s="' + r.size + '" data-m="' + (r.map ?? '') + '" ' + (full ? 'disabled' : '') + ' style="font-size:14px;padding:8px 10px;border-radius:10px;text-align:left;display:flex;justify-content:space-between;gap:8px' + (full ? ';opacity:.5' : '') + '"><span>👥 <b>' + r.code + '</b> · ' + String(r.host).replace(/[<>&"]/g, '') + ' 님의 방 · ' + (L ? L.icon + ' ' + t('m' + r.map) : '맵 고르는 중') + '</span><span>' + r.n + '/' + r.size + (full ? ' 꽉 참' : ' 참가 ▶') + '</span></button>'; }).join(''));
 }
-$('teamList').addEventListener('click', e => { const b = e.target.closest('.roomBtn'); if (!b || b.disabled) return; if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } $('teamCode').value = b.dataset.c + '-' + b.dataset.s; teamSet(b.dataset.c, +b.dataset.s); toast('👥 방 ' + b.dataset.c + ' 에 참가했어요!'); if (b.dataset.m !== '' && LEVELS[+b.dataset.m] && !$('mapGrid').querySelector('.mapcard[data-i="' + b.dataset.m + '"]')?.disabled) startLevel(+b.dataset.m); });
+$('teamList').addEventListener('click', e => { if (e.target.closest('#btnRoomLeave')) { const code = team && team.code; $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); renderRooms(); toast('🚪 방 ' + code + ' 에서 나왔어요. 혼자 플레이로 바뀌었어요'); return; } if (e.target.closest('#btnRoomDel')) { if (!team || !team.host) return; if (!confirm('방 ' + team.code + ' 을(를) 삭제할까요? 들어와 있는 친구들도 모두 나가게 돼요.')) return; const code = team.code; try { lobby && lobby.ch && lobby.ch.send({ type: 'broadcast', event: 'closeRoom', payload: { code } }); } catch { } $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); lobbyRooms = lobbyRooms.filter(r => r.code !== code); renderRooms(); toast('🗑 방 ' + code + ' 을(를) 삭제했어요'); return; } const b = e.target.closest('.roomBtn'); if (!b || b.disabled) return; if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } $('teamCode').value = b.dataset.c + '-' + b.dataset.s; teamSet(b.dataset.c, +b.dataset.s); toast('👥 방 ' + b.dataset.c + ' 에 참가했어요!'); if (b.dataset.m !== '' && LEVELS[+b.dataset.m] && !$('mapGrid').querySelector('.mapcard[data-i="' + b.dataset.m + '"]')?.disabled) startLevel(+b.dataset.m); });
 function mpStat(k) { if (mp && team && mp.ch) try { mp.ch.send({ type: 'broadcast', event: 'stat', payload: { k, room: mp.room } }); } catch { } }
 function mpGotStat(p) {
   if (!level || !mp || !team || p.room !== mp.room || !(p.k in level.need)) return;
@@ -3764,6 +3796,7 @@ $('btnSnap').onclick = () => {
 let state = 'login', time = 0, levelTime = 0, levelScore = 0, runScore = 0, runTime = 0, runActive = false, runCleared = new Set(), runStage = 0, shake = 0;
 let level = null, levelIdx = 0, hidden = [], lvStats = {}, totals = { items: 0, arrests: 0, mistakes: 0 };
 let playerId = store.get('k9id', ''), playerNick = store.get('k9nick:' + store.get('k9id', ''), '') || store.get('k9id', '');
+const SLAM_TIP = '💥 점프 3번(공중 덤블링) 후 착지하면 쿵! 주변 범인에게 충격파 공격';
 const LABEL = { drug: '💊 마약 적발', gun: '🔫 총기 적발', smuggler: '🕶 밀수범 체포', boss: '👑 보스 체포' };
 const CRIME = {
   '공항 입국장': [['💊', '액상 마약', 'Liquid drugs'], ['🔩', '총기 부품', 'Gun parts'], ['🕶', '마약 운반책', 'Drug courier']],
@@ -4146,7 +4179,7 @@ function loadLevel(i) {
     for (let k = 0; k < pts.length; k++) { const [ax, az] = pts[k], [bx, bz] = pts[(k + 1) % pts.length], L2 = Math.hypot(bx - ax, bz - az); for (let t = 0; t <= L2; t += 1.5) level.avoid.push({ x: ax + (bx - ax) * t / (L2 || 1), z: az + (bz - az) * t / (L2 || 1), r: rad }); }
   }
   applyTimeOfDay();
-  smallRoads(level); def.build(level);
+  smallRoads(level); def.build(level); clearRoadProps(level);
   applyExtras(level);
   applyShape(level, def);
   boundaryLine(level);
@@ -4186,6 +4219,7 @@ function loadLevel(i) {
   helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
   if (mp && mp.room !== i) mpLeave(); if (playerId) { mpJoin(); lobbyJoin(); setTimeout(lobbyTrack, 300); }
   if (people.some(p => p.look && p.villain)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
+  if (!def.relax && levelIdx % 4 === 0) setTimeout(() => toast(SLAM_TIP), 6500);
   applyCrime(def); if (!def.relax && CRIME[def.name]) setTimeout(() => toast(lang === 'ko' ? `🚨 이 맵의 범인: ${level.crookEmoji} ${level.crook} · 찾을 물건: ${ITEM.drug.emoji} ${ITEM.drug.name}, ${ITEM.gun.emoji} ${ITEM.gun.name}` : `🚨 Suspects here: ${level.crookEmoji} ${level.crook}`), 2600);
   // 밀수품 숨기기
   const pool = [...level.search].sort(() => rnd() - .5);
@@ -4727,7 +4761,8 @@ function updateDog(dt) {
   if (jumpQ && (dog.grounded || (dog.jumps || 0) < 3)) {
     const air = !dog.grounded;
     dog.vy = 7.4 * (.85 + .05 * ST().jump) * (air ? .9 : 1); dog.grounded = false; dog.jumps = air ? Math.max(2, (dog.jumps || 1) + 1) : 1; SFX.jump();
-    if (dog.jumps === 3) { dog.flipT = .7; handler.flipT = .7; floatText('🤸 공중 덤블링!', dog.x, dog.y + 2, dog.z, { h: .5, color: '#ffd54f' }); tone(880, .15, 'triangle', .08, 1500); }
+    if (dog.jumps === 2 && (dog.slamTips = (dog.slamTips || 0) + 1) <= 3) toast('🤸 한 번 더 점프! → 공중 덤블링 후 착지하면 💥쿵! 주변 범인 공격');
+    if (dog.jumps === 3) { dog.flipT = .7; handler.flipT = .7; floatText('🤸 공중 덤블링! 착지하면 💥쿵!', dog.x, dog.y + 2, dog.z, { h: .5, color: '#ffd54f' }); tone(880, .15, 'triangle', .08, 1500); }
     if (air) { dj++; burst(dog.x, dog.y + .3, dog.z, [WHITE], 12, 2); tone(600, .12, "sine", .1, 300); }
     handler.vy = air ? 6 : 6.5;
   }
@@ -4736,6 +4771,7 @@ function updateDog(dt) {
   const gnd = groundAt(dog.x, dog.z, .5, Math.max(dog.y, 0));
   if (dog.y <= gnd.h) {
     if (!dog.grounded && dog.vy < -5) { SFX.land(); for (let i = 0; i < 8; i++) spawnP(dog.x, gnd.h + .1, dog.z, mr(-2, 2), .5, mr(-2, 2), DUST, .5); }
+    if (!dog.grounded && dog.jumps >= 3) groundSlam(gnd.h);
     dog.y = gnd.h; dog.vy = 0; dog.grounded = true; dog.jumps = 0; dog.autoJump = false; dog.flipT = 0;
     if (gnd.on && gnd.on.tramp) { dog.vy = 9.5; dog.grounded = false; dog.jumps = 1; SFX.jump(); if (Math.random() < .3) floatText('🤸 통통!', dog.x, dog.y + 1.6, dog.z, { h: .4 }); }
     if (gnd.on && gnd.on.belt) moveCircle(dog, gnd.on.belt * dt, 0, .5, false, dog.y);
