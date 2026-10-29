@@ -47,6 +47,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 #coverTitle{position:fixed;z-index:40;left:0;right:0;top:7%;text-align:center;font-family:Jua,sans-serif;pointer-events:none}
 #coverTitle .ct1{font-size:min(11vw,92px);color:#fff;text-shadow:0 6px 0 #13335a,0 0 24px rgba(0,0,0,.5)}
 #coverTitle .ct2{font-size:min(4.4vw,34px);color:#f4c542;text-shadow:0 3px 0 #13335a;margin-top:6px}
+#mpCount{top:calc(52px + var(--st));left:50%;transform:translateX(-50%);background:rgba(120,40,160,.9);font-family:Jua,sans-serif;font-size:16px;padding:4px 14px;border-radius:12px}#mpCount:empty{display:none}
 #mission{top:calc(52px + var(--st));left:50%;transform:translateX(-50%);background:rgba(170,30,30,.92);font-family:Jua,sans-serif;font-size:18px;padding:6px 16px;border-radius:12px;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;border:2px solid #ffd54f}
 #combo{top:calc(140px + var(--st));left:50%;transform:translateX(-50%);font-family:Jua,sans-serif;font-size:28px;color:#ff7043;text-shadow:0 2px 0 #000}
 #photoBar{position:fixed;z-index:8;left:50%;bottom:calc(16px + var(--sb));transform:translateX(-50%);display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:max-content;max-width:94vw}
@@ -131,6 +132,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div>
 <div id="mission" class="hud hidden"></div>
+<div id="mpCount" class="hud"></div>
 <div id="combo" class="hud"></div>
 <div id="photoBar" class="hidden"><button class="big alt" data-pose="4.1">🐕 앉기</button><button class="big alt" data-pose="32.1">🐾 손</button><button class="big alt" data-pose="53.1">💗 배</button><button class="big alt" data-pose="60.1">🪢 터그</button><button class="big alt" data-pose="67.1">💕 장난</button><button class="big alt" data-pose="39.1">🌀 빙글</button><button class="big" id="btnSnap">📷 찰칵!</button><button class="big alt" id="btnPhotoExit">닫기</button></div>
 <div id="keys" class="hud"><b>WASD</b> 이동 · <b>Shift</b> 달리기 · <b>Space</b> 점프 · <b>E</b>(꾹) 냄새 · <b>F</b> 왕왕 · <b>Q</b> 뼈다귀<br>마우스 드래그 / <b>←→</b> 시점 회전 · 휠 줌</div>
@@ -1111,6 +1113,53 @@ function updateAgents(dt) {
   }
 }
 
+// ================= 강아지 놀이터 (30종) =================
+let pgAnim = [];
+function playground(ox) {
+  const C = c => MAT.col(c, .55), lab = (t, x, z, y = 2.6) => sign(t, x, y, z, .36, 'rgba(19,51,90,.88)');
+  floorPlane(88, 58, MAT.col(0x7cc06a, .9), ox, 0, .008);
+  for (const z of [-16.5, -5.5, 5.5, 16.5]) floorPlane(86, 1.6, MAT.col(0xe3cf9b, .9), ox, z, .012);
+  for (const sx of [-2, 2]) mesh(BOX(.5, 5, .5), C(0xe74c3c), ox - 42 + sx, 2.5, 0); mesh(BOX(5, .8, .6), C(0xf1c40f), ox - 42, 5, 0);
+  sign('🐶 강아지 놀이터 DOG PARK', ox - 42, 6.2, 0, .9, 'rgba(231,76,60,.95)');
+  const cols = [-36, -22, -8, 6, 20, 34], rows = [-22, -11, 0, 11, 22], slots = [];
+  for (const z of rows) for (const x of cols) slots.push([ox + x, z]);
+  const st = (x, z, w, d, h, c) => solid(x, z, w, d, h, C(c));
+  const items = [
+    (x, z) => { [.3, .6, .9, 1.2, 1.5].forEach((h, k) => st(x - 2 + k * .8, z, .8, 1.4, h, 0x3498db)); [1.2, .9, .6, .3].forEach((h, k) => st(x + 2 + k * .8, z, .8, 1.4, h, 0xf1c40f)); lab('🛝 미끄럼틀', x, z); },
+    (x, z) => { for (const sx of [-1.8, 1.8]) { mesh(BOX(.2, 3, .2), C(0xe67e22), x + sx, 1.5, z - .8); mesh(BOX(.2, 3, .2), C(0xe67e22), x + sx, 1.5, z + .8); addCol(x + sx, z, .3, 1.8, null, { topY: 3 }); } mesh(BOX(3.8, .2, .2), C(0xe67e22), x, 3, z);
+      for (const sx of [-.8, .8]) { const pv = new THREE.Group(); pv.position.set(x + sx, 3, z); world.add(pv); mesh(BOX(.04, 2.2, .04), MAT.metal(0x888888), 0, -1.1, 0, pv); mesh(BOX(.6, .08, .4), C(0xe74c3c), 0, -2.2, 0, pv); const ph = Math.random() * 6; pgAnim.push(() => pv.rotation.x = Math.sin(time * 2 + ph) * .5); } lab('🎠 그네', x, z, 3.6); },
+    (x, z) => { st(x, z, .4, .4, .5, 0x8e44ad); const pv = new THREE.Group(); pv.position.set(x, .6, z); world.add(pv); mesh(BOX(4.4, .12, .5), C(0x27ae60), 0, 0, 0, pv); pgAnim.push(() => pv.rotation.z = Math.sin(time * 1.6) * .25); lab('⚖ 시소', x, z); },
+    (x, z) => { for (const [dx, dz, w, d] of [[0, -1.6, 3.6, .3], [0, 1.6, 3.6, .3], [-1.65, 0, .3, 3.2], [1.65, 0, .3, 3.2]]) st(x + dx, z + dz, w, d, .3, 0xd35400); floorPlane(3, 3, MAT.col(0xf4d58d, 1), x, z, .02); mesh(BOX(.3, .3, .3), C(0xe74c3c), x + .6, .15, z + .4); lab('🏖 모래놀이터', x, z); },
+    (x, z) => { for (const [dx, dz, w, d] of [[0, -1.6, 3.6, .3], [0, 1.6, 3.6, .3], [-1.65, 0, .3, 3.2], [1.65, 0, .3, 3.2]]) st(x + dx, z + dz, w, d, .6, 0x2e86c1); for (let k = 0; k < 40; k++) mesh(BOX(.25, .25, .25), C(pick([0xe74c3c, 0xf1c40f, 0x2ecc71, 0x3498db, 0x9b59b6])), x + rr(-1.3, 1.3), .15 + rr(0, .3), z + rr(-1.3, 1.3)); lab('🔴 볼풀', x, z); },
+    (x, z) => { const rb = [0xe74c3c, 0xe67e22, 0xf1c40f, 0x2ecc71, 0x3498db, 0x9b59b6]; rb.forEach((c, k) => { const xx = x - 3 + k * 1.2; mesh(BOX(1.1, .12, 1.8), C(c), xx, 1.2, z); for (const sd of [-.85, .85]) mesh(BOX(1.1, 1.2, .12), C(c), xx, .6, z + sd); }); addCol(x, z - .85, 7.2, .2, null, { topY: 1.2 }); addCol(x, z + .85, 7.2, .2, null, { topY: 1.2 }); lab('🌈 무지개 터널', x, z, 2); },
+    (x, z) => { for (let i = 0; i < 3; i++) { const xx = x - 2.5 + i * 2.5; for (const sd of [-.8, .8]) mesh(BOX(.1, .7, .1), C(0xffffff), xx, .35, z + sd); mesh(BOX(.08, .08, 1.6), C(0xe74c3c), xx, .5, z); addCol(xx, z, .25, 1.6, null, { topY: .55 }); } lab('🏃 허들', x, z, 1.6); },
+    (x, z) => { for (const sx of [-1.1, 1.1]) { mesh(BOX(.15, 2.2, .15), C(0x34495e), x + sx, 1.1, z); addCol(x + sx, z, .2, .2, null, { topY: 2.2 }); } const r = mesh(new THREE.TorusGeometry(.75, .12, 8, 20), C(0xf39c12), x, 1.2, z); r.rotation.y = Math.PI / 2; lab('⭕ 링 점프', x, z, 2.8); },
+    (x, z) => { for (let k = 0; k < 7; k++) { mesh(BOX(.1, 1.1, .1), C(k % 2 ? 0x2e86c1 : 0xffffff), x - 3 + k, .55, z); addCol(x - 3 + k, z, .15, .15, null, { topY: 1.1 }); } lab('〰 지그재그 폴', x, z, 2); },
+    (x, z) => { [.3, .6, .9, 1.2, 1.5, 1.2, .9, .6, .3].forEach((h, k) => st(x - 3.6 + k * .9, z, .9, 1.6, h, k % 2 ? 0xc0392b : 0xf1c40f)); lab('🔺 A 프레임', x, z, 2.6); },
+    (x, z) => { st(x - 3, z, .8, .6, .3, 0x16a085); st(x, z, 5, .5, .6, 0x1abc9c); st(x + 3, z, .8, .6, .3, 0x16a085); lab('🤸 평균대', x, z, 1.8); },
+    (x, z) => { mesh(BOX(.2, .6, .2), MAT.metal(0x888888), x, .3, z); const g = new THREE.Group(); g.position.set(x, .7, z); world.add(g); mesh(BOX(1.2, .6, .5), C(0xf1c40f), 0, 0, 0, g); mesh(BOX(.5, .5, .5), C(0xf1c40f), .7, .4, 0, g); mesh(BOX(.15, .2, .1), C(0xd35400), .75, .7, .18, g); addCol(x, z, 1, .6, null, { topY: 1.3 }); pgAnim.push(() => { g.position.y = .7 + Math.abs(Math.sin(time * 3)) * .25; g.rotation.z = Math.sin(time * 3) * .15; }); lab('🐴 스프링 목마', x, z, 2.2); },
+    (x, z) => { st(x, z, 4, .6, 3, 0x95a5a6); for (let k = 0; k < 14; k++) mesh(BOX(.25, .2, .12), C(pick([0xe74c3c, 0xf1c40f, 0x2ecc71, 0x3498db])), x + rr(-1.8, 1.8), rr(.3, 2.8), z + .35); lab('🧗 암벽 오르기', x, z, 3.6); },
+    (x, z) => { for (const [dx, dz, w, d] of [[0, -1.9, 4.4, .3], [0, 1.9, 4.4, .3], [-2.05, 0, .3, 3.8], [2.05, 0, .3, 3.8]]) st(x + dx, z + dz, w, d, .3, 0xecf0f1); const wt = TEX.water(); const pw = floorPlane(3.8, 3.4, std(0x7fd3f7, .2, 0, { map: wt, transparent: true, opacity: .85 }), x, z, .05); pgAnim.push(() => { wt.offset.x = time * .05; if (Math.abs(dog.x - x) < 1.9 && Math.abs(dog.z - z) < 1.7 && Math.random() < .5) spawnP(dog.x + mr(-.5, .5), .3, dog.z + mr(-.5, .5), mr(-1, 1), 2.5, mr(-1, 1), new THREE.Color(0x9fdcff), .6); }); lab('🏊 강아지 수영장', x, z, 1.6); },
+    (x, z) => { st(x, z, 3, 3, .5, 0xbdc3c7); mesh(BOX(.5, 1.8, .5), C(0x95a5a6), x, 1.2, z); const blue = new THREE.Color(0x7fd3f7); pgAnim.push(() => { if (Math.random() < .7) spawnP(x, 2.1, z, mr(-1.2, 1.2), 3, mr(-1.2, 1.2), blue, 1); }); lab('⛲ 분수대', x, z, 3.2); },
+    (x, z) => { for (const [dx, dz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) mesh(BOX(.15, .5, .15), MAT.metal(0x555555), x + dx, .25, z + dz); mesh(BOX(2.4, .1, 2.4), C(0x2c3e50), x, .5, z); mesh(BOX(2.6, .12, .2), C(0x3498db), x, .52, z - 1.2); mesh(BOX(2.6, .12, .2), C(0x3498db), x, .52, z + 1.2); addCol(x, z, 2.4, 2.4, null, { topY: .55, tramp: true }); lab('🤸 트램펄린 (올라가 보세요!)', x, z, 1.8); },
+    (x, z) => { const g = new THREE.Group(); g.position.set(x, 0, z); world.add(g); mesh(new THREE.CylinderGeometry(1.8, 1.8, .25, 24), C(0xe74c3c), 0, .2, 0, g); for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2; mesh(BOX(.1, 1.1, .1), MAT.metal(0xdddddd), Math.cos(a) * 1.4, .8, Math.sin(a) * 1.4, g); } addCol(x, z, 3, 3, null, { topY: .33 }); pgAnim.push(dt => g.rotation.y += dt * .8); lab('🎡 회전 놀이기구', x, z, 2); },
+    (x, z) => { st(x, z, 2, 2, 1.3, 0xc0392b); const rf = mesh(BOX(2.4, .2, 1.4), C(0x7f8c8d), x, 1.65, z - .5); rf.rotation.x = .6; const rf2 = mesh(BOX(2.4, .2, 1.4), C(0x7f8c8d), x, 1.65, z + .5); rf2.rotation.x = -.6; mesh(BOX(.8, .8, .05), C(0x2c1a10), x, .45, z + 1.01); lab('🏠 개집', x, z, 2.8); },
+    (x, z) => { st(x, z, 1.4, 1.4, .6, 0x95a5a6); mesh(BOX(3, .6, .6), C(0xf5efe0), x, 1.3, z); for (const sx of [-1.5, 1.5]) for (const sz of [-.35, .35]) mesh(BOX(.7, .7, .55), C(0xf5efe0), x + sx, 1.3, z + sz); lab('🦴 왕뼈다귀 조형물', x, z, 2.6); },
+    (x, z) => { st(x, z, .6, .6, .9, 0xe74c3c); mesh(BOX(.8, .2, .2), C(0xe74c3c), x, .6, z); mesh(BOX(.4, .2, .4), C(0xf1c40f), x, 1, z); const blue = new THREE.Color(0x7fd3f7); pgAnim.push(() => { if (Math.hypot(dog.x - x, dog.z - z) < 3 && Math.random() < .8) spawnP(x + .5, .6, z, mr(1, 3), mr(1, 2.5), mr(-.6, .6), blue, .8); }); lab('🚒 소화전 (가까이 가면 물!)', x, z, 1.8); },
+    (x, z) => { [.3, .6, .9, 1.2, 1.5, 1.8].forEach((h, k) => st(x - 2.5 + k * .6, z, .6, 1.4, h, 0x8e44ad)); st(x + 1.6, z, 2.4, 2.4, 2.1, 0x9b59b6); for (const [dx, dz] of [[1.6, -1.15], [1.6, 1.15]]) mesh(BOX(2.4, .6, .08), MAT.metal(0xdddddd), x + dx, 2.4, z + dz); lab('🔭 전망대', x, z, 3.4); },
+    (x, z) => { st(x, z, 2.4, 1, .8, 0x8d6e63); for (const sd of [-1, 1]) st(x, z + sd * 1, 2.4, .4, .45, 0x6d4c41); mesh(BOX(.08, 2.4, .08), MAT.metal(0xdddddd), x, 2, z); mesh(BOX(2.4, .1, 2.4), C(0xe74c3c), x, 3.2, z); lab('☂ 휴식 테이블', x, z, 3.8); },
+    (x, z) => { mesh(BOX(.25, 2.4, .25), C(0x795548), x, 1.2, z); addCol(x, z, .3, .3, null, { topY: 2.4 }); const pv = new THREE.Group(); pv.position.set(x, 2.3, z); world.add(pv); mesh(BOX(.05, 1.2, .05), C(0xd63031), 0, -.6, 0, pv); mesh(BOX(.25, .12, .4), C(0xf1c40f), 0, -1.25, 0, pv); pgAnim.push(() => { pv.rotation.x = Math.sin(time * 4) * .6; pv.rotation.z = Math.cos(time * 3) * .4; }); lab('🪢 터그 기둥', x, z, 3.2); },
+    (x, z) => { st(x, z, 1, 1, 1, 0x5dade2); mesh(BOX(.4, .2, .4), C(0xffffff), x, 1.1, z); const bub = new THREE.Color(0xe8f8ff); pgAnim.push(() => { if (Math.random() < .5) spawnP(x, 1.3, z, mr(-.8, .8), mr(.8, 1.5), mr(-.8, .8), bub, 2); }); lab('🫧 비눗방울 기계', x, z, 2.2); },
+    (x, z) => { const g = new THREE.Group(); g.position.set(x, 1.6, z); world.add(g); const w = mesh(new THREE.TorusGeometry(1.4, .12, 8, 24), C(0xe67e22), 0, 0, 0, g); for (let k = 0; k < 6; k++) { const s = mesh(BOX(.08, 2.8, .08), MAT.metal(0xdddddd), 0, 0, 0, g); s.rotation.z = k * Math.PI / 6; } for (const sz of [-.6, .6]) mesh(BOX(.15, 1.6, .15), MAT.metal(0x555555), x, .8, z + sz); addCol(x, z, 3, .4, null, { topY: 3 }); pgAnim.push(dt => g.rotation.z += dt * 1.5); lab('🐹 대형 쳇바퀴', x, z, 3.5); },
+    (x, z) => { for (let k = 0; k < 6; k++) st(x - 3 + k * 1.2, z + (k % 2 ? .5 : -.5), .8, .8, k % 2 ? .6 : .3, 0x7f8c8d); lab('🪨 징검다리', x, z, 1.6); },
+    (x, z) => { st(x, z, 1.2, .6, 1, 0x95a5a6); mesh(BOX(.1, .3, .1), MAT.metal(0xdddddd), x, 1.15, z); mesh(new THREE.CylinderGeometry(.3, .25, .12, 14), C(0x3498db), x, .06, z + .7); lab('💧 급수대', x, z, 2); },
+    (x, z) => { st(x, z, 1.2, .9, 2, 0xe74c3c); mesh(BOX(.8, .8, .05), MAT.col(0x223344, .1, .2), x, 1.3, z + .46); let cd = 0; pgAnim.push(dt => { cd -= dt; if (cd <= 0 && Math.hypot(dog.x - x, dog.z - z) < 1.8) { cd = 8; dog.stamina = 100; floatText('🦴 간식 나왔다! 기력 회복', x, 2.5, z, { h: .4 }); tone(880, .1, 'triangle', .08); } }); lab('🍪 간식 자판기 (가까이!)', x, z, 2.8); },
+    (x, z) => { for (let k = 0; k < 6; k++) { mesh(BOX(.4, .1, .4), C(0xffffff), x - 3 + k * 1.2, .05, z); mesh(BOX(.25, .6, .25), C(0xff7f2a), x - 3 + k * 1.2, .4, z); addCol(x - 3 + k * 1.2, z, .3, .3, null, { topY: .7 }); } lab('🔶 콘 슬라럼', x, z, 1.6); },
+    (x, z) => { st(x, z, 4, 3, 2, 0xd7ccc8); for (const [dx, dz] of [[-2, -1.5], [2, -1.5], [-2, 1.5], [2, 1.5]]) { st(x + dx, z + dz, 1, 1, 3.2, 0xbcaaa4); mesh(BOX(1.1, .4, 1.1), C(0xe74c3c), x + dx, 3.4, z + dz); } mesh(BOX(.05, 1.2, .05), MAT.metal(0x888888), x, 2.6, z); const fl = mesh(BOX(.7, .4, .03), C(0x3498db), x + .35, 3, z); pgAnim.push(() => fl.rotation.y = Math.sin(time * 4) * .4); lab('🏰 놀이 성', x, z, 4.2); },
+  ];
+  items.forEach((mk, i) => mk(...slots[i]));
+}
+
 // ================= 비행기 (히든맵) =================
 function apache() {
   const g = new THREE.Group(), od = MAT.col(0x4b5320, .7), dk = MAT.col(0x2f3418, .7), gl = MAT.col(0x1b2833, .1, .3), bl = MAT.col(0x222222, .6);
@@ -1143,6 +1192,56 @@ function bigPlane(livery) {
   mesh(BOX(3.5, .35, 10), white, -12.5, 4.5, 0, g);
   for (const [wx, wz] of [[11, 0], [1, -2.2], [1, 2.2]]) { mesh(BOX(.25, 1.6, .25), MAT.metal(0x555555), wx, .9, wz, g); mesh(BOX(.8, .8, .5), MAT.col(0x111111, .8), wx, .4, wz, g); }
   world.add(g); return g;
+}
+
+// ================= K9 차량 등장 장면 =================
+let intro = null, vanAway = null;
+function k9Van() {
+  const g = new THREE.Group(), w = MAT.col(0xf4f4f2, .35), n = MAT.col(0x13335a, .45), dk = MAT.col(0x1b2833, .1, .3);
+  mesh(BOX(2.3, 2.1, 4.6), w, 0, 1.55, .2, g); mesh(BOX(2.3, 1.3, 1.2), w, 0, 1.15, -2.7, g);
+  mesh(BOX(2.32, .4, 5.8), n, 0, 1.2, -.4, g); mesh(BOX(2.1, .7, .05), dk, 0, 2.05, -2.15, g); mesh(BOX(2.1, .6, .05), dk, 0, 1.5, -3.31, g);
+  for (const sd of [-1, 1]) mesh(BOX(.05, .7, 1.2), dk, sd * 1.16, 2.05, -1.4, g);
+  const door = mesh(BOX(.06, 1.6, 1.6), w, 1.17, 1.4, .6, g);
+  const lr = mesh(BOX(.5, .22, .3), M('sirR', () => std(0xff2020, .3, 0, { emissive: 0xff0000, emissiveIntensity: 0 })), -.35, 2.72, -.6, g);
+  const lb = mesh(BOX(.5, .22, .3), M('sirB', () => std(0x2060ff, .3, 0, { emissive: 0x0040ff, emissiveIntensity: 0 })), .35, 2.72, -.6, g);
+  for (const [x, z] of [[-1.1, -2.2], [1.1, -2.2], [-1.1, 1.6], [1.1, 1.6]]) mesh(BOX(.35, .7, .7), MAT.col(0x111111, .8), x, .35, z, g);
+  const t = textSprite('🚓 K9 세관 탐지견', { h: .3, bg: 'rgba(19,51,90,.92)' }); t.position.set(0, 3.4, 0); g.add(t);
+  world.add(g); return { g, door, lr, lb };
+}
+function playIntro(cb) {
+  const sp = level.spawn, v = k9Van();
+  v.g.position.set(sp.x - 2.8, 0, level.bounds.maxZ + 10);
+  intro = { v, t: 0, cb, sz: level.bounds.maxZ + 10, ez: sp.z + 1.5 };
+  state = 'intro'; document.body.classList.add('photo'); $('photoBar').classList.add('hidden');
+  dogM.g.visible = false; handlerM.g.visible = false; leash.visible = false;
+  toast('🚓 K9 탐지견 팀 출동!');
+}
+function endIntro() {
+  if (!intro) return;
+  const v = intro.v, cb = intro.cb; intro = null;
+  v.lr.material.emissiveIntensity = v.lb.material.emissiveIntensity = 0;
+  vanAway = v;
+  dogM.g.visible = true; handlerM.g.visible = true; leash.visible = true;
+  Object.assign(dog, { x: level.spawn.x, z: level.spawn.z, y: 0, vy: 0 }); Object.assign(handler, { x: level.spawn.x + 1.4, z: level.spawn.z + 1.3, y: 0, vy: 0 });
+  document.body.classList.remove('photo'); state = 'play'; cb && cb();
+}
+function updateIntro(dt) {
+  const I = intro; if (!I) return; I.t += dt; const v = I.v, t = I.t;
+  const u = Math.min(1, t / 2.2), e = 1 - Math.pow(1 - u, 3);
+  v.g.position.z = lerp(I.sz, I.ez, e);
+  const on = Math.floor(t * 6) % 2; v.lr.material.emissiveIntensity = on ? 3 : 0; v.lb.material.emissiveIntensity = on ? 0 : 3;
+  if (Math.floor(t * 3) !== Math.floor((t - dt) * 3) && t < 2.4) tone(on ? 900 : 650, .14, 'square', .05);
+  if (t > 2.2) v.door.position.z = lerp(.6, -.9, Math.min(1, (t - 2.2) / .4));
+  if (t > 2.6) {
+    const k = Math.min(1, (t - 2.6) / 1);
+    const dx = v.g.position.x + 1.5, dz = v.g.position.z + .6;
+    dogM.g.visible = handlerM.g.visible = true;
+    dogM.g.position.set(lerp(dx, level.spawn.x, k), Math.sin(Math.PI * Math.min(1, k * 1.6)) * .8, lerp(dz, level.spawn.z, k)); dogM.g.rotation.y = Math.PI * .75;
+    handlerM.g.position.set(lerp(dx, level.spawn.x + 1.4, k), 0, lerp(dz + .5, level.spawn.z + 1.3, k)); handlerM.g.rotation.y = Math.PI * .75;
+    dogM.legs.forEach((l, i) => l.rotation.x = Math.sin(time * 16 + i) * .7);
+    if (t > 2.6 && t - dt <= 2.6) floatText('멍! 출동!', dx, 2.2, dz, { h: .5 });
+  }
+  if (t > 3.9) endIntro();
 }
 
 // ================= 맵 공통 구조물 =================
@@ -1612,7 +1711,7 @@ const LEVELS = [
     },
   },
   {
-    hidden: true, relax: true, sunset: true,
+    hidden: true, relax: true, sunset: true, extraEast: 90,
     diff: { stars: 0, speed: 1, flee: 1, hp: 1, bossHp: 5, sniff: 25, vehicle: 1 },
     name: '노을 활주로', icon: '🌅', w: 90, d: 60, outdoor: true, bg: 0xf0a070, music: 7,
     staff: [
@@ -1622,7 +1721,7 @@ const LEVELS = [
       { kind: 'customs', route: [[-28, -16.3], [-10, -16.3]], wait: 2.5 },
     ],
     people: { civ: 4 }, hide: {}, need: {},
-    who: '강민준 공항세관장', short: '보스 체포 보상! 석양 아래 활주로에서 친구 개들과 산책하고, 비행기 이착륙을 구경하며 쉬어요.',
+    who: '강민준 공항세관장', short: '석양 아래 활주로에서 친구들과 산책하고, 동쪽 🐶 강아지 놀이터(놀이기구 30종)에서 놀아요. 같은 시간에 접속한 친구도 보여요!',
     intro: '🎉 밀수 조직 보스 체포, 정말 수고했다!\n오늘은 특별히 공항 활주로를 개방했어.\n\n석양 아래에서 친구 탐지견들과 산책하고,\n비행기가 뜨고 내리는 것도 구경하며 푹 쉬어라.\n관세청 탐지견, 넌 최고야! 🐕',
     build(L) {
       // 석양 하늘 (그라데이션 돔) + 해 + 분홍 구름
@@ -1641,12 +1740,13 @@ const LEVELS = [
       sun.color.set(0xffa060); sun.intensity = 1.4; hemi.color.set(0xffc9a0); hemi.intensity = .65;
       // 잔디·활주로·계류장
       floorPlane(600, 600, MAT.col(0x6f9a4a, .9), 0, 0, .004);
-      floorPlane(L.w + 200, 14, std(0xffffff, .9, 0, { map: TEX.asphalt([30, 2]) }), 0, -6, .01);
-      for (let x = -140; x < 140; x += 6) floorPlane(3, .3, MAT.col(0xffffff, .6), x, -6, .015);
-      for (const z of [-12.6, .6]) floorPlane(L.w + 200, .25, MAT.col(0xffffff, .6), 0, z, .015);
+      floorPlane(190, 14, std(0xffffff, .9, 0, { map: TEX.asphalt([19, 2]) }), -50, -6, .01);
+      for (let x = -140; x < 42; x += 6) floorPlane(3, .3, MAT.col(0xffffff, .6), x, -6, .015);
+      for (const z of [-12.6, .6]) floorPlane(190, .25, MAT.col(0xffffff, .6), -50, z, .015);
+      for (let k = 0; k < 6; k++) floorPlane(3, .6, MAT.col(0xffffff, .6), 43, -11 + k * 2, .016);
       floorPlane(50, 18, std(0xffffff, .85, 0, { map: TEX.concrete('apron', '#b5b2aa', [8, 3]) }), 18, 18, .012);
-      for (let x = -140; x <= 140; x += 6) for (const z of [-13.2, 1.2]) { const l = mesh(BOX(.25, .25, .25), M('rwl', () => std(0xffe08a, .3, 0, { emissive: 0xffc04a, emissiveIntensity: 2 })), x, .15, z); l.castShadow = false; }
-      walls(L, 'fence');
+      for (let x = -140; x <= 44; x += 6) for (const z of [-13.2, 1.2]) { const l = mesh(BOX(.25, .25, .25), M('rwl', () => std(0xffe08a, .3, 0, { emissive: 0xffc04a, emissiveIntensity: 2 })), x, .15, z); l.castShadow = false; }
+      playground(90);
       // 관제탑
       solid(-32, 20, 4, 4, 14, MAT.col(0xe8e4dc, .5)); mesh(BOX(6, 3, 6), MAT.glass(), -32, 15.5, 20); mesh(BOX(6.4, .4, 6.4), MAT.col(0x13335a, .5), -32, 17.2, 20);
       sign('🗼 관제탑', -32, 19, 20, .8);
@@ -1695,6 +1795,53 @@ $('btnMode').onclick = () => {
   $('btnMode').classList.toggle('alt', !twoP);
   if (twoP && isMobile) toast('👥 2인 모드는 키보드 2명용이에요 (PC 권장)');
 };
+let mp = null;
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rd3hzbmR5Ym9qdmp1d2xtZWl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMDE4NDMsImV4cCI6MjEwODY3Nzg0M30.W-ltwTtWmibN6ec_mlkjad7QvN2fFCcOkFxHl3abbZw';
+async function mpJoin() {
+  if (mp || !RANK_CFG.url) return;
+  try {
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm');
+    const sb = createClient(RANK_CFG.url, SB_ANON, { realtime: { params: { eventsPerSecond: 20 } } });
+    const me = playerId || 'guest' + Math.floor(Math.random() * 9999), key = me + ':' + Math.random().toString(36).slice(2, 6);
+    const ch = sb.channel('k9-hidden', { config: { broadcast: { self: false }, presence: { key } } });
+    mp = { sb, ch, others: new Map(), sendT: 0, me, key };
+    ch.on('broadcast', { event: 'pos' }, ({ payload }) => mpRecv(payload))
+      .on('broadcast', { event: 'bark' }, ({ payload }) => { const o = mp && mp.others.get(payload.k); if (o) floatText('멍!', o.x, 1.9, o.z, { h: .5 }); })
+      .on('presence', { event: 'leave' }, ({ key: k }) => mpRemove(k))
+      .subscribe(async st => { if (st === 'SUBSCRIBED') { await ch.track({ id: me }); toast('👥 지금 접속한 친구들과 함께 놀 수 있어요!'); updateMpCount(); } });
+  } catch { toast('📡 함께 놀기 서버에 연결하지 못했어요'); }
+}
+function mpLeave() { if (!mp) return; try { mp.sb.removeChannel(mp.ch); } catch { } mp = null; updateMpCount(); }
+function mpRecv(p) {
+  if (!level || !level.relax || !mp) return;
+  let o = mp.others.get(p.k);
+  if (!o) {
+    const d = makeDog(BREEDS[p.b] || BREEDS.labrador, String(p.n || '친구').slice(0, 8)), h = makePerson('customs');
+    const t = textSprite('👥 ' + String(p.id).slice(0, 12) + ' 핸들러', { h: .32, bg: 'rgba(120,40,160,.9)' }); t.position.y = 2.5; h.g.add(t);
+    world.add(d.g); world.add(h.g);
+    o = { d, h, x: p.x, z: p.z, ph: 0 }; mp.others.set(p.k, o); updateMpCount();
+  }
+  Object.assign(o, { tx: p.x, tz: p.z, ty: p.y, tdir: p.r, hx: p.hx, hz: p.hz, hr: p.hr, last: time });
+}
+function mpRemove(k) { const o = mp && mp.others.get(k); if (!o) return; world.remove(o.d.g); world.remove(o.h.g); mp.others.delete(k); updateMpCount(); }
+function updateMpCount() { $('mpCount').textContent = mp && level && level.relax ? `👥 함께 노는 중 ${mp.others.size + 1}명` : ''; }
+function updateMp(dt) {
+  if (!mp) return;
+  mp.sendT -= dt;
+  if (mp.sendT <= 0) {
+    mp.sendT = .12;
+    mp.ch.send({ type: 'broadcast', event: 'pos', payload: { k: mp.key, id: mp.me, n: dogName, b: dogBreed, x: +dog.x.toFixed(2), z: +dog.z.toFixed(2), y: +dog.y.toFixed(2), r: +dog.dir.toFixed(2), hx: +handler.x.toFixed(2), hz: +handler.z.toFixed(2), hr: +handler.dir.toFixed(2) } });
+  }
+  for (const [k, o] of mp.others) {
+    if (time - o.last > 6) { mpRemove(k); continue; }
+    const pdx = o.tx - o.x, pdz = o.tz - o.z, moving = Math.hypot(pdx, pdz) > .05;
+    o.x += pdx * Math.min(1, dt * 8); o.z += pdz * Math.min(1, dt * 8); o.ph += dt * (moving ? 12 : 0);
+    o.d.g.position.set(o.x, o.ty || 0, o.z); o.d.g.rotation.y = o.tdir || 0;
+    o.d.legs.forEach((l, i) => l.rotation.x = moving ? Math.sin(o.ph + [0, Math.PI, Math.PI, 0][i]) * .7 : 0);
+    o.d.tail.rotation.y = Math.sin(time * 10) * .6;
+    o.h.g.position.x += ((o.hx ?? o.x) - o.h.g.position.x) * Math.min(1, dt * 8); o.h.g.position.z += ((o.hz ?? o.z) - o.h.g.position.z) * Math.min(1, dt * 8); o.h.g.rotation.y = o.hr || 0;
+  }
+}
 let pals = [], flyer = null, helis = [], towerCtl = [], bombs = [], bombT = 4, bossT = 0;
 function updateBombs(dt) {
   const boss = people.find(p => p.kind === 'boss' && !p.arrested && !p.dead);
@@ -1804,8 +1951,9 @@ const MISSIONS = [
 ];
 function endMission() { mission = null; missionCd = mr(35, 55); $('mission').classList.add('hidden'); checkBadges(); }
 function updateFun(dt) {
+  if (vanAway) { vanAway.g.position.z += dt * 9; if (vanAway.g.position.z > level.bounds.maxZ + 18) { world.remove(vanAway.g); vanAway = null; } }
   updateBombs(dt);
-  if (level.relax) { updatePals(dt); updateFlyer(dt); }
+  if (level.relax) { updatePals(dt); updateFlyer(dt); for (const a of pgAnim) a(dt); updateMp(dt); }
   if (xray && !xray.got) {
     xray.m.rotation.y += dt * 2; xray.m.position.y = .6 + Math.sin(time * 3) * .15;
     if (Math.hypot(xray.x - dog.x, xray.z - dog.z) < 1.1 && dog.y < 1.3) { xray.got = true; world.remove(xray.m); xrayT = 7; SFX.found(); toast('📡 X-ray 스캐너! 7초 동안 숨긴 물건이 보여요'); }
@@ -1898,13 +2046,14 @@ const getProg = () => store.get(progKey(), { unlocked: 0, best: {} });
 function clearWorld() {
   world.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map?.dispose(); o.material.dispose(); } });
   scene.remove(world); world = new THREE.Group(); scene.add(world);
-  colliders = []; people.length = 0; vehicles.length = 0; agents.length = 0; pals = []; flyer = null; helis = []; towerCtl = []; bombs = []; bombT = 4; bossT = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
+  intro = null; vanAway = null; dogM.g.visible = true; handlerM.g.visible = true; leash.visible = true;
+  colliders = []; people.length = 0; vehicles.length = 0; agents.length = 0; pals = []; flyer = null; helis = []; pgAnim = []; if (mp) mp.others.clear(); towerCtl = []; bombs = []; bombT = 4; bossT = 0; hidden = []; belts = []; beltDecor = []; waterMesh = null;
   clearEffects(); clearParticles();
 }
 function loadLevel(i) {
   clearWorld();
   levelIdx = i; const def = LEVELS[i];
-  level = { ...def, bounds: { minX: -def.w / 2 + 1, maxX: def.w / 2 - 1, minZ: -def.d / 2 + 1, maxZ: def.d / 2 - 1 } };
+  level = { ...def, bounds: { minX: -def.w / 2 + 1, maxX: def.w / 2 - 1 + (def.extraEast || 0), minZ: -def.d / 2 + 1, maxZ: def.d / 2 - 1 } };
   const spawn = { x: 0, z: def.d / 2 - 6 };
   level.spawn = spawn;
   level.avoid = [{ ...spawn, r: 5 }];
@@ -1935,6 +2084,7 @@ function loadLevel(i) {
   { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); xray = null;
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
   xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
+  if (def.relax) mpJoin(); else mpLeave();
   if (people.some(p => p.look)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
   // 밀수품 숨기기
   const pool = [...level.search].sort(() => rnd() - .5);
@@ -1956,7 +2106,7 @@ function startLevel(i) {
   hideAll(); loadLevel(i);
   $('topbar').classList.remove('hidden');
   const intro = () => showDialog(LEVELS[i].intro, null, LEVELS[i].who);
-  if (!seenHowto) showHowto(intro); else intro();
+  playIntro(() => { if (!seenHowto) showHowto(intro); else intro(); });
 }
 function hideAll() { for (const id of ['login', 'maps', 'dlg', 'clear', 'rank', 'win', 'howto']) $(id).classList.add('hidden'); }
 
@@ -2206,6 +2356,7 @@ function arrest(p) {
   lvStats[p.kind]++; checkQuest();
 }
 function bark() {
+  if (mp && level.relax) mp.ch.send({ type: 'broadcast', event: 'bark', payload: { k: mp.key } });
   const BR = .8 + .06 * ST().bark;
   const AS = 1.3 - .06 * ST().bark; // 짖기 능력치가 높을수록 공격 간격이 짧다
   dog.barkCd = .375 * AS; dog.barkAnim = .22; SFX.bark();
@@ -2232,6 +2383,7 @@ let keys = {}, barkQ = false, jumpQ = false, dragging = null;
 let yaw = 0, pitch = .42, camDist = 9;
 const touchIn = { x: 0, y: 0, sniff: false, run: false };
 addEventListener('keydown', e => {
+  if (state === 'intro') { if (intro) intro.t = Math.max(intro.t, 3.85); return; }
   if (e.target.tagName === 'INPUT') return;
   if (['Space', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault();
   if (state === 'dialog' && (e.code === 'Enter' || e.code === 'Space') && !e.repeat) { closeDialog(); return; }
@@ -2246,6 +2398,7 @@ addEventListener('keyup', e => { keys[e.code] = false; });
 addEventListener('blur', () => { keys = {}; });
 const cvs = renderer.domElement;
 const ptrs = new Map(); let pinch = null;
+cvs.addEventListener('pointerdown', () => { if (state === 'intro' && intro) intro.t = Math.max(intro.t, 3.85); });
 cvs.addEventListener('pointerdown', e => {
   ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); cvs.setPointerCapture(e.pointerId);
   if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), cam: camDist }; }
@@ -2315,7 +2468,8 @@ function updateDog(dt) {
   const gnd = groundAt(dog.x, dog.z, .5, Math.max(dog.y, 0));
   if (dog.y <= gnd.h) {
     if (!dog.grounded && dog.vy < -5) { SFX.land(); for (let i = 0; i < 8; i++) spawnP(dog.x, gnd.h + .1, dog.z, mr(-2, 2), .5, mr(-2, 2), DUST, .5); }
-    dog.y = gnd.h; dog.vy = 0; dog.grounded = true; dog.jumps = 0;
+    dog.y = gnd.h; dog.vy = 0; dog.grounded = true; dog.jumps = 0; dog.autoJump = false;
+    if (gnd.on && gnd.on.tramp) { dog.vy = 9.5; dog.grounded = false; dog.jumps = 1; SFX.jump(); if (Math.random() < .3) floatText('🤸 통통!', dog.x, dog.y + 1.6, dog.z, { h: .4 }); }
     if (gnd.on && gnd.on.belt) moveCircle(dog, gnd.on.belt * dt, 0, .5, false, dog.y);
   } else dog.grounded = false;
 
@@ -2364,9 +2518,9 @@ function updateDog(dt) {
   m.head.position.y = lerp(m.head.position.y, 1.03 - sn * .2, Math.min(1, dt * 10));
   m.tail.rotation.y = Math.sin(time * (dog.speed > .5 ? 16 : 9)) * .6;
   m.tongue.visible = sprint || dog.stamina < 40;
-  const active = len > .05 || dog.sniffing || dog.vy > .5;
+  const active = len > .05 || dog.sniffing || (dog.vy > .5 && !dog.autoJump);
   dog.idleT = active ? 0 : (dog.idleT || 0) + dt;
-  const IDLE = ['sit', 'ball', 'walk', 'treat', 'paw', 'spin', 'down', 'belly', 'tug', 'play', 'poop'];
+  const IDLE = ['sit', 'ball', 'walk', 'treat', 'paw', 'spin', 'down', 'belly', 'tug', 'play', 'poop', 'frisbee', 'eat'];
   dog.idleMode = dog.idleT > 4 ? IDLE[Math.floor((dog.idleT - 4) / 7) % IDLE.length] : null;
   if (dog.idleMode !== dog.prevIdle) {
     if (dog.prop) { world.remove(dog.prop); dog.prop = null; }
@@ -2383,7 +2537,7 @@ function updateDog(dt) {
   dog.modeT = (dog.modeT || 0) + dt; m.g.rotation.z = 0; m.tail.rotation.x = 0;
   const faceH = () => { dog.dir += angDiff(dog.dir, Math.atan2(handler.x - dog.x, handler.z - dog.z)) * Math.min(1, dt * 5); m.g.rotation.y = dog.dir; };
   const sitPose = () => { m.g.rotation.x = -.32; m.g.position.y = dog.y - .1; m.legs[2].rotation.x = m.legs[3].rotation.x = -1.25; m.legs[0].rotation.x = m.legs[1].rotation.x = .3; };
-  if (dog.idleMode !== 'ball' && dog.fetch) { world.remove(dog.fetch.m); dog.fetch = null; }
+  if (dog.idleMode !== 'ball' && dog.idleMode !== 'frisbee' && dog.fetch) { world.remove(dog.fetch.m); dog.fetch = null; }
   if (dog.idleMode === 'sit') {
     m.g.rotation.x = -.32; m.g.position.y = dog.y - .1;
     m.legs[2].rotation.x = m.legs[3].rotation.x = -1.25; m.legs[0].rotation.x = m.legs[1].rotation.x = .3;
@@ -2397,20 +2551,28 @@ function updateDog(dt) {
     m.g.rotation.y = dog.dir; m.g.position.y = dog.y + Math.max(0, Math.sin(time * 6)) * .35; m.g.rotation.x = -.3;
     m.legs[0].rotation.x = m.legs[1].rotation.x = -1; m.head.rotation.y = 0; m.tongue.visible = true;
     if (Math.random() < dt * 1.5) floatText('💕', dog.x, dog.y + 1.5, dog.z, { h: .4 });
-  } else if (dog.idleMode === 'ball') {
+  } else if (dog.idleMode === 'ball' || dog.idleMode === 'frisbee') {
+    const disc = dog.idleMode === 'frisbee';
     // 공놀이: 핸들러가 던지고, 탐지견이 물어 와서 돌려준다
     let F = dog.fetch;
     if (!F) {
-      const a = handler.dir + mr(-1, 1), d = mr(4, 6), b = level.bounds;
-      F = dog.fetch = { phase: 'throw', t: 0, sx: handler.x, sz: handler.z, bx: clamp(handler.x + Math.sin(a) * d, b.minX + 1, b.maxX - 1), bz: clamp(handler.z + Math.cos(a) * d, b.minZ + 1, b.maxZ - 1), m: mesh(BOX(.22, .22, .22), MAT.col(0xc8e632, .5), 0, -5, 0) };
-      handler.throwT = .35; floatText('🎾 가져와!', handler.x, 2.5, handler.z, { h: .4 });
+      const a = handler.dir + mr(-1, 1), d = disc ? mr(6, 9) : mr(4, 6), b = level.bounds;
+      F = dog.fetch = { phase: 'throw', t: 0, sx: handler.x, sz: handler.z, bx: clamp(handler.x + Math.sin(a) * d, b.minX + 1, b.maxX - 1), bz: clamp(handler.z + Math.cos(a) * d, b.minZ + 1, b.maxZ - 1), m: disc ? mesh(new THREE.CylinderGeometry(.24, .24, .05, 18), MAT.col(0xe74c3c, .4), 0, -5, 0) : mesh(BOX(.22, .22, .22), MAT.col(0xc8e632, .5), 0, -5, 0) };
+      handler.throwT = .35; floatText(disc ? '🥏 원반 간다!' : '🎾 가져와!', handler.x, 2.5, handler.z, { h: .4 });
     }
     F.t += dt; m.head.rotation.y = 0;
     if (F.phase === 'throw') {
-      const u = Math.min(1, F.t / .8);
-      F.m.position.set(lerp(F.sx, F.bx, u), 1.5 * (1 - u) + Math.sin(Math.PI * u) * 1.8 + .12, lerp(F.sz, F.bz, u));
-      if (u >= 1) F.phase = 'chase';
+      const dur = disc ? 1.4 : .8, u = Math.min(1, F.t / dur);
+      F.m.position.set(lerp(F.sx, F.bx, u), disc ? 1.4 * (1 - u) + Math.sin(Math.PI * u) * 1.2 + .15 : 1.5 * (1 - u) + Math.sin(Math.PI * u) * 1.8 + .12, lerp(F.sz, F.bz, u));
+      if (disc) {
+        F.m.rotation.y += dt * 18;
+        const dx = F.bx - dog.x, dz = F.bz - dog.z, dd = Math.hypot(dx, dz) || .01;
+        if (dd > .6) { moveCircle(dog, dx / dd * 6 * dt, dz / dd * 6 * dt, .5, false, dog.y); dog.dir += angDiff(dog.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 10); m.legs.forEach((l, i) => l.rotation.x = Math.sin(time * 16 + [0, Math.PI, Math.PI, 0][i]) * .8); m.g.position.set(dog.x, dog.y, dog.z); m.g.rotation.y = dog.dir; }
+        if (u > .8 && dd < 1.6 && dog.grounded && !F.jumped) { F.jumped = true; dog.vy = 6.5; dog.grounded = false; dog.autoJump = true; floatText('🥏 점프 캐치!', dog.x, dog.y + 1.8, dog.z, { h: .45 }); }
+      }
+      if (u >= 1) F.phase = disc && Math.hypot(F.bx - dog.x, F.bz - dog.z) < 1.6 ? 'return' : 'chase';
     } else {
+      if (F.t > 7) { world.remove(F.m); dog.fetch = null; return; }
       const tx = F.phase === 'chase' ? F.bx : handler.x, tz = F.phase === 'chase' ? F.bz : handler.z;
       const dx = tx - dog.x, dz = tz - dog.z, d = Math.hypot(dx, dz) || .01;
       if (d > (F.phase === 'chase' ? .7 : 1.5)) {
@@ -2444,6 +2606,19 @@ function updateDog(dt) {
         const k2 = Math.max(0, 1 - (t - 4) / 2.2); dog.prop.scale.setScalar(Math.max(.01, k2));
         if (k2 <= 0) { world.remove(dog.prop); dog.prop = null; if (dog.prop2) { world.remove(dog.prop2); dog.prop2 = null; } floatText('✨ 깨끗하게 치웠어요!', handler.x, handler.y + 2.5, handler.z, { h: .42 }); tone(880, .12, 'triangle', .08); }
       }
+    }
+  } else if (dog.idleMode === 'eat') {
+    // 밥 먹기: 핸들러가 밥그릇을 놓아 주면 냠냠
+    if (!dog.prop && dog.modeT < 5) {
+      const g = new THREE.Group(), fx = Math.sin(dog.dir), fz = Math.cos(dog.dir); g.position.set(dog.x + fx * .95, dog.y, dog.z + fz * .95); world.add(g);
+      mesh(new THREE.CylinderGeometry(.28, .22, .14, 16), MAT.col(0x2e86c1, .4), 0, .07, 0, g); mesh(new THREE.CylinderGeometry(.24, .24, .05, 16), MAT.col(0x8d5a3b, .9), 0, .13, 0, g);
+      dog.prop = g; handler.throwT = .3; floatText('🍖 밥 먹자!', handler.x, handler.y + 2.4, handler.z, { h: .4 });
+    }
+    m.head.rotation.y = 0;
+    if (dog.prop) {
+      m.head.rotation.x = .75 + Math.sin(time * 14) * .12; m.head.position.y = .86; m.tail.rotation.y = Math.sin(time * 18) * .7;
+      if (Math.random() < dt * 2) { floatText('냠냠', dog.x, dog.y + 1.3, dog.z, { h: .3 }); tone(300 + Math.random() * 80, .05, 'square', .04); }
+      if (dog.modeT > 5) { world.remove(dog.prop); dog.prop = null; dog.stamina = 100; floatText('😋 배불러! 기력 회복', dog.x, dog.y + 1.5, dog.z, { h: .4 }); }
     }
   } else if (dog.idleMode === 'walk') {
     // 함께 산책: 작은 원을 그리며 걷고 가끔 냄새를 맡는다 (핸들러가 따라옴)
@@ -2486,6 +2661,7 @@ const camPos = new THREE.Vector3(0, 6, 9);
 function updateCamera(dt) {
   const tx = twoP ? (dog.x + handler.x) / 2 : dog.x, ty = dog.y * .6 + 1, tz = twoP ? (dog.z + handler.z) / 2 : dog.z;
   const want = new THREE.Vector3(tx + Math.sin(yaw) * Math.cos(pitch) * camDist, ty + Math.sin(pitch) * camDist, tz + Math.cos(yaw) * Math.cos(pitch) * camDist);
+  if (state === 'intro' && intro) { const vp = intro.v.g.position; want.set(level.spawn.x + 7, 4.2, level.spawn.z - 5); camPos.lerp(want, 1 - Math.exp(-dt * 4)); camera.position.copy(camPos); camera.lookAt(vp.x, 1.2, vp.z); return; }
   if (state === 'photo') { const mx = (dog.x + handler.x) / 2, mz = (dog.z + handler.z) / 2, fx = Math.sin(photoDir), fz = Math.cos(photoDir); want.set(mx + fx * 4.2 + fz * 1.4, dog.y + 1.6, mz + fz * 4.2 - fx * 1.4); }
   camPos.lerp(want, 1 - Math.exp(-dt * 8));
   camera.position.copy(camPos);
@@ -2500,10 +2676,10 @@ function updateCamera(dt) {
 const mm = $('mm'), mctx = mm.getContext('2d');
 function drawMinimap() {
   if (!level) return;
-  const g = mctx, W = mm.width, H = mm.height, S = Math.min(W / (level.w + 2), H / (level.d + 2));
-  const ox = W / 2, oz = H / 2, P = (x, z) => [ox + x * S, oz + z * S];
+  const g = mctx, W = mm.width, H = mm.height, S = Math.min(W / (level.w + (level.extraEast || 0) + 2), H / (level.d + 2));
+  const ox = W / 2 - (level.extraEast || 0) / 2 * S, oz = H / 2, P = (x, z) => [ox + x * S, oz + z * S];
   g.fillStyle = '#1c2a36'; g.fillRect(0, 0, W, H);
-  g.fillStyle = level.outdoor ? '#7f8a8f' : '#cfcac0'; const [a0, b0] = P(-level.w / 2, -level.d / 2); g.fillRect(a0, b0, level.w * S, level.d * S);
+  g.fillStyle = level.outdoor ? '#7f8a8f' : '#cfcac0'; const [a0, b0] = P(-level.w / 2, -level.d / 2); g.fillRect(a0, b0, (level.w + (level.extraEast || 0)) * S, level.d * S);
   if (waterMesh) { g.fillStyle = '#2f86b8'; g.fillRect(0, 0, W, b0); }
   for (const c of colliders) {
     if (c.disabled || !c.mesh || c.topY > 50) continue;
@@ -2544,6 +2720,8 @@ function loop() {
   if (state === 'play') {
     levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
     for (const p of people) p.update(dt);
+  } else if (state === 'intro') {
+    updateIntro(dt); for (const p of people) p.update(dt);
   } else if (state === 'photo') {
     dog.idleT = photoPose; updateDog(dt); updateHandler(dt);
   } else {
