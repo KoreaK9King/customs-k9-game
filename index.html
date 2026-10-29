@@ -246,7 +246,8 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
   · <b>만 14세 미만</b>은 법에 따라 <b>보호자(법정대리인)의 동의</b>가 필요해요. 보호자와 함께 읽고 동의해 주세요.
   </div></details>
   <div id="pvHint" style="font-size:12px;font-weight:700;color:#b5402a;margin-top:6px">📖 [자세히 보기]를 눌러 안내를 끝까지 읽으면 동의에 체크할 수 있어요</div>
-  <label style="display:flex;gap:6px;align-items:flex-start;margin-top:6px"><input type="checkbox" id="pcons" style="width:18px;height:18px;flex:none"> <span id="pvC1"><b>[필수]</b> 위 개인정보(이메일) 수집·이용에 동의해요</span></label>
+  <label style="display:flex;gap:6px;align-items:flex-start;margin-top:6px"><input type="checkbox" id="pread" style="width:18px;height:18px;flex:none"> <span><b>[필수]</b> 개인정보 안내(📖 자세히 보기)를 끝까지 읽었어요</span></label>
+  <label style="display:flex;gap:6px;align-items:flex-start;margin-top:4px"><input type="checkbox" id="pcons" style="width:18px;height:18px;flex:none"> <span id="pvC1"><b>[필수]</b> 위 개인정보(이메일) 수집·이용에 동의해요</span></label>
   <label style="display:flex;gap:6px;align-items:flex-start;margin-top:4px"><input type="checkbox" id="age14" style="width:18px;height:18px;flex:none"> <span id="pvC2"><b>[필수]</b> 만 14세 이상이에요 · 만 14세 미만이면 보호자가 함께 읽고 동의했어요</span></label>
  </div>
  <div id="charSum" class="notice hidden" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px"><span id="charSumTxt"></span><button class="alt" id="btnCharEdit" style="font-size:13px;padding:6px 10px;border-radius:10px">✏ 캐릭터 바꾸기</button></div>
@@ -378,7 +379,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030034326';
+const BUILD = '20261030034451';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -4537,7 +4538,7 @@ function restoreLogin() {
   const id = store.get('k9id', ''); $('pid').value = id; $('remember').checked = true;
   $('idList').innerHTML = store.get('k9ids', id ? [id] : []).map(x => '<option value="' + esc(x) + '">').join('');
   if (store.get('k9agree', false)) $('agree').checked = true;
-  if (store.get('k9pcons', false)) { $('pcons').checked = true; $('age14').checked = true; $('pcons').disabled = $('age14').disabled = false; $('pvHint').style.display = 'none'; }
+  if (store.get('k9pcons', false)) { $('pread').checked = true; $('pcons').checked = true; $('age14').checked = true; $('pread').disabled = $('pcons').disabled = $('age14').disabled = false; $('pvHint').style.display = 'none'; }
   loadSavedDog(id); $('nick').value = store.get('k9nick:' + id, '') || '';
   const known = id && store.get('k9dog:' + id, null);
   if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || (id.includes('@') ? '' : id)) + ' ' + t('hd_word') + ' · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true);
@@ -4581,9 +4582,9 @@ function dispName() { if (playerNick && !playerNick.includes('@')) return player
   $('mmwrap').addEventListener('click', e => { if (e.target.closest('#info')) return; const m = $('mmwrap').classList.toggle('mini'); save('mm', m ? 'mini' : 'open'); }); }
 if (isMobile) { for (const id of ['badges', 'shop']) { $(id).classList.add('fold'); $(id).addEventListener('click', e => { if (e.target.closest('h2')) $(id).classList.toggle('fold'); }); } }
 // 개인정보 안내를 끝까지 읽어야 [필수] 동의에 체크할 수 있다 (이미 동의해 저장된 경우는 그대로)
-{ const det = $('pvMore').closest('details'), body = $('pvBody'), boxes = [$('pcons'), $('age14')];
+{ const det = $('pvMore').closest('details'), body = $('pvBody'), boxes = [$('pread'), $('pcons'), $('age14')];
   body.style.maxHeight = '180px'; body.style.overflowY = 'auto'; body.style.paddingRight = '4px';
-  const unlock = () => { boxes.forEach(b => b.disabled = false); $('pvHint').textContent = '✅ 안내를 모두 읽었어요. 아래 두 곳에 체크해 주세요'; $('pvHint').style.color = '#2e7d32'; };
+  const unlock = () => { boxes.forEach(b => b.disabled = false); $('pread').checked = true; $('pvHint').textContent = '✅ 안내를 모두 읽었어요. 아래 나머지 두 곳에 체크해 주세요'; $('pvHint').style.color = '#2e7d32'; };
   const lock = () => { if (boxes.every(b => b.checked)) { unlock(); $('pvHint').style.display = 'none'; return; } boxes.forEach(b => b.disabled = true); };
   const atEnd = () => body.scrollTop + body.clientHeight >= body.scrollHeight - 6;
   $('pvMore').addEventListener('click', e => { e.preventDefault(); det.open = !det.open; });
@@ -4595,13 +4596,14 @@ if (isMobile) { for (const id of ['badges', 'shop']) { $(id).classList.add('fold
 const BAD_WORDS = ['시발', '씨발', '씨빨', '시바', '씨바', 'ㅅㅂ', 'ㅆㅂ', '병신', 'ㅂㅅ', '븅신', '좆', '존나', '졸라', 'ㅈㄴ', '개새', '새끼', '쌔끼', 'ㅅㄲ', '미친', '미쳤', 'ㅁㅊ', '지랄', 'ㅈㄹ', '닥쳐', '꺼져', '엿먹', '니애미', '느금', '애미', '애비', '창녀', '걸레', '섹스', '야동', '자지', '보지', '찐따', '장애인', '틀딱', '한남', '김치녀', '죽어', '자살', 'fuck', 'shit', 'bitch', 'sex', 'porn', 'dick', 'pussy', 'nigger', 'nigga', 'asshole', 'bastard', 'cunt', 'kill'];
 const badWord = v => { const n = String(v || '').toLowerCase().replace(/[\s0-9_.\-~!@#$%^&*()]+/g, ''); return BAD_WORDS.some(w => n.includes(w)); };
 // 필수 동의 전에는 접속 버튼을 흐리게 (눌러도 이유를 알려 줌)
-{ const upd = () => { const ok = $('agree').checked, okAcc = ok && $('pcons').checked && $('age14').checked; $('btnLogin').style.opacity = okAcc ? '' : '.45'; $('btnGuest').style.opacity = ok ? '' : '.45'; $('btnLogin').title = okAcc ? '' : '필수 동의 3곳에 체크해야 접속할 수 있어요'; };
-  for (const id of ['agree', 'pcons', 'age14']) $(id).addEventListener('change', upd); setTimeout(upd, 50); setInterval(upd, 1500); }
+{ const upd = () => { const ok = $('agree').checked, okAcc = ok && $('pread').checked && $('pcons').checked && $('age14').checked; $('btnLogin').style.opacity = okAcc ? '' : '.45'; $('btnGuest').style.opacity = ok ? '' : '.45'; $('btnLogin').title = okAcc ? '' : '필수 항목 4곳에 체크해야 접속할 수 있어요'; };
+  for (const id of ['agree', 'pread', 'pcons', 'age14']) $(id).addEventListener('change', upd); setTimeout(upd, 50); setInterval(upd, 1500); }
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
   const isMail = EMAIL_RE.test(v);
   if (!guest && !isMail && !/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr(t('err_email'));
+  if (!guest && !$('pread').checked) { const d = $('pvMore').closest('details'); d.open = true; $('pvBody').scrollIntoView({ block: 'nearest' }); return loginErr('📖 먼저 [자세히 보기]를 눌러 개인정보 안내를 끝까지 읽어 주세요.'); }
   if (!guest && (!$('pcons').checked || !$('age14').checked)) return loginErr(t('err_consent'));
   if (!guest && pw.length < 4) return loginErr(t('err_pw'));
   if (!$('agree').checked) return loginErr(t('err_agree'));
