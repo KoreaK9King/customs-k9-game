@@ -28,6 +28,11 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 .hud{position:fixed;pointer-events:none;z-index:5}
 #quest{top:calc(12px + var(--st));left:calc(12px + var(--sl));width:min(300px,calc(100vw - 196px));background:var(--panel);border:2px solid var(--gold);border-radius:14px;padding:10px 14px;box-sizing:border-box}
 #qzone{font-size:12px;color:var(--gold);font-weight:700}
+#quest,#mmwrap{pointer-events:auto;cursor:pointer}
+#quest.mini{width:auto;max-width:min(300px,calc(100vw - 196px));padding:6px 12px}#quest.mini #qzone,#quest.mini #qdesc,#quest.mini #qgoals{display:none}#quest.mini #qtitle{font-size:15px;margin:0}
+#qsum{display:none;font-size:12.5px;font-weight:700;color:#ffe08a}#quest.mini #qsum{display:block}
+#mmToggle{display:none;border:none;border-radius:8px;background:rgba(255,255,255,.12);color:#fff;font-family:inherit;font-weight:700;font-size:13px;padding:5px 10px;cursor:pointer;width:100%}
+#mmwrap.mini #mm{display:none}#mmwrap.mini #mmToggle{display:block}
 #qtitle{margin:2px 0 4px;font-family:Jua,sans-serif;font-size:20px}
 #qdesc{margin:0 0 6px;font-size:12.5px;opacity:.9;line-height:1.4}
 .goal{display:flex;justify-content:space-between;font-size:14px;padding:2px 0}
@@ -142,8 +147,8 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 <body>
 <div id="game"></div>
 
-<div id="quest" class="hud"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><p id="qdesc"></p><div id="qgoals"></div></div>
-<div id="mmwrap" class="hud"><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
+<div id="quest" class="hud mini"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><div id="qsum"></div><p id="qdesc"></p><div id="qgoals"></div></div>
+<div id="mmwrap" class="hud mini"><button id="mmToggle" type="button">🗺 지도 보기</button><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
 <div id="topbar" class="hidden"><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div>
@@ -236,7 +241,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  <div id="shop"></div>
  <div class="row" id="pauseRow"><button class="big" id="btnResume">▶ 게임으로 돌아가기</button><button class="big alt" id="btnRestartMap">🔄 이 맵 다시 시작</button></div>
  <div class="row hidden"><button class="big alt" id="btnMode">👤 1인 모드 (눌러서 2인 협동 모드로)</button></div>
- <div class="row" id="teamRow" style="flex-wrap:wrap;gap:6px;align-items:center"><b style="color:var(--navy)">👥 팀 방</b><span style="font-size:13px;color:var(--muted)">(최대 5명)</span><input type="hidden" id="teamSize" value="5"><button class="alt" id="btnTeamNew" style="font-size:14px;padding:8px 12px;border-radius:10px">방 만들기</button><input id="teamCode" dir="ltr" placeholder="방 번호 (예: 1234)" maxlength="6" style="width:150px;font-size:15px;padding:7px;border-radius:8px;border:2px solid #d6cdb8"><button class="alt" id="btnTeamJoin" style="font-size:14px;padding:8px 12px;border-radius:10px">참가</button><button class="alt hidden" id="btnTeamOut" style="font-size:14px;padding:8px 12px;border-radius:10px">나가기</button></div>
+ <div class="row" id="teamRow" style="flex-wrap:wrap;gap:6px;align-items:center"><b style="color:var(--navy)">👥 팀 방</b><span style="font-size:13px;color:var(--muted)">(최대 5명)</span><input type="hidden" id="teamSize" value="5"><button class="alt" id="btnTeamNew" style="font-size:14px;padding:8px 12px;border-radius:10px">방 만들기</button><input id="teamCode" dir="ltr" placeholder="방 번호 (예: 1234)" maxlength="6" style="width:150px;font-size:15px;padding:7px;border-radius:8px;border:2px solid #d6cdb8"><button class="alt" id="btnTeamJoin" style="font-size:14px;padding:8px 12px;border-radius:10px">접속</button><button class="alt hidden" id="btnTeamOut" style="font-size:14px;padding:8px 12px;border-radius:10px">나가기</button></div>
  <div class="sub" id="teamInfo" style="text-align:center;min-height:1em"></div>
  <div id="teamList" style="display:flex;flex-direction:column;gap:6px;margin:6px 0"></div>
  <div class="row"><button class="big alt" id="btnRankOpen">🏆 랭킹 보기</button><button class="big alt" id="btnLogout">아이디 변경</button></div>
@@ -316,7 +321,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030031032';
+const BUILD = '20261030032059';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -2158,15 +2163,35 @@ function quayCrane(x, z0, ph = 0) {
   });
 }
 // 트랜스퍼 크레인(RTG): 컨테이너 줄을 걸쳐 타고 좌우로 오가며 컨테이너를 집었다 놓는다
-function rtgCrane(z, x0, x1, ph = 0) {
-  const H = 10, g = new THREE.Group(); world.add(g); const yel = MAT.col(0xf1c40f, .5, .3);
-  for (const dx of [-3, 3]) for (const dz of [-3.3, 3.3]) { mesh(BOX(.7, H, .7), yel, dx, H / 2 + .5, dz, g); mesh(BOX(1.2, 1, 1.4), MAT.col(0x222222, .8), dx, .5, dz, g); }
-  for (const dz of [-3.3, 3.3]) mesh(BOX(7, .8, .8), yel, 0, H + .5, dz, g);
-  for (const dx of [-3, 3]) mesh(BOX(.8, .8, 7.4), yel, dx, H + .5, 0, g);
-  mesh(BOX(2, 1.4, 2), MAT.col(0xf4f4f2, .4), 2, H - .6, -3.3, g);
-  const sp = mesh(BOX(3, .3, 2.4), MAT.col(0xd84a3a, .5), 0, 6, 0, g), rope = mesh(BOX(.06, 1, .06), MAT.metal(0x222222), 0, 8, 0, g);
-  const t = textSprite('🏗 트랜스퍼 크레인 RTG', { h: .32 }); t.position.y = H + 1.6; g.add(t);
-  envAnim.push(() => { const k = (time + ph) * .08; g.position.set((x0 + x1) / 2 + Math.sin(k) * (x1 - x0) / 2, 0, z); const y = 6 + Math.sin((time + ph) * .9) * 2.2; sp.position.y = y; rope.scale.y = H - y; rope.position.y = (H + y) / 2; });
+// 다리는 컨테이너 줄(zRow)과 트럭 차로(zLane) 양옆 zA·zB에, 갠트리는 줄을 따라 x로 이동
+function rtgCrane(zA, zB, stacks, zLane, ph = 0) {
+  const H = 10.5, g = new THREE.Group(); world.add(g); const yel = MAT.col(0xf1c40f, .5, .3), zc = (zA + zB) / 2, span = zB - zA;
+  for (const dx of [-3, 3]) for (const dz of [zA, zB]) { mesh(BOX(.7, H, .7), yel, dx, H / 2 + .5, dz, g); mesh(BOX(1.3, 1, 1.6), MAT.col(0x222222, .8), dx, .5, dz, g); }
+  for (const dz of [zA, zB]) mesh(BOX(7.2, .9, .9), yel, 0, H + .5, dz, g);
+  for (const dx of [-3, 3]) mesh(BOX(.9, .9, span + .9), yel, dx, H + .5, zc, g);
+  mesh(BOX(2.2, 1.6, 2.2), MAT.col(0xf4f4f2, .4), 3.6, H - .8, zA, g);
+  const tr = new THREE.Group(); g.add(tr); mesh(BOX(6.6, .8, 2.4), MAT.col(0x666e76, .5), 0, H + 1.2, 0, tr); mesh(BOX(1.6, 1.4, 1.8), MAT.col(0xf4f4f2, .4), 0, H - .3, 0, tr);
+  const ropes = []; for (const dx of [-2.5, 2.5]) for (const dz of [-.8, .8]) ropes.push(mesh(BOX(.05, 1, .05), MAT.metal(0x222222), dx, 0, dz, tr));
+  const sp = new THREE.Group(); tr.add(sp); mesh(BOX(10, .35, 2.5), MAT.col(0xd84a3a, .5), 0, 0, 0, sp);
+  const box = mesh(BOX(10, 2.6, 2.45), MAT.ribs(pick([0xb03a2e, 0x2471a3, 0x1e8449, 0xca6f1e, 0x7d3c98])), 0, -1.48, 0, sp);
+  const t = textSprite('🏗 트랜스퍼 크레인 RTG', { h: .32 }); t.position.set(0, H + 2, zc - g.position.z); g.add(t);
+  // 한 번의 작업(16초): 이동 → 트롤리를 줄 위로 → 내려서 집기 → 들어 올려 차로 위로 → 트럭에 내려놓기 → 복귀
+  let job = null, gx = stacks.length ? stacks[0].x : 0;
+  envAnim.push(() => {
+    const T = (time + ph) % 16, n = Math.floor((time + ph) / 16);
+    if (!job || job.n !== n) { const st = stacks.length ? stacks[n % stacks.length] : { x: 0, z: zc, lv: 1 }; job = { n, from: gx, x: st.x, z: st.z, top: st.lv * 2.6 }; }
+    let x = job.x, tz = zc, y = H - 1.5, carry = false; const lerpT = (a, b, u) => a + (b - a) * clamp(u, 0, 1);
+    if (T < 3) { x = lerpT(job.from, job.x, T / 3); tz = zc; }
+    else if (T < 4.5) { tz = lerpT(zc, job.z, (T - 3) / 1.5); }
+    else if (T < 6.5) { tz = job.z; y = lerpT(H - 1.5, job.top + .25, (T - 4.5) / 2); }
+    else if (T < 8.5) { tz = job.z; y = lerpT(job.top + .25, H - 1.5, (T - 6.5) / 2); carry = true; }
+    else if (T < 10) { tz = lerpT(job.z, zLane, (T - 8.5) / 1.5); carry = true; }
+    else if (T < 12) { tz = zLane; y = lerpT(H - 1.5, 3.2, (T - 10) / 2); carry = true; }
+    else if (T < 14) { tz = zLane; y = lerpT(3.2, H - 1.5, (T - 12) / 2); }
+    else { tz = lerpT(zLane, zc, (T - 14) / 2); gx = job.x; }
+    g.position.set(x, 0, 0); tr.position.set(0, 0, tz); sp.position.y = y; box.visible = carry;
+    const L = H + .8 - y; for (const r of ropes) { r.scale.y = Math.max(.1, L); r.position.y = y + L / 2; }
+  });
 }
 function reachStacker(x, z, rot = 0) {
   const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot; world.add(g); const c = MAT.col(0xe67e22, .5, .2);
@@ -2686,10 +2711,10 @@ const LEVELS = [
       const cols = [0xb03a2e, 0x2471a3, 0x1e8449, 0xca6f1e, 0x7d3c98, 0x117a65, 0xb7950b];
       for (const cx of [-24, -11, 2, 15, 28]) for (const cz of [-13, -6, 4, 14]) {
         if (rnd() < .2) continue;
-        containerBox(cx, cz, 10, pick(cols), 1 + Math.floor(rnd() * 3));
+        const lv = 1 + Math.floor(rnd() * 3); containerBox(cx, cz, 10, pick(cols), lv); (L.yard = L.yard || []).push({ x: cx, z: cz, lv });
       }
       { const z0 = -L.d / 2 + 2.2; L.mmRoads = (L.mmRoads || []).concat([[-L.w / 2, z0 + 5, L.w / 2, z0 + 5, 13, false, true]]); quayCrane(-48, z0, 0); quayCrane(-37, z0, 6); quayCrane(0, z0, 3); quayCrane(14, z0, 9); sign('⚓ 안벽(선석) · 배에서 컨테이너를 내려요', -20, 5, z0 + 12, .55); }
-      rtgCrane(4, -28, 32, 0); rtgCrane(14, -28, 32, 20);
+      { const yd = L.yard || [], s1 = yd.filter(q => q.z === 4 && q.x <= 2), s2 = yd.filter(q => q.z === 14 && q.x >= 2); L.mmRoads = (L.mmRoads || []).concat([[-36, -3.4, 8, -3.4, 1.8, false, true], [-36, 6.6, 8, 6.6, 1.8, false, true], [-4, 7.4, 36, 7.4, 1.8, false, true], [-4, 16.2, 36, 16.2, 1.8, false, true]]); if (s1.length) rtgCrane(-3.4, 6.6, s1, -1, 0); if (s2.length) rtgCrane(7.4, 16.2, s2, 9, 8); }
       for (const rot of [Math.PI / 2, -Math.PI / 2]) { const p = placeFree({ minX: -40, maxX: 40, minZ: -20, maxZ: 20 }, 11, 7, 1.5, L.avoid); if (p) reachStacker(p.x, p.z, rot); }
       { const tex = TEX.water(); tex.repeat.set(80, 30); const sea = new THREE.Mesh(new THREE.PlaneGeometry(900, 360), std(0xffffff, .25, 0, { map: tex, color: 0x5aa9d6 })); sea.rotation.x = -Math.PI / 2; sea.position.set(0, -.7, -L.d / 2 - 180); world.add(sea); }
       cargoShip(-18, -L.d / 2 - 8, 70);
@@ -3509,11 +3534,11 @@ const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 let team = null;
 function teamSet(code, size, host = false) {
   team = code ? { code, size, host } : null; try { team ? sessionStorage.setItem('k9team', code + '-' + size + (host ? '-h' : '')) : sessionStorage.removeItem('k9team'); } catch { }
-  $('teamInfo').innerHTML = team ? '✅ 팀 방 <b style="font-size:16px">' + code + '</b> 에 들어와 있어요 (최대 5명)<br>친구에게 방 번호 <b>' + code + '</b> 를 알려 주세요 → 친구가 아래 목록에서 방을 누르거나 번호를 넣고 [참가] → <b>모두 같은 맵</b>을 고르면 함께 플레이!' : '<b>👥 함께 하는 방법</b> ① 방 번호(숫자 3~6자리, 비워 두면 자동)를 넣고 [방 만들기] (최대 5명) ② 친구는 아래 목록에서 방을 누르거나 같은 번호를 넣고 [참가] ③ 모두 같은 맵을 고르면 함께 수색해요. 방 없이 맵을 고르면 혼자 플레이해요.';
+  $('teamInfo').innerHTML = team ? '✅ 팀 방 <b style="font-size:16px">' + code + '</b> 에 들어와 있어요 (최대 5명)<br>친구에게 방 번호 <b>' + code + '</b> 를 알려 주세요 → 친구가 아래 목록에서 [접속 ▶]을 누르거나 번호를 넣고 [접속] → 방장이 맵을 고르면 <b>모두 같은 맵으로 자동 접속</b>!' : '<b>👥 함께 하는 방법</b> ① 방 번호(숫자 3~6자리, 비워 두면 자동)를 넣고 [방 만들기] (최대 5명) ② 친구는 아래 목록에서 [접속 ▶]을 누르거나 같은 번호를 넣고 [접속] ③ 방장이 맵을 고르면 모두 그 맵으로 자동 접속해 함께 수색해요. 방 없이 맵을 고르면 혼자 플레이해요.';
   $('btnTeamOut').classList.toggle('hidden', !team); if (mp) mpLeave(); lobbyTrack(); renderRooms();
 }
-$('btnTeamNew').onclick = () => { if (!playerId) { toast('로그인한 핸들러만 팀 방을 만들 수 있어요'); return; } const sz = 5, typed = ($('teamCode').value.trim().match(/^(\d{3,6})/) || [])[1]; if ($('teamCode').value.trim() && !typed) { toast('방 번호는 숫자 3~6자리로 넣어 주세요 (비워 두면 자동)'); return; } if (typed && lobbyRooms.some(r => r.code === typed)) { toast('이미 있는 방 번호예요. 아래 목록에서 눌러 참가하거나 다른 번호를 넣어 주세요'); return; } const code = typed || String(1000 + Math.floor(Math.random() * 9000)); $('teamCode').value = code; teamSet(code, sz, true); toast('👥 방 ' + code + ' 을(를) 만들었어요! 친구에게 번호를 알려 주세요'); };
-$('btnTeamJoin').onclick = () => { const m = $('teamCode').value.trim().match(/^(\d{3,6})(?:-([1-5]))?$/); if (!m) { toast('방 번호(숫자 3~6자리)를 넣어 주세요'); return; } if (!m[2]) { const r = lobbyRooms.find(q => q.code === m[1]); if (r) m[2] = r.size; } if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } teamSet(m[1], 5); toast('👥 방 ' + m[1] + ' 에 참가했어요! 같은 맵을 고르세요'); };
+$('btnTeamNew').onclick = () => { if (!playerId) { toast('로그인한 핸들러만 팀 방을 만들 수 있어요'); return; } const sz = 5, typed = ($('teamCode').value.trim().match(/^(\d{3,6})/) || [])[1]; if ($('teamCode').value.trim() && !typed) { toast('방 번호는 숫자 3~6자리로 넣어 주세요 (비워 두면 자동)'); return; } if (typed && lobbyRooms.some(r => r.code === typed && r.hostFixed)) { toast('이미 있는 방 번호예요. 아래 목록에서 눌러 참가하거나 다른 번호를 넣어 주세요'); return; } const code = typed || String(1000 + Math.floor(Math.random() * 9000)); $('teamCode').value = code; teamSet(code, sz, true); toast('👥 방 ' + code + ' 을(를) 만들었어요! 친구에게 번호를 알려 주세요'); };
+$('btnTeamJoin').onclick = () => { const m = $('teamCode').value.trim().match(/^(\d{3,6})(?:-([1-5]))?$/); if (!m) { toast('방 번호(숫자 3~6자리)를 넣어 주세요'); return; } if (!m[2]) { const r = lobbyRooms.find(q => q.code === m[1]); if (r) m[2] = r.size; } if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } teamSet(m[1], 5); { const rr = lobbyRooms.find(q => q.code === m[1]); toast('👥 방 ' + m[1] + ' 에 접속했어요!' + (rr && rr.hmap != null ? '' : ' 방장이 맵을 고르면 자동으로 들어가요')); if (rr && rr.hmap != null && LEVELS[rr.hmap]) { team.follow = rr.hmap; setTimeout(() => startLevel(rr.hmap), 500); } } };
 $('btnTeamOut').onclick = () => { $('teamCode').value = ''; teamSet(null); };
 try { const v = sessionStorage.getItem('k9team'), m = v && v.match(/^(\d{3,6})-([1-5])(-h)?$/); if (m) { $('teamCode').value = m[1]; setTimeout(() => teamSet(m[1], 5, !!m[3]), 0); } else setTimeout(() => teamSet(null), 0); } catch { }
 const mpCap = () => team ? team.size : 5;
@@ -3527,22 +3552,22 @@ async function lobbyJoin() {
     const sb = createClient(RANK_CFG.url, SB_ANON), key = Math.random().toString(36).slice(2, 10);
     const ch = sb.channel('k9-lobby', { config: { presence: { key } } }); Object.assign(lobby, { sb, ch, key });
     ch.on('broadcast', { event: 'closeRoom' }, ({ payload }) => { if (team && payload && payload.code === team.code && !team.host) { $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); toast('🗑 방장이 방을 삭제했어요. 혼자 플레이로 바뀌었어요'); } lobbyRooms = lobbyRooms.filter(r => r.code !== (payload && payload.code)); renderRooms(); })
-      .on('presence', { event: 'sync' }, () => { const R = {}; for (const v of Object.values(ch.presenceState())) { const e = v[0]; if (!e || !e.code) continue; const r = R[e.code] || (R[e.code] = { code: e.code, size: e.size, n: 0, host: e.nick, map: e.map, t: e.t }); r.n++; if (e.t < r.t) { r.t = e.t; r.host = e.nick; } if (e.map !== null && e.map !== undefined) r.map = e.map; } lobbyRooms = Object.values(R).sort((a, b) => a.t - b.t); renderRooms(); })
+      .on('presence', { event: 'sync' }, () => { const R = {}; for (const v of Object.values(ch.presenceState())) { const e = v[0]; if (!e || !e.code) continue; const r = R[e.code] || (R[e.code] = { code: e.code, size: e.size, n: 0, host: e.nick, map: e.map, t: e.t, nicks: [], hmap: null }); r.n++; r.nicks.push(String(e.nick || '').replace(/[<>&"]/g, '')); if (e.h) { r.hostFixed = true; r.host = e.nick; if (e.map !== null && e.map !== undefined) r.hmap = e.map; } if (e.t < r.t) { r.t = e.t; if (!r.hostFixed) r.host = e.nick; } if (e.map !== null && e.map !== undefined) r.map = e.map; } lobbyRooms = Object.values(R).sort((a, b) => a.t - b.t); renderRooms(); if (team && !team.host && state === 'maps') { const rr = lobbyRooms.find(q => q.code === team.code), hm = rr && rr.hmap; if (hm !== null && hm !== undefined && LEVELS[hm] && team.follow !== hm) { team.follow = hm; toast('👥 방장이 고른 맵으로 접속해요!'); setTimeout(() => { if (team && state === 'maps') startLevel(hm); }, 700); } } })
       .subscribe(st => { if (st === 'SUBSCRIBED') { lobby.on = true; lobbyTrack(); } });
   } catch { }
 }
-function lobbyTrack() { if (!lobby || !lobby.on) return; if (!lobby.ch) return; try { team ? lobby.ch.track({ code: team.code, size: team.size, nick: dispName().slice(0, 12), map: state === 'play' || pausedGame ? levelIdx : null, t: team.t || (team.t = Date.now()) }) : lobby.ch.untrack(); } catch { } }
+function lobbyTrack() { if (!lobby || !lobby.on) return; if (!lobby.ch) return; try { team ? lobby.ch.track({ code: team.code, size: team.size, h: !!team.host, nick: dispName().slice(0, 12), map: team.picked ?? null, t: team.t || (team.t = Date.now()) }) : lobby.ch.track({ viewer: 1, t: Date.now() }); } catch { } }
 function renderRooms() {
   const el = $('teamList'); if (!el) return;
   const list = lobbyRooms.filter(r => !team || r.code !== team.code), mine = team && (lobbyRooms.find(r => r.code === team.code) || { n: 1, size: team.size, map: null });
-  const mineHtml = mine ? '<div style="background:#fff1bf;border:2px solid #e0a800;border-radius:10px;padding:7px 10px;font-size:14px;color:var(--ink);display:flex;justify-content:space-between"><span>' + (team.host ? '⭐ 내가 만든 방 ' : '👥 참가 중인 방 ') + '<b>' + team.code + '</b> · ' + (LEVELS[mine.map] ? LEVELS[mine.map].icon + ' ' + t('m' + mine.map) : '맵을 고르세요') + '</span><span>' + mine.n + '/' + team.size + '명 ' + (mine.n < 2 ? '· 친구 기다리는 중' : '') + (team.host ? ' <button class="alt" id="btnRoomDel" style="font-size:12px;padding:3px 8px;border-radius:8px;margin-left:6px">🗑 방 삭제</button>' : ' <button class="alt" id="btnRoomLeave" style="font-size:12px;padding:3px 8px;border-radius:8px;margin-left:6px">🚪 나가기</button>') + '</span></div>' : '';
-  el.innerHTML = mineHtml + (!list.length ? '<div class="sub" style="text-align:center;opacity:.75">' + (team ? '다른 열린 방은 없어요' : '지금 열린 팀 방이 없어요 · 그냥 맵을 고르면 혼자 플레이해요') + '</div>' : '<div style="font-weight:800;color:var(--navy)">📋 열린 팀 방 (눌러서 참가)</div>' + list.map(r => { const full = r.n >= r.size, L = LEVELS[r.map]; return '<button class="alt roomBtn" data-c="' + r.code + '" data-s="' + r.size + '" data-m="' + (r.map ?? '') + '" ' + (full ? 'disabled' : '') + ' style="font-size:14px;padding:8px 10px;border-radius:10px;text-align:left;display:flex;justify-content:space-between;gap:8px' + (full ? ';opacity:.5' : '') + '"><span>👥 <b>' + r.code + '</b> · ' + String(r.host).replace(/[<>&"]/g, '') + ' 님의 방 · ' + (L ? L.icon + ' ' + t('m' + r.map) : '맵 고르는 중') + '</span><span>' + r.n + '/' + r.size + (full ? ' 꽉 참' : ' 참가 ▶') + '</span></button>'; }).join(''));
+  const mineHtml = mine ? '<div style="background:#fff1bf;border:2px solid #e0a800;border-radius:10px;padding:7px 10px;font-size:14px;color:var(--ink);display:flex;justify-content:space-between"><span>' + (team.host ? '⭐ 내가 만든 방 ' : '👥 참가 중인 방 ') + '<b>' + team.code + '</b> · ' + (LEVELS[mine.hmap ?? mine.map] ? LEVELS[mine.hmap ?? mine.map].icon + ' ' + t('m' + (mine.hmap ?? mine.map)) : (team.host ? '맵을 고르면 친구들도 같은 맵으로 접속돼요' : '방장이 맵을 고르는 중 · 잠시 기다려 주세요')) + '<br><small>참가자: ' + ((mine.nicks && mine.nicks.length) ? mine.nicks.join(', ') : dispName()) + '</small>' + '</span><span>' + mine.n + '/' + team.size + '명 ' + (mine.n < 2 ? '· 친구 기다리는 중' : '') + (team.host ? ' <button class="alt" id="btnRoomDel" style="font-size:12px;padding:3px 8px;border-radius:8px;margin-left:6px">🗑 방 삭제</button>' : ' <button class="alt" id="btnRoomLeave" style="font-size:12px;padding:3px 8px;border-radius:8px;margin-left:6px">🚪 나가기</button>') + '</span></div>' : '';
+  el.innerHTML = mineHtml + (!list.length ? '<div class="sub" style="text-align:center;opacity:.75">' + (team ? '다른 열린 방은 없어요' : '지금 열린 팀 방이 없어요 · 그냥 맵을 고르면 혼자 플레이해요') + '</div>' : '<div style="font-weight:800;color:var(--navy)">📋 열린 팀 방 (눌러서 접속)</div>' + list.map(r => { const full = r.n >= r.size, L = LEVELS[r.map]; return '<button class="alt roomBtn" data-c="' + r.code + '" data-s="' + r.size + '" data-m="' + (r.hmap ?? r.map ?? '') + '" ' + (full ? 'disabled' : '') + ' style="font-size:14px;padding:8px 10px;border-radius:10px;text-align:left;display:flex;justify-content:space-between;gap:8px' + (full ? ';opacity:.5' : '') + '"><span>👥 <b>' + r.code + '</b> · ' + String(r.host).replace(/[<>&"]/g, '') + ' 님의 방 · ' + (LEVELS[r.hmap ?? r.map] ? LEVELS[r.hmap ?? r.map].icon + ' ' + t('m' + (r.hmap ?? r.map)) : '맵 고르는 중') + '</span><span>' + r.n + '/' + r.size + (full ? ' 꽉 참' : ' 접속 ▶') + '</span></button>'; }).join(''));
 }
-$('teamList').addEventListener('click', e => { if (e.target.closest('#btnRoomLeave')) { const code = team && team.code; $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); renderRooms(); toast('🚪 방 ' + code + ' 에서 나왔어요. 혼자 플레이로 바뀌었어요'); return; } if (e.target.closest('#btnRoomDel')) { if (!team || !team.host) return; if (!confirm('방 ' + team.code + ' 을(를) 삭제할까요? 들어와 있는 친구들도 모두 나가게 돼요.')) return; const code = team.code; try { lobby && lobby.ch && lobby.ch.send({ type: 'broadcast', event: 'closeRoom', payload: { code } }); } catch { } $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); lobbyRooms = lobbyRooms.filter(r => r.code !== code); renderRooms(); toast('🗑 방 ' + code + ' 을(를) 삭제했어요'); return; } const b = e.target.closest('.roomBtn'); if (!b || b.disabled) return; if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } $('teamCode').value = b.dataset.c + '-' + b.dataset.s; teamSet(b.dataset.c, +b.dataset.s); toast('👥 방 ' + b.dataset.c + ' 에 참가했어요!'); if (b.dataset.m !== '' && LEVELS[+b.dataset.m] && !$('mapGrid').querySelector('.mapcard[data-i="' + b.dataset.m + '"]')?.disabled) startLevel(+b.dataset.m); });
+$('teamList').addEventListener('click', e => { if (e.target.closest('#btnRoomLeave')) { const code = team && team.code; $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); renderRooms(); toast('🚪 방 ' + code + ' 에서 나왔어요. 혼자 플레이로 바뀌었어요'); return; } if (e.target.closest('#btnRoomDel')) { if (!team || !team.host) return; if (!confirm('방 ' + team.code + ' 을(를) 삭제할까요? 들어와 있는 친구들도 모두 나가게 돼요.')) return; const code = team.code; try { lobby && lobby.ch && lobby.ch.send({ type: 'broadcast', event: 'closeRoom', payload: { code } }); } catch { } $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); lobbyRooms = lobbyRooms.filter(r => r.code !== code); renderRooms(); toast('🗑 방 ' + code + ' 을(를) 삭제했어요'); return; } const b = e.target.closest('.roomBtn'); if (!b || b.disabled) return; if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } $('teamCode').value = b.dataset.c + '-' + b.dataset.s; teamSet(b.dataset.c, +b.dataset.s); toast('👥 방 ' + b.dataset.c + ' 에 접속했어요!' + (b.dataset.m === '' ? ' 방장이 맵을 고르면 자동으로 들어가요' : '')); if (b.dataset.m !== '' && LEVELS[+b.dataset.m] && !$('mapGrid').querySelector('.mapcard[data-i="' + b.dataset.m + '"]')?.disabled) startLevel(+b.dataset.m); });
 function mpStat(k) { if (mp && team && mp.ch) try { mp.ch.send({ type: 'broadcast', event: 'stat', payload: { k, room: mp.room } }); } catch { } }
 function mpGotStat(p) {
   if (!level || !mp || !team || p.room !== mp.room || !(p.k in level.need)) return;
-  lvStats[p.k] = (lvStats[p.k] || 0) + 1;
+  lvStats[p.k] = (lvStats[p.k] || 0) + 1; try { renderQuest(); } catch { }
   if (p.k === 'smuggler') { const q = people.find(o => o.kind === 'smuggler' && !o.arrested && !o.dead); if (q) { q.arrested = true; if (q.ring) q.ring.visible = false; q.g.visible = false; } toast('👥 팀원이 ' + (level.crook || '범인') + '을(를) 체포했어요!'); }
   else { const c = hidden.find(o => !o.revealed && o.hidden === p.k); if (c) { c.revealed = true; c.hidden = null; } toast('👥 팀원이 ' + ITEM[p.k].emoji + ' ' + ITEM[p.k].name + ' 을(를) 찾았어요!'); }
   checkQuest();
@@ -3737,6 +3762,7 @@ function updateFun(dt) {
 let ach = { drug: 0, gun: 0, arrest: 0, boss: 0, missions: 0, comboMax: 0, cleared: 0, earned: [] };
 const achKey = () => 'k9ach:' + playerId;
 function loadAch() { ach = Object.assign({ drug: 0, gun: 0, arrest: 0, boss: 0, missions: 0, comboMax: 0, cleared: 0, earned: [] }, store.get(achKey(), {})); }
+const BADGE_PROG = { first: a => [a.drug + a.gun, 1], combo: a => [a.comboMax || 0, 4], mission: a => [a.missions || 0, 5], drug: a => [a.drug, 20], gun: a => [a.gun, 10], arrest: a => [a.arrest, 15], boss: a => [a.boss, 1], all: a => [a.cleared, 6] };
 const BADGES = [
   ['first', '🐾', '첫 적발', '밀수품 첫 적발', a => a.drug + a.gun >= 1],
   ['combo', '🔥', '콤보 마스터', '콤보 x4 달성', a => a.comboMax >= 4],
@@ -3755,7 +3781,7 @@ function checkBadges() {
   store.set(achKey(), ach);
 }
 function renderBadges() {
-  $('badges').innerHTML = '<h2 style="font-size:20px;margin:14px 0 6px">🏅 나의 배지</h2><div class="badgerow">' + BADGES.map(([id, ic, nm, how]) => `<span class="badge ${ach.earned.includes(id) ? 'on' : ''}" title="${how}">${ic}<small>${nm}</small></span>`).join('') + '</div>';
+  $('badges').innerHTML = '<h2 style="font-size:20px;margin:14px 0 2px">🏅 나의 배지 <small style="font-size:13px;color:var(--muted)">(' + ach.earned.length + '/' + BADGES.length + ' 획득)</small></h2><p style="font-size:13px;margin:0 0 6px">아래 조건을 채우면 배지를 받아요. 모든 맵에서 쌓인 기록으로 계산돼요.</p><div class="badgerow">' + BADGES.map(([id, ic, nm, how]) => { const on = ach.earned.includes(id), [c, m] = (BADGE_PROG[id] || (() => [0, 1]))(ach); return `<span class="badge ${on ? 'on' : ''}" title="${how}">${ic}<small>${nm}</small><small style="font-size:10px;opacity:.85">${how}</small><small style="font-size:10px;font-weight:700;color:${on ? '#2e7d32' : '#8a6a00'}">${on ? '✅ 획득' : Math.min(c || 0, m) + ' / ' + m}</small></span>`; }).join('') + '</div>';
 }
 // 간식 상점
 const walletKey = () => 'k9wallet:' + playerId;
@@ -4217,7 +4243,7 @@ function loadLevel(i) {
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
   setupCoins(); helps = []; dog.shield = 0; dog.noseT = 0; dog.boneT = 0; if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
   helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
-  if (mp && mp.room !== i) mpLeave(); if (playerId) { mpJoin(); lobbyJoin(); setTimeout(lobbyTrack, 300); }
+  if (mp && mp.room !== i) mpLeave(); if (team) team.picked = i; if (playerId) { mpJoin(); lobbyJoin(); setTimeout(lobbyTrack, 300); }
   if (people.some(p => p.look && p.villain)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
   if (!def.relax && levelIdx % 4 === 0) setTimeout(() => toast(SLAM_TIP), 6500);
   applyCrime(def); if (!def.relax && CRIME[def.name]) setTimeout(() => toast(lang === 'ko' ? `🚨 이 맵의 범인: ${level.crookEmoji} ${level.crook} · 찾을 물건: ${ITEM.drug.emoji} ${ITEM.drug.name}, ${ITEM.gun.emoji} ${ITEM.gun.name}` : `🚨 Suspects here: ${level.crookEmoji} ${level.crook}`), 2600);
@@ -4264,6 +4290,7 @@ function renderQuest() {
   if (!level) return;
   $('qzone').textContent = level.gate ? `${t('qz_gate')} · ${mapName(levelIdx)}` : level.landmark ? `${t('qz_lm')} · ${mapName(levelIdx)}` : level.relax ? `🌅 HIDDEN MAP · ${mapName(levelIdx)}` : `${level.icon} MAP ${levelIdx + 1}/6 · ${mapName(levelIdx)}`;
   $('qtitle').textContent = mapName(levelIdx); $('qdesc').textContent = lang === 'ko' ? scaleNums(level.short) + (level.scaled && levelIdx < 6 ? ' · 🗺 A~D 구역까지 넓어졌어요!' : '') : t('s' + levelIdx);
+  $('qsum').textContent = '📋 ' + Object.entries(level.need).map(([k, n]) => (t('g_' + k).replace(/ (적발|체포)$/, '')) + ' ' + Math.min(lvStats[k] || 0, n) + '/' + n).join(' · ') + '  ▾';
   $('qgoals').innerHTML = Object.entries(level.need).map(([k, n]) => { const v = Math.min(lvStats[k] || 0, n); return `<div class="goal ${v >= n ? 'done' : ''}"><span>${t('g_' + k)}</span><b>${v}/${n}</b></div>`; }).join('');
 }
 function addScore(n) { levelScore = Math.max(-500, levelScore + n); }
@@ -4489,6 +4516,11 @@ async function cloudLoad(id, pw, freshDevice) {
   } catch { cloudBusy = false; return false; }
 }
 function dispName() { if (playerNick && !playerNick.includes('@')) return playerNick; if (playerId && !playerId.includes('@') && !playerId.startsWith('guest_')) return playerId; return t('hd_word') === 'handler' ? 'K9' : 'K9'; }
+// 임무 패널·미니맵 접기/펼치기 (누르면 전환, 상태 기억)
+{ const pref = k => { try { return localStorage.getItem('k9ui:' + k); } catch { return null; } }, save = (k, v) => { try { localStorage.setItem('k9ui:' + k, v); } catch { } };
+  if (pref('quest') === 'open') $('quest').classList.remove('mini'); if (pref('mm') === 'open') $('mmwrap').classList.remove('mini');
+  $('quest').addEventListener('click', () => { const m = $('quest').classList.toggle('mini'); save('quest', m ? 'mini' : 'open'); });
+  $('mmwrap').addEventListener('click', e => { if (e.target.closest('#info')) return; const m = $('mmwrap').classList.toggle('mini'); save('mm', m ? 'mini' : 'open'); }); }
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
