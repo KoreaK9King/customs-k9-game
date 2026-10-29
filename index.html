@@ -118,13 +118,20 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 #bSniff{right:calc(104px + var(--sr));bottom:calc(142px + var(--sb));background:rgba(125,255,161,.9)}
 #bBone{right:calc(196px + var(--sr));bottom:calc(104px + var(--sb));background:rgba(255,236,200,.95);font-size:28px}
 #bRun{right:calc(22px + var(--sr));bottom:calc(172px + var(--sb));background:rgba(79,195,247,.9)}
-body.touch #bars{bottom:calc(8px + var(--sb))}
+body.touch #bars{bottom:calc(6px + var(--sb));gap:6px;padding:5px 9px;max-width:96vw;box-sizing:border-box}
+body.touch #bars .lbl{font-size:10px}body.touch #bars .bar{width:56px}
+body.touch #bBone{right:calc(26px + var(--sr));bottom:calc(254px + var(--sb));width:60px;height:60px;font-size:24px}
+body.touch #joy{bottom:calc(64px + var(--sb))}
 @media (max-width:640px){
  #mm{width:120px;height:88px}
  #quest{width:calc(100vw - 160px);padding:8px 10px}
  #qdesc{display:none}#qtitle{font-size:16px}.goal{font-size:12px}
- .bar{width:70px}#topbar{top:calc(140px + var(--st))}
- #toast{font-size:17px;top:calc(140px + var(--st))}
+ .bar{width:54px}#topbar{top:calc(150px + var(--st))}
+ #mmwrap{max-width:132px;padding:4px}#mm{width:122px;height:90px}#info{flex-wrap:wrap;font-size:10.5px;gap:0 6px}
+ #quest{width:calc(100vw - 172px);padding:6px 9px}#qzone{font-size:10.5px}
+ #mission{top:calc(150px + var(--st));font-size:13px}#mpCount{top:calc(150px + var(--st));font-size:13px}
+ #topbar button{width:34px;height:30px;font-size:15px}#topbar{gap:4px}
+ #toast{font-size:15px;top:calc(196px + var(--st))}
  #mapGrid{grid-template-columns:repeat(2,1fr)}
  .card{padding:18px}.card h1{font-size:26px}
 }
@@ -309,7 +316,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030024959';
+const BUILD = '20261030025816';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -615,11 +622,11 @@ const mapName = i => t('m' + i);
 // ================= 렌더러 =================
 const isMobile = matchMedia('(pointer: coarse)').matches;
 if (isMobile) document.body.classList.add('touch');
-const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.5 : 2));
+const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1 : 2));
 renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled = !isMobile;
+renderer.shadowMap.type = isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.NoToneMapping;
 renderer.toneMappingExposure = 1.05;
 $('game').appendChild(renderer.domElement);
@@ -1031,8 +1038,16 @@ const hairs = [0x2b1d14, 0x5a3a1a, 0x111111, 0xb08850, 0x777777];
 const bagColors = [0xc0392b, 0x2e86c1, 0x27ae60, 0xd4ac0d, 0x8e44ad, 0x17a589, 0xd35400, 0x2c3e50, 0xe6739f, 0xbdc3c7];
 let dogName = '관세청 탐지견', dogBreed = 'labrador';
 let dogM = makeDog(BREEDS.labrador, dogName); scene.add(dogM.g);
-let wallet = { coins: 0, up: { spd: 0, nose: 0, sta: 0, bark: 0, jump: 0 } };
-const ST = () => { const b = BREEDS[dogBreed].stat, u = wallet.up; return { spd: b.spd + u.spd, nose: b.nose + u.nose, sta: b.sta + u.sta, bark: b.bark + u.bark, jump: b.jump + u.jump }; };
+const UP0 = { spd: 0, nose: 0, sta: 0, bark: 0, jump: 0, heart: 0, armor: 0, magnet: 0, bone: 0, leak: 0 };
+let wallet = { coins: 0, up: { ...UP0 } };
+const ST = () => { const b = BREEDS[dogBreed].stat, u = wallet.up, k = .5; return { spd: b.spd + u.spd * k, nose: b.nose + u.nose * k, sta: b.sta + u.sta * k, bark: b.bark + u.bark * k, jump: b.jump + u.jump * k }; };
+// [키, 이름, 설명, 최대 레벨, 레벨별 가격]
+const UPG = [
+  ['spd', '🏃 속도', '이동·달리기 속도 +3%', 5, [40, 70, 110, 160, 220]], ['nose', '👃 후각', '냄새 맡는 거리 +4%', 5, [40, 70, 110, 160, 220]], ['sta', '💪 지구력', '기력 소모 감소·회복 증가', 5, [40, 70, 110, 160, 220]],
+  ['bark', '📢 짖기', '왕왕 공격 범위 +3%', 5, [40, 70, 110, 160, 220]], ['jump', '🦘 점프', '점프 높이 +2.5%', 5, [30, 50, 80, 120, 170]],
+  ['heart', '❤️ 시작 하트', '작전 시작 하트 +1', 2, [150, 300]], ['armor', '🦺 방탄 조끼', '총알·부딪힘 막을 확률 +6%', 5, [50, 90, 140, 200, 270]],
+  ['magnet', '🧲 코인 자석', '코인 줍는 거리 +1m', 3, [30, 60, 100]], ['bone', '🦴 뼈다귀 연사', '뼈다귀 던지는 간격 -10%', 3, [50, 90, 140]], ['leak', '⏳ 반출 지연', '밀수품이 빠져나가는 시간 +8%', 3, [60, 110, 170]],
+];
 function setDog(breed, name) {
   dogBreed = BREEDS[breed] ? breed : 'labrador'; dogName = name;
   dogM.g.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map.dispose(); o.material.dispose(); } });
@@ -1155,7 +1170,7 @@ function makeBone() {
 }
 function throwBone() {
   if (handler.boneCd > 0) return;
-  handler.boneCd = (1.0 / 1.07) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1); handler.throwT = .3;
+  handler.boneCd = (1.0 / 1.07) * (1 - .1 * (wallet.up.bone || 0)) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1); handler.throwT = .3;
   // 탐지견이 바라보는 방향으로 똑바로 던진다 (자동 조준 없음)
   const src = twoP ? handler : dog, fx = Math.sin(src.dir), fz = Math.cos(src.dir);
   bones.push({ m: makeBone(), x: src.x + fx * .6, z: src.z + fz * .6, fx, fz, t: 0, range: 6 + (handlerJob === 'police' ? 2 : 0), speed: 14.4 });
@@ -3698,15 +3713,16 @@ function renderBadges() {
 }
 // 간식 상점
 const walletKey = () => 'k9wallet:' + playerId;
-function loadWallet() { wallet = Object.assign({ coins: 0 }, store.get(walletKey(), {})); wallet.up = Object.assign({ spd: 0, nose: 0, sta: 0, bark: 0, jump: 0 }, wallet.up); }
+function loadWallet() { wallet = Object.assign({ coins: 0 }, store.get(walletKey(), {})); wallet.up = Object.assign({ ...UP0 }, wallet.up); }
 function renderShop() {
-  $('shop').innerHTML = `<h2 style="font-size:20px;margin:14px 0 4px">🦴 간식 상점 · 보유 ${wallet.coins}개</h2><p style="font-size:13px;margin:0 0 6px">맵을 클리어하면 점수에 따라 간식을 받아요. 간식으로 ${esc(dogName)}의 능력을 키워보세요! (능력마다 최대 +2)</p><div class="shoprow">` +
-    STAT_NAMES.map(([k, n]) => { const lv = wallet.up[k], cost = 30 * (lv + 1), max = lv >= 2; return `<button class="shopbtn" data-k="${k}" ${max || wallet.coins < cost ? 'disabled' : ''}>${n} +${lv}<br><small>${max ? '최대' : cost + '🦴'}</small></button>`; }).join('') + '</div>';
+  const u = wallet.up, spent = UPG.reduce((t, [k, , , , c]) => t + c.slice(0, u[k] || 0).reduce((x, y) => x + y, 0), 0), all = UPG.reduce((t, [, , , , c]) => t + c.reduce((x, y) => x + y, 0), 0);
+  $('shop').innerHTML = '<h2 style="font-size:20px;margin:14px 0 4px">🪙 업그레이드 상점 · 보유 ' + wallet.coins + ' 코인</h2><p style="font-size:13px;margin:0 0 6px">맵을 돌아다니며 코인(1~50)을 줍고, 맵을 클리어하면 보너스 코인도 받아요. 업그레이드는 내 계정에 저장돼 다른 기기에서도 그대로예요. (전체 진행 ' + Math.round(spent / all * 100) + '%)</p><div class="shoprow">' +
+    UPG.map(([k, n, tip, mx, cost]) => { const lv = u[k] || 0, max = lv >= mx, c = cost[lv]; return '<button class="shopbtn" data-k="' + k + '" title="' + tip + '" ' + (max || wallet.coins < c ? 'disabled' : '') + '>' + n + ' <b>Lv' + lv + '</b>/' + mx + '<br><small>' + (max ? '최대' : c + '🪙') + '</small><br><small style="opacity:.7">' + tip + '</small></button>'; }).join('') + '</div>';
 }
 $('shop').addEventListener('click', e => {
   const b = e.target.closest('.shopbtn'); if (!b || b.disabled) return;
-  const k = b.dataset.k, cost = 30 * (wallet.up[k] + 1); if (wallet.coins < cost) return;
-  wallet.coins -= cost; wallet.up[k]++; store.set(walletKey(), wallet); SFX.found(); renderShop();
+  const U = UPG.find(x => x[0] === b.dataset.k); if (!U) return; const lv = wallet.up[U[0]] || 0, c = U[4][lv]; if (lv >= U[3] || wallet.coins < c) return;
+  wallet.coins -= c; wallet.up[U[0]] = lv + 1; store.set(walletKey(), wallet); try { cloudSave(); } catch { } SFX.found(); toast(U[1] + ' Lv' + (lv + 1) + ' 업그레이드!'); renderShop();
 });
 // 사진 모드
 let photoPose = 4.1, photoDir = 0;
@@ -4104,7 +4120,7 @@ function loadLevel(i) {
   if (SZ > 1.05 && !def.mega) level.need = Object.fromEntries(Object.entries(def.need).map(([k, n]) => [k, k === 'boss' ? n : Math.ceil(n * (1 + (SZ - 1) * .42))]));
   const spawn = { x: 0, z: def.d / 2 - 6 };
   level.spawn = spawn;
-  renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? (def.mega ? 1 : 1.5) : (def.mega ? 1.25 : 2)));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1 : (def.mega ? 1.25 : 2)));
   level.avoid = [{ ...spawn, r: 5 }];
   setSeed((Math.random() * 1e9) | 0); // 시작할 때마다 배치·은닉 위치가 달라진다
   // 환경 / 조명
@@ -4152,7 +4168,7 @@ function loadLevel(i) {
   }
   { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); xray = null;
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
-  helps = []; dog.shield = 0; dog.noseT = 0; dog.boneT = 0; if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
+  setupCoins(); helps = []; dog.shield = 0; dog.noseT = 0; dog.boneT = 0; if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
   helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
   if (mp && mp.room !== i) mpLeave(); if (playerId) { mpJoin(); lobbyJoin(); setTimeout(lobbyTrack, 300); }
   if (people.some(p => p.look && p.villain)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
@@ -4176,7 +4192,7 @@ const scaleNums = t => level && level.sz > 1.05 ? t.replace(/(\d+)(개|정|명)/
 function startLevel(i) {
   if (LEVELS[i].mega && !hiddenVip && !(team && team.size >= 5)) { toast('🏙 통합 도시는 5명 팀 방에서만 도전할 수 있어요! 맵 선택 화면에서 5명 방을 만들거나 참가하세요'); showMaps(); return; }
   if (LEVELS[i].landmark) { /* 명소 순찰: 작전 점수와 따로 */ }
-  else if (!runActive || runCleared.has(i) || LEVELS[i].relax) { runScore = 0; runTime = 0; runStage = 0; runCleared = new Set(); totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = LEVELS[i].relax ? null : startServerRun(i); dog.hp = 3; }
+  else if (!runActive || runCleared.has(i) || LEVELS[i].relax) { runScore = 0; runTime = 0; runStage = 0; runCleared = new Set(); totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = LEVELS[i].relax ? null : startServerRun(i); dog.hp = 3 + (wallet.up.heart || 0); }
   if (!LEVELS[i].landmark) runActive = !LEVELS[i].relax;
   if (i === 5 && runCleared.size < 5) setTimeout(() => toast(t('ts_boss_rank')), 4500);
   hideAll(); loadLevel(i);
@@ -4207,6 +4223,7 @@ function damage() {
   if (dog.hurt > 0 || state !== 'play') return;
   if (hiddenVip) { dog.hurt = .8; floatText('🛡 관리자 무적', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#ffd54f' }); return; }
   if (dog.shield > 0) { dog.shield--; dog.hurt = .8; floatText(t('ts_blocked'), dog.x, dog.y + 1.8, dog.z, { h: .5, color: '#7fd3ff' }); burst(dog.x, dog.y + .8, dog.z, [new THREE.Color(0x7fd3ff)], 20, 3); return; }
+  if (Math.random() < .06 * (wallet.up.armor || 0)) { dog.hurt = .6; floatText('🦺 방탄 조끼가 막았다!', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#9fe870' }); return; }
   if (handlerJob === 'soldier' && Math.random() < .3) { dog.hurt = .6; floatText('🛡 막아냈다!', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#9fe870' }); return; }
   dog.hp--; dog.hurt = 1; lastHurt = time; shake = .4; burst(dog.x, dog.y + .8, dog.z, [RED], 25, 3);
   if (dog.hp > 0) return;
@@ -4229,7 +4246,7 @@ function levelClear() {
   state = 'clear'; SFX.quest();
   const timeBonus = Math.max(0, Math.round(((240 + (level.sz - 1) * 325) - levelTime) * 2));
   levelScore += 300 + timeBonus;
-  const coinsGot = Math.max(5, Math.round(levelScore / 25)); wallet.coins += coinsGot; store.set(walletKey(), wallet);
+  const coinsGot = Math.max(10, Math.round(levelScore / 30 * (level.sz || 1))); wallet.coins += coinsGot; store.set(walletKey(), wallet); try { cloudSave(); } catch { }
   if (level.landmark) { const p0 = getProg(); if (!p0.best[levelIdx] || levelTime < p0.best[levelIdx]) p0.best[levelIdx] = Math.round(levelTime); store.set(progKey(), p0); checkBadges(); $('clrSub').textContent = level.gate ? t('qz_gate') : t('clr_lm_sub'); $('clrTitle').textContent = level.icon + ' ' + mapName(levelIdx) + ' ' + t('clr_lm_title'); $('clrStats').innerHTML = '⏱ <b>' + fmtTime(levelTime) + '</b><br>⭐ ' + t('clr_score') + ' <b>' + levelScore + '</b><br>🦴 ' + t('clr_snack') + ' +' + coinsGot + '<br><small>' + t('clr_lm_note') + '</small>'; $('clear').classList.remove('hidden'); return; }
   runScore += levelScore; runTime += levelTime;
   runCleared.add(levelIdx); runStage = runCleared.size;
@@ -4528,7 +4545,7 @@ function updateHelp(dt) {
 function updateLeak(dt) {
   if (!level || level.relax) return;
   leakT += dt;
-  const lim = 1.07 * (50 + (level.sz - 1) * 18) / (.8 + .1 * level.diff.stars) * (1 + (level.fav || 0));
+  const lim = 1.07 * (50 + (level.sz - 1) * 18) / (.8 + .1 * level.diff.stars) * (1 + (level.fav || 0)) * (1 + .08 * (wallet.up.leak || 0));
   if (leakT < lim) return;
   leakT = 0;
   if (Math.random() >= .05) return; // 반출 감점은 5% 확률로만
@@ -4616,7 +4633,7 @@ function bark() {
 
 // ================= 입력 =================
 let keys = {}, barkQ = false, jumpQ = false, dragging = null;
-let yaw = 0, pitch = .42, camDist = 9;
+let yaw = 0, pitch = .42, camDist = isMobile ? 7.6 : 9;
 const touchIn = { x: 0, y: 0, sniff: false, run: false };
 addEventListener('keydown', e => {
   if (state === 'intro') { if (intro) intro.t = Math.max(intro.t, 3.85); return; }
@@ -4677,7 +4694,7 @@ function updateDog(dt) {
   let mx = rx * ix + fx * iy, mz = rz * ix + fz * iy;
   const len = Math.hypot(mx, mz); if (len > 1) { mx /= len; mz /= len; }
   dog.sniffing = !!(keys.KeyE || touchIn.sniff) && dog.grounded;
-  const sprint = (keys.ShiftLeft || (!twoP && keys.ShiftRight) || touchIn.run) && dog.stamina > 3 && len > .1 && !dog.sniffing;
+  const sprint = (keys.ShiftLeft || (!twoP && keys.ShiftRight) || touchIn.run || Math.hypot(touchIn.x, touchIn.y) > .93) && dog.stamina > 3 && len > .1 && !dog.sniffing;
   dog.stamina = clamp(dog.stamina + (sprint ? -24 * (1.4 - .1 * ST().sta) * (handlerJob === 'soldier' ? .8 : 1) : 14 * (.7 + .1 * ST().sta)) * dt, 0, 100);
   dog.boost -= dt; dog.hurt -= dt;
   const maxSp = (dog.swim ? .62 : 1) * 1.07 * (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (.85 + .06 * ST().spd) * (level ? 1 + (level.sz - 1) * .22 : 1);
@@ -4973,6 +4990,57 @@ function seaPlay(dt, m) {
   if (!posSet) { m.g.position.x = dog.x; m.g.position.z = dog.z; m.g.rotation.y = dog.dir; }
 }
 
+// ================= 코인: 맵 곳곳에 1~50 코인, 주우면 업그레이드에 쓴다 =================
+let coins = [], coinSpawned = 0, coinMax = 0, coinT = 0;
+const COIN_GEO = new THREE.CylinderGeometry(1, 1, .12, 18);
+const COIN_MAT = { b: MAT.col(0xcd7f32, .35, .7), s: MAT.col(0xdfe4ea, .3, .8), g: std(0xffcc33, .25, .8, { emissive: 0x7a5200, emissiveIntensity: .5 }) };
+function coinValue() { const r = Math.random(); return r < .7 ? 1 + Math.floor(Math.random() * 9) : r < .92 ? 10 + Math.floor(Math.random() * 20) : 30 + Math.floor(Math.random() * 21); }
+function spawnCoin() {
+  const p = placeFree(level.bounds, .8, .8, .3, level.avoid); if (!p) return;
+  const v = coinValue(), tier = v >= 30 ? 'g' : v >= 10 ? 's' : 'b', r = .22 + v / 50 * .2, m = new THREE.Mesh(COIN_GEO, COIN_MAT[tier]);
+  m.scale.set(r, 1, r); m.rotation.x = Math.PI / 2; const y = (slopes.length ? terrainH(p.x, p.z) : 0) + .7; m.position.set(p.x, y, p.z); m.castShadow = false; world.add(m);
+  coins.push({ x: p.x, z: p.z, y, v, m, ph: Math.random() * 6 }); coinSpawned++;
+}
+function setupCoins() { coins = []; coinSpawned = 0; coinT = 0; if (level.relax) { coinMax = 0; return; } const n = Math.round(10 * (level.sz || 1) * (level.mega ? 1.6 : 1)); coinMax = n * 2; for (let k = 0; k < n; k++) spawnCoin(); }
+function updateCoins(dt) {
+  const R = 1.2 + (wallet.up.magnet || 0);
+  for (let i = coins.length - 1; i >= 0; i--) {
+    const c = coins[i]; c.m.rotation.z = time * 3 + c.ph; c.m.position.y = c.y + Math.sin(time * 2.5 + c.ph) * .12;
+    const d = Math.hypot(c.x - dog.x, c.z - dog.z);
+    if (d < R + 2 && d > .5 && (wallet.up.magnet || 0) > 0) { c.x += (dog.x - c.x) * Math.min(1, dt * 4); c.z += (dog.z - c.z) * Math.min(1, dt * 4); c.m.position.x = c.x; c.m.position.z = c.z; }
+    if (d < R && Math.abs((dog.y + .5) - c.y) < 2.2) {
+      world.remove(c.m); coins.splice(i, 1); wallet.coins += c.v; store.set(walletKey(), wallet);
+      floatText('+' + c.v + ' 🪙', c.x, c.y + 1, c.z, { h: c.v >= 30 ? .55 : .42, color: c.v >= 30 ? '#ffd54f' : c.v >= 10 ? '#e6edf3' : '#e0a060' });
+      tone(c.v >= 30 ? 1320 : 990, .08, 'square', .06); tone(c.v >= 30 ? 1760 : 1320, .1, 'square', .05, 0, .07);
+      for (let k = 0; k < (c.v >= 30 ? 16 : 6); k++) spawnP(c.x, c.y, c.z, mr(-1.5, 1.5), mr(1, 3), mr(-1.5, 1.5), new THREE.Color(c.v >= 30 ? 0xffcc33 : 0xdddddd), .5);
+      coinT = 0;
+    }
+  }
+  // 주운 만큼 시간이 지나면 다른 곳에 새로 생긴다 (한 맵에서 처음 개수의 2배까지)
+  coinT += dt; if (coins.length < coinMax / 2 && coinSpawned < coinMax && coinT > 20) { coinT = 0; spawnCoin(); }
+}
+
+// ================= 휴대폰 거리 컬링 =================
+let cullList = null, cullLevel = null, cullFrame = 0;
+const _cb = new THREE.Box3(), _cs = new THREE.Sphere();
+function mobileCull() {
+  if (!isMobile || !level || state !== 'play') return;
+  if (cullLevel !== level) {
+    cullLevel = level; cullList = [];
+    // 휴대폰에선 가로등 등 점광원을 끈다 (빛마다 모든 물체 계산이 늘어남, 가로등은 스스로 빛나는 재질이라 그대로 보임)
+    world.traverse(o => { if (o.isPointLight || o.isSpotLight) o.visible = false; });
+    const moving = new Set([...people.map(p => p.g), ...vehicles.map(v => v.g), ...(animals || []).map(a => a.g), ...coins.map(c => c.m)]);
+    for (const o of world.children) {
+      if (moving.has(o) || (level.megaGroups && level.megaGroups.some(q => q.g === o))) continue;
+      _cb.setFromObject(o); if (_cb.isEmpty()) continue; _cb.getBoundingSphere(_cs);
+      if (_cs.radius < 14) cullList.push({ o, x: _cs.center.x, z: _cs.center.z, r: _cs.radius });
+    }
+  }
+  if (++cullFrame % 10) return;
+  const R = level.mega ? 60 : 68;
+  for (const c of cullList) { const v = Math.abs(c.x - dog.x) < R + c.r && Math.abs(c.z - dog.z) < R + c.r; if (c.o.visible !== v) c.o.visible = v; }
+}
+
 // ================= 카메라 =================
 const camPos = new THREE.Vector3(0, 6, 9);
 function updateCamera(dt) {
@@ -5062,8 +5130,8 @@ function loop() {
   const dt = Math.min(clock.getDelta(), .05); time += dt;
   if (state === 'play' || state === 'dialog') { playTotal += dt; if (Math.floor(playTotal / 1800) > playNotes) { playNotes++; toast(t('ts_play30').replace('{m}', playNotes * 30)); } }
   if (state === 'play') {
-    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateAnimals(dt); updateDebris(dt); if (!level.relax) updateMp(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
-    if (level.mega) { megaFrame++; people.forEach((p, k) => { const far = !p.dead && !p.arrested && Math.abs(p.x - dog.x) + Math.abs(p.z - dog.z) > (isMobile ? 70 : 95); if (!p.dead && !p.arrested) p.g.visible = !far; if (!far) { p.update(dt + (p.acc || 0)); p.acc = 0; } else { p.acc = (p.acc || 0) + dt; if ((megaFrame + k) % 6 === 0) { p.update(Math.min(p.acc, .25)); p.acc = 0; } } }); }
+    levelTime += dt; updateCoins(dt); mobileCull(); updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateAnimals(dt); updateDebris(dt); if (!level.relax) updateMp(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
+    if (level.mega || isMobile) { megaFrame++; people.forEach((p, k) => { const far = !p.dead && !p.arrested && Math.abs(p.x - dog.x) + Math.abs(p.z - dog.z) > (isMobile ? 70 : 95); if (!p.dead && !p.arrested) p.g.visible = !far; if (!far) { p.update(dt + (p.acc || 0)); p.acc = 0; } else { p.acc = (p.acc || 0) + dt; if ((megaFrame + k) % 6 === 0) { p.update(Math.min(p.acc, .25)); p.acc = 0; } } }); }
     else for (const p of people) p.update(dt);
   } else if (state === 'intro') {
     updateIntro(dt); for (const p of people) p.update(dt);
