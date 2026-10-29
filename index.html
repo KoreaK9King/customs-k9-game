@@ -244,6 +244,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
   · <b>동의하지 않을 권리</b>: 동의하지 않아도 <b>👀 체험하기</b>로 게임을 할 수 있어요(랭킹 미반영, 이 기기에만 저장).<br>
   · <b>만 14세 미만</b>은 법에 따라 <b>보호자(법정대리인)의 동의</b>가 필요해요. 보호자와 함께 읽고 동의해 주세요.
   </div></details>
+  <div id="pvHint" style="font-size:12px;font-weight:700;color:#b5402a;margin-top:6px">📖 [자세히 보기]를 눌러 안내를 끝까지 읽으면 동의에 체크할 수 있어요</div>
   <label style="display:flex;gap:6px;align-items:flex-start;margin-top:6px"><input type="checkbox" id="pcons" style="width:18px;height:18px;flex:none"> <span id="pvC1"><b>[필수]</b> 위 개인정보(이메일) 수집·이용에 동의해요</span></label>
   <label style="display:flex;gap:6px;align-items:flex-start;margin-top:4px"><input type="checkbox" id="age14" style="width:18px;height:18px;flex:none"> <span id="pvC2"><b>[필수]</b> 만 14세 이상이에요 · 만 14세 미만이면 보호자가 함께 읽고 동의했어요</span></label>
  </div>
@@ -376,7 +377,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030033228';
+const BUILD = '20261030033844';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -4535,7 +4536,7 @@ function restoreLogin() {
   const id = store.get('k9id', ''); $('pid').value = id; $('remember').checked = true;
   $('idList').innerHTML = store.get('k9ids', id ? [id] : []).map(x => '<option value="' + esc(x) + '">').join('');
   if (store.get('k9agree', false)) $('agree').checked = true;
-  if (store.get('k9pcons', false)) { $('pcons').checked = true; $('age14').checked = true; }
+  if (store.get('k9pcons', false)) { $('pcons').checked = true; $('age14').checked = true; $('pcons').disabled = $('age14').disabled = false; $('pvHint').style.display = 'none'; }
   loadSavedDog(id); $('nick').value = store.get('k9nick:' + id, '') || '';
   const known = id && store.get('k9dog:' + id, null);
   if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || (id.includes('@') ? '' : id)) + ' ' + t('hd_word') + ' · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true);
@@ -4578,6 +4579,16 @@ function dispName() { if (playerNick && !playerNick.includes('@')) return player
   $('quest').addEventListener('click', () => { const m = $('quest').classList.toggle('mini'); save('quest', m ? 'mini' : 'open'); });
   $('mmwrap').addEventListener('click', e => { if (e.target.closest('#info')) return; const m = $('mmwrap').classList.toggle('mini'); save('mm', m ? 'mini' : 'open'); }); }
 if (isMobile) { for (const id of ['badges', 'shop']) { $(id).classList.add('fold'); $(id).addEventListener('click', e => { if (e.target.closest('h2')) $(id).classList.toggle('fold'); }); } }
+// 개인정보 안내를 끝까지 읽어야 [필수] 동의에 체크할 수 있다 (이미 동의해 저장된 경우는 그대로)
+{ const det = $('pvMore').closest('details'), body = $('pvBody'), boxes = [$('pcons'), $('age14')];
+  body.style.maxHeight = '180px'; body.style.overflowY = 'auto'; body.style.paddingRight = '4px';
+  const unlock = () => { boxes.forEach(b => b.disabled = false); $('pvHint').textContent = '✅ 안내를 모두 읽었어요. 아래 두 곳에 체크해 주세요'; $('pvHint').style.color = '#2e7d32'; };
+  const lock = () => { if (boxes.every(b => b.checked)) { unlock(); $('pvHint').style.display = 'none'; return; } boxes.forEach(b => b.disabled = true); };
+  const atEnd = () => body.scrollTop + body.clientHeight >= body.scrollHeight - 6;
+  det.addEventListener('toggle', () => { if (det.open) setTimeout(() => { if (atEnd()) unlock(); }, 300); });
+  body.addEventListener('scroll', () => { if (atEnd()) unlock(); });
+  for (const b of boxes) b.closest('label').addEventListener('click', e => { if (b.disabled) { e.preventDefault(); det.open = true; body.scrollIntoView({ block: 'nearest' }); toast('📖 개인정보 안내를 끝까지 읽어 주세요'); } });
+  setTimeout(lock, 0); }
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
