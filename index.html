@@ -176,7 +176,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div id="pidErr"></div>
  <div class="agreebox"><label><input type="checkbox" id="agree"> <span id="agreeTxt">✅ 게임 이용 안내에 동의해요 · 친구에게 친절하게, 비밀번호는 비밀! (이 게임은 개인정보를 수집하지 않아요)</span></label><div id="ageTxt">🎮 이용 등급: 전체 이용가 (권장 만 7세 이상 · 자체 기준)</div></div>
  <div class="row"><button class="big" id="btnLogin">접속하기</button></div>
- <h2 style="margin-top:16px">🏆 TOP 랭킹</h2>
+ <h2 style="margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">🏆 TOP 100 랭킹 <button class="alt" id="btnRankAll" style="font-size:13px;padding:6px 12px;border-radius:10px">📋 전체 랭킹 보기</button></h2>
  <div class="rankwrap" id="rankMini"></div>
  <div class="notice" style="background:#13335a;color:#fff;font-size:13px">📢 <b style="color:#f4c542">관세청 공익광고</b> · 마약·총기 밀수 신고는 <b style="color:#f4c542">☎ 125</b> (관세청 밀수신고센터) · 여행자 휴대품은 자진신고하세요</div>
  <div class="notice">※ 관세청 일일 특강용 교육 게임입니다. 세관 업무 이해를 돕기 위해 만들었으며, 등장인물과 사건은 모두 가상입니다.</div>
@@ -187,7 +187,7 @@ body.touch #bars{bottom:calc(8px + var(--sb))}
  <div class="langs"></div>
  <div class="sub" id="mapsWho">플레이어</div>
  <h1>순찰할 관문을 고르세요</h1>
- <p style="margin:4px 0 0;font-size:14px">맵 1부터 순서대로 클리어하면 점수가 누적되어 랭킹에 올라갑니다. 클리어한 맵 다음 맵이 열려요.</p>
+ <p style="margin:4px 0 0;font-size:14px">맵 1~5는 원하는 순서대로 골라서 클리어하세요! 다섯 곳을 모두 깨면 👑 보스전(맵 6)이 열리고, 보스를 잡으면 🌅 히든맵이 열려요. 점수는 한 작전 동안 누적돼요.</p>
  <div id="mapGrid"></div>
  <div class="ctl">
   <kbd>W A S D</kbd><span>이동 (가방·상자에 부딪히면 밀려나요)</span>
@@ -319,7 +319,7 @@ const DICT = {
     m: ['Airport Arrivals', 'Air Cargo Terminal', 'International Mail Center', 'International Ferry', 'Container Yard', 'Bonded Warehouse (Boss)', 'Sunset Runway'],
     s: ['Sniff luggage to find drugs and catch a smuggler.', 'Search pallets and air containers for drugs and guns. Watch the forklifts!', 'Search parcels and mail sacks and catch smugglers. Jump onto the conveyors!', 'Find drugs and guns on the rocking deck and catch smugglers.', 'Search containers and crates and catch a smuggler. Trucks are fast!', 'Catch the gang and the boss in the dark warehouse. Dodge the 💣 bombs!', 'Walk with friends at sunset and play in the dog park. Wait 1.5s at a ride to play!'],
     g: ['💊 Drugs found', '🔫 Guns found', '🕶 Smugglers caught', '👑 Boss caught'],
-    st_open: 'Ready', st_lock: '🔒 Clear the previous map', st_lockH: '🔒 Clear all 6 maps', st_best: '✅ Best', st_cur: '▶ In progress · tap to return', st_diff: 'Difficulty', st_relax: '🌅 Relax map', st_hidden: '??? Hidden map',
+    st_open: 'Ready', st_lock: '🔒 Clear the previous map', st_lockB: '🔒 Clear maps 1–5 first', st_run: '✅ Cleared this run', st_lockH: '🔒 Clear all 6 maps', st_best: '✅ Best', st_cur: '▶ In progress · tap to return', st_diff: 'Difficulty', st_relax: '🌅 Relax map', st_hidden: '??? Hidden map',
     intro: '{map}\n\nWelcome, {dog}! Smugglers are hiding contraband here.\nHold [E] to sniff, bark [F] next to suspicious items,\nand stop smugglers with barks and bones.\nGood luck, team!',
     rk_cols: 'Rank|ID|Reached|Time|Score', clr_title: 'cleared!', clr_time: 'Clear time', clr_bonus: 'Mission +300 · Time bonus', clr_score: 'This map / Total', clr_snack: 'Snacks',
     ts_found: 'found! Customs team on the way…', i_drug: 'Drugs', i_gun: 'Illegal gun', ts_arrest: '🚔 Smuggler arrested!', ts_boss: '👑 Boss arrested!!', ts_false: '🤔 Clean item! False alert (-10)', ts_ball: '🎾 Ball! +1 heart · speed up', ts_ms_ok: '✅ Mission success! +200 ❤️+1', ts_ms_fail: '⌛ Mission failed… next time!', ts_track: '🚨 Tracking the suspect!!',
@@ -519,7 +519,7 @@ const DICT = {
   },
 };
 const KO = {
-  st_open: '도전 가능', st_lock: '🔒 이전 맵을 클리어하세요', st_lockH: '🔒 6개 맵을 모두 클리어하면 열려요', st_best: '✅ 최고 기록', st_cur: '▶ 진행 중 · 눌러서 돌아가기', st_diff: '난이도', st_relax: '🌅 휴식 맵', st_hidden: '??? 히든맵',
+  st_lockB: '🔒 맵 1~5를 모두 깨면 열려요', st_run: '✅ 이번 작전 클리어', st_open: '도전 가능', st_lock: '🔒 이전 맵을 클리어하세요', st_lockH: '🔒 6개 맵을 모두 클리어하면 열려요', st_best: '✅ 최고 기록', st_cur: '▶ 진행 중 · 눌러서 돌아가기', st_diff: '난이도', st_relax: '🌅 휴식 맵', st_hidden: '??? 히든맵',
   rk_cols: '순위|아이디|도달|시간|점수', clr_title: '통과!', clr_time: '클리어 시간', clr_bonus: '임무 완료 +300 · 시간 보너스', clr_score: '이번 맵 / 누적', clr_snack: '간식',
   ts_arrest: '🚔 밀수범 체포 성공!', ts_boss: '👑 밀수 조직 보스 체포!!', ts_ball: '🎾 공 획득! 체력 +1 · 6초간 스피드 업', ts_ms_ok: '✅ 돌발 미션 성공! +200점 ❤️+1', ts_ms_fail: '⌛ 돌발 미션 실패… 다음 기회에!', ts_track: '🚨 범인 추적 시작!!',
   skin: '피부색', skin_note: '피부색은 겉모습만 바뀌고 능력에는 영향이 없어요.', mode1: '👤 1인 모드 (눌러서 2인 협동 모드로)', mode2: '👥 2인 협동 모드 (P1 탐지견 · P2 핸들러)',
@@ -963,8 +963,8 @@ function setDog(breed, name) {
 }
 const JOBS = {
   customs: { name: '세관 직원', icon: '🛃', desc: '냄새 거리 +15% · X-ray 지속 +3초 · 오탐해도 50% 확률로 부상 없음' },
-  police: { name: '경찰', icon: '👮', desc: '뼈다귀 쿨타임 -30% · 뼈다귀 사거리 +2m' },
-  soldier: { name: '군인', icon: '🪖', desc: '하트 4개로 시작 · 피해 20% 확률로 막기 · 달리기 기력 소모 -20%' },
+  police: { name: '경찰특공대', icon: '👮', desc: '뼈다귀 쿨타임 -30% · 뼈다귀 사거리 +2m' },
+  soldier: { name: '특수부대', icon: '🪖', desc: '하트 4개로 시작 · 피해 20% 확률로 막기 · 달리기 기력 소모 -20%' },
 };
 const SKIN_TONES = [0xffdbac, 0xf1c27d, 0xe0ac69, 0xc68642, 0x8d5524];
 let handlerJob = 'customs', handlerSkin = 1;
@@ -972,7 +972,7 @@ let handlerM = makePerson('customs', { skin: SKIN_TONES[1] }); scene.add(handler
 function setHandlerLook(job, skin) {
   handlerJob = JOBS[job] ? job : 'customs'; handlerSkin = skin;
   handlerM.g.traverse(o => { if (o.geometry) o.geometry.dispose(); });
-  scene.remove(handlerM.g); handlerM = makePerson(handlerJob, { skin: SKIN_TONES[skin] ?? SKIN_TONES[1] }); handlerM.ring.visible = false; scene.add(handlerM.g);
+  scene.remove(handlerM.g); handlerM = makePerson(handlerJob, { skin: SKIN_TONES[skin] ?? SKIN_TONES[1], elite: true }); handlerM.ring.visible = false; scene.add(handlerM.g);
   handlerLabel = null; setHandlerLabel(playerId || '나의');
 }
 var handlerLabel = null;
@@ -1097,8 +1097,8 @@ function makePerson(kind, opt = {}) {
   if (kind === 'civ') shirt = pick([0x3b6ea5, 0x4f8a5b, 0x7d5a9e, 0xd4ac0d, 0x2f8f83, 0xe8e4dc, 0xc46a2c, 0xd47a9c]);
   else if (kind === 'worker') { shirt = 0x3d4c5c; pants = 0x2c3e50; }
   else if (kind === 'customs') { shirt = 0x1f3b6b; pants = 0x1f2a3a; }
-  else if (kind === 'police') { shirt = 0x1c2b4a; pants = 0x141d30; }
-  else if (kind === 'soldier') { shirt = 0x5b6b3a; pants = 0x4a5530; }
+  else if (kind === 'police') { shirt = opt.elite ? 0x1b1d23 : 0x1c2b4a; pants = opt.elite ? 0x1b1d23 : 0x141d30; }
+  else if (kind === 'soldier') { shirt = opt.elite ? 0x7a7152 : 0x5b6b3a; pants = opt.elite ? 0x6a6247 : 0x4a5530; }
   else if (kind === 'attendant') { shirt = 0x8a1f35; pants = 0x2a1a22; }
   else if (kind === 'pilot') { shirt = 0xf4f4f2; pants = 0x1a1d2a; }
   else if (kind === 'handler') { shirt = 0xff7a1a; pants = 0x2c3e50; }
@@ -1129,8 +1129,10 @@ function makePerson(kind, opt = {}) {
   if (kind === 'boss') { H(BOX(.62, .04, .62), MAT.col(0x111111, .6), 0, .25, 0); H(BOX(.42, .2, .42), MAT.col(0x111111, .6), 0, .37, 0); mesh(BOX(.3, .05, .03), gold, 0, 1.4, .145, body); }
   if (kind === 'officer' || kind === 'customs' || kind === 'chief') { const cap = MAT.col(0x10233f, .6); H(BOX(.5, .12, .5), cap, 0, .29, 0); H(BOX(.5, .03, .16), cap, 0, .24, .3); H(BOX(.07, .07, .02), gold, 0, .3, .255); }
   if (kind === 'chief') { H(BOX(.52, .05, .52), gold, 0, .25, 0); for (const sd of [-1, 1]) mesh(BOX(.2, .05, .22), gold, sd * .37, 1.52, 0, body); mesh(BOX(.1, .12, .03), MAT.col(0xc0392b, .5), -.13, 1.32, .14, body); mesh(BOX(.08, .08, .03), gold, -.13, 1.22, .14, body); }
-  if (kind === 'police') { H(BOX(.5, .12, .5), MAT.col(0x141d30, .5), 0, .29, 0); H(BOX(.5, .04, .52), MAT.col(0xf4f4f2, .5), 0, .25, 0); H(BOX(.5, .03, .16), MAT.col(0x141d30, .5), 0, .24, .3); mesh(BOX(.52, .4, .28), MAT.col(0xd8f53a, .4), 0, 1.2, 0, body); mesh(BOX(.1, .1, .03), gold, -.13, 1.35, .145, body); }
-  if (kind === 'soldier') { H(BOX(.54, .2, .54), MAT.col(0x4a5530, .7), 0, .3, 0); H(BOX(.56, .04, .56), MAT.col(0x3d4528, .7), 0, .21, 0); for (let k = 0; k < 6; k++) mesh(BOX(.12, .1, .02), MAT.col(pick([0x3d4528, 0x7a6a45, 0x2f3a22]), .8), rr(-.2, .2), rr(.9, 1.45), .135, body); mesh(BOX(.5, .14, .3), MAT.col(0x3d4528, .7), 0, .86, 0, body); }
+  if (kind === 'police' && opt.elite) { const bk = MAT.col(0x111317, .5); H(BOX(.58, .24, .58), bk, 0, .32, 0); H(BOX(.5, .16, .03), MAT.col(0x1b2833, .1, .3), 0, .08, .27); mesh(BOX(.58, .52, .34), MAT.col(0x2b2f36, .7), 0, 1.15, 0, body); mesh(BOX(.4, .09, .03), MAT.col(0xf4f4f2, .4), 0, 1.3, .175, body); for (const px of [-.17, 0, .17]) mesh(BOX(.13, .16, .07), MAT.col(0x22252b, .7), px, .98, .19, body); mesh(BOX(.4, .09, .03), MAT.col(0xf4f4f2, .4), 0, 1.25, -.175, body); }
+  else if (kind === 'police') { H(BOX(.5, .12, .5), MAT.col(0x141d30, .5), 0, .29, 0); H(BOX(.5, .04, .52), MAT.col(0xf4f4f2, .5), 0, .25, 0); H(BOX(.5, .03, .16), MAT.col(0x141d30, .5), 0, .24, .3); mesh(BOX(.52, .4, .28), MAT.col(0xd8f53a, .4), 0, 1.2, 0, body); mesh(BOX(.1, .1, .03), gold, -.13, 1.35, .145, body); }
+  if (kind === 'soldier' && opt.elite) { const tn = MAT.col(0x6a6247, .8); H(BOX(.58, .22, .58), tn, 0, .31, 0); H(BOX(.2, .12, .12), MAT.col(0x111111, .4), 0, .36, .3); H(BOX(.48, .1, .03), MAT.col(0x1b2833, .1, .3), 0, .1, .26); H(BOX(.46, .14, .03), MAT.col(0x3d3a2c, .9), 0, -.08, .255); mesh(BOX(.58, .52, .34), MAT.col(0x4d4a36, .8), 0, 1.15, 0, body); for (const px of [-.17, 0, .17]) mesh(BOX(.13, .16, .07), MAT.col(0x3d3a2c, .8), px, .98, .19, body); for (let k = 0; k < 6; k++) mesh(BOX(.12, .1, .02), MAT.col(pick([0x5a5440, 0x8a7d5a, 0x4a4a35]), .8), rr(-.22, .22), rr(.5, .8), .135, body); }
+  else if (kind === 'soldier') { H(BOX(.54, .2, .54), MAT.col(0x4a5530, .7), 0, .3, 0); H(BOX(.56, .04, .56), MAT.col(0x3d4528, .7), 0, .21, 0); for (let k = 0; k < 6; k++) mesh(BOX(.12, .1, .02), MAT.col(pick([0x3d4528, 0x7a6a45, 0x2f3a22]), .8), rr(-.2, .2), rr(.9, 1.45), .135, body); mesh(BOX(.5, .14, .3), MAT.col(0x3d4528, .7), 0, .86, 0, body); }
   if (kind === 'pilot') { H(BOX(.5, .12, .5), MAT.col(0x111111, .5), 0, .29, 0); H(BOX(.5, .03, .16), MAT.col(0x111111, .5), 0, .24, .3); H(BOX(.52, .04, .52), gold, 0, .25, 0); for (const sd of [-1, 1]) mesh(BOX(.2, .04, .22), gold, sd * .37, 1.52, 0, body); }
   if (kind === 'attendant') { H(BOX(.24, .12, .24), MAT.col(0x8a1f35, .5), .06, .29, 0); mesh(BOX(.24, .06, .04), MAT.col(0xf4c542, .5), 0, 1.48, .14, body); }
   if (kind === 'pilot' || kind === 'attendant') mesh(BOX(.32, .46, .18), MAT.shell(0x1d2433), .45, .3, -.32, body);
@@ -1539,12 +1541,124 @@ function updatePgAct(dt) {
   } else if (sp.type === 'bubble') {
     x = sp.x + Math.sin(time * 1.2) * 1.4; z = sp.z + 1.4 + Math.cos(time * 1.3) * .6; y = Math.max(0, Math.sin(t * 4)) * 1.1; m.head.rotation.x = -.5; run(10);
     if (Math.random() < dt * 2) floatText('톡!', x, y + 1.5, z, { h: .35 });
+  } else if (sp.type === 'ride') {
+    const P = new THREE.Vector3(), Q = new THREE.Quaternion(), P2 = new THREE.Vector3(), Q2 = new THREE.Quaternion();
+    sp.seats[0].getWorldPosition(P); sp.seats[0].getWorldQuaternion(Q); sp.seats[1].getWorldPosition(P2); sp.seats[1].getWorldQuaternion(Q2);
+    x = P.x; y = P.y; z = P.z; A.q = Q; sitP();
+    handler.x = P2.x; handler.z = P2.z; handler.y = P2.y; handler.vy = 0; handlerM.g.position.set(P2.x, P2.y - .45, P2.z); handlerM.g.quaternion.copy(Q2); handlerM.legs[0].rotation.x = handlerM.legs[1].rotation.x = -1.4;
+    if (Math.random() < dt * .35) floatText(pick2(sp.chat), x, y + 1.8, z, { h: .42 });
   } else if (sp.type === 'wheel') {
     x = sp.x; z = sp.z; y = .35; dir = Math.PI / 2; run(22);
   }
   dog.x = x; dog.z = z; dog.y = y; dog.vy = 0; dog.dir = dir;
   m.g.position.set(x, sp.type === 'rest' ? -.32 : y, z); m.g.rotation.y = dir;
+  if (sp.type === 'ride' && A.q) { const r = m.g.rotation.x; m.g.quaternion.copy(A.q); m.g.rotateX(r); }
   if (done) { dog.pgAct = null; sp.cd = 4; dog.idleT = 0; }
+}
+
+
+// ================= 동화 나라 놀이동산 =================
+function rideSpot(x, z, name, seats, chat) { pgSpots.push({ x, z, name, type: 'ride', seats, chat, cd: 0 }); const t = textSprite('🎟 ' + name, { h: .42, bg: 'rgba(155,40,120,.9)' }); t.position.set(x, 2.4, z); world.add(t); }
+function seatPair(parent, a, b) { const s0 = new THREE.Object3D(), s1 = new THREE.Object3D(); s0.position.set(...a); s1.position.set(...b); parent.add(s0, s1); return [s0, s1]; }
+function gAt(x, y, z, parent = world) { const g = new THREE.Group(); g.position.set(x, y, z); parent.add(g); return g; }
+const RC = c => MAT.col(c, .45, .15);
+function coaster(cx, cz, cfg) {
+  const pts = cfg.pts.map(([x, y, z]) => new THREE.Vector3(cx + x, y, cz + z));
+  const curve = new THREE.CatmullRomCurve3(pts, !cfg.open, 'catmullrom', .5), len = curve.getLength();
+  const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 260, cfg.trough ? .75 : .22, cfg.trough ? 10 : 6, !cfg.open), cfg.trough ? std(cfg.col, .3, 0, { transparent: true, opacity: .55, side: THREE.DoubleSide }) : MAT.col(cfg.col, .4, .3));
+  tube.castShadow = true; world.add(tube);
+  for (let i = 0; i < 64; i++) {
+    const p = curve.getPointAt(i / 64); if (p.y < 1.4) continue;
+    const sp = mesh(BOX(cfg.wood ? .4 : .22, p.y, cfg.wood ? .4 : .22), MAT.col(cfg.wood ? 0x8d5a3b : 0x9aa3ab, .7), p.x, p.y / 2, p.z); sp.castShadow = false;
+    if (cfg.wood && i % 2) { const br = mesh(BOX(.15, .15, 2.4), MAT.col(0x6d4c41, .8), p.x, p.y * .5, p.z); br.rotation.x = .7; br.castShadow = false; }
+  }
+  if (cfg.rocks) for (let i = 0; i < 12; i++) { const p = curve.getPointAt(i / 12); mesh(BOX(rr(1.5, 3), rr(1, 3), rr(1.5, 3)), MAT.col(0x8d6e63, .9), p.x + rr(-3, 3), .7, p.z + rr(-3, 3)); }
+  const p0 = curve.getPointAt(0); mesh(BOX(4.5, .35, 3.4), MAT.col(0xf4f4f2, .5), p0.x, .18, p0.z + 2.6);
+  const car = new THREE.Group(); world.add(car); const body = new THREE.Group(); car.add(body);
+  const hy = cfg.hang ? -1.15 : .45;
+  mesh(BOX(1.5, .6, 2.6), MAT.col(cfg.carCol || 0xf1c40f, .35, .2), 0, hy, 0, body); mesh(BOX(1.52, .1, .3), MAT.col(0x222222, .4), 0, hy + .35, 1.2, body);
+  const seats = seatPair(body, [-.38, cfg.hang ? -1.7 : .78, .35], [.38, cfg.hang ? -1.7 : .78, .35]);
+  if (cfg.fly) seats.forEach(o => o.rotation.x = -1.25);
+  const ymax = cfg.pts.reduce((m, q) => Math.max(m, q[1]), 0), S = { u: 0, sg: 1, hold: 0 };
+  pgAnim.push(dt => {
+    const p = curve.getPointAt(S.u);
+    let v = Math.sqrt(Math.max(12, 2 * 9.8 * (ymax + 1.5 - p.y))) * (cfg.speed || 1);
+    if (cfg.launch && S.u < .1) v = 28;
+    if (cfg.dive) { if (S.u > cfg.dive - .004 && S.u < cfg.dive + .004 && S.hold < 2.2) { S.hold += dt; v = 0; } else if (S.u > cfg.dive + .05 || S.u < cfg.dive - .05) S.hold = 0; }
+    if (cfg.open) { S.u += S.sg * v * dt / len; if (S.u >= 1) { S.u = 1; S.sg = -1; } if (S.u <= 0) { S.u = 0; S.sg = 1; } }
+    else S.u = (S.u + v * dt / len) % 1;
+    const u = clamp(S.u, 0, 1), q = curve.getPointAt(u), n = curve.getPointAt(cfg.open ? clamp(u + .01 * S.sg, 0, 1) : (u + .004) % 1);
+    car.position.copy(q); if (q.distanceTo(n) > .01) car.lookAt(n);
+    body.rotation.z = cfg.wood ? Math.sin(time * 45) * .04 : 0; body.rotation.y = cfg.spin ? time * 3 : 0;
+    if (cfg.splash && q.y < 1.6 && Math.random() < .6) spawnP(q.x + mr(-1, 1), .6, q.z + mr(-1, 1), mr(-2, 2), 3, mr(-2, 2), new THREE.Color(0x9fdcff), .8);
+  });
+  const nm = textSprite('🎢 ' + cfg.name, { h: .7, bg: 'rgba(155,40,120,.92)' }); nm.position.set(cx, ymax + 3, cz); world.add(nm);
+  rideSpot(p0.x, p0.z + 2.6, cfg.name, seats, cfg.chat);
+}
+function flatRide(x, z, name, chat, build) { const g = gAt(x, 0, z); const r = build(g); pgAnim.push(r.anim); rideSpot(x, z + 7.5, name, r.seats, chat); }
+function themePark(ox) {
+  // 바닥·길·성 입구·불꽃놀이
+  floorPlane(170, 112, MAT.col(0x8fcf7a, .9), ox, 0, .007);
+  for (const z of [-28, -8.5, 8.5, 28]) floorPlane(166, 2.4, MAT.col(0xf3d9a4, .85), ox, z, .013);
+  for (let k = 0; k < 9; k++) floorPlane(2.4, 60, MAT.col(0xf3d9a4, .85), ox - 66 + k * 17, 0, .013);
+  const cx = ox - 80, pink = MAT.col(0xf7c6d9, .5), blue = MAT.col(0x7fb3f5, .5);
+  for (const [dx, dz, h] of [[0, -6, 12], [0, 6, 12], [-2, -3, 9], [-2, 3, 9], [-1, 0, 16]]) { mesh(BOX(2.4, h, 2.4), pink, cx + dx, h / 2, dz); const cn = mesh(new THREE.ConeGeometry(1.9, 4, 8), blue, cx + dx, h + 2, dz); cn.castShadow = true; }
+  mesh(BOX(2, 7, 10), pink, cx + 1, 3.5, 0); mesh(BOX(2.1, 4, 3), MAT.col(0x5b3a7a, .6), cx + 1.2, 2, 0);
+  sign('🏰 동화 나라 놀이동산 FAIRY LAND', cx, 20, 0, 1.3, 'rgba(155,40,120,.95)');
+  for (let k = 0; k < 16; k++) { const lx = ox - 70 + (k % 8) * 18, lz = k < 8 ? -9.5 : 9.5; mesh(BOX(.15, 3.5, .15), MAT.metal(0x333333), lx, 1.75, lz); const l = mesh(BOX(.5, .5, .5), M('plamp', () => std(0xfff3c4, .3, 0, { emissive: 0xffe08a, emissiveIntensity: 1.6 })), lx, 3.6, lz); l.castShadow = false; }
+  let fw = 0; const fwc = [0xff5a5a, 0xffd54f, 0x7fd3f7, 0xb388ff, 0x69f0ae].map(c => new THREE.Color(c));
+  pgAnim.push(dt => { fw -= dt; if (fw <= 0) { fw = mr(1.5, 3); burst(cx + mr(-8, 8), mr(26, 34), mr(-14, 14), [pick2(fwc), pick2(fwc), WHITE], 60, 9); } });
+
+  // ---- 롤러코스터 10종 (북쪽 5 · 남쪽 5) ----
+  const CX = [ox - 62, ox - 31, ox, ox + 31, ox + 62];
+  const COASTERS = [
+    { name: '인버티드 코스터', col: 0xe74c3c, hang: true, pts: [[-12, 3, 0], [-6, 4, -6], [0, 15, -8], [8, 11, -4], [12, 6, 4], [6, 10, 8], [-2, 6, 6], [-10, 5, 4]], chat: ['발밑이 허전해! 😱', '매달려서 날아간다~', '다리가 대롱대롱!'] },
+    { name: '기가 코스터', col: 0xff8f00, pts: [[-13, 2, 0], [-8, 26, -6], [-2, 3, -8], [5, 17, -6], [12, 4, 0], [8, 9, 7], [-4, 3, 8], [-12, 2, 5]], chat: ['너무 높아! 하늘이 보여!', '으아아아 떨어진다~', '심장이 쿵쾅쿵쾅!'] },
+    { name: '론치 코스터', col: 0x2e86c1, launch: true, pts: [[-13, 1.6, -2], [-2, 1.6, -8], [8, 3, -8], [13, 13, -2], [10, 6, 6], [0, 10, 8], [-8, 4, 6], [-13, 2, 3]], chat: ['출발하자마자 슝!! 🚀', '제로백 최고!', '바람이 엄청나!'] },
+    { name: '다이브 코스터', col: 0x222222, dive: .25, pts: [[-12, 2, 0], [-8, 18, -4], [-4, 19, -4], [-3, 2, -6], [6, 6, -6], [12, 4, 2], [4, 7, 8], [-8, 3, 6]], chat: ['잠깐 멈췄어… 무서워 😨', '수직 낙하다!!', '절벽 끝에 매달렸어!'] },
+    { name: '우든 코스터', col: 0xa0522d, wood: true, pts: [[-13, 2, 0], [-7, 11, -7], [0, 2, -8], [6, 9, -6], [12, 3, 0], [7, 7, 7], [-2, 2, 8], [-10, 5, 5]], chat: ['덜컹덜컹 나무 소리!', '흔들흔들 짜릿해!', '삐걱삐걱~ 그래도 재밌어'] },
+    { name: '플라잉 코스터', col: 0x8e44ad, hang: true, fly: true, pts: [[-12, 4, 0], [-6, 10, -7], [2, 13, -6], [10, 9, 0], [6, 11, 7], [-2, 8, 8], [-10, 7, 5]], chat: ['슈퍼맨처럼 날아요! 🦸', '엎드려서 하늘을 난다!', '바람을 가르며 비행 중!'] },
+    { name: '스핀 코스터', col: 0x27ae60, spin: true, pts: [[-12, 1.6, 0], [-8, 7, -6], [0, 4, -8], [6, 6, -4], [2, 3, 0], [8, 5, 4], [2, 4, 8], [-8, 3, 6]], chat: ['빙글빙글 어지러워~ 🌀', '차가 돌고 있어!', '어디가 앞이야?!'] },
+    { name: '마인 트레인', col: 0x8d4b2a, rocks: true, carCol: 0x6d4c41, pts: [[-13, 1.2, 0], [-9, 3, -7], [-2, 1.6, -8], [4, 4, -6], [12, 2, -3], [10, 3, 5], [3, 1.6, 8], [-6, 3, 7]], chat: ['광산 열차 출발! ⛏', '급커브 조심!', '덜커덩 동굴 탐험!'] },
+    { name: '셔틀 코스터', col: 0xf1c40f, open: true, launch: true, pts: [[-13, 1.6, 0], [-4, 1.6, 0], [4, 6, 0], [10, 16, 0], [13, 23, 0]], chat: ['앞으로 갔다가~', '뒤로 다시 슝!', '거꾸로 달린다!'] },
+    { name: '봅슬레이 코스터', col: 0x4dd0e1, trough: true, pts: [[-12, 2, 0], [-8, 7, -6], [0, 5, -8], [8, 4, -4], [11, 2, 2], [4, 3, 7], [-4, 2, 6], [-10, 2, 4]], chat: ['미끄럼 썰매다! 🛷', '통 안을 쓩쓩!', '얼음 위를 달려요~'] },
+  ];
+  COASTERS.forEach((c, i) => coaster(CX[i % 5], i < 5 ? 41 : -41, c));
+
+  // ---- 스릴·수상·가족·다크 기구 27종 (가운데 3줄) ----
+  const xs = Array.from({ length: 9 }, (_, i) => ox - 68 + i * 17), zs = [-18.5, 0, 18.5], slots = [];
+  for (const zz of zs) for (const xx of xs) slots.push([xx, zz]);
+  const W = (c, r = .45) => MAT.col(c, r), gl = MAT.col(0x1b2833, .1, .3), wht = MAT.col(0xf4f4f2, .4);
+  const RIDES = [
+    ['드롭 타워', ['올라간다… 두근두근', '쿵! 자유낙하다!! 😱', '하늘에서 떨어져!'], g => { mesh(BOX(1.2, 22, 1.2), W(0x2e86c1), 0, 11, 0, g); const ring = gAt(0, 2, 0, g); mesh(new THREE.TorusGeometry(1.5, .3, 6, 16), W(0xe74c3c), 0, 0, 0, ring).rotation.x = Math.PI / 2; const seats = seatPair(ring, [0, .2, 1.6], [1.6, .2, 0]); return { seats, anim: () => { const c = time % 10; ring.position.y = c < 6 ? 2 + c / 6 * 17 : c < 7 ? 19 : c < 7.6 ? 19 - (c - 7) / .6 * 17 : 2 + Math.abs(Math.sin((c - 7.6) * 6)) * .5 * (10 - c); ring.rotation.y += .01; } }; }],
+    ['바이킹', ['배가 하늘로 올라가!', '무중력이야~ 🏴‍☠️', '으아아 내려간다!'], g => { for (const sz of [-2, 2]) for (const sx of [-2.5, 2.5]) { const l = mesh(BOX(.3, 10, .3), W(0x8d6e63), sx * .5, 5, sz, g); l.rotation.z = sx > 0 ? -.25 : .25; } const pv = gAt(0, 9.5, 0, g); mesh(BOX(.15, 6.5, .15), MAT.metal(0x555555), 0, -3.2, 0, pv); const boat = gAt(0, -7, 0, pv); mesh(BOX(1.8, 1.2, 8), W(0x8d4b2a), 0, 0, 0, boat); mesh(BOX(.2, 3, .2), W(0x5d4037), 0, 2, 0, boat); mesh(BOX(.05, 1.8, 2.4), W(0xf4f4f2), 0, 2.4, .2, boat); const seats = seatPair(boat, [0, .85, -2], [0, .85, 2]); return { seats, anim: () => { pv.rotation.x = Math.sin(time * .8) * 1.1; } }; }],
+    ['자이로 스윙', ['흔들흔들 빙글빙글!', '거꾸로 돌아~', '하늘이 빙빙!'], g => { mesh(BOX(1, 12, 1), W(0x9b59b6), 0, 6, 0, g); const pv = gAt(0, 11, 0, g); mesh(BOX(.4, 8, .4), MAT.metal(0x888888), 0, -4, 0, pv); const disk = gAt(0, -8, 0, pv); mesh(new THREE.CylinderGeometry(2, 2, .4, 16), W(0xf1c40f), 0, 0, 0, disk); const seats = seatPair(disk, [0, .6, 1.7], [0, .6, -1.7]); seats.forEach((o, i) => o.rotation.y = i * Math.PI); return { seats, anim: dt => { pv.rotation.z = Math.sin(time * .7) * 1.6; disk.rotation.y += dt * 1.5; } }; }],
+    ['탑스핀', ['공중에서 덤블링!', '뒤집혔다 바로됐다!', '하늘이 발밑에! 🙃'], g => { for (const sx of [-3, 3]) mesh(BOX(.8, 6, .8), W(0x34495e), sx, 3, 0, g); const arm = gAt(0, 5.5, 0, g); mesh(BOX(6, .3, .3), MAT.metal(0x888888), 0, 0, 0, arm); const gon = gAt(0, -2.2, 0, arm); mesh(BOX(5, .5, 1.4), W(0xe67e22), 0, 0, 0, gon); const seats = seatPair(gon, [-.8, .6, 0], [.8, .6, 0]); return { seats, anim: dt => { arm.rotation.x += dt * 1.6; gon.rotation.x = Math.sin(time * 2) * 1.5; } }; }],
+    ['탑스캔', ['세 방향으로 비틀려!', '어디가 위야?', '정신이 쏙 빠진다!'], g => { mesh(BOX(1, 7, 1), W(0x16a085), 0, 3.5, 0, g); const arm = gAt(0, 7, 0, g); mesh(BOX(7, .4, .4), MAT.metal(0x888888), 3.5, 0, 0, arm); const cr = gAt(7, 0, 0, arm); mesh(BOX(.3, 4, .3), W(0xf1c40f), 0, 0, 0, cr); const gon = gAt(0, -1.8, 0, cr); mesh(BOX(1.6, .5, 1.6), W(0xe74c3c), 0, 0, 0, gon); const seats = seatPair(gon, [-.4, .6, 0], [.4, .6, 0]); return { seats, anim: dt => { arm.rotation.y += dt * .8; cr.rotation.x += dt * 1.4; gon.rotation.y += dt * 2; } }; }],
+    ['프리스비', ['바깥을 보며 빙글!', '흔들리는 원반이다!', '무릎이 간질간질~'], g => { for (const sx of [-2.5, 2.5]) mesh(BOX(.6, 11, .6), W(0x2c3e50), sx, 5.5, 0, g); const pv = gAt(0, 10.5, 0, g); mesh(BOX(.3, 7, .3), MAT.metal(0x888888), 0, -3.5, 0, pv); const disk = gAt(0, -7.2, 0, pv); mesh(new THREE.CylinderGeometry(2.2, 2.2, .3, 18), W(0x3498db), 0, 0, 0, disk); const seats = seatPair(disk, [0, .4, 2], [0, .4, -2]); seats[1].rotation.y = Math.PI; return { seats, anim: dt => { pv.rotation.x = Math.sin(time * .75) * 1.3; disk.rotation.y += dt * 2; } }; }],
+    ['회전그네', ['그네가 하늘로 퍼져요~', '바람 타고 빙글빙글', '날아가는 기분! 🎠'], g => { mesh(BOX(.8, 8, .8), W(0xf1c40f), 0, 4, 0, g); const top = gAt(0, 7.5, 0, g); mesh(new THREE.ConeGeometry(4, 1.5, 12), W(0xe74c3c), 0, .6, 0, top); const chains = []; for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2, c = gAt(Math.cos(a) * 3, 0, Math.sin(a) * 3, top); c.rotation.y = -a; mesh(BOX(.04, 3, .04), MAT.metal(0x999999), 0, -1.5, 0, c); mesh(BOX(.6, .1, .6), W(0x3498db), 0, -3, 0, c); chains.push(c); } const seats = [new THREE.Object3D(), new THREE.Object3D()]; seats[0].position.set(0, -2.95, 0); seats[1].position.set(0, -2.95, 0); chains[0].add(seats[0]); chains[4].add(seats[1]); return { seats, anim: dt => { top.rotation.y += dt * 1.4; chains.forEach(c => c.rotation.z = .55); } }; }],
+    ['엔터프라이즈', ['빙글빙글 돌다가~', '세워졌다! 💫', '원심력으로 버텨!'], g => { mesh(BOX(1, 4, 1), W(0x7f8c8d), 0, 2, 0, g); const tilt = gAt(0, 4, 0, g), wheel = gAt(0, 0, 0, tilt); const gons = []; for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2, c = gAt(Math.cos(a) * 3.5, 0, Math.sin(a) * 3.5, wheel); c.rotation.y = -a; mesh(BOX(1, .9, 1), W(k % 2 ? 0xe74c3c : 0xf1c40f), 0, 0, 0, c); gons.push(c); } const seats = seatPair(gons[0], [0, .2, -.1], [0, .2, .2]); return { seats, anim: dt => { wheel.rotation.y += dt * 2.2; tilt.rotation.x = (Math.sin(time * .3) * .5 + .5) * 1.3; } }; }],
+    ['디스코팡팡', ['팡팡 튀어 올라! 🕺', '엉덩이가 들썩들썩', '빙글빙글 콩콩!'], g => { mesh(new THREE.CylinderGeometry(5, 5.4, 1, 20), W(0x8e44ad), 0, .5, 0, g); const disk = gAt(0, 1.1, 0, g); mesh(new THREE.CylinderGeometry(4.4, 4.4, .4, 24), W(0xff7eb6), 0, 0, 0, disk); const seats = seatPair(disk, [0, .4, 4], [1.2, .4, 3.8]); return { seats, anim: dt => { disk.rotation.y += dt * 1.2; disk.position.y = 1.1 + Math.abs(Math.sin(time * 6)) * .6; disk.rotation.x = Math.sin(time * 3) * .08; } }; }],
+    ['브레이크댄스', ['휙휙 급회전!', '돌고 또 돌아~', '어질어질 신나!'], g => { const big = gAt(0, .4, 0, g); mesh(new THREE.CylinderGeometry(5, 5, .4, 20), W(0x2c3e50), 0, 0, 0, big); const smalls = []; for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2, c = gAt(Math.cos(a) * 3, .5, Math.sin(a) * 3, big); mesh(new THREE.CylinderGeometry(1.4, 1.4, .3, 12), W(0xe67e22), 0, 0, 0, c); mesh(BOX(1, .6, .8), W(0x3498db), 0, .5, 0, c); smalls.push(c); } const seats = seatPair(smalls[0], [-.3, .8, 0], [.3, .8, 0]); return { seats, anim: dt => { big.rotation.y += dt; smalls.forEach(c => c.rotation.y -= dt * 3); } }; }],
+    ['뮤직 익스프레스', ['🎵 신나는 음악!', '오르락내리락 달린다~', '박수 짝짝!'], g => { mesh(new THREE.TorusGeometry(6, .3, 6, 30), W(0x95a5a6), 0, 1, 0, g).rotation.x = Math.PI / 2; mesh(new THREE.ConeGeometry(7, 2, 16), W(0x3498db), 0, 5.5, 0, g); const rot = gAt(0, 0, 0, g); const cars = []; for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2, c = gAt(Math.cos(a) * 6, 1.4, Math.sin(a) * 6, rot); c.rotation.y = -a + Math.PI / 2; mesh(BOX(1.4, .7, 1), W([0xe74c3c, 0xf1c40f, 0x2ecc71, 0x9b59b6][k % 4]), 0, 0, 0, c); cars.push(c); } const seats = seatPair(cars[0], [-.3, .5, 0], [.3, .5, 0]); return { seats, anim: dt => { rot.rotation.y += dt * 1.6; cars.forEach((c, k) => c.position.y = 1.4 + Math.sin(rot.rotation.y * 3 + k / 10 * Math.PI * 6) * .6); } }; }],
+    ['통나무 플룸', ['물길 따라 둥실~', '마지막에 쏴아아! 💦', '흠뻑 젖었다!'], g => { const pts = [[-5, .8, -4], [5, .8, -4], [6, 4, 0], [3, 5, 4], [-2, 5, 4], [-5, 1, 2]].map(p => new THREE.Vector3(g.position.x + p[0], p[1], g.position.z + p[2])); const cv = new THREE.CatmullRomCurve3(pts, true); world.add(new THREE.Mesh(new THREE.TubeGeometry(cv, 100, .7, 8, true), std(0x4fc3f7, .2, 0, { transparent: true, opacity: .6, side: THREE.DoubleSide }))); const boat = gAt(0, 0, 0); mesh(BOX(1, .6, 2.2), W(0x8d6e63), 0, 0, 0, boat); const seats = seatPair(boat, [0, .5, -.4], [0, .5, .4]); let u = 0; return { seats, anim: dt => { const p = cv.getPointAt(u); u = (u + dt * (p.y > 2 && cv.getPointAt((u + .01) % 1).y < p.y ? .14 : .05)) % 1; boat.position.copy(cv.getPointAt(u)); boat.lookAt(cv.getPointAt((u + .01) % 1)); if (boat.position.y < 1.2 && Math.random() < .5) spawnP(boat.position.x, 1, boat.position.z, mr(-2, 2), 3, mr(-2, 2), new THREE.Color(0x9fdcff), .8); } }; }],
+    ['급류 타기', ['빙글빙글 보트!', '물벼락 조심~ 🌊', '꺄! 물 맞았다!'], g => { mesh(new THREE.TorusGeometry(5, .8, 8, 30), std(0x29b6f6, .2, 0, { transparent: true, opacity: .7 }), 0, .3, 0, g).rotation.x = Math.PI / 2; const rot = gAt(0, .7, 0, g), boat = gAt(5, 0, 0, rot); mesh(new THREE.CylinderGeometry(.9, .9, .5, 14), W(0xff7043), 0, 0, 0, boat); const seats = seatPair(boat, [-.4, .4, 0], [.4, .4, 0]); return { seats, anim: dt => { rot.rotation.y += dt * .5; boat.rotation.y += dt * 2; boat.position.y = Math.sin(time * 5) * .15; if (Math.random() < .3) { const p = new THREE.Vector3(); boat.getWorldPosition(p); spawnP(p.x, 1.2, p.z, mr(-1, 1), 2.5, mr(-1, 1), new THREE.Color(0x9fdcff), .7); } } }; }],
+    ['슛더슛', ['높이높이 올라가서~', '첨벙! 💦💦', '물보라 대폭발!'], g => { mesh(BOX(3, 8, 3), W(0x5d4037), -5, 4, 0, g); const ramp = mesh(BOX(2.4, .3, 11), W(0x90a4ae), 0, 4.2, 0, g); ramp.rotation.y = Math.PI / 2; ramp.rotation.x = .75; floorPlane(5, 5, std(0x4fc3f7, .2, 0, { transparent: true, opacity: .8 }), g.position.x + 5.5, g.position.z, .03); const boat = gAt(-5, 8.2, 0, g); mesh(BOX(1.8, .7, 1.2), W(0xffca28), 0, 0, 0, boat); const seats = seatPair(boat, [-.4, .55, 0], [.4, .55, 0]); return { seats, anim: () => { const c = time % 6; boat.position.set(c < 3 ? -5 : c < 4 ? -5 + (c - 3) * 10.5 : 5.5, c < 3 ? 8.2 : c < 4 ? 8.2 - (c - 3) * 8 : .3, 0); if (c > 3.9 && c < 4.5) for (let k = 0; k < 6; k++) spawnP(g.position.x + 5.5 + mr(-1.5, 1.5), .6, g.position.z + mr(-1.5, 1.5), mr(-3, 3), 6, mr(-3, 3), new THREE.Color(0x9fdcff), 1); } }; }],
+    ['워터 코스터', ['코스터인데 물이다!', '슝~ 첨벙!', '시원해요 💧'], g => { const pts = [[-5, 1, -4], [-1, 6, -5], [4, 2, -3], [5, 4, 3], [0, 1, 5], [-5, 3, 3]].map(p => new THREE.Vector3(g.position.x + p[0], p[1], g.position.z + p[2])); const cv = new THREE.CatmullRomCurve3(pts, true); world.add(new THREE.Mesh(new THREE.TubeGeometry(cv, 120, .25, 6, true), W(0x00acc1))); floorPlane(4, 4, std(0x4fc3f7, .2, 0, { transparent: true, opacity: .8 }), g.position.x, g.position.z + 5, .03); const car = gAt(0, 0, 0); mesh(BOX(1.2, .6, 2), W(0x26c6da), 0, .4, 0, car); const seats = seatPair(car, [-.3, .75, 0], [.3, .75, 0]); let u = 0; return { seats, anim: dt => { u = (u + dt * .09) % 1; car.position.copy(cv.getPointAt(u)); car.lookAt(cv.getPointAt((u + .01) % 1)); if (car.position.y < 1.4 && Math.random() < .6) spawnP(car.position.x, 1, car.position.z, mr(-2, 2), 3, mr(-2, 2), new THREE.Color(0x9fdcff), .8); } }; }],
+    ['대관람차', ['천천히 하늘 위로~', '놀이동산이 한눈에! 🎡', '노을이 예쁘다'], g => { for (const sz of [-1.2, 1.2]) { const l = mesh(BOX(.4, 11, .4), MAT.metal(0xdddddd), -2, 5.5, sz, g); l.rotation.z = .25; const l2 = mesh(BOX(.4, 11, .4), MAT.metal(0xdddddd), 2, 5.5, sz, g); l2.rotation.z = -.25; } const wheel = gAt(0, 10, 0, g); mesh(new THREE.TorusGeometry(7, .2, 6, 40), MAT.metal(0xffffff), 0, 0, 0, wheel); const cabs = []; for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2; mesh(BOX(.12, 7, .12), MAT.metal(0xcccccc), Math.cos(a) * 3.5, Math.sin(a) * 3.5, 0, wheel).rotation.z = a + Math.PI / 2; const c = gAt(Math.cos(a) * 7, Math.sin(a) * 7, 0, wheel); const cab = gAt(0, -.8, 0, c); mesh(BOX(1.3, 1.2, 1.3), W([0xe74c3c, 0xf1c40f, 0x2ecc71, 0x3498db, 0x9b59b6][k % 5]), 0, 0, 0, cab); cabs.push(c); } const seats = seatPair(cabs[0], [-.3, -1.1, 0], [.3, -1.1, 0]); return { seats, anim: dt => { wheel.rotation.z += dt * .15; cabs.forEach(c => c.rotation.z = -wheel.rotation.z); } }; }],
+    ['회전목마', ['🎠 히힝~ 목마 출발!', '오르락내리락 둥실', '음악이 예뻐요~'], g => { mesh(new THREE.CylinderGeometry(5, 5, .4, 24), W(0xf4f4f2), 0, .2, 0, g); mesh(new THREE.ConeGeometry(5.6, 2.5, 16), W(0xff7eb6), 0, 5, 0, g); mesh(BOX(.6, 4.5, .6), MAT.metal(0xf4c542, .3), 0, 2.5, 0, g); const rot = gAt(0, .4, 0, g), horses = []; for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2, h = gAt(Math.cos(a) * 3.6, .8, Math.sin(a) * 3.6, rot); h.rotation.y = -a; mesh(BOX(.5, .7, 1.4), W([0xffffff, 0xffe0b2, 0xd7ccc8][k % 3]), 0, 0, 0, h); mesh(BOX(.4, .6, .4), W(0xffffff), 0, .5, .6, h); mesh(BOX(.05, 3.6, .05), MAT.metal(0xf4c542, .3), 0, 1.5, 0, h); horses.push(h); } const seats = seatPair(horses[0], [0, .55, 0], [0, .55, 0]); horses[1].add(seats[1]); seats[1].position.set(0, .55, 0); return { seats, anim: dt => { rot.rotation.y += dt * .6; horses.forEach((h, k) => h.position.y = .8 + Math.sin(time * 2 + k) * .35); } }; }],
+    ['범퍼카', ['쿵! 부딪혔다 🚗', '내가 운전할래!', '빵빵~ 비켜주세요!'], g => { floorPlane(11, 9, MAT.col(0x37474f, .6), g.position.x, g.position.z, .03); for (const [dx, dz, w, d] of [[0, -4.6, 11.4, .3], [0, 4.6, 11.4, .3], [-5.6, 0, .3, 9.4], [5.6, 0, .3, 9.4]]) mesh(BOX(w, .5, d), W(0xffca28), dx, .25, dz, g); const cars = []; for (let k = 0; k < 6; k++) { const c = gAt(rr(-4, 4), .3, rr(-3, 3), g); mesh(BOX(1.3, .5, 1.8), W([0xe74c3c, 0x3498db, 0x2ecc71, 0xf1c40f, 0x9b59b6, 0xff7043][k]), 0, 0, 0, c); mesh(BOX(.05, 1.6, .05), MAT.metal(0x888888), 0, .9, -.6, c); cars.push({ c, a: rr(0, 6), v: rr(1.5, 3) }); } const seats = [new THREE.Object3D(), new THREE.Object3D()]; seats[0].position.set(0, .3, 0); seats[1].position.set(0, .3, 0); cars[0].c.add(seats[0]); cars[1].c.add(seats[1]); return { seats, anim: dt => { cars.forEach(o => { o.c.position.x += Math.sin(o.a) * o.v * dt; o.c.position.z += Math.cos(o.a) * o.v * dt; if (Math.abs(o.c.position.x) > 4.6 || Math.abs(o.c.position.z) > 3.6) { o.a += Math.PI + rr(-.6, .6); o.c.position.x = clamp(o.c.position.x, -4.6, 4.6); o.c.position.z = clamp(o.c.position.z, -3.6, 3.6); } o.c.rotation.y = o.a; }); } }; }],
+    ['모노레일', ['높은 레일 위 여행~', '놀이동산 구경하자!', '창밖이 멋져요 🚝'], g => { mesh(new THREE.TorusGeometry(6, .35, 6, 36), W(0xb0bec5), 0, 5, 0, g).rotation.x = Math.PI / 2; for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2; mesh(BOX(.4, 5, .4), W(0x90a4ae), Math.cos(a) * 6, 2.5, Math.sin(a) * 6, g); } const rot = gAt(0, 0, 0, g), tr = gAt(6, 5.7, 0, rot); mesh(BOX(1.4, 1.2, 4), W(0x1e88e5, .3), 0, 0, 0, tr); mesh(BOX(1.42, .4, 3.6), gl, 0, .2, 0, tr); const seats = seatPair(tr, [0, -.35, -.6], [0, -.35, .6]); return { seats, anim: dt => { rot.rotation.y += dt * .35; } }; }],
+    ['꼬마 기차', ['칙칙폭폭~ 🚂', '기차 여행 출발!', '손 흔들어요~'], g => { mesh(new THREE.TorusGeometry(5.5, .12, 4, 40), MAT.metal(0x555555), 0, .1, 0, g).rotation.x = Math.PI / 2; mesh(new THREE.TorusGeometry(4.7, .12, 4, 40), MAT.metal(0x555555), 0, .1, 0, g).rotation.x = Math.PI / 2; const rot = gAt(0, 0, 0, g), cars = []; for (let k = 0; k < 3; k++) { const a = -k * .38, c = gAt(Math.cos(a) * 5.1, .6, Math.sin(a) * 5.1, rot); c.rotation.y = -a; mesh(BOX(1.1, 1, 1.8), W(k === 0 ? 0xc0392b : 0x27ae60), 0, 0, 0, c); if (k === 0) mesh(BOX(.4, .8, .4), W(0x222222), 0, .8, .4, c); cars.push(c); } const seats = seatPair(cars[1], [0, .6, -.3], [0, .6, .4]); return { seats, anim: dt => { rot.rotation.y += dt * .5; if (Math.random() < dt * 2) { const p = new THREE.Vector3(); cars[0].getWorldPosition(p); spawnP(p.x, 2, p.z, 0, 1.2, 0, new THREE.Color(0xdddddd), 1.2); } } }; }],
+    ['하늘자전거', ['페달을 밟아요~ 🚲', '하늘 위 자전거!', '영차영차!'], g => { mesh(new THREE.TorusGeometry(5.5, .2, 4, 36), W(0xffb74d), 0, 4.2, 0, g).rotation.x = Math.PI / 2; for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2; mesh(BOX(.3, 4.2, .3), W(0x8d6e63), Math.cos(a) * 5.5, 2.1, Math.sin(a) * 5.5, g); } const rot = gAt(0, 0, 0, g), c = gAt(5.5, 3.4, 0, rot); mesh(BOX(1, .5, 1.6), W(0x66bb6a), 0, 0, 0, c); const seats = seatPair(c, [-.25, .3, 0], [.25, .3, 0]); return { seats, anim: dt => { rot.rotation.y += dt * .4; } }; }],
+    ['티컵', ['찻잔이 빙글빙글 ☕', '더 빨리 돌려~', '어지러워 헤헤'], g => { const plate = gAt(0, .2, 0, g); mesh(new THREE.CylinderGeometry(5.5, 5.5, .3, 24), W(0xfff3e0), 0, 0, 0, plate); const cups = []; for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2, c = gAt(Math.cos(a) * 3.4, .5, Math.sin(a) * 3.4, plate); mesh(new THREE.CylinderGeometry(1, .7, .9, 16), W([0xf48fb1, 0x81d4fa, 0xfff59d, 0xa5d6a7, 0xce93d8, 0xffcc80][k]), 0, 0, 0, c); cups.push(c); } const seats = seatPair(cups[0], [-.35, .3, 0], [.35, .3, 0]); return { seats, anim: dt => { plate.rotation.y += dt * .5; cups.forEach((c, k) => c.rotation.y += dt * (k === 0 ? 3 : 1.5)); } }; }],
+    ['트랙리스 다크 라이드', ['깜깜한데 반짝반짝 ✨', '길 없이 둥둥 움직여!', '신비한 세계다~'], g => { const wall = W(0x311b92); mesh(BOX(10, 5, .4), wall, 0, 2.5, -4, g); mesh(BOX(.4, 5, 8), wall, -5, 2.5, 0, g); mesh(BOX(.4, 5, 8), wall, 5, 2.5, 0, g); mesh(BOX(10.4, .4, 8.4), wall, 0, 5.2, 0, g); mesh(BOX(10, 5, .1), MAT.glass(), 0, 2.5, 4, g); const cart = gAt(0, .4, 0, g); mesh(BOX(1.4, .6, 1.6), W(0x7c4dff), 0, 0, 0, cart); const seats = seatPair(cart, [-.3, .5, 0], [.3, .5, 0]); const cols = [0xff4081, 0x40c4ff, 0xffff00, 0x69f0ae].map(c => new THREE.Color(c)); return { seats, anim: () => { cart.position.set(Math.sin(time * .5) * 3, .4, Math.sin(time * .8) * 2); cart.rotation.y = time * .7; if (Math.random() < .5) spawnP(g.position.x + mr(-4.5, 4.5), mr(.5, 4.5), g.position.z + mr(-3.5, 3.5), 0, .2, 0, pick2(cols), 1); } }; }],
+    ['슈팅 다크 라이드', ['피융피융! 🔫 명중!', '점수 올라간다!', '저기 과녁이다!'], g => { const wall = W(0x263238); mesh(BOX(10, 5, .4), wall, 0, 2.5, -4, g); mesh(BOX(.4, 5, 8), wall, -5, 2.5, 0, g); mesh(BOX(.4, 5, 8), wall, 5, 2.5, 0, g); mesh(BOX(10.4, .4, 8.4), wall, 0, 5.2, 0, g); mesh(BOX(10, 5, .1), MAT.glass(), 0, 2.5, 4, g); for (let k = 0; k < 5; k++) mesh(new THREE.CylinderGeometry(.5, .5, .1, 16), W(k % 2 ? 0xe53935 : 0xffffff), -4 + k * 2, 3, -3.7, g).rotation.x = Math.PI / 2; const cart = gAt(0, .4, 1, g); mesh(BOX(1.4, .6, 1.6), W(0xff6f00), 0, 0, 0, cart); const seats = seatPair(cart, [-.3, .5, 0], [.3, .5, 0]); const red = new THREE.Color(0xff1744); return { seats, anim: dt => { cart.position.x = Math.sin(time * .6) * 3.5; if (Math.random() < dt * 3) { const p = new THREE.Vector3(); cart.getWorldPosition(p); for (let k = 0; k < 6; k++) spawnP(p.x, 1.4, p.z - k * .5, 0, 0, -8, red, .3); } } }; }],
+    ['플라잉 시어터', ['발이 둥둥 하늘을 날아! 🪂', '화면 속으로 들어가요', '바람 냄새가 나!'], g => { mesh(new THREE.SphereGeometry(6, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2), W(0x5c6bc0), 0, 0, 0, g); const scr = mesh(BOX(8, 4, .1), M('scr', () => std(0xffffff, .3, 0, { emissive: 0x4fc3f7, emissiveIntensity: 1.2 })), 0, 3, -3, g); const rack = gAt(0, 1, 2, g); mesh(BOX(4, .3, 1.2), W(0x424242), 0, 0, 0, rack); const seats = seatPair(rack, [-.6, .3, 0], [.6, .3, 0]); return { seats, anim: () => { rack.position.y = 1.5 + Math.sin(time * .8) * .6; rack.rotation.x = Math.sin(time * .6) * .25; scr.material.emissive.setHSL((time * .05) % 1, .7, .5); } }; }],
+    ['모션 시뮬레이터', ['우주선 출발! 🚀', '덜컹덜컹 흔들려~', '3D 영상 최고!'], g => { mesh(BOX(9, 5, 7), W(0x455a64), 0, 2.5, -1, g); const cap = gAt(0, 1, 3.5, g); mesh(BOX(3, 2, 2.4), W(0xeceff1), 0, 1, 0, cap); mesh(BOX(2.6, .9, .05), gl, 0, 1.3, 1.21, cap); const seats = seatPair(cap, [-.5, .2, .3], [.5, .2, .3]); return { seats, anim: () => { cap.rotation.x = Math.sin(time * 3.1) * .12; cap.rotation.z = Math.sin(time * 2.3) * .1; cap.position.y = 1 + Math.abs(Math.sin(time * 4)) * .2; } }; }],
+    ['귀신의 집', ['으스스… 👻', '뭐가 툭 튀어나왔어!', '무서워 핸들러 손 꼭!'], g => { mesh(BOX(10, 6, 8), W(0x4a148c), 0, 3, -1, g); const rf = mesh(BOX(11, .5, 9), W(0x212121), 0, 6.4, -1, g); rf.rotation.z = .08; mesh(BOX(2, 3, .2), W(0x1b0000), 0, 1.5, 3.05, g); for (const wx of [-3, 3]) mesh(BOX(1.4, 1.2, .2), M('hwin', () => std(0xffeb3b, .4, 0, { emissive: 0xffa000, emissiveIntensity: .8 })), wx, 4, 3.05, g); const ghosts = []; for (let k = 0; k < 4; k++) { const gh = textSprite('👻', { bg: null, h: 1 }); gh.position.set(rr(-4, 4), rr(2, 6), rr(-3, 4)); g.add(gh); ghosts.push(gh); } const cart = gAt(0, .4, 4.5, g); mesh(BOX(1.4, .6, 1.4), W(0x6a1b9a), 0, 0, 0, cart); const seats = seatPair(cart, [-.3, .5, 0], [.3, .5, 0]); return { seats, anim: dt => { cart.position.x = Math.sin(time * .4) * 3.5; ghosts.forEach((gh, k) => { gh.position.y = 3 + Math.sin(time * 2 + k) * 1.5; gh.position.x = Math.sin(time * .7 + k * 2) * 4; }); } }; }],
+  ];
+  RIDES.forEach(([name, chat, build], i) => flatRide(...slots[i], name, chat, build));
 }
 
 // ================= 비행기 (히든맵) =================
@@ -1593,15 +1707,47 @@ function k9Van() {
   const lb = mesh(BOX(.5, .22, .3), M('sirB', () => std(0x2060ff, .3, 0, { emissive: 0x0040ff, emissiveIntensity: 0 })), .35, 2.72, -.6, g);
   for (const [x, z] of [[-1.1, -2.2], [1.1, -2.2], [-1.1, 1.6], [1.1, 1.6]]) mesh(BOX(.35, .7, .7), MAT.col(0x111111, .8), x, .35, z, g);
   const t = textSprite('🚓 K9 세관 탐지견', { h: .3, bg: 'rgba(19,51,90,.92)' }); t.position.set(0, 3.4, 0); g.add(t);
-  world.add(g); return { g, door, lr, lb };
+  world.add(g); return { g, door, lr, lb, kind: 'van', open: k => door.position.z = lerp(.6, -.9, k), exit: [1.5, 0, .6] };
+}
+function sirens(g, y, z) { return [-.35, .35].map((x, i) => mesh(BOX(.5, .22, .3), i ? M('sirB', () => std(0x2060ff, .3, 0, { emissive: 0x0040ff, emissiveIntensity: 0 })) : M('sirR', () => std(0xff2020, .3, 0, { emissive: 0xff0000, emissiveIntensity: 0 })), x, y, z, g)); }
+function policeCar() {
+  const g = new THREE.Group(), w = MAT.col(0xf4f4f2, .35), b = MAT.col(0x1f4fa8, .4), dk = MAT.col(0x1b2833, .1, .3);
+  mesh(BOX(2, .8, 4.6), w, 0, .75, 0, g); mesh(BOX(2.02, .25, 4.62), b, 0, .8, 0, g); mesh(BOX(1.8, .75, 2.3), w, 0, 1.5, .2, g);
+  mesh(BOX(1.82, .5, 2.1), dk, 0, 1.55, .2, g); mesh(BOX(2.04, .12, .5), MAT.col(0xffee88, .2), 0, .85, -2.3, g);
+  const door = mesh(BOX(.06, .9, 1.2), w, 1.02, .95, .5, g);
+  const [lr, lb] = sirens(g, 2.0, .2);
+  for (const [x, z] of [[-1, -1.5], [1, -1.5], [-1, 1.5], [1, 1.5]]) mesh(BOX(.3, .6, .6), MAT.col(0x111111, .8), x, .3, z, g);
+  const t = textSprite('🚓 경찰특공대 K9', { h: .3, bg: 'rgba(20,40,100,.92)' }); t.position.set(0, 2.8, 0); g.add(t);
+  world.add(g); return { g, door, lr, lb, kind: 'car', open: k => door.rotation.y = -k * 1.2, exit: [1.4, 0, .5] };
+}
+function k9Tank() {
+  const g = new THREE.Group(), ol = MAT.col(0x55603a, .8), dk = MAT.col(0x2a2e22, .9);
+  mesh(BOX(3, 1.1, 5.4), ol, 0, 1, 0, g); for (const sd of [-1, 1]) { mesh(BOX(.8, 1, 5.8), dk, sd * 1.8, .5, 0, g); for (let k = 0; k < 6; k++) mesh(BOX(.85, .5, .5), MAT.col(0x444444, .7), sd * 1.8, .45, -2.2 + k * .88, g); }
+  const tur = new THREE.Group(); tur.position.set(0, 1.9, .3); g.add(tur);
+  mesh(BOX(2.2, .8, 2.6), ol, 0, 0, 0, tur); mesh(BOX(.28, .28, 3.6), dk, 0, .05, -3, tur);
+  const door = mesh(BOX(.8, .12, .8), dk, .4, .46, .5, tur);
+  const [lr, lb] = sirens(tur, .5, -.6); lr.scale.setScalar(.5); lb.scale.setScalar(.5);
+  const t = textSprite('🪖 특수부대 K9 전차', { h: .3, bg: 'rgba(60,70,40,.92)' }); t.position.set(0, 3.5, 0); g.add(t);
+  world.add(g); return { g, door, lr, lb, tur, kind: 'tank', open: k => { door.rotation.x = -k * 1.8; tur.rotation.y = Math.sin(k * 6) * .3; }, exit: [.4, 2.4, .8] };
+}
+function k9Plane() {
+  const g = new THREE.Group(), w = MAT.col(0xf4f4f2, .35), n = MAT.col(0x13335a, .45), dk = MAT.col(0x1b2833, .1, .3);
+  mesh(BOX(2.4, 2.4, 9), w, 0, 1.6, 0, g); mesh(BOX(2.42, .5, 9.02), n, 0, 1.3, 0, g); mesh(BOX(1.8, 1.6, 1.4), w, 0, 1.5, -5.1, g); mesh(BOX(1.4, .5, .05), dk, 0, 2.1, -5.8, g);
+  mesh(BOX(13, .25, 2.2), w, 0, 2.6, -.5, g); mesh(BOX(5, .2, 1.4), w, 0, 2.4, 4.1, g); mesh(BOX(.2, 2.6, 1.6), n, 0, 3.7, 4.1, g);
+  for (const sd of [-1, 1]) { mesh(BOX(.8, .8, 1.6), MAT.metal(0x888888), sd * 3.6, 2.2, -.8, g); mesh(BOX(.3, .7, .3), MAT.col(0x111111, .8), sd * .9, .35, .6, g); }
+  mesh(BOX(.3, .7, .3), MAT.col(0x111111, .8), 0, .35, -3.6, g);
+  const door = mesh(BOX(.06, 1.7, 1.2), w, 1.23, 1.4, .8, g);
+  const [lr, lb] = sirens(g, 2.75, 0); lr.position.x = -6.4; lb.position.x = 6.4;
+  const t = textSprite('✈ 관세청 K9 수송기', { h: .34, bg: 'rgba(19,51,90,.92)' }); t.position.set(0, 5.4, 0); g.add(t);
+  world.add(g); return { g, door, lr, lb, kind: 'plane', open: k => door.position.z = lerp(.8, -.6, k), exit: [1.6, 0, .8] };
 }
 function playIntro(cb) {
-  const sp = level.spawn, v = k9Van();
-  v.g.position.set(sp.x - 2.8, 0, level.bounds.maxZ + 10);
-  intro = { v, t: 0, cb, sz: level.bounds.maxZ + 10, ez: sp.z + 1.5 };
+  const sp = level.spawn, v = handlerJob === 'police' ? policeCar() : handlerJob === 'soldier' ? k9Tank() : k9Plane();
+  v.g.position.set(sp.x - (v.kind === 'plane' ? 3.4 : 2.8), v.kind === 'plane' ? 18 : 0, level.bounds.maxZ + (v.kind === 'plane' ? 40 : 10));
+  intro = { v, t: 0, cb, sz: v.g.position.z, ez: sp.z + 1.5 };
   state = 'intro'; document.body.classList.add('photo'); $('photoBar').classList.add('hidden');
   dogM.g.visible = false; handlerM.g.visible = false; leash.visible = false;
-  toast('🚓 K9 탐지견 팀 출동!');
+  toast({ police: '🚓 경찰특공대 K9 팀 출동!', soldier: '🪖 특수부대 K9 전차 출동!' }[handlerJob] || '✈ 관세청 K9 수송기 착륙!');
 }
 function endIntro() {
   if (!intro) return;
@@ -1616,15 +1762,17 @@ function updateIntro(dt) {
   const I = intro; if (!I) return; I.t += dt; const v = I.v, t = I.t;
   const u = Math.min(1, t / 2.2), e = 1 - Math.pow(1 - u, 3);
   v.g.position.z = lerp(I.sz, I.ez, e);
+  if (v.kind === 'plane') { v.g.position.y = 18 * Math.pow(1 - e, 2); v.g.rotation.x = -(1 - e) * .25; }
+  if (v.kind === 'tank' && u < 1) { v.tur.rotation.y = Math.sin(t * 3) * .15; if (Math.random() < .5) spawnP(v.g.position.x + mr(-1.5, 1.5), .3, v.g.position.z + 2.8, 0, 1, 1, new THREE.Color(0x9b8a6a), 1); }
   const on = Math.floor(t * 6) % 2; v.lr.material.emissiveIntensity = on ? 3 : 0; v.lb.material.emissiveIntensity = on ? 0 : 3;
   if (Math.floor(t * 3) !== Math.floor((t - dt) * 3) && t < 2.4) tone(on ? 900 : 650, .14, 'square', .05);
-  if (t > 2.2) v.door.position.z = lerp(.6, -.9, Math.min(1, (t - 2.2) / .4));
+  if (t > 2.2) v.open(Math.min(1, (t - 2.2) / .4));
   if (t > 2.6) {
     const k = Math.min(1, (t - 2.6) / 1);
-    const dx = v.g.position.x + 1.5, dz = v.g.position.z + .6;
+    const dx = v.g.position.x + v.exit[0], dz = v.g.position.z + v.exit[2], dy = v.exit[1];
     dogM.g.visible = handlerM.g.visible = true;
-    dogM.g.position.set(lerp(dx, level.spawn.x, k), Math.sin(Math.PI * Math.min(1, k * 1.6)) * .8, lerp(dz, level.spawn.z, k)); dogM.g.rotation.y = Math.PI * .75;
-    handlerM.g.position.set(lerp(dx, level.spawn.x + 1.4, k), 0, lerp(dz + .5, level.spawn.z + 1.3, k)); handlerM.g.rotation.y = Math.PI * .75;
+    dogM.g.position.set(lerp(dx, level.spawn.x, k), dy * (1 - k) + Math.sin(Math.PI * Math.min(1, k * 1.6)) * .8, lerp(dz, level.spawn.z, k)); dogM.g.rotation.y = Math.PI * .75;
+    handlerM.g.position.set(lerp(dx, level.spawn.x + 1.4, k), dy * (1 - k) + (dy ? Math.sin(Math.PI * k) * .8 : 0), lerp(dz + .5, level.spawn.z + 1.3, k)); handlerM.g.rotation.y = Math.PI * .75;
     dogM.legs.forEach((l, i) => l.rotation.x = Math.sin(time * 16 + i) * .7);
     if (t > 2.6 && t - dt <= 2.6) floatText('멍! 출동!', dx, 2.2, dz, { h: .5 });
   }
@@ -1897,11 +2045,14 @@ function zones(L) {
     { minX: b.minX + 1, maxX: -iw, minZ: -id, maxZ: id },
     { minX: iw, maxX: b.maxX - 1, minZ: -id, maxZ: id },
   ];
+  L.zoneRects = rects;
   rects.forEach((r, i) => {
     const cx = (r.minX + r.maxX) / 2, cz = (r.minZ + r.maxZ) / 2, area = (r.maxX - r.minX) * (r.maxZ - r.minZ);
     sign(`${'🅰🅱🅲🅳'.slice(i * 2, i * 2 + 2)} ${'ABCD'[i]}구역 · ${kit.names[i]}`, cx, 6.5, cz, 1.1, 'rgba(19,51,90,.92)');
     floorPlane(Math.min(14, r.maxX - r.minX), .5, MAT.col(0xf1c40f, .6), cx, cz, .02);
-    const ns = Math.round(area / 160), ni = Math.round(area / 70);
+    const ns = Math.round(area / 115), ni = Math.round(area / 70), ZD = [['plant', 'infoDesk', 'dutyFree', 'cafeSet'], ['weighScale', 'lightTower', 'guardBooth'], ['mailCart', 'sealedCage', 'plant'], ['cafeSet', 'lifeRing', 'plant'], ['lightTower', 'guardBooth', 'weighScale'], ['sealedCage', 'guardBooth', 'weighScale']][levelIdx] || [];
+    for (let k = 0, nd = Math.round(area / 220); k < nd; k++) { const D = DECOR[pick(ZD)]; if (!D) continue; const p = placeFree(r, D[0], D[1], 1.4, L.avoid); if (p) D[2](p.x, p.z); }
+    { const D = DECOR.guardBooth; const p = D && placeFree(r, D[0], D[1], 1.4, L.avoid); if (p) D[2](p.x, p.z); }
     for (let k = 0; k < ns; k++) { const [w, d, mk] = pick(kit.struct), p = placeFree(r, w, d, 1.4, L.avoid); if (p) mk(p.x, p.z); }
     for (let k = 0; k < ni; k++) { const [w, d, mk] = kit.item, p = placeFree(r, w, d, .8, L.avoid); if (p) L.search.push(mk(p.x, p.z)); }
   });
@@ -2126,7 +2277,7 @@ const LEVELS = [
     },
   },
   {
-    hidden: true, relax: true, sunset: true, extraEast: 90,
+    hidden: true, relax: true, sunset: true, extraEast: 260, extraZ: 26,
     diff: { stars: 0, speed: 1, flee: 1, hp: 1, bossHp: 5, sniff: 25, vehicle: 1 },
     name: '노을 활주로', icon: '🌅', w: 90, d: 60, outdoor: true, bg: 0xf0a070, music: 7,
     staff: [
@@ -2136,7 +2287,7 @@ const LEVELS = [
       { kind: 'customs', route: [[-28, -16.3], [-10, -16.3]], wait: 2.5 },
     ],
     people: { civ: 4 }, hide: {}, need: {},
-    who: '강민준 공항세관장', short: '석양 아래 활주로에서 친구들과 산책하고, 동쪽 🐶 강아지 놀이터에서 놀아요. 놀이기구 앞에서 1초 기다리면 놀이 시작, 가만히 있으면 계속 놀아요! 같은 시간에 접속한 친구도 보여요.',
+    who: '강민준 공항세관장', short: '석양 아래 활주로에서 친구들과 산책하고, 동쪽 🐶 강아지 놀이터와 🏰 동화 나라 놀이동산(롤러코스터 10종 · 놀이기구 27종)에서 놀아요. 놀이기구 앞에서 1초 기다리면 놀이 시작, 가만히 있으면 계속 놀아요! 같은 시간에 접속한 친구도 보여요.',
     intro: '🎉 밀수 조직 보스 체포, 정말 수고했다!\n오늘은 특별히 공항 활주로를 개방했어.\n\n석양 아래에서 친구 탐지견들과 산책하고,\n비행기가 뜨고 내리는 것도 구경하며 푹 쉬어라.\n관세청 탐지견, 넌 최고야! 🐕',
     build(L) {
       // 석양 하늘 (그라데이션 돔) + 해 + 분홍 구름
@@ -2162,6 +2313,7 @@ const LEVELS = [
       floorPlane(50, 18, std(0xffffff, .85, 0, { map: TEX.concrete('apron', '#b5b2aa', [8, 3]) }), 18, 18, .012);
       for (let x = -140; x <= 44; x += 6) for (const z of [-13.2, 1.2]) { const l = mesh(BOX(.25, .25, .25), M('rwl', () => std(0xffe08a, .3, 0, { emissive: 0xffc04a, emissiveIntensity: 2 })), x, .15, z); l.castShadow = false; }
       playground(90);
+      themePark(220);
       // 관제탑
       solid(-32, 20, 4, 4, 14, MAT.col(0xe8e4dc, .5)); mesh(BOX(6, 3, 6), MAT.glass(), -32, 15.5, 20); mesh(BOX(6.4, .4, 6.4), MAT.col(0x13335a, .5), -32, 17.2, 20);
       sign('🗼 관제탑', -32, 19, 20, .8);
@@ -2366,7 +2518,7 @@ const MISSIONS = [
 ];
 function endMission() { mission = null; missionCd = mr(35, 55); $('mission').classList.add('hidden'); checkBadges(); }
 function updateFun(dt) {
-  if (vanAway) { vanAway.g.position.z += dt * 9; if (vanAway.g.position.z > level.bounds.maxZ + 18) { world.remove(vanAway.g); vanAway = null; } }
+  if (vanAway) { vanAway.g.position.z += dt * (vanAway.kind === 'plane' ? 18 : vanAway.kind === 'tank' ? 5 : 9); if (vanAway.kind === 'plane') { vanAway.g.position.y += dt * 5; vanAway.g.rotation.x = .2; } if (vanAway.g.position.z > level.bounds.maxZ + (vanAway.kind === 'plane' ? 60 : 18)) { world.remove(vanAway.g); vanAway = null; } }
   updateBombs(dt);
   if (level.relax) { updatePals(dt); updateFlyer(dt); for (const a of pgAnim) a(dt); updatePgAct(dt); updateMp(dt); }
   if (xray && !xray.got) {
@@ -2451,7 +2603,7 @@ $('btnSnap').onclick = () => {
 };
 
 // ================= 게임 상태 =================
-let state = 'login', time = 0, levelTime = 0, levelScore = 0, runScore = 0, runTime = 0, runNext = 0, runStage = 0, shake = 0;
+let state = 'login', time = 0, levelTime = 0, levelScore = 0, runScore = 0, runTime = 0, runActive = false, runCleared = new Set(), runStage = 0, shake = 0;
 let level = null, levelIdx = 0, hidden = [], lvStats = {}, totals = { items: 0, arrests: 0, mistakes: 0 };
 let playerId = store.get('k9id', '');
 const LABEL = { drug: '💊 마약 적발', gun: '🔫 총기 적발', smuggler: '🕶 밀수범 체포', boss: '👑 보스 체포' };
@@ -2470,7 +2622,7 @@ function loadLevel(i) {
   levelIdx = i; const def = LEVELS[i];
   const SC = def.relax ? 1 : 2.24; // 넓이 5배
   const W = def.w * SC, D = def.d * SC;
-  level = { ...def, w: W, d: D, w0: def.w, d0: def.d, scaled: SC > 1, bounds: { minX: -W / 2 + 1, maxX: W / 2 - 1 + (def.extraEast || 0), minZ: -D / 2 + 1, maxZ: D / 2 - 1 } };
+  level = { ...def, w: W, d: D, w0: def.w, d0: def.d, scaled: SC > 1, bounds: { minX: -W / 2 + 1, maxX: W / 2 - 1 + (def.extraEast || 0), minZ: -D / 2 + 1 - (def.extraZ || 0), maxZ: D / 2 - 1 + (def.extraZ || 0) } };
   if (level.scaled) level.need = Object.fromEntries(Object.entries(def.need).map(([k, n]) => [k, k === 'boss' ? n : Math.ceil(n * 1.5)]));
   const spawn = { x: 0, z: def.d / 2 - 6 };
   level.spawn = spawn;
@@ -2499,6 +2651,14 @@ function loadLevel(i) {
   }
   for (const o of def.staff || []) { const p = new Person(o.kind, o.route[0][0], o.route[0][1]); p.route = o.route; p.ri = 0; p.waitAt = o.wait ?? .4; p.target = null; p.wait = mr(0, 1.5); }
   for (const o of def.vehicles || []) new Vehicle(o.type, o.route, o.start || 0);
+  // 넓어진 구역마다 순찰 직원 2명 + 이용객 3명
+  const stK = (def.staff || []).map(o => o.kind).filter(k => k !== 'handler'), civK = Object.keys(def.people).filter(k => k !== 'smuggler' && k !== 'boss');
+  for (const r of level.zoneRects || []) {
+    const ix = Math.min(6, (r.maxX - r.minX) / 4), iz = Math.min(6, (r.maxZ - r.minZ) / 4);
+    const route = [[r.minX + ix, r.minZ + iz], [r.maxX - ix, r.minZ + iz], [r.maxX - ix, r.maxZ - iz], [r.minX + ix, r.maxZ - iz]];
+    for (let k = 0; k < 2; k++) { const st = k * 2, p = new Person(pick(stK.length ? stK : ['customs']), ...route[st]); p.route = k ? [...route].reverse() : route; p.ri = 0; p.waitAt = 1; p.target = null; p.wait = mr(0, 2); }
+    for (let k = 0; k < 3 && civK.length; k++) { const p = placeFree(r, 1, 1, .5, level.avoid); if (p) new Person(pick(civK), p.x, p.z); }
+  }
   { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); xray = null;
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
   xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
@@ -2512,7 +2672,7 @@ function loadLevel(i) {
   Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: Math.min(7, Math.max(3, dog.hp || 0)), boost: 0, hurt: 0, fetch: null, idleT: 0, jumps: 0, prop: null, prevIdle: null });
   Object.assign(handler, { x: spawn.x, z: spawn.z + 1.9, y: 0, vy: 0, dir: Math.PI, boneCd: 0 });
   for (const b of bones) scene.remove(b.m); bones.length = 0;
-  balls = []; for (let k = 0; k < (level.scaled ? 6 : 3); k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
+  balls = []; for (let k = 0; k < (level.scaled ? 10 : 3); k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
   yaw = 0; camPos.set(spawn.x, 6, spawn.z + 9);
   levelTime = 0; levelScore = 0; keys = {};
   renderQuest(); playMusic(def.music);
@@ -2520,8 +2680,9 @@ function loadLevel(i) {
 
 const scaleNums = t => level && level.scaled ? t.replace(/(\d+)(개|정|명)/g, (m, n, u) => Math.ceil(+n * 1.5) + u) : t;
 function startLevel(i) {
-  if (i !== runNext || i === 0) { runScore = 0; runTime = 0; runStage = 0; totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = startServerRun(i); dog.hp = handlerJob === 'soldier' ? 4 : 3; }
-  runNext = i;
+  if (!runActive || runCleared.has(i) || LEVELS[i].relax) { runScore = 0; runTime = 0; runStage = 0; runCleared = new Set(); totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = LEVELS[i].relax ? null : startServerRun(i); dog.hp = handlerJob === 'soldier' ? 4 : 3; }
+  runActive = !LEVELS[i].relax;
+  if (i === 5 && runCleared.size < 5) setTimeout(() => toast('ℹ 한 번의 작전에서 맵 1~5를 모두 깨고 보스를 잡아야 온라인 랭킹 점수가 올라가요'), 4500);
   hideAll(); loadLevel(i);
   $('topbar').classList.remove('hidden');
   const intro = () => showDialog(lang !== 'ko' ? t('intro').replace('{map}', mapName(i)).replace('{dog}', dogName) : scaleNums(LEVELS[i].intro) + (level.scaled ? '\n\n🗺 이번 맵은 A~D 구역까지 넓어졌어. 미니맵을 보며 구석구석 수색해!' : ''), null, LEVELS[i].who);
@@ -2568,16 +2729,16 @@ function checkQuest() {
 }
 function levelClear() {
   state = 'clear'; SFX.quest();
-  const timeBonus = Math.max(0, Math.round(((level.scaled ? 480 : 240) - levelTime) * 2));
+  const timeBonus = Math.max(0, Math.round(((level.scaled ? 600 : 240) - levelTime) * 2));
   levelScore += 300 + timeBonus;
   const coinsGot = Math.max(5, Math.round(levelScore / 25)); wallet.coins += coinsGot; store.set(walletKey(), wallet);
-  runScore += levelScore; runTime += levelTime; runStage = levelIdx + 1; runNext = levelIdx + 1;
+  runScore += levelScore; runTime += levelTime; runCleared.add(levelIdx); runStage = runCleared.size;
   const prog = getProg();
   prog.unlocked = Math.max(prog.unlocked, levelIdx + 1);
   if (!prog.best[levelIdx] || levelTime < prog.best[levelIdx]) prog.best[levelIdx] = Math.round(levelTime);
   store.set(progKey(), prog); ach.cleared = Object.keys(prog.best).length; checkBadges();
   reportClear(levelIdx + 1, levelScore, runScore, runStage, Math.round(runTime));
-  if (levelIdx === LEVELS.length - 1) return win();
+  if (levelIdx === 5) return win();
   $('clrSub').textContent = `MAP ${levelIdx + 1} 클리어`;
   $('clrTitle').textContent = `${level.icon} ${mapName(levelIdx)} ${t('clr_title')}`;
   $('clrStats').innerHTML = `⏱ ${t('clr_time')} <b>${fmtTime(levelTime)}</b><br>✅ ${t('clr_bonus')} +${timeBonus}<br>⭐ ${t('clr_score')} <b>${levelScore}</b> / <b>${runScore}</b><br>🦴 ${t('clr_snack')} +${coinsGot}`;
@@ -2589,7 +2750,7 @@ async function win() {
   $('wgrade').textContent = grade;
   $('wstats').innerHTML = `🕵 ${esc(playerId)} · ⏱ 총 작전 시간 <b>${fmtTime(runTime)}</b><br>⭐ 최종 점수 <b>${runScore}</b><br>🔍 적발·폐기 <b>${totals.items}건</b> · 🚔 체포 <b>${totals.arrests}명</b> · ⚠ 실수 <b>${totals.mistakes}회</b>`;
   $('win').classList.remove('hidden'); playMusic(0);
-  renderRanking($('rankWin'), await fetchRanking(), 10);
+  renderRanking($('rankWin'), await fetchRanking(100));
 }
 
 let toastQ = [], toastT = 0;
@@ -2623,33 +2784,34 @@ async function reportClear(stage, stageScore, score, reached, secs) {
     }
   } catch { toast('📡 랭킹 서버에 연결하지 못했어요 (이 기기에는 저장됨)'); }
 }
-async function fetchRanking() {
+async function fetchRanking(max = 100) {
   if (serverOn()) {
     try {
-      const r = await fetch(RANK_CFG.url + '/rest/v1/rankings?select=player_id,score,stage,secs,title&order=score.desc,secs.asc&limit=100', { headers: sbHeaders() });
+      const r = await fetch(RANK_CFG.url + '/rest/v1/rankings?select=player_id,score,stage,secs,title&order=score.desc,secs.asc&limit=' + max, { headers: sbHeaders() });
       if (r.ok) return { list: await r.json(), online: true };
     } catch { }
   }
   return { list: store.get('k9rank', []).sort((a, b) => b.score - a.score || a.secs - b.secs), online: false };
 }
-function renderRanking(el, { list, online }, limit = 100) {
-  const rows = list.slice(0, limit).map((r, i) => `<tr class="${r.player_id === playerId ? 'me' : ''}"><td>${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${r.title ? `<small style="color:#b07a00">${esc(r.title)}</small> ` : ''}${esc(r.player_id)}</td><td class="n">MAP ${r.stage}</td><td class="n">${fmtTime(r.secs)}</td><td class="n">${r.score}</td></tr>`).join('');
+function renderRanking(el, { list, online }, limit = 1e9) {
+  const rows = list.slice(0, limit).map((r, i) => `<tr class="${r.player_id === playerId ? 'me' : ''}"><td>${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${r.title ? `<small style="color:#b07a00">${esc(r.title)}</small> ` : ''}${esc(r.player_id)}</td><td class="n">${r.stage}/6</td><td class="n">${fmtTime(r.secs)}</td><td class="n">${r.score}</td></tr>`).join('');
   el.innerHTML = list.length ? `<table class="rank"><tr>${t('rk_cols').split('|').map((h, i) => `<th${i > 1 ? ' class="n"' : ''}>${h}</th>`).join('')}</tr>${rows}</table>` : '<p style="font-size:14px;color:var(--muted)">아직 기록이 없어요. 첫 번째 주인공이 되어보세요!</p>';
-  if (el.id === 'rankFull') $('rankSrv').textContent = online ? '🌐 온라인 랭킹 — 모든 플레이어 기록' : '📱 이 기기에 저장된 기록만 표시 중 (온라인 랭킹 서버 미연결)';
+  if (el.id === 'rankFull') $('rankSrv').textContent = online ? `🌐 온라인 랭킹 — 1위부터 전체 ${list.length}명` : '📱 이 기기에 저장된 기록만 표시 중 (온라인 랭킹 서버 미연결)';
 }
 let rankPrev = null;
 async function openRank() {
   rankPrev = state; state = 'rank'; $('rank').classList.remove('hidden');
   $('rankFull').innerHTML = '<p>불러오는 중…</p>';
-  renderRanking($('rankFull'), await fetchRanking());
+  renderRanking($('rankFull'), await fetchRanking(1000));
 }
+$('btnRankAll').onclick = () => openRank();
 $('btnRankClose').onclick = () => { $('rank').classList.add('hidden'); state = rankPrev || 'maps'; };
 
 // ================= 접속 / 맵 선택 화면 =================
 async function showLogin() {
   hideAll(); state = 'login'; $('topbar').classList.add('hidden');
   $('login').classList.remove('hidden'); $('pid').value = playerId;
-  renderRanking($('rankMini'), await fetchRanking(), 5);
+  renderRanking($('rankMini'), await fetchRanking(100));
 }
 let pausedGame = false, seenHowto = false, howtoCb = null;
 function showHowto(cb) { state = 'howto'; howtoCb = cb; $('howto').classList.remove('hidden'); keys = {}; }
@@ -2658,11 +2820,11 @@ function showMaps(paused = false) {
   pausedGame = paused && !!level;
   hideAll(); state = 'maps'; $('topbar').classList.add('hidden');
   const prog = getProg();
-  $('mapsWho').textContent = `🕵 플레이어: ${playerId} · 누적 ${runScore}점`;
+  $('mapsWho').textContent = `🕵 플레이어: ${playerId} · 누적 ${runScore}점` + (runActive ? ` · 이번 작전 ${runCleared.size}/6` : '');
   $('mapGrid').innerHTML = LEVELS.map((L, i) => {
-    const locked = L.hidden ? prog.best[5] === undefined : i > prog.unlocked, cleared = !L.hidden && prog.best[i] !== undefined;
+    const locked = L.hidden ? prog.best[5] === undefined : i === 5 ? ![0, 1, 2, 3, 4].every(k => prog.best[k] !== undefined || runCleared.has(k)) : false, cleared = !L.hidden && prog.best[i] !== undefined, inRun = runActive && runCleared.has(i);
     const cur = pausedGame && i === levelIdx;
-    const st = cur ? t('st_cur') : locked ? (L.hidden ? t('st_lockH') : t('st_lock')) : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
+    const st = cur ? t('st_cur') : locked ? (L.hidden ? t('st_lockH') : t('st_lockB')) : inRun ? t('st_run') : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
     return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${L.hidden && locked ? "❓" : L.icon}</span><span class="no">${L.hidden ? "HIDDEN" : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(5 - L.diff.stars)}</span></button>`;
   }).join('');
   renderBadges(); renderShop();
@@ -2736,7 +2898,7 @@ async function login() {
   if (res === 'bad') return loginErr(t('err_bad'));
   if (res === 'locked') return loginErr('비밀번호를 여러 번 틀려서 5분간 잠겼어요. 잠시 후 다시 시도하세요.');
   loginErr('');
-  playerId = v; setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; store.set('k9id', v); runScore = 0; runNext = 0;
+  playerId = v; setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; store.set('k9id', v); runScore = 0; runActive = false;
   if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
   if (res === 'offline') toast('📡 랭킹 서버에 연결하지 못해 이 기기에만 기록돼요');
   showMaps();
@@ -2746,11 +2908,11 @@ for (const id of ['pid', 'ppw', 'dname']) $(id).addEventListener('keydown', e =>
 $('btnLogout').onclick = showLogin;
 $('btnRankOpen').onclick = openRank;
 $('dok').onclick = closeDialog;
-$('btnNext').onclick = () => startLevel(levelIdx + 1);
+$('btnNext').onclick = () => { const n = [0, 1, 2, 3, 4].find(k => !runCleared.has(k)); startLevel(n ?? 5); };
 $('btnToMaps').onclick = showMaps;
 $('btnHidden').onclick = () => startLevel(LEVELS.length - 1);
-$('btnWinMaps').onclick = () => { runNext = 0; showMaps(); };
-$('tbHome').onclick = () => { if (state === 'play' || state === 'dialog') { mpLeave(); runNext = 0; showMaps(false); toast('🏠 홈으로 돌아왔어요. 수고했어요!'); } };
+$('btnWinMaps').onclick = () => { runActive = false; showMaps(); };
+$('tbHome').onclick = () => { if (state === 'play' || state === 'dialog') { mpLeave(); runActive = false; showMaps(false); toast('🏠 홈으로 돌아왔어요. 수고했어요!'); } };
 $('tbMaps').onclick = () => { if (state === 'play' || state === 'dialog') showMaps(true); };
 $('tbMusic').onclick = () => { ac(); setMusic(!musicOn); };
 $('tbRank').onclick = () => { if (state === 'play') openRank(); };
@@ -3107,7 +3269,7 @@ function updateCamera(dt) {
 const mm = $('mm'), mctx = mm.getContext('2d');
 function drawMinimap() {
   if (!level) return;
-  const g = mctx, W = mm.width, H = mm.height, S = Math.min(W / (level.w + (level.extraEast || 0) + 2), H / (level.d + 2));
+  const g = mctx, W = mm.width, H = mm.height, S = Math.min(W / (level.w + (level.extraEast || 0) + 2), H / (level.d + 2 * (level.extraZ || 0) + 2));
   const ox = W / 2 - (level.extraEast || 0) / 2 * S, oz = H / 2, P = (x, z) => [ox + x * S, oz + z * S];
   g.fillStyle = '#1c2a36'; g.fillRect(0, 0, W, H);
   g.fillStyle = level.outdoor ? '#7f8a8f' : '#cfcac0'; const [a0, b0] = P(-level.w / 2, -level.d / 2); g.fillRect(a0, b0, (level.w + (level.extraEast || 0)) * S, level.d * S);
@@ -3218,7 +3380,7 @@ window.__cover = () => {
   document.body.appendChild(d);
 };
 if (location.hash === '#cover') setTimeout(() => window.__cover(), 300);
-window.__game = { dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
+window.__game = { setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
 </script>
 </body>
 </html>
