@@ -140,6 +140,61 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  #mapGrid{grid-template-columns:repeat(2,1fr)}
  .card{padding:18px}.card h1{font-size:26px}
 }
+@media (pointer:coarse) and (orientation:landscape) and (max-height:540px){
+ #toast{font-size:13px;padding:5px 12px;top:calc(46px + var(--st));max-width:52vw}
+ #mission,#mpCount{font-size:12px;padding:3px 10px;top:calc(78px + var(--st));max-width:50vw}
+ #combo{font-size:17px;top:calc(104px + var(--st))}
+ #quest,#quest.mini{top:calc(6px + var(--st));left:calc(8px + var(--sl));width:auto;max-width:28vw;padding:5px 9px}#qtitle{font-size:13px}#qsum{font-size:11px}.goal{font-size:11px;padding:1px 0}#qdesc{display:none}
+ #mmwrap{top:calc(6px + var(--st));right:calc(8px + var(--sr));padding:3px}#mm{width:112px;height:82px}#info{font-size:10px}#mmToggle{font-size:11px;padding:3px 8px}
+ #topbar{flex-direction:row;top:calc(6px + var(--st));right:auto;left:50%;transform:translateX(-50%);gap:4px}
+ #topbar button{width:32px;height:28px;font-size:14px}
+ body.touch #bars{bottom:calc(4px + var(--sb));padding:3px 8px;gap:5px}body.touch #bars .lbl{font-size:9px}body.touch #bars .bar{width:48px;height:8px}
+ body.touch #joy{left:calc(14px + var(--sl));bottom:calc(14px + var(--sb));width:112px;height:112px}#knob{left:33px;top:33px;width:46px;height:46px}
+ .tbtn{font-size:13px}
+ #bBark{right:calc(14px + var(--sr));bottom:calc(16px + var(--sb));width:68px;height:68px;font-size:16px}
+ #bJump{right:calc(92px + var(--sr));bottom:calc(12px + var(--sb));width:56px;height:56px}
+ #bSniff{right:calc(152px + var(--sr));bottom:calc(36px + var(--sb));width:52px;height:52px}
+ #bRun{right:calc(22px + var(--sr));bottom:calc(96px + var(--sb));width:54px;height:54px}
+ body.touch #bBone{right:calc(88px + var(--sr));bottom:calc(80px + var(--sb));width:46px;height:46px;font-size:20px}
+ .overlay .card{max-height:92vh;overflow:auto;padding:12px 16px}
+ #dlg .card{max-width:min(560px,82vw)}#dlg .txt{font-size:13px;line-height:1.5}
+}
+/* 휴대폰: 카드 화면(로그인·맵 선택·상점) 촘촘하게 */
+@media (pointer:coarse){
+ .overlay{padding:6px}
+ .card{padding:12px 14px;border-width:3px;border-radius:14px;max-width:96vw}
+ .card h1{font-size:21px}.card h2{font-size:16px;margin:0 0 4px}.card p{font-size:12.5px;line-height:1.45;margin:4px 0}
+ .sub{font-size:11px}.notice{font-size:11px;padding:4px 8px;margin-top:4px}
+ button.big{font-size:15px;padding:7px 14px;border-width:2px;border-radius:10px;box-shadow:0 3px 0 #b88a10}
+ #pid,#ppw,#dname,#nick,input#nick{font-size:16px;padding:6px 10px;border-radius:9px}
+ .langbtn{font-size:10.5px;padding:2px 5px}.langs{gap:3px;margin-bottom:5px}
+ .row{margin-top:8px;gap:6px}
+ .breed{font-size:11px;padding:4px 2px;border-width:2px}#breeds{gap:5px}
+ .ctl{font-size:12px;padding:8px;margin:6px 0}.ctl kbd{font-size:11px}
+ #mapGrid{gap:6px;margin-top:6px}.mapcard{padding:6px 4px;border-width:2px}.mapcard .ic{font-size:20px}.mapcard .nm{font-size:13px}
+ .shopbtn{font-size:11px;padding:4px 2px;border-width:2px}.badge{font-size:16px;padding:4px 5px;min-width:56px}.badge small{font-size:9.5px}
+ #coverTitle{display:none}
+ body.touch #login #rankMini,body.touch #login h2:has(#topTxt),body.touch #login .notice[style*="13335a"]{display:none}
+ body.touch #badges.fold .badgerow,body.touch #badges.fold p,body.touch #shop.fold .shoprow,body.touch #shop.fold p{display:none}body.touch #badges h2,body.touch #shop h2{cursor:pointer}body.touch #badges.fold h2::after,body.touch #shop.fold h2::after{content:" ▸ 눌러서 보기";font-size:11px;color:var(--muted)}
+ body.touch #logo{max-height:34px!important;margin-bottom:4px!important}
+ body.touch #breedInfo,body.touch #jobInfo{font-size:11px!important;line-height:1.4!important}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:540px){
+ .card{max-width:94vw;width:94vw}
+ #mapGrid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}.mapcard{padding:4px 2px;gap:0}.mapcard .no{display:none}.mapcard .ic{font-size:17px}.mapcard .nm{font-size:11.5px;line-height:1.2}.mapcard .st{font-size:9.5px;line-height:1.2}.mapsep{font-size:11px;margin:4px 0}
+ #maps .ctl.touchonly{display:none}.shoprow{grid-template-columns:repeat(5,1fr)}#breeds{grid-template-columns:repeat(5,1fr)}
+ .badgerow{flex-wrap:nowrap;overflow-x:auto}
+ #toast{max-width:40vw}
+}
+/* 아이폰 Pro Max급 가로(약 956×440): 버튼을 엄지에 맞게 조금 크게 */
+@media (pointer:coarse) and (orientation:landscape) and (min-height:400px) and (max-height:540px){
+ body.touch #joy{width:128px;height:128px;left:calc(18px + var(--sl));bottom:calc(18px + var(--sb))}#knob{left:39px;top:39px;width:50px;height:50px}
+ #bBark{right:calc(16px + var(--sr));bottom:calc(18px + var(--sb));width:76px;height:76px;font-size:18px}
+ #bJump{right:calc(104px + var(--sr));bottom:calc(12px + var(--sb));width:62px;height:62px;font-size:14px}
+ #bSniff{right:calc(176px + var(--sr));bottom:calc(40px + var(--sb));width:58px;height:58px;font-size:14px}
+ #bRun{right:calc(24px + var(--sr));bottom:calc(108px + var(--sb));width:60px;height:60px;font-size:14px}
+ body.touch #bBone{right:calc(100px + var(--sr));bottom:calc(92px + var(--sb));width:52px;height:52px;font-size:22px}
+}
 @media (prefers-reduced-motion:reduce){#toast{transition:none}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
@@ -321,7 +376,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030032059';
+const BUILD = '20261030033228';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -745,7 +800,8 @@ function textSprite(text, { bg = 'rgba(10,25,40,.85)', color = '#fff', h = 0.6, 
   g.fillText(text, cv.width / 2, cv.height / 2 + 2);
   const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, toneMapped: false }));
-  s.renderOrder = 10; s.scale.set(h * cv.width / cv.height, h, 1); return s;
+  const k = isMobile ? (innerWidth > innerHeight ? .6 : .78) : 1;
+  s.renderOrder = 10; s.scale.set(h * k * cv.width / cv.height, h * k, 1); return s;
 }
 function disposeSprite(s) { s.parent && s.parent.remove(s); s.material.map.dispose(); s.material.dispose(); }
 let mmSigns = [];
@@ -4521,6 +4577,7 @@ function dispName() { if (playerNick && !playerNick.includes('@')) return player
   if (pref('quest') === 'open') $('quest').classList.remove('mini'); if (pref('mm') === 'open') $('mmwrap').classList.remove('mini');
   $('quest').addEventListener('click', () => { const m = $('quest').classList.toggle('mini'); save('quest', m ? 'mini' : 'open'); });
   $('mmwrap').addEventListener('click', e => { if (e.target.closest('#info')) return; const m = $('mmwrap').classList.toggle('mini'); save('mm', m ? 'mini' : 'open'); }); }
+if (isMobile) { for (const id of ['badges', 'shop']) { $(id).classList.add('fold'); $(id).addEventListener('click', e => { if (e.target.closest('h2')) $(id).classList.toggle('fold'); }); } }
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
