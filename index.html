@@ -241,7 +241,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
   · <b>이용 목적</b>: 로그인과 기록 저장, 랭킹 표시. 랭킹에는 <b>닉네임과 탐지견 이름만</b> 보이고 이메일은 공개되지 않아요. 광고·홍보 메일을 보내지 않아요.<br>
   · <b>보관 기간</b>: 직접 삭제할 때까지. 아래 <b>🗑 내 정보 삭제</b>를 누르면 바로 모두 지워져요.<br>
   · <b>보관 장소</b>: 게임 랭킹 서버(Supabase, 서울 리전). '아이디 기억하기'를 켜면 이 기기 브라우저에도 이메일이 저장돼요.<br>
-  · <b>동의하지 않을 권리</b>: 동의하지 않아도 <b>👀 체험하기</b>로 게임을 할 수 있어요(랭킹 미반영, 이 기기에만 저장).<br>
+  · <b>동의하지 않을 권리</b>: 동의하지 않을 수 있어요. 다만 동의하지 않으면 계정을 만들 수 없어 게임에 접속할 수 없어요.<br>
   · <b>만 14세 미만</b>은 법에 따라 <b>보호자(법정대리인)의 동의</b>가 필요해요. 보호자와 함께 읽고 동의해 주세요.
   </div></details>
   <div id="pvHint" style="font-size:12px;font-weight:700;color:#b5402a;margin-top:6px">📖 [자세히 보기]를 눌러 안내를 끝까지 읽으면 동의에 체크할 수 있어요</div>
@@ -264,7 +264,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  </div>
  <div id="pidErr"></div>
  <div class="agreebox"><label><input type="checkbox" id="agree"> <span id="agreeTxt">✅ 게임 이용 안내에 동의해요 · 친구에게 친절하게, 비밀번호는 비밀! (이 게임은 개인정보를 수집하지 않아요)</span></label><div id="ageTxt">🎮 이용 등급: 전체 이용가 (권장 만 7세 이상 · 자체 기준)</div></div>
- <div class="row"><button class="big" id="btnLogin">접속하기</button><button class="big alt" id="btnGuest">👀 체험하기</button></div>
+ <div class="row"><button class="big" id="btnLogin">접속하기</button><button class="big alt hidden" id="btnGuest">👀 체험하기</button></div>
  <div style="text-align:right;margin-top:4px"><button class="alt" id="btnDelMe" style="font-size:12px;padding:5px 10px;border-radius:9px">🗑 내 정보 삭제</button></div>
  <h2 style="margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span id="topTxt">🏆 TOP 100 랭킹</span> <button class="alt" id="btnRankAll" style="font-size:13px;padding:6px 12px;border-radius:10px">📋 전체 랭킹 보기</button></h2>
  <div class="rankwrap" id="rankMini"></div>
@@ -300,7 +300,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  <div class="row" id="teamRow" style="flex-wrap:wrap;gap:6px;align-items:center"><b style="color:var(--navy)">👥 팀 방</b><span style="font-size:13px;color:var(--muted)">(최대 5명)</span><input type="hidden" id="teamSize" value="5"><button class="alt" id="btnTeamNew" style="font-size:14px;padding:8px 12px;border-radius:10px">방 만들기</button><input id="teamCode" dir="ltr" placeholder="방 번호 (예: 1234)" maxlength="6" style="width:150px;font-size:15px;padding:7px;border-radius:8px;border:2px solid #d6cdb8"><button class="alt" id="btnTeamJoin" style="font-size:14px;padding:8px 12px;border-radius:10px">접속</button><button class="alt hidden" id="btnTeamOut" style="font-size:14px;padding:8px 12px;border-radius:10px">나가기</button></div>
  <div class="sub" id="teamInfo" style="text-align:center;min-height:1em"></div>
  <div id="teamList" style="display:flex;flex-direction:column;gap:6px;margin:6px 0"></div>
- <div class="row"><button class="big alt" id="btnRankOpen">🏆 랭킹 보기</button><button class="big alt" id="btnLogout">아이디 변경</button></div>
+ <div class="row"><button class="big alt" id="btnHomeStart">🏠 홈</button><button class="big alt" id="btnRankOpen">🏆 랭킹 보기</button><button class="big alt" id="btnLogout">아이디 변경</button></div>
 </div></div>
 
 <div id="howto" class="overlay hidden"><div class="card">
@@ -377,7 +377,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030033844';
+const BUILD = '20261030034218';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -647,7 +647,7 @@ const SWIMT = { ko: ['🏊 첨벙! 수영 중', '💦 털털털~', '여기서 �
 for (const [l, [a, b, c]] of Object.entries(SWIMT)) { const D = l === 'ko' ? KO : DICT[l]; if (D) Object.assign(D, { ts_swim: a, ts_shake: b, ts_wait: c }); }
 const NEW_MAPS = { en: [['Gamcheon Culture Village', 'Hanbit Tower, Daejeon'], ['A colorful hillside village of stairs, alleys and fish signposts.', 'The 93 m Expo tower, musical fountain and Expo Bridge.']], zh: [['甘川文化村', '大田韩光塔'], ['山坡上层层叠叠的彩色村庄、小巷和鱼形路标。', '93米世博塔、音乐喷泉和世博桥。']], hi: [['गमछोन सांस्कृतिक गाँव', 'डेजॉन हानबित टावर'], ['पहाड़ी ढलान पर रंगीन सीढ़ीनुमा गाँव, गलियाँ और मछली चिन्ह।', '93 मीटर एक्सपो टावर, संगीत फव्वारा और एक्सपो पुल।']], ar: [['قرية غامتشون الثقافية', 'برج هانبيت في دايجون'], ['قرية ملونة على سفح التل بالسلالم والأزقة ولافتات الأسماك.', 'برج إكسبو بارتفاع 93 م والنافورة الموسيقية وجسر إكسبو.']], vi: [['Làng văn hóa Gamcheon', 'Tháp Hanbit, Daejeon'], ['Làng sườn đồi nhiều màu với bậc thang, ngõ nhỏ và biển chỉ đường hình cá.', 'Tháp Expo 93 m, đài phun nước nhạc và cầu Expo.']], ja: [['甘川文化村', '大田ハンビッタワー'], ['坂道に色とりどりの家が段々に並ぶ村、路地と魚の道しるべ。', '93mのエキスポタワー、音楽噴水、エキスポ橋。']], ru: [['Деревня культуры Камчхон', 'Башня Ханбит, Тэджон'], ['Разноцветная деревня на склоне: лестницы, переулки и указатели-рыбки.', 'Башня Экспо 93 м, музыкальный фонтан и мост Экспо.']] };
 for (const [l, [m2, s2]] of Object.entries(NEW_MAPS)) if (DICT[l]) { DICT[l].m.push(...m2); DICT[l].s.push(...s2); }
-Object.assign(KO, {"err_email":"아이디는 이메일 주소로 입력해 주세요 (예: dkslek123@google.com)","err_consent":"개인정보 수집·이용 안내를 읽고 [필수] 두 곳에 체크해 주세요. 동의하지 않으면 👀 체험하기로 할 수 있어요.","err_nick":"핸들러 닉네임은 한글·영문·숫자 1~10자로 정해주세요","del_need":"삭제하려면 아이디(이메일)와 비밀번호를 먼저 입력하세요","del_fail":"삭제하지 못했어요. 아이디와 비밀번호를 확인해 주세요.","del_done":"🗑 내 정보가 모두 삭제되었어요.","del_confirm":"정말 내 정보를 모두 삭제할까요?\n이메일·비밀번호·닉네임·랭킹 기록이 서버에서 지워지고 되돌릴 수 없어요.","ts_guest":"👀 체험 모드예요 · 랭킹에 올라가지 않고 이 기기에만 저장돼요","tod_day":"☀ {city} {time} · 낮 작전","tod_dusk":"🌇 {city} {time} · 노을 작전","tod_night":"🌙 {city} {time} · 밤 작전","ts_leak_warn":"⏳ 10초 안에 밀수품을 못 찾으면 통관돼 버려요!","dlg_leak":"🚨 경보! {item}이(가) 세관을 몰래 통과해 시중으로 유출됐어요…\n\n감점 −200점\n\n탐지견과 함께 서둘러 수색하세요! 시간이 지날수록 밀수품이 계속 빠져나가요.","ts_shot":"🔫 밀수범의 총에 맞았어요! 옆으로 피하거나 점프하세요","lbl_gate":"추가 관문","lbl_lm":"명소","sep_lm":"🇰🇷 대한민국 명소 순찰 · {n}곳","sep_note":"(자유 플레이 · 온라인 랭킹 미반영)","qz_gate":"🛃 추가 관문","qz_lm":"🇰🇷 명소 순찰","clr_lm_sub":"🇰🇷 명소 순찰 완료","clr_lm_title":"순찰 성공!","clr_lm_note":"명소 맵 점수는 온라인 랭킹과 별도예요","ts_boss_rank":"ℹ 한 번의 작전에서 맵 1~5를 모두 깨고 보스를 잡아야 온라인 랭킹 점수가 올라가요","who_fmt":"🕵 {nick} 핸들러 · 누적 {score}점","run_fmt":" · 이번 작전 {n}/6","hd_word":"핸들러"});
+Object.assign(KO, {"err_email":"아이디는 이메일 주소로 입력해 주세요 (예: dkslek123@google.com)","err_consent":"개인정보 수집·이용 안내를 읽고 [필수] 두 곳에 체크해 주세요. 동의해야 접속할 수 있어요.","err_nick":"핸들러 닉네임은 한글·영문·숫자 1~10자로 정해주세요","del_need":"삭제하려면 아이디(이메일)와 비밀번호를 먼저 입력하세요","del_fail":"삭제하지 못했어요. 아이디와 비밀번호를 확인해 주세요.","del_done":"🗑 내 정보가 모두 삭제되었어요.","del_confirm":"정말 내 정보를 모두 삭제할까요?\n이메일·비밀번호·닉네임·랭킹 기록이 서버에서 지워지고 되돌릴 수 없어요.","ts_guest":"👀 체험 모드예요 · 랭킹에 올라가지 않고 이 기기에만 저장돼요","tod_day":"☀ {city} {time} · 낮 작전","tod_dusk":"🌇 {city} {time} · 노을 작전","tod_night":"🌙 {city} {time} · 밤 작전","ts_leak_warn":"⏳ 10초 안에 밀수품을 못 찾으면 통관돼 버려요!","dlg_leak":"🚨 경보! {item}이(가) 세관을 몰래 통과해 시중으로 유출됐어요…\n\n감점 −200점\n\n탐지견과 함께 서둘러 수색하세요! 시간이 지날수록 밀수품이 계속 빠져나가요.","ts_shot":"🔫 밀수범의 총에 맞았어요! 옆으로 피하거나 점프하세요","lbl_gate":"추가 관문","lbl_lm":"명소","sep_lm":"🇰🇷 대한민국 명소 순찰 · {n}곳","sep_note":"(자유 플레이 · 온라인 랭킹 미반영)","qz_gate":"🛃 추가 관문","qz_lm":"🇰🇷 명소 순찰","clr_lm_sub":"🇰🇷 명소 순찰 완료","clr_lm_title":"순찰 성공!","clr_lm_note":"명소 맵 점수는 온라인 랭킹과 별도예요","ts_boss_rank":"ℹ 한 번의 작전에서 맵 1~5를 모두 깨고 보스를 잡아야 온라인 랭킹 점수가 올라가요","who_fmt":"🕵 {nick} 핸들러 · 누적 {score}점","run_fmt":" · 이번 작전 {n}/6","hd_word":"핸들러"});
 
 for (const [k, v] of Object.entries({"en":["✅ I agree to the game guide · Be kind to friends, keep your password secret! (No personal data is collected)","🎮 Rating: All ages (recommended 7+ · self-rated)","Please tick the agreement box first."],"zh":["✅ 我同意游戏使用说明 · 友善对待朋友，密码要保密！（本游戏不收集个人信息）","🎮 分级：全年龄（建议7岁以上 · 自定）","请先勾选同意。"],"hi":["✅ मैं खेल नियमों से सहमत हूँ · दोस्तों से अच्छा व्यवहार, पासवर्ड गुप्त रखें! (कोई निजी जानकारी नहीं ली जाती)","🎮 रेटिंग: सभी उम्र (7+ सुझाया · स्व-निर्धारित)","पहले सहमति बॉक्स पर टिक करें।"],"ar":["✅ أوافق على دليل اللعبة · كن لطيفًا مع أصدقائك واحفظ كلمة المرور سرًا! (لا نجمع أي بيانات شخصية)","🎮 التصنيف: لجميع الأعمار (يُنصح من 7 سنوات · تصنيف ذاتي)","يرجى تحديد مربع الموافقة أولًا."],"vi":["✅ Tôi đồng ý hướng dẫn trò chơi · Thân thiện với bạn bè, giữ bí mật mật khẩu! (Không thu thập thông tin cá nhân)","🎮 Phân loại: Mọi lứa tuổi (khuyến nghị từ 7 tuổi · tự đánh giá)","Hãy đánh dấu ô đồng ý trước."],"ja":["✅ ゲームの案内に同意します · 友達にやさしく、パスワードはひみつ！（個人情報は集めません）","🎮 対象年齢：全年齢（推奨7歳以上 · 自主基準）","まず同意にチェックしてね。"],"ru":["✅ Я согласен с правилами игры · Будь добр к друзьям, храни пароль в секрете! (Личные данные не собираются)","🎮 Возраст: для всех (рекомендуется 7+ · самооценка)","Сначала отметь согласие."]})) Object.assign(DICT[k], { agree: v[0], age: v[1], err_agree: v[2] });
 KO.err_agree = '먼저 이용 안내 동의에 체크해 주세요.';
@@ -3886,34 +3886,34 @@ const CRIME = {
   '공항 화물터미널': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수범', 'Smuggler']],
   '국제우편·특송센터': [['🌿', '합성 대마', 'Synthetic cannabis'], ['🔪', '불법 도검', 'Illegal blade'], ['📦', '국제 택배 밀수범', 'Parcel smuggler']],
   '국제 여객선': [['🚬', '밀수 담배', 'Smuggled cigarettes'], ['💊', '마약', 'Drugs'], ['🧳', '보따리 밀수상', 'Suitcase trader']],
-  '부두 컨테이너 야적장': [['🧨', '폭발물', 'Explosives'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
+  '부두 컨테이너 야적장': [['🎇', '불법 화약', 'Illegal gunpowder'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
   '보세창고 (보스전)': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
   '우체국': [['💵', '보이스피싱 현금', 'Phishing cash'], ['🌿', '마약 소포', 'Drug parcel'], ['📞', '보이스피싱 수거책', 'Phishing courier']],
-  '교도소': [['📱', '반입 금지 휴대폰', 'Contraband phone'], ['💊', '마약 편지', 'Drug-soaked letter'], ['⛓', '반입 공범', 'Accomplice']],
-  '서울역': [['👛', '훔친 지갑', 'Stolen wallet'], ['🔪', '흉기', 'Weapon'], ['🖐', '소매치기', 'Pickpocket']],
-  'KTX': [['📷', '몰래카메라', 'Hidden camera'], ['👛', '훔친 지갑', 'Stolen wallet'], ['📸', '몰카범', 'Spy-cam offender']],
+  '교도소': [['📱', '반입 금지 휴대폰', 'Contraband phone'], ['💊', '반입 금지 약물', 'Banned medicine'], ['⛓', '반입 공범', 'Accomplice']],
+  '서울역': [['👛', '훔친 지갑', 'Stolen wallet'], ['⚠', '위험 물품', 'Dangerous item'], ['🖐', '소매치기', 'Pickpocket']],
+  'KTX': [['💊', '숨긴 마약', 'Hidden drugs'], ['👛', '훔친 지갑', 'Stolen wallet'], ['🖐', '소매치기', 'Pickpocket']],
   '버스터미널': [['📱', '대포폰', 'Burner phone'], ['👛', '훔친 지갑', 'Stolen wallet'], ['🖐', '소매치기', 'Pickpocket']],
-  '비행기': [['💊', '체내 은닉 마약', 'Swallowed drugs'], ['🔋', '불법 리튬배터리', 'Banned battery'], ['🕶', '마약 운반책', 'Drug courier']],
+  '비행기': [['💊', '숨긴 마약', 'Hidden drugs'], ['🔋', '반입 금지 배터리', 'Banned battery'], ['🕶', '마약 운반책', 'Drug courier']],
   '명동': [['👜', '위조 명품', 'Fake luxury bag'], ['👛', '훔친 지갑', 'Stolen wallet'], ['🖐', '소매치기', 'Pickpocket']],
-  '경복궁': [['🏺', '도난 문화재', 'Stolen relic'], ['📷', '몰래카메라', 'Hidden camera'], ['🗝', '문화재 절도범', 'Relic thief']],
-  '홍대': [['📷', '몰래카메라', 'Hidden camera'], ['💊', '클럽 마약', 'Club drugs'], ['📸', '몰카범', 'Spy-cam offender']],
+  '경복궁': [['🏺', '도난 문화재', 'Stolen relic'], ['💵', '위조지폐', 'Fake money'], ['🗝', '문화재 절도범', 'Relic thief']],
+  '홍대': [['💊', '마약', 'Drugs'], ['🏷', '위조 상품', 'Fake goods'], ['🕶', '마약 운반책', 'Drug courier']],
   '롯데월드타워': [['🛸', '불법 드론', 'Illegal drone'], ['👛', '훔친 지갑', 'Stolen wallet'], ['🎮', '불법 드론 조종자', 'Drone pilot']],
   '동대문': [['👜', '위조 명품', 'Fake brand goods'], ['🏷', '위조 상표', 'Fake labels'], ['🧵', '짝퉁 판매상', 'Counterfeiter']],
-  '광안리 해변': [['📷', '몰래카메라', 'Hidden camera'], ['🎆', '불법 폭죽', 'Illegal fireworks'], ['📸', '몰카범', 'Spy-cam offender']],
-  '해운대': [['📷', '몰래카메라', 'Hidden camera'], ['👛', '훔친 지갑', 'Stolen wallet'], ['📸', '몰카범', 'Spy-cam offender']],
-  '숭례문': [['🛢', '인화물질', 'Flammables'], ['🔥', '라이터·시너', 'Lighter & thinner'], ['🔥', '방화 용의자', 'Arson suspect']],
+  '광안리 해변': [['🎆', '불법 폭죽', 'Illegal fireworks'], ['👛', '훔친 지갑', 'Stolen wallet'], ['🖐', '해변 좀도둑', 'Beach thief']],
+  '해운대': [['🐢', '보호종 밀거래품', 'Protected species'], ['👛', '훔친 지갑', 'Stolen wallet'], ['🖐', '해변 좀도둑', 'Beach thief']],
+  '숭례문': [['🛢', '인화물질', 'Flammables'], ['🔥', '라이터·시너', 'Lighter & thinner'], ['🕶', '인화물 반입범', 'Flammables smuggler']],
   '수원화성': [['🎨', '낙서 스프레이', 'Graffiti spray'], ['🏺', '도난 문화재', 'Stolen relic'], ['🖌', '문화재 훼손범', 'Vandal']],
   '경주': [['🏺', '도굴 유물', 'Looted relic'], ['⛏', '도굴 도구', 'Looting tools'], ['⛏', '도굴꾼', 'Tomb raider']],
-  'N서울타워': [['👛', '훔친 지갑', 'Stolen wallet'], ['📷', '몰래카메라', 'Hidden camera'], ['🖐', '소매치기', 'Pickpocket']],
+  'N서울타워': [['👛', '훔친 지갑', 'Stolen wallet'], ['🛸', '불법 드론', 'Illegal drone'], ['🖐', '소매치기', 'Pickpocket']],
   '제주 한라산': [['🪤', '불법 올무', 'Illegal snare'], ['🔥', '산불 인화물', 'Fire starter'], ['🪤', '밀렵꾼', 'Poacher']],
   '포항 스페이스워크': [['🎆', '불법 폭죽', 'Illegal fireworks'], ['💊', '마약', 'Drugs'], ['🕶', '밀수범', 'Smuggler']],
   '전주 한옥마을': [['👛', '훔친 지갑', 'Stolen wallet'], ['💵', '위조지폐', 'Fake money'], ['🖐', '소매치기', 'Pickpocket']],
-  '광화문광장': [['🔪', '흉기', 'Weapon'], ['🛢', '인화물질', 'Flammables'], ['⚠', '흉기 소지범', 'Armed suspect']],
-  '청와대': [['🛸', '불법 드론', 'Illegal drone'], ['🔪', '흉기', 'Weapon'], ['🎮', '불법 드론 조종자', 'Drone pilot']],
-  '국회의사당': [['🧨', '폭발물 의심 물체', 'Suspected bomb'], ['🔪', '흉기', 'Weapon'], ['⚠', '테러 용의자', 'Terror suspect']],
-  '감천문화마을': [['💍', '훔친 귀중품', 'Stolen valuables'], ['💊', '던지기 마약', 'Dead-drop drugs'], ['🏚', '빈집털이범', 'Burglar']],
+  '광화문광장': [['⚠', '위험 물품', 'Dangerous item'], ['🛢', '인화물질', 'Flammables'], ['🕶', '위험물 반입범', 'Hazard smuggler']],
+  '청와대': [['🛸', '불법 드론', 'Illegal drone'], ['⚠', '위험 물품', 'Dangerous item'], ['🎮', '불법 드론 조종자', 'Drone pilot']],
+  '국회의사당': [['🎒', '수상한 가방', 'Suspicious bag'], ['⚠', '위험 물품', 'Dangerous item'], ['🕶', '수상한 사람', 'Suspicious person']],
+  '감천문화마을': [['💍', '훔친 귀중품', 'Stolen valuables'], ['💊', '숨겨진 마약', 'Hidden drugs'], ['🏚', '빈집털이범', 'Burglar']],
   '대전 한빛탑': [['👛', '훔친 지갑', 'Stolen wallet'], ['🛸', '불법 드론', 'Illegal drone'], ['🖐', '소매치기', 'Pickpocket']],
-  '대한민국 통합 도시': [['💊', '마약', 'Drugs'], ['🧨', '폭발물', 'Explosives'], ['🕶', '국제 밀수 조직원', 'Syndicate member']],
+  '대한민국 통합 도시': [['💊', '마약', 'Drugs'], ['🎒', '수상한 가방', 'Suspicious bag'], ['🕶', '국제 밀수 조직원', 'Syndicate member']],
 };
 const CRIME0 = [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수범', 'Smuggler']];
 function applyCrime(def) {
@@ -4589,6 +4589,12 @@ if (isMobile) { for (const id of ['badges', 'shop']) { $(id).classList.add('fold
   body.addEventListener('scroll', () => { if (atEnd()) unlock(); });
   for (const b of boxes) b.closest('label').addEventListener('click', e => { if (b.disabled) { e.preventDefault(); det.open = true; body.scrollIntoView({ block: 'nearest' }); toast('📖 개인정보 안내를 끝까지 읽어 주세요'); } });
   setTimeout(lock, 0); }
+// 욕설·비속어·혐오 표현 거르기 (띄어쓰기·숫자·기호 섞어도 잡음)
+const BAD_WORDS = ['시발', '씨발', '씨빨', '시바', '씨바', 'ㅅㅂ', 'ㅆㅂ', '병신', 'ㅂㅅ', '븅신', '좆', '존나', '졸라', 'ㅈㄴ', '개새', '새끼', '쌔끼', 'ㅅㄲ', '미친', '미쳤', 'ㅁㅊ', '지랄', 'ㅈㄹ', '닥쳐', '꺼져', '엿먹', '니애미', '느금', '애미', '애비', '창녀', '걸레', '섹스', '야동', '자지', '보지', '찐따', '장애인', '틀딱', '한남', '김치녀', '죽어', '자살', 'fuck', 'shit', 'bitch', 'sex', 'porn', 'dick', 'pussy', 'nigger', 'nigga', 'asshole', 'bastard', 'cunt', 'kill'];
+const badWord = v => { const n = String(v || '').toLowerCase().replace(/[\s0-9_.\-~!@#$%^&*()]+/g, ''); return BAD_WORDS.some(w => n.includes(w)); };
+// 필수 동의 전에는 접속 버튼을 흐리게 (눌러도 이유를 알려 줌)
+{ const upd = () => { const ok = $('agree').checked, okAcc = ok && $('pcons').checked && $('age14').checked; $('btnLogin').style.opacity = okAcc ? '' : '.45'; $('btnGuest').style.opacity = ok ? '' : '.45'; $('btnLogin').title = okAcc ? '' : '필수 동의 3곳에 체크해야 접속할 수 있어요'; };
+  for (const id of ['agree', 'pcons', 'age14']) $(id).addEventListener('change', upd); setTimeout(upd, 50); setInterval(upd, 1500); }
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
@@ -4599,6 +4605,7 @@ async function login() {
   if (!$('agree').checked) return loginErr(t('err_agree'));
   const dn = $('dname').value.trim(), nk = $('nick').value.trim() || v;
   if (!/^[가-힣A-Za-z0-9 ]{1,8}$/.test(dn)) { showCharBox(true); return loginErr(t('err_dog')); }
+  if (badWord(dn) || badWord(nk)) { showCharBox(true); return loginErr('🙅 이름에 쓰면 안 되는 말이 있어요. 친구들이 보기 좋은 이름으로 바꿔 주세요.'); }
   if (!/^[가-힣A-Za-z0-9_ ]{1,10}$/.test(nk)) { showCharBox(true); return loginErr(t('err_nick')); }
   ac(); actx.resume?.(); setMusic(musicOn);
   $('btnLogin').disabled = true; loginErr('확인 중…');
@@ -4629,6 +4636,7 @@ $('btnDelMe').onclick = async () => {
   $('pid').value = ''; $('ppw').value = ''; loginErr(t('del_done')); renderRanking($('rankMini'), await fetchRanking(100));
 };
 for (const id of ['pid', 'ppw', 'dname', 'nick']) $(id).addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+$('btnHomeStart').onclick = async () => { pausedGame = false; await showLogin(); if (playerPw) $('ppw').value = playerPw; toast('🏠 처음 화면이에요. [접속하기]를 누르면 바로 이어서 해요'); };
 $('btnLogout').onclick = showLogin;
 $('btnRankOpen').onclick = openRank;
 $('dok').onclick = closeDialog;
