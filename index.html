@@ -86,9 +86,9 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 #jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
 #skins{display:flex;gap:8px;margin-top:8px;align-items:center}
 .skin{width:34px;height:34px;border-radius:50%;border:3px solid #d6cdb8;cursor:pointer}.skin.on{border-color:var(--navy);transform:scale(1.12)}
-.langs{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:10px}
+.langs{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:10px;direction:ltr}
 .langbtn{border:2px solid #d6cdb8;border-radius:8px;background:#fff;padding:3px 7px;display:flex;gap:5px;align-items:center;font-size:12px;cursor:pointer;color:var(--ink);font-family:inherit}
-.langbtn.on{border-color:var(--navy);background:#eaf2fb;font-weight:700}.langbtn svg{width:22px;height:15px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.langbtn.on{border-color:var(--navy);background:#eaf2fb;box-shadow:inset 0 0 0 1px var(--navy)}.langbtn svg{width:22px;height:15px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
 .agreebox{margin-top:12px;background:#eef6ea;border-radius:10px;padding:10px;font-size:13.5px;line-height:1.5}.agreebox input{width:20px;height:20px;vertical-align:middle}#ageTxt{margin-top:6px;font-weight:700;color:#2e7d32}
 #pid,#ppw,#dname,#nick,input#nick{font-size:20px;padding:10px 14px;border-radius:12px;border:2px solid #c9bfa8;width:100%;box-sizing:border-box;font-family:inherit;background:#fff;color:var(--ink)}
 #pidErr{color:#c0392b;font-size:13px;min-height:18px;margin-top:4px}
@@ -306,7 +306,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030014126';
+const BUILD = '20261030015929';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -570,6 +570,10 @@ for (const [l, v] of Object.entries(RIDEW)) { const D = l === 'ko' ? KO : DICT[l
 const LOCKT = {"ko":["🔒 관문 9곳을 모두 깨면 열려요","🔒 보스전을 클리어하면 열려요",null,null],"en":["🔒 Clear all 9 gates first","🔒 Clear the boss fight to open","Clear maps 1–5 and extra gates 1–4 — 9 places — in any order! Clearing all 9 opens the 👑 boss fight (map 6), and clearing the boss fight opens the 🌅 hidden map. Your score adds up during one operation.","🎉 You caught the smuggling boss — great work!\nToday the Sunset Runway, the dog park and the Fairy Land theme park are open just for you.\n\n🌅 No smugglers and no time limit here.\nRelax, take a walk with your detector dog, ride the rides and enjoy your rest.\nWait 1 second at a ride's boarding gate to ride together.\n\nYou are the best, {dog}! 🐕"],"zh":["🔒 先通关全部9个关口","🔒 通关头目战后开放","地图1–5和追加关口1–4，共9处，可按任意顺序通关！全部通关后开启👑头目战（地图6），通关头目战后开启🌅隐藏地图。一次行动中的分数会累计。","🎉 抓住走私头目，辛苦了！\n今天特别开放夕阳跑道、狗狗乐园和童话乐园。\n\n🌅 这里没有走私犯，也没有时间限制。\n和缉毒犬一起轻松散步、坐游乐设施，好好休息吧。\n在游乐设施的登乘口等1秒就能一起乘坐。\n\n{dog}，你是最棒的！🐕"],"hi":["🔒 पहले सभी 9 द्वार पूरे करें","🔒 बॉस लड़ाई जीतने पर खुलेगा","नक्शे 1–5 और अतिरिक्त द्वार 1–4, कुल 9 जगहें किसी भी क्रम में पूरी करें! सभी 9 पूरे होने पर 👑 बॉस लड़ाई (नक्शा 6) खुलती है, और बॉस लड़ाई जीतने पर 🌅 छिपा नक्शा। एक अभियान के अंक जुड़ते हैं।","🎉 तस्करी गिरोह का बॉस पकड़ लिया — शाबाश!\nआज सूर्यास्त रनवे, कुत्तों का पार्क और परी-कथा थीम पार्क सिर्फ़ आपके लिए खुले हैं।\n\n🌅 यहाँ न तस्कर हैं, न समय सीमा।\nअपने खोजी कुत्ते के साथ आराम से घूमें, झूलों का मज़ा लें और विश्राम करें।\nझूले के गेट पर 1 सेकंड रुकें तो साथ में सवारी कर सकते हैं।\n\n{dog}, तुम सबसे अच्छे हो! 🐕"],"ar":["🔒 أنهِ البوابات التسع أولًا","🔒 تُفتح بعد الفوز في معركة الزعيم","أنهِ الخرائط 1–5 والبوابات الإضافية 1–4، أي 9 أماكن، بأي ترتيب! إنهاؤها كلها يفتح 👑 معركة الزعيم (الخريطة 6)، والفوز بها يفتح 🌅 الخريطة السرية. تُجمع النقاط خلال العملية الواحدة.","🎉 قبضت على زعيم التهريب — أحسنت!\nاليوم فُتح مدرج الغروب وحديقة الكلاب ومدينة ألعاب الحكايات لك خصيصًا.\n\n🌅 لا مهرّبين هنا ولا وقت محدد.\nتنزّه براحة مع كلبك، واركب الألعاب، واستمتع بالراحة.\nانتظر ثانية واحدة عند بوابة الصعود لتركب معًا.\n\nأنت الأفضل يا {dog}! 🐕"],"vi":["🔒 Qua cả 9 cửa khẩu trước","🔒 Mở khi thắng trận trùm","Hãy qua bản đồ 1–5 và cửa khẩu thêm 1–4, tổng 9 nơi, theo thứ tự bất kỳ! Qua cả 9 sẽ mở 👑 trận trùm (bản đồ 6), thắng trận trùm sẽ mở 🌅 bản đồ ẩn. Điểm được cộng dồn trong một chiến dịch.","🎉 Bắt được trùm buôn lậu — giỏi lắm!\nHôm nay Đường băng hoàng hôn, công viên cho chó và công viên cổ tích mở riêng cho bạn.\n\n🌅 Ở đây không có kẻ buôn lậu, không giới hạn thời gian.\nHãy thong thả dạo bước cùng chú chó, chơi trò chơi và nghỉ ngơi thật thoải mái.\nĐứng chờ 1 giây ở cửa lên để cùng chơi.\n\n{dog}, bạn là số một! 🐕"],"ja":["🔒 9つの関門をすべてクリア","🔒 ボス戦をクリアすると開く","マップ1〜5と追加の関門1〜4、合わせて9か所を好きな順番でクリアしよう！9か所すべてクリアすると👑ボス戦（マップ6）が、ボス戦をクリアすると🌅隠しマップが開きます。1回の作戦の間スコアが積み重なります。","🎉 密輸組織のボスを逮捕、本当にお疲れさま！\n今日は特別に夕焼けの滑走路、ドッグパーク、おとぎの国の遊園地を開放したよ。\n\n🌅 ここには密輸犯も時間制限もありません。\n探知犬とのんびり散歩して、乗り物にも乗って、ゆっくり休んでね。\n乗り物の乗り場で1秒待つと一緒に乗れます。\n\n{dog}、君は最高だ！🐕"],"ru":["🔒 Сначала пройдите все 9 постов","🔒 Откроется после боя с боссом","Пройдите карты 1–5 и доп. посты 1–4 — всего 9 мест — в любом порядке! Пройдя все 9, вы откроете 👑 бой с боссом (карта 6), а победив босса — 🌅 секретную карту. Очки суммируются за одну операцию.","🎉 Босс контрабандистов пойман — отличная работа!\nСегодня только для вас открыты Закатная полоса, парк для собак и сказочный парк аттракционов.\n\n🌅 Здесь нет контрабандистов и нет ограничения по времени.\nСпокойно гуляйте со своей собакой, катайтесь на аттракционах и отдыхайте.\nПодождите 1 секунду у посадки, чтобы прокатиться вместе.\n\n{dog}, ты лучший! 🐕"]};
 for (const [l, [b, h, p, ih]] of Object.entries(LOCKT)) { const D = l === 'ko' ? KO : DICT[l]; if (!D) continue; D.st_lockB = b; D.st_lockH = h; if (p) D.mp_p = p; if (ih) D.intro_hidden = ih; }
 const AMMOT = {"ko":"🔫 총알을 다 썼다!","en":"🔫 Out of bullets!","zh":"🔫 子弹打光了！","hi":"🔫 गोलियाँ खत्म!","ar":"🔫 نفدت الرصاصات!","vi":"🔫 Hết đạn rồi!","ja":"🔫 弾切れだ！","ru":"🔫 Патроны кончились!"}; for (const [l, v] of Object.entries(AMMOT)) { const D = l === "ko" ? KO : DICT[l]; if (D) D.ts_noammo = v; }
+const MPT = { ko: ['👥 같은 맵 {n}명 접속 중 (최대 5명)', '👥 {n} 핸들러가 같은 맵에 들어왔어요!', '👥 이 맵은 5명이 가득 찼어요. 지금은 혼자 플레이해요'], en: ['👥 {n} on this map (max 5)', '👥 Handler {n} joined this map!', '👥 This map is full (5 players). Playing solo for now'], zh: ['👥 本地图 {n} 人在线（最多5人）', '👥 训导员 {n} 进入了本地图！', '👥 本地图已满5人，现在单人游玩'], hi: ['👥 इस नक्शे पर {n} लोग (अधिकतम 5)', '👥 हैंडलर {n} इस नक्शे में आए!', '👥 नक्शा भरा है (5 खिलाड़ी)। अभी अकेले खेलें'], ar: ['👥 {n} على هذه الخريطة (الحد 5)', '👥 انضم المدرّب {n} إلى الخريطة!', '👥 الخريطة ممتلئة (5 لاعبين). ستلعب منفردًا الآن'], vi: ['👥 {n} người trên bản đồ (tối đa 5)', '👥 Người huấn luyện {n} đã vào bản đồ!', '👥 Bản đồ đã đủ 5 người. Bạn chơi một mình nhé'], ja: ['👥 このマップに{n}人（最大5人）', '👥 ハンドラー{n}さんが入ってきた！', '👥 このマップは5人で満員です。今はひとりでプレイ'], ru: ['👥 На карте {n} чел. (макс. 5)', '👥 Кинолог {n} зашёл на карту!', '👥 Карта заполнена (5 игроков). Пока играете один'] };
+for (const [l, [a, b, c]] of Object.entries(MPT)) { const D = l === 'ko' ? KO : DICT[l]; if (D) Object.assign(D, { mp_count: a, mp_join: b, mp_full: c }); }
+const SWIMT = { ko: ['🏊 첨벙! 수영 중', '💦 털털털~', '여기서 기다릴게!'], en: ['🏊 Splash! Swimming', '💦 Shake shake~', 'I\'ll wait here!'], zh: ['🏊 扑通！游泳中', '💦 甩甩水~', '我在这里等你！'], hi: ['🏊 छपाक! तैराकी', '💦 झटक झटक~', 'मैं यहीं इंतज़ार करूँगा!'], ar: ['🏊 طرطشة! يسبح', '💦 ينفض الماء~', 'سأنتظر هنا!'], vi: ['🏊 Tõm! Đang bơi', '💦 Rũ nước~', 'Tôi đợi ở đây nhé!'], ja: ['🏊 ザブン！泳いでる', '💦 ブルブル~', 'ここで待ってるね！'], ru: ['🏊 Плюх! Плывём', '💦 Отряхивается~', 'Я подожду здесь!'] };
+for (const [l, [a, b, c]] of Object.entries(SWIMT)) { const D = l === 'ko' ? KO : DICT[l]; if (D) Object.assign(D, { ts_swim: a, ts_shake: b, ts_wait: c }); }
 const NEW_MAPS = { en: [['Gamcheon Culture Village', 'Hanbit Tower, Daejeon'], ['A colorful hillside village of stairs, alleys and fish signposts.', 'The 93 m Expo tower, musical fountain and Expo Bridge.']], zh: [['甘川文化村', '大田韩光塔'], ['山坡上层层叠叠的彩色村庄、小巷和鱼形路标。', '93米世博塔、音乐喷泉和世博桥。']], hi: [['गमछोन सांस्कृतिक गाँव', 'डेजॉन हानबित टावर'], ['पहाड़ी ढलान पर रंगीन सीढ़ीनुमा गाँव, गलियाँ और मछली चिन्ह।', '93 मीटर एक्सपो टावर, संगीत फव्वारा और एक्सपो पुल।']], ar: [['قرية غامتشون الثقافية', 'برج هانبيت في دايجون'], ['قرية ملونة على سفح التل بالسلالم والأزقة ولافتات الأسماك.', 'برج إكسبو بارتفاع 93 م والنافورة الموسيقية وجسر إكسبو.']], vi: [['Làng văn hóa Gamcheon', 'Tháp Hanbit, Daejeon'], ['Làng sườn đồi nhiều màu với bậc thang, ngõ nhỏ và biển chỉ đường hình cá.', 'Tháp Expo 93 m, đài phun nước nhạc và cầu Expo.']], ja: [['甘川文化村', '大田ハンビッタワー'], ['坂道に色とりどりの家が段々に並ぶ村、路地と魚の道しるべ。', '93mのエキスポタワー、音楽噴水、エキスポ橋。']], ru: [['Деревня культуры Камчхон', 'Башня Ханбит, Тэджон'], ['Разноцветная деревня на склоне: лестницы, переулки и указатели-рыбки.', 'Башня Экспо 93 м, музыкальный фонтан и мост Экспо.']] };
 for (const [l, [m2, s2]] of Object.entries(NEW_MAPS)) if (DICT[l]) { DICT[l].m.push(...m2); DICT[l].s.push(...s2); }
 Object.assign(KO, {"err_email":"아이디는 이메일 주소로 입력해 주세요 (예: dkslek123@google.com)","err_consent":"개인정보 수집·이용 안내를 읽고 [필수] 두 곳에 체크해 주세요. 동의하지 않으면 👀 체험하기로 할 수 있어요.","err_nick":"핸들러 닉네임은 한글·영문·숫자 1~10자로 정해주세요","del_need":"삭제하려면 아이디(이메일)와 비밀번호를 먼저 입력하세요","del_fail":"삭제하지 못했어요. 아이디와 비밀번호를 확인해 주세요.","del_done":"🗑 내 정보가 모두 삭제되었어요.","del_confirm":"정말 내 정보를 모두 삭제할까요?\n이메일·비밀번호·닉네임·랭킹 기록이 서버에서 지워지고 되돌릴 수 없어요.","ts_guest":"👀 체험 모드예요 · 랭킹에 올라가지 않고 이 기기에만 저장돼요","tod_day":"☀ {city} {time} · 낮 작전","tod_dusk":"🌇 {city} {time} · 노을 작전","tod_night":"🌙 {city} {time} · 밤 작전","ts_leak_warn":"⏳ 10초 안에 밀수품을 못 찾으면 통관돼 버려요!","dlg_leak":"🚨 경보! {item}이(가) 세관을 몰래 통과해 시중으로 유출됐어요…\n\n감점 −200점\n\n탐지견과 함께 서둘러 수색하세요! 시간이 지날수록 밀수품이 계속 빠져나가요.","ts_shot":"🔫 밀수범의 총에 맞았어요! 옆으로 피하거나 점프하세요","lbl_gate":"추가 관문","lbl_lm":"명소","sep_lm":"🇰🇷 대한민국 명소 순찰 · {n}곳","sep_note":"(자유 플레이 · 온라인 랭킹 미반영)","qz_gate":"🛃 추가 관문","qz_lm":"🇰🇷 명소 순찰","clr_lm_sub":"🇰🇷 명소 순찰 완료","clr_lm_title":"순찰 성공!","clr_lm_note":"명소 맵 점수는 온라인 랭킹과 별도예요","ts_boss_rank":"ℹ 한 번의 작전에서 맵 1~5를 모두 깨고 보스를 잡아야 온라인 랭킹 점수가 올라가요","who_fmt":"🕵 {nick} 핸들러 · 누적 {score}점","run_fmt":" · 이번 작전 {n}/6","hd_word":"핸들러"});
@@ -742,7 +746,8 @@ function tryPush(c, dx, dz) {
   Object.assign(c, t); c.mesh.position.x += dx; c.mesh.position.z += dz; c.wobble = .25; return true;
 }
 function moveCircle(ent, dx, dz, r, canPush, elev = 0) {
-  if (level && level.inside && level.inside(ent.x, ent.z) && !level.inside(ent.x + dx, ent.z + dz)) { if (level.inside(ent.x + dx, ent.z)) dz = 0; else if (level.inside(ent.x, ent.z + dz)) dx = 0; else return false; }
+  const okAt = (x, z) => level.inside(x, z) || (ent === dog && inSea(x, z));
+  if (level && level.inside && okAt(ent.x, ent.z) && !okAt(ent.x + dx, ent.z + dz)) { if (okAt(ent.x + dx, ent.z)) dz = 0; else if (okAt(ent.x, ent.z + dz)) dx = 0; else return false; }
   let pushed = false;
   const blocking = (c, x, z) => !c.disabled && c.topY > elev + STEP && !(c.bottomY !== undefined && elev + 1.7 < c.bottomY) && distToBox(x, z, c) < r;
   let nx = ent.x + dx;
@@ -1037,7 +1042,7 @@ function setHandlerLook(job, skin) {
   handlerJob = JOBS[job] ? job : 'customs'; handlerSkin = skin;
   handlerM.g.traverse(o => { if (o.geometry) o.geometry.dispose(); });
   scene.remove(handlerM.g); handlerM = makePerson(handlerJob, { skin: SKIN_TONES[skin] ?? SKIN_TONES[1], elite: true }); handlerM.ring.visible = false; scene.add(handlerM.g);
-  handlerLabel = null; setHandlerLabel(playerNick || playerId || '나의');
+  handlerLabel = null; setHandlerLabel(typeof dispName === 'function' && playerId ? dispName() : '나의');
 }
 var handlerLabel = null;
 function setHandlerLabel(name) { if (handlerLabel) disposeSprite(handlerLabel); handlerLabel = textSprite('🧑‍✈️ ' + name + ' 핸들러', { h: .34 }); handlerLabel.position.y = 2.45; handlerM.g.add(handlerLabel); }
@@ -1047,6 +1052,7 @@ const leashPts = Array.from({ length: 10 }, () => new THREE.Vector3());
 const leash = new THREE.Line(new THREE.BufferGeometry().setFromPoints(leashPts), new THREE.LineBasicMaterial({ color: 0xd63031 }));
 leash.frustumCulled = false; scene.add(leash);
 function updateHandler(dt) {
+  const hx0 = handler.x, hz0 = handler.z;
   handler.x = clamp(handler.x, level.bounds.minX + .3, level.bounds.maxX - .3); handler.z = clamp(handler.z, level.bounds.minZ + .3, level.bounds.maxZ - .3);
   // 탐지견이 올라간 높이까지 핸들러도 뛰어 올라간다
   const gh = groundAt(handler.x, handler.z, .4, Math.max(dog.y, 0) + .05).h;
@@ -1080,6 +1086,7 @@ function updateHandler(dt) {
   unstick(handler, .35, handler.y);
   const spA = twoP ? (handler.p2 || 0) : sp; handler.phase += dt * spA * 3; const k = Math.min(1, spA / 2);
   stairHold(handler, .7);
+  if (level.swimSea && level.inside && !level.inside(handler.x, handler.z)) { handler.x = hx0; handler.z = hz0; if (dog.swim && Math.random() < .004) floatText(t('ts_wait'), handler.x, 2.6, handler.z, { h: .4 }); }
   handler.ry = handler.vy === 0 && handler.ry !== undefined && Math.abs(handler.y - handler.ry) < .9 ? handler.ry + (handler.y - handler.ry) * Math.min(1, dt * 9) : handler.y;
   const h = handlerM; h.g.position.set(handler.x, handler.ry + Math.abs(Math.sin(handler.phase)) * .05 * k, handler.z);
   if (handler.y > .05) { h.legs[0].rotation.x = -.8; h.legs[1].rotation.x = .4; } h.g.rotation.y = handler.dir;
@@ -1204,6 +1211,11 @@ function makePerson(kind, opt = {}) {
   else if (kind === 'monk') { shirt = 0x8a8a80; pants = 0x8a8a80; }
   else if (kind === 'inmate') { shirt = 0x7b9cc2; pants = 0x7b9cc2; }
   else if (kind === 'merchant') { shirt = pick([0xc0392b, 0x2e86c1, 0x27ae60]); pants = 0x3a3a3a; }
+  else if (kind === 'hiker') { shirt = pick([0xd84a3a, 0xff8a3a, 0x2e7d4f, 0x2c6fb7]); pants = 0x3a3f47; }
+  else if (kind === 'rescue119') { shirt = 0xff6a13; pants = 0x1f2a44; }
+  else if (kind === 'official') { shirt = 0x2a2f3a; pants = 0x2a2f3a; }
+  else if (kind === 'fisher') { shirt = 0x5f6b3a; pants = 0x3a3a3a; }
+  else if (kind === 'beachgoer') { shirt = pick([0xff5a8a, 0x4fc3f7, 0xffd54f, 0x7dff6a, 0xffffff]); pants = pick([0x1e88e5, 0xe53935, 0x43a047, 0x8e24aa]); }
   else if (kind === 'tourist') { shirt = pick([0xff8a65, 0x4dd0e1, 0xffee58, 0xba68c8]); pants = 0xd7ccc8; }
   else { shirt = 0x1f3b6b; pants = 0x1f2a3a; }
   const shirtM = MAT.fabric(shirt), pantsM = MAT.fabric(pants), gold = MAT.metal(0xf4c542, .3);
@@ -1247,6 +1259,11 @@ function makePerson(kind, opt = {}) {
   if (kind === 'monk') H(BOX(.5, .06, .5), skin, 0, .26, 0);
   if (kind === 'inmate') mesh(BOX(.2, .12, .03), MAT.col(0xffffff, .5), -.13, 1.35, .14, body);
   if (kind === 'merchant') mesh(BOX(.52, .62, .04), MAT.col(0xf4f4f2, .6), 0, 1.0, .145, body);
+  if (kind === 'hiker') { H(BOX(.56, .12, .56), MAT.col(0x3a3f47, .7), 0, .27, .04); mesh(BOX(.45, .6, .26), MAT.col(pick([0x2c6fb7, 0x3a3f47, 0xd84a3a]), .6), 0, 1.15, -.27, body); mesh(BOX(.05, 1.3, .05), MAT.metal(0x888888), .45, .65, .25, body); }
+  if (kind === 'rescue119') { H(BOX(.54, .14, .54), MAT.col(0xff6a13, .6), 0, .28, .03); mesh(BOX(.3, .12, .03), MAT.col(0xffffff, .4), 0, 1.36, .145, body); mesh(BOX(.36, .14, .03), MAT.col(0xffffff, .4), 0, 1.25, -.145, body); mesh(new THREE.TorusGeometry(.3, .08, 6, 12), MAT.col(0xff3a1a, .5), .45, 1, .1, body).rotation.y = Math.PI / 2; }
+  if (kind === 'official') { mesh(BOX(.12, .4, .03), MAT.col(pick([0xb03a2e, 0x2c6fb7, 0x6a1b9a]), .5), 0, 1.25, .145, body); mesh(BOX(.2, .2, .03), MAT.col(0xffffff, .4), 0, 1.4, .144, body); mesh(BOX(.4, .3, .1), MAT.col(0x1a1a1a, .5), .45, .7, 0, body); }
+  if (kind === 'fisher') { H(BOX(.62, .08, .62), MAT.col(0x8a7d5a, .7), 0, .25, 0); mesh(BOX(.04, 2.4, .04), MAT.col(0x3a2a1a, .5), .4, 1.6, .6, body).rotation.x = -.7; mesh(BOX(.35, .3, .35), MAT.col(0x2c6fb7, .5), -.5, .15, .2, body); }
+  if (kind === 'beachgoer') { H(BOX(.5, .1, .14), MAT.col(0x111111, .2, .3), 0, .1, .25); }
   if (kind === 'tourist') { H(BOX(.56, .1, .56), MAT.col(0xf4e1a8, .6), 0, .27, 0); H(BOX(.34, .14, .34), MAT.col(0xf4e1a8, .6), 0, .36, 0); mesh(BOX(.2, .14, .12), MAT.col(0x222222, .4), 0, 1.25, .2, body); }
   if (kind === 'boss') g.scale.setScalar(1.22);
   const ring = new THREE.Mesh(new THREE.RingGeometry(.55, .8, 4), new THREE.MeshBasicMaterial({ color: 0xff3030, transparent: true, opacity: .8, side: THREE.DoubleSide, depthWrite: false, toneMapped: false }));
@@ -1257,6 +1274,11 @@ function makePerson(kind, opt = {}) {
 const people = [];
 const pick2 = a => a[Math.floor(Math.random() * a.length)];
 const LINES = {
+  hiker: ['백록담까지 얼마나 남았지? ⛰', '오늘 날씨 등산하기 딱 좋다!', '물 한 모금 마시고 가자~', '정상에서 인증샷 찍어야지! 📸', '헉헉… 그래도 경치 최고!'],
+  rescue119: ['🚑 119 구조대입니다. 수영은 안전선 안에서!', '구명조끼 꼭 착용하세요!', '물놀이 전 준비운동 필수!', '이상한 사람 보면 알려 주세요.'],
+  official: ['회의 늦겠다, 서둘러야지.', '오늘 본회의가 있어요.', '견학 왔나요? 반가워요!', '탐지견이 국회까지 왔네요!'],
+  fisher: ['🎣 오늘은 입질이 좀 오려나…', '어제 감성돔 잡았지!', '쉿, 물고기 도망가요~'],
+  beachgoer: ['선크림 발랐어? ☀', '바다 물 시원하다! 🌊', '모래성 쌓자!', '태닝 중이에요~ 😎', '수박 먹을 사람~ 🍉'],
   police: ['순찰 중입니다. 이상 없나요?', '탐지견 수고 많아요! 👮', '수상한 사람 보면 신고해 주세요.', '안전이 최우선입니다!'],
   soldier: ['충성! 🫡', '경계 근무 중입니다.', '탐지견, 든든하구먼!', '이상 무!'],
   kid: ['엄마, 저 강아지 봐! 🐶', '나도 탐지견 될래!', '배고파~ 간식 사줘!', '우와, 멍멍이다!'],
@@ -1348,6 +1370,12 @@ class Person {
       this.g.position.set(this.homeX + Math.sin(k * .3) * .4, .8 + Math.abs(Math.sin(k)) * .25, this.homeZ); this.g.rotation.y = Math.PI / 2 + Math.sin(k * .5) * .5;
       this.arms[0].rotation.x = -1.8 + Math.sin(k) * .9; this.arms[1].rotation.x = -1.8 - Math.sin(k) * .9; this.legs[0].rotation.x = Math.sin(k) * .5; this.legs[1].rotation.x = -Math.sin(k) * .5;
       if (!this.bubble && Math.random() < dt * .25) this.say(pick2(this.performer.includes('보컬') ? ['🎵 바다 위의 밤~ 라라라~', '🎤 다음 곡은 신청곡!', '박수 한번 주세요~! 👏', '탐지견 친구도 함께 춤춰요~ 🐶'] : ['💃 하나 둘 셋 넷!', '🕺 다 같이 춤춰요~', '✨ 브라보!', '🎶 신난다~']));
+      return;
+    }
+    if (this.lying) {
+      if (this.bubble) { this.bubbleT -= dt; if (this.bubbleT <= 0) { disposeSprite(this.bubble); this.bubble = null; } }
+      this.g.position.set(this.x, .25, this.z); this.g.rotation.set(-Math.PI / 2, 0, this.dir, 'YXZ'); this.arms[0].rotation.x = -3; this.arms[1].rotation.x = -3;
+      if (!this.bubble && Math.hypot(dog.x - this.x, dog.z - this.z) < 2.6 && !(this.greetT > time)) { this.greetT = time + 12; this.say(pick2(['😎 햇볕 좋다~', '음… 여기 모래 따뜻해', '강아지다! 귀여워 🐶', 'zzZ… 태닝 중'])); }
       return;
     }
     if (this.seller) {
@@ -2656,6 +2684,25 @@ function building(x, z, w, d, h, c, o = {}) {
 }
 // 바닷가 느낌: 밀려왔다 빠지는 파도·흰 거품·젖은 모래·물놀이객·부표·요트·파도 소리
 // 모래사장: 알갱이 있는 모래 바닥 · 산책로 · 모래 언덕 · 조개껍데기 · 해초
+function seaLife(L) {
+  const minZ = Math.min(...L.poly.map(p => p[1])), W2 = L.w / 2;
+  // 해양경찰 경비정 2척: 앞바다를 천천히 순찰
+  for (let k = 0; k < 2; k++) { const g = new THREE.Group(); world.add(g); mesh(BOX(3.2, 1.8, 12), LMC(0xf4f4f2), 0, .4, 0, g); mesh(BOX(3.22, .5, 12.02), LMC(0x1f4e8c), 0, -.2, 0, g); mesh(BOX(3.24, .35, 12.04), LMC(0xff7a1a), 0, .35, 0, g); mesh(BOX(2.4, 1.8, 4), LMC(0xf4f4f2), 0, 2.2, -1, g); mesh(BOX(2.42, .6, 4.02), LMC(0x1b2833), 0, 2.6, -1, g); mesh(BOX(.15, 2.6, .15), LMC(0xcccccc), 0, 4.2, -1.5, g);
+    const lr = mesh(BOX(.4, .3, .4), glow(0x2060ff, 0), -.4, 3.3, -1, g), lb = mesh(BOX(.4, .3, .4), glow(0xff2020, 0), .4, 3.3, -1, g); const t = textSprite('🚓 해양경찰 KOREA COAST GUARD', { h: .5, bg: 'rgba(31,78,140,.92)' }); t.position.set(0, 5.6, 0); g.add(t);
+    const z = minZ - 30 - k * 22, sp = (k ? -1 : 1) * 3, x0 = k * 120;
+    envAnim.push(() => { const x = ((x0 + time * sp) % (W2 * 2.4) + W2 * 3.6) % (W2 * 2.4) - W2 * 1.2; g.position.set(x, -.2 + Math.sin(time * 1.2 + k) * .15, z); g.rotation.y = sp > 0 ? Math.PI / 2 : -Math.PI / 2; g.rotation.z = Math.sin(time + k) * .03; const on = Math.floor(time * 3) % 2; lr.material.emissiveIntensity = on ? 2 : 0; lb.material.emissiveIntensity = on ? 0 : 2; if (Math.random() < .3) spawnP(x - Math.sign(sp) * 6, 0, z, mr(-1, 1), 1, mr(-1, 1), WHITE, .7); }); }
+  const surfer = (col) => { const g = new THREE.Group(); world.add(g); mesh(BOX(.6, .1, 2.2), LMC(col), 0, 0, 0, g); const p = makePerson('beachgoer'); p.g.scale.setScalar(.9); p.g.position.set(0, .05, 0); p.body.rotation.x = .3; p.arms[0].rotation.z = 1.2; p.arms[1].rotation.z = -1.2; g.add(p.g); return g; };
+  // 서퍼: 파도를 타고 해변 쪽으로 왔다가 다시 나간다
+  for (let k = 0; k < 6; k++) { const g = surfer(pick([0xff5a5a, 0xffd54f, 0x4fc3f7, 0xffffff])); const x0 = rr(-W2 * .8, W2 * .8), ph = rr(0, 10); envAnim.push(() => { const u = ((time * .12 + ph / 10) % 1); g.position.set(x0 + Math.sin(time * .5 + ph) * 3, -.1 + Math.abs(Math.sin(time * 2 + ph)) * .3, minZ - 26 + u * 22); g.rotation.y = Math.PI + Math.sin(time + ph) * .3; g.rotation.z = Math.sin(time * 2 + ph) * .15; if (Math.random() < .3) spawnP(g.position.x, 0, g.position.z + 1, mr(-1, 1), 1.2, 1, WHITE, .6); }); }
+  // SUP(서서 노 젓기)
+  for (let k = 0; k < 5; k++) { const g = new THREE.Group(); world.add(g); mesh(BOX(.8, .12, 3.2), LMC(pick([0xffffff, 0xff9a4a, 0x7dff6a])), 0, 0, 0, g); const p = makePerson('beachgoer'); p.g.position.set(0, .06, 0); g.add(p.g); const pad = mesh(BOX(.06, 2.2, .06), LMC(0x222222), .5, 1.2, 0, g); const x0 = rr(-W2 * .9, W2 * .9), z0 = minZ - rr(8, 18), ph = rr(0, 6); envAnim.push(() => { g.position.set(x0 + Math.sin(time * .08 + ph) * 20, -.15 + Math.sin(time * 1.3 + ph) * .08, z0); g.rotation.y = Math.cos(time * .08 + ph) > 0 ? Math.PI / 2 : -Math.PI / 2; pad.rotation.x = Math.sin(time * 2 + ph) * .6; p.arms[1].rotation.x = -1 + Math.sin(time * 2 + ph) * .6; }); }
+  sign('🏄 서핑 · SUP 구역', -W2 * .55, 3, minZ - 4, .6, 'rgba(30,110,180,.9)');
+  // 태닝: 수건 위에 누운 해수욕객 (사람으로 배치)
+  L.sunbathers = []; for (let k = 0; k < 14; k++) { const x = rr(-W2 + 8, W2 - 8), z = rr(-4, 8); if (Math.abs(x) < 8 && z > 2) continue; mesh(BOX(1.1, .03, 2.1), LMC(pick([0xff5a8a, 0x4fc3f7, 0xffd54f, 0x7dff6a])), x, .03, z).castShadow = false; L.sunbathers.push([x, z]); }
+  // 119 수상구조대 망루 + 구조 보트
+  for (const x of [-W2 * .6, 0, W2 * .6]) { bx(x + 10, 0, -6, 2, .3, 2, 0xffffff); for (const sx of [-.8, .8]) bx(x + 10 + sx, 0, -6, .2, 3, .2, 0xffffff, false); mesh(BOX(2.4, 1.4, 2.4), LMC(0xff6a13), x + 10, 3.4, -6); sign('🚑 119 수상구조대', x + 10, 5.2, -6, .45, 'rgba(220,70,20,.92)'); }
+  const rb = new THREE.Group(); world.add(rb); mesh(BOX(1.8, .7, 4), LMC(0xff6a13), 0, .1, 0, rb); mesh(BOX(1.82, .2, 4.02), LMC(0x222222), 0, -.2, 0, rb); envAnim.push(() => { rb.position.set(Math.sin(time * .1) * W2 * .6, -.1 + Math.sin(time * 2) * .1, minZ - 10); rb.rotation.y = Math.cos(time * .1) > 0 ? Math.PI / 2 : -Math.PI / 2; });
+}
 function sandBeach(L) {
   if (!L.poly) return;
   const tex = pixTex('sandgrain', 32, (x, y) => (x * 7 + y * 13) % 29 === 0 ? '#b89a62' : (x * 11 + y * 5) % 37 === 0 ? '#fff4d6' : jit('#e8cf98', .1), [1 / 2.5, 1 / 2.5]);
@@ -2912,20 +2959,31 @@ const LANDMARK_LIST = [
       building(38, 2, 9, 12, 15, 0x2c3e50, { lit: true }); neon(38, 11, 8.2, 'FASHION TOWER', '#4fd3ff'); building(38, 18, 9, 10, 13, 0x8e44ad, { lit: true }); neon(38, 9, 23.2, '패션몰 24H', '#ff4fa3');
       for (let k = 0; k < 5; k++) stall(22, -4 + k * 5, [0xd63a2a, 0x2c6fb7, 0x27ae60][k % 3], ['원단', '단추', '청바지', '모자', '신발'][k]);
     } },
-  { name: '광안리 해변', icon: '🌉', w: 90, d: 56, floor: 0xcdb98c, obj: luggage, sky: [0x3a9ae8, 0xd8f0ff], st: 3, shape: [[-1, 1], [-1, -.3], [-.8, -.6], [-.5, -.8], [0, -.88], [.5, -.8], [.8, -.6], [1, -.3], [1, 1]], outside: { col: 0x3d8fc4, y: .03, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
-    people: { tourist: 6, civ: 4, merchant: 1, smuggler: 3 }, items: [["cooler",2],["beachBag",2],["fishBox",2]], who: '부산바다 광안리해수욕장 관리소장', chief: 'crew', short: '반달 모양 광안리 해변! 바다 위 광안대교, 드론쇼, 민락수변공원, 회센터를 둘러보며 수색해요.',
-    intro: '부산 광안리 해수욕장이야. 반달 모양 모래사장 앞바다에 길이 7.4km, 2층짜리 광안대교가 떠 있어.\n밤엔 다리가 알록달록 빛나고 하늘엔 드론쇼가 펼쳐져! 동쪽 민락수변공원, 서쪽 회센터도 있어.',
+  { name: '광안리 해변', icon: '🌉', w: 450, d: 56, floor: 0xcdb98c, obj: luggage, ns: 34, sky: [0x3a9ae8, 0xd8f0ff], st: 3, shape: [[-1, 1], [-1, -.2], [-.75, -.5], [-.4, -.72], [0, -.8], [.4, -.72], [.75, -.5], [1, -.2], [1, 1]], outside: { col: 0x3d8fc4, y: .03, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
+    staff: [{ kind: 'rescue119', route: [[-180, -8], [180, -8]], wait: 3 }, { kind: 'rescue119', route: [[150, -6], [-150, -6]], wait: 3 }, { kind: 'police', route: [[-200, 20], [200, 20]], wait: 2 }, { kind: 'customs', route: [[-30, 10], [30, 10]], wait: 2 }],
+    people: { tourist: 10, beachgoer: 10, civ: 6, fisher: 2, merchant: 2, smuggler: 4 }, hide: { drug: 5, gun: 3 }, need: { drug: 3, gun: 2, smuggler: 2 }, items: [["cooler",3],["beachBag",3],["fishBox",2],["souvenir",1]], who: '부산바다 광안리해수욕장 관리소장', chief: 'crew',
+    short: '1.4km 반달 해변, 정면에 광안대교! 서쪽 남천 끝에서 동쪽 민락수변공원·민락항까지 순찰해요.',
+    intro: '부산 광안리 해수욕장이야. 반달 모양 1.4km 모래사장 바로 앞바다에 2층짜리 광안대교가 가로질러 있어.\n서쪽 끝엔 해변 공연장, 가운데엔 해수욕장 안내소와 119 수상구조대, 동쪽 끝엔 민락수변공원과 회센터, 민락항이 있어.\n바다엔 해양경찰 경비정이 순찰하고, 서퍼와 SUP 타는 사람들도 있어!',
     build(L) {
-      seaNorth(-26); suspBridge(-90, -170, 170, 9, 34); sandBeach(L); shoreFX(L);
-      const dots = []; for (let k = 0; k < 60; k++) { const m = mesh(BOX(.8, .8, .8), glow(pick([0x7fd3ff, 0xff7fd0, 0xffe27f]), 2), 0, 0, 0); m.castShadow = false; dots.push(m); } envAnim.push(() => { const ph = (time * .1) % 1; dots.forEach((m, k) => { const a = k / 60 * Math.PI * 2, heart = [16 * Math.pow(Math.sin(a), 3), 13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)]; const ring = [Math.cos(a) * 16, Math.sin(a) * 16], u = (Math.sin(ph * Math.PI * 2) + 1) / 2; m.position.set(heart[0] * u + ring[0] * (1 - u), 40 + (heart[1] * u + ring[1] * (1 - u)) * .9, -70); }); }); sign('🛸 드론 라이트쇼', 0, 62, -70, 1);
-      for (let k = 0; k < 9; k++) building(-40 + k * 10, 38, 9, 6, rr(10, 22), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true });
-      for (let k = 0; k < 8; k++) { const x = -30 + k * 8.4; if (Math.abs(x) < 6) continue; const z = rr(-6, 4); bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(2, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0x7dff6a][k % 4]), x, 2.8, z); }
-      stepsUp(36, -6, 12, 5, 1, 2, 0xbdb7aa); sign('민락수변공원', 36, 4, -2, .55);
-      building(-36, 14, 12, 8, 5, 0x5d8fb4, { glass: 0x2a5070, sign: '🐟 회센터' }); for (let k = 0; k < 4; k++) mesh(BOX(2.4, 1.2, .1), std(0x7fc8ef, .1, 0, { transparent: true, opacity: .6 }), -40 + k * 2.6, 1, 18.1);
-      bx(-18, 0, -14, 2, .3, 2, 0xffffff); for (const sx of [-.8, .8]) bx(-18 + sx, 0, -14, .2, 3, .2, 0xffffff, false); mesh(BOX(2.4, 1.4, 2.4), LMC(0xe74c3c), -18, 3.4, -14); sign('🛟 안전요원', -18, 5, -14, .4);
-      for (let k = 0; k < 4; k++) { const m = mesh(BOX(.5, 2.4, .15), LMC([0xff7043, 0x4fc3f7, 0xffeb3b, 0x7dff6a][k]), 18 + k * .7, 1.2, 4); m.rotation.z = .2; } sign('🏄 서핑', 19, 3.4, 4, .4);
-      for (const [x, ch] of [[-6, 'B'], [-3, 'U'], [0, 'S'], [3, 'A'], [6, 'N']]) sign(ch, x, 1, -12, .9, 'rgba(210,180,120,.95)');
-      for (let x = -40; x <= 40; x += 10) if (Math.abs(x) > 6) lamp(x, 22);
+      seaNorth(-30); suspBridge(-62, -420, 420, 13, 48); sign("🌉 광안대교 GWANGAN BRIDGE", 0, 56, -62, 1.4); sandBeach(L); shoreFX(L); seaLife(L);
+      // 해변 뒤 광안해변로: 카페·호텔 빌딩 줄 (지도처럼 길게)
+      for (let k = 0; k < 30; k++) { const x = -220 + k * 15.2; building(x, 44, 13, 10, rr(12, 30), [0xeef1f4, 0xd9e2ea, 0xf4ece0, 0xe0d4c8][k % 4], { lit: true }); if (k % 3 === 0) neon(x, 6, 38.6, pick(['CAFE', '횟집', 'BAR', '편의점', 'HOTEL', '조개구이']), pick(['#ff4fa3', '#4fd3ff', '#ffd54f', '#7dff6a'])); }
+      // 서쪽: 해변 공연장(수변무대)과 계단 객석
+      bx(-170, 0, 6, 16, .9, 8, 0x8a8f99); mesh(BOX(16, 5, .4), LMC(0x2c3e50), -170, 3.4, 2.2); for (let k = 0; k < 4; k++) bx(-170, 0, 14 + k * 1.8, 22, .35 * (k + 1), 1.8, 0xbdb7aa); sign('🎤 광안리 해변 공연장', -170, 7, 6, .7);
+      // 가운데: 해수욕장 안내소, BUSAN 모래 글자, 드론쇼 관람존
+      building(0, 30, 12, 6, 4, 0xffffff, { sign: 'ℹ 광안리해수욕장 안내소', sh: .55 }); for (const [x, ch] of [[-8, 'B'], [-4, 'U'], [0, 'S'], [4, 'A'], [8, 'N']]) sign(ch, x, 1, -14, .9, 'rgba(210,180,120,.95)'); sign('🛸 드론 라이트쇼 관람 구역 (토요일 밤)', 30, 3, 14, .6, 'rgba(60,40,140,.9)');
+      const dots = []; for (let k = 0; k < 80; k++) { const m = mesh(BOX(.9, .9, .9), glow(pick([0x7fd3ff, 0xff7fd0, 0xffe27f]), 2), 0, 0, 0); m.castShadow = false; dots.push(m); } envAnim.push(() => { const u = (Math.sin(time * .6) + 1) / 2; dots.forEach((m, k) => { const a = k / 80 * Math.PI * 2, hx = 16 * Math.pow(Math.sin(a), 3), hy = 13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a); m.position.set(hx * u + Math.cos(a) * 18 * (1 - u), 42 + (hy * u + Math.sin(a) * 18 * (1 - u)), -70); }); });
+      // 동쪽: 민락수변공원 계단, 민락 회센터, 민락항(어선)
+      for (let k = 0; k < 5; k++) bx(170, 0, -4 + k * 2, 30, .35 * (k + 1), 2, 0xbdb7aa); sign('🌊 민락수변공원', 170, 4, 0, .7);
+      building(140, 24, 22, 10, 6, 0x5d8fb4, { glass: 0x2a5070, sign: '🐟 민락 회센터', sh: .6 }); for (let k = 0; k < 6; k++) mesh(BOX(3, 1.2, .1), std(0x7fc8ef, .1, 0, { transparent: true, opacity: .6 }), 131 + k * 3.4, 1, 29.1);
+      bx(210, 0, -14, 8, 1, 24, 0x9a948a); sign('⚓ 민락항', 210, 3, -8, .6); for (let k = 0; k < 4; k++) { const g = new THREE.Group(); g.position.set(222 + (k % 2) * 6, -.3, -20 + k * 5); world.add(g); mesh(BOX(2.2, 1, 6), LMC(pick([0xf4f4f2, 0x2c6fb7, 0xd84a3a])), 0, .3, 0, g); mesh(BOX(1.6, 1.4, 2), LMC(0xf4f4f2), 0, 1.3, -1, g); const ph = k; envAnim.push(() => { g.position.y = -.3 + Math.sin(time * 1.4 + ph) * .1; }); }
+      // 해변 시설: 파라솔 줄, 샤워장, 화장실, 파라솔 대여소, 가로등, 서핑보드 거치대, 노점
+      for (let k = 0; k < 40; k++) { const x = -200 + k * 10.2; if (Math.abs(x) < 8) continue; const z = rr(-6, 5); bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(2, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0x7dff6a][k % 4]), x, 2.8, z); }
+      for (const x of [-120, -40, 60, 120]) { bx(x, 0, 18, 6, 3, 3, 0xe9e4d8); sign(x % 80 === 0 ? '🚿 샤워장' : '🚻 화장실', x, 4, 18, .45); }
+      for (const x of [-90, 90]) { stall(x, 16, 0xff9a4a, '파라솔 대여'); } stall(-60, 16, 0xd63a2a, '어묵'); stall(40, 16, 0x2c6fb7, '아이스크림');
+      for (let k = 0; k < 4; k++) { const m = mesh(BOX(.5, 2.4, .15), LMC([0xff7043, 0x4fc3f7, 0xffeb3b, 0x7dff6a][k]), -110 + k * .7, 1.2, 8); m.rotation.z = .2; } sign('🏄 서핑·SUP 대여', -109, 3.4, 8, .45);
+      for (let x = -210; x <= 210; x += 14) if (Math.abs(x) > 8) lamp(x, 22);
+      sign('🌉 광안리 해수욕장 · 광안대교 GWANGALLI', 0, 7, 20, 1.1);
     } },
   { name: '숭례문', icon: '⛩', w: 84, d: 62, floor: () => std(0xffffff, .9, 0, { map: TEX.asphalt([20, 20]) }), obj: luggage, sky: [0x5fa8ec, 0xeaf3fb], veh: [{ type: 'taxi', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]] }, { type: 'bus', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 2 }, { type: 'car', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 1 }, { type: 'car', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 3 }],
     staff: [{ kind: 'royalguard', route: [[-4, 3], [4, 3]], wait: 3 }, { kind: 'police', route: [[-36, 24], [36, 24]], wait: 2 }], people: { merchant: 4, tourist: 4, civ: 3, smuggler: 3 },
@@ -2978,21 +3036,37 @@ const LANDMARK_LIST = [
       for (let k = 0; k <= 40; k++) { const t = k / 40; mesh(BOX(1.6, .08, .08), LMC(0x333333), 30 + t * 50, 10 - t * 18, 14 + t * 30).rotation.y = -.5; } const cab = mesh(BOX(2, 1.6, 2.4), LMC(0xd84a3a), 0, 0, 0); envAnim.push(() => { const t = (Math.sin(time * .15) + 1) / 2; cab.position.set(30 + t * 50, 8.6 - t * 18, 14 + t * 30); }); bx(28, 0, 12, 6, 4, 6, 0xd9d4c8); sign('🚡 남산 케이블카', 28, 6, 12, .55);
       for (const [x, z] of [[-10, 18], [10, -22], [-28, -4]]) { bx(x, 0, z, .4, 1.4, .4, 0x555555); mesh(BOX(.9, .4, .5), LMC(0x333333), x, 1.6, z); } for (let k = 0; k < 10; k++) pine(rr(-30, 30), rr(-28, -20));
     } },
-  { name: '해운대', icon: '🏖', w: 100, d: 56, floor: 0xcdb98c, obj: luggage, sky: [0x2f9ef0, 0xd2efff], st: 3, shape: [[-1, 1], [-1, -.5], [-.6, -.7], [0, -.78], [.6, -.72], [.85, -.6], [1, -.2], [1, 1]], outside: { col: 0x3d8fc4, y: .03, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
-    people: { tourist: 7, civ: 4, student: 2, smuggler: 3 }, items: [["cooler",2],["beachBag",2],["fishBox",1],["backpack",1]], who: '파도 해운대해수욕장 관리소장', chief: 'crew', short: '해운대 백사장! 엘시티·마린시티 초고층, 해변열차와 하늘 캡슐, 동백섬 누리마루, 모래조각, 멀리 광안대교.',
-    intro: '대한민국 대표 해수욕장 해운대야! 1.5km 백사장 뒤로 초고층 빌딩 엘시티와 마린시티가 서 있어.\n동쪽 바닷가 절벽엔 알록달록 하늘 캡슐과 해변열차가 달리고, 서쪽 동백섬엔 누리마루 APEC하우스가 있어. 모래조각도 구경해!',
+  { name: '해운대', icon: '🏖', w: 500, d: 56, floor: 0xcdb98c, obj: luggage, ns: 36, sky: [0x2f9ef0, 0xd2efff], st: 3, shape: [[-1, 1], [-1, -.35], [-.7, -.6], [-.3, -.74], [.1, -.78], [.5, -.72], [.8, -.58], [1, -.3], [1, 1]], outside: { col: 0x3d8fc4, y: .03, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
+    staff: [{ kind: 'rescue119', route: [[-200, -8], [200, -8]], wait: 3 }, { kind: 'rescue119', route: [[180, -6], [-180, -6]], wait: 3 }, { kind: 'police', route: [[-230, 20], [230, 20]], wait: 2 }, { kind: 'customs', route: [[-30, 10], [30, 10]], wait: 2 }],
+    people: { tourist: 12, beachgoer: 12, civ: 6, student: 3, merchant: 2, smuggler: 4 }, hide: { drug: 5, gun: 3 }, need: { drug: 3, gun: 2, smuggler: 2 }, items: [["cooler",3],["beachBag",3],["fishBox",1],["backpack",2]], who: '파도 해운대해수욕장 관리소장', chief: 'crew',
+    short: '1.5km 해운대 백사장! 서쪽 동백섬·웨스틴조선, 가운데 아쿠아리움·구남로, 동쪽 엘시티·미포 해변열차까지.',
+    intro: '대한민국 대표 해수욕장 해운대야! 1.5km 백사장을 따라 서쪽엔 동백섬과 누리마루, 웨스틴조선 호텔이 있어.\n가운데엔 SEA LIFE 아쿠아리움과 해운대역으로 이어지는 구남로 광장, 동쪽 끝엔 초고층 엘시티와 미포 해변열차·스카이캡슐이 있어.\n바다엔 해양경찰 경비정이 순찰하고, 119 수상구조대가 해변을 지켜!',
     build(L) {
-      seaNorth(-24); suspBridge(-150, -320, 40, 9, 34); sandBeach(L); shoreFX(L);
-      for (let k = 0; k < 3; k++) building(18 + k * 10, 40, 8, 8, 30 + k * 5, 0xcfdbe6, { glass: 0x7fa6c8, lit: true }); sign('엘시티 LCT', 28, 44, 36, 1); for (let k = 0; k < 7; k++) building(-44 + k * 8, 42, 7, 6, rr(14, 24), [0xeef1f4, 0xd9e2ea, 0xf4ece0][k % 3], { lit: true }); sign('마린시티', -20, 28, 38, .9);
-      for (let r = 0; r < 2; r++) for (let k = 0; k < 14; k++) { const x = -44 + k * 6.4, z = -8 + r * 7; if (Math.abs(x) < 7 && z > 8) continue; bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(1.8, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0xffffff][(k + r) % 4]), x, 2.8, z); }
-      for (let z = -40; z <= 30; z += 1) mesh(BOX(1.2, .2, 1.05), LMC(0x7a6a5a), 56, 6, z).castShadow = false; for (let z = -40; z <= 30; z += 8) mesh(BOX(.6, 6, .6), LMC(0x9aa3ab), 56, 3, z); const caps = []; for (let k = 0; k < 6; k++) { const c = mesh(BOX(1.6, 1.6, 1.8), LMC([0xff5a5a, 0xffd54f, 0x4fc3f7, 0x7dff6a, 0xb388ff, 0xff9a4a][k]), 56, 7.1, 0); caps.push(c); } envAnim.push(() => { caps.forEach((c, k) => { c.position.z = ((time * 2 + k * 4) % 70) - 40; }); }); sign('🚃 해변열차 · 스카이캡슐', 52, 10, -6, .6); const cliff = mesh(BOX(14, 5, 90), LMC(0x6d6a5e), 64, 2.5, -6); cliff.castShadow = false;
-      const isl = new THREE.Mesh(new THREE.SphereGeometry(16, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x3f7a3a)); isl.scale.y = .45; isl.position.set(-72, -.3, -26); world.add(isl); mesh(new THREE.CylinderGeometry(4, 5, 3, 10), LMC(0xeef1f4), -72, 7.5, -26); mesh(new THREE.ConeGeometry(5.4, 2, 10), LMC(0x9aa3ab), -72, 10, -26); sign('동백섬 · 누리마루 APEC하우스', -70, 14, -22, .65);
-      bx(20, 0, -2, 4, 2, 4, 0xd9c49a); for (let k = 0; k < 4; k++) mesh(BOX(1, 2, 1), LMC(0xd9c49a), 18.5 + (k % 2) * 3, 3, -3.5 + Math.floor(k / 2) * 3); sign('🏰 모래조각 축제', 20, 5.6, -2, .5); bx(-22, 0, -2, 5, 1.4, 3.4, 0xd9c49a); mesh(BOX(1.6, 1, 1.4), LMC(0xd9c49a), -22, 1.6, -4); sign('🐢 모래 거북', -22, 3.4, -2, .45);
-      bx(-6, 0, -14, 2, .3, 2, 0xffffff); for (const sx of [-.8, .8]) bx(-6 + sx, 0, -14, .2, 3, .2, 0xffffff, false); mesh(BOX(2.4, 1.4, 2.4), LMC(0xe74c3c), -6, 3.4, -14);
-      sign('🏖 HAEUNDAE BEACH 해운대', 0, 6, 10, 1);
+      seaNorth(-30); suspBridge(-130, -700, -150, 13, 48); sign("🌉 광안대교", -420, 56, -130, 1.4); sandBeach(L); shoreFX(L); seaLife(L);
+      // 서쪽: 동백섬(누리마루) · 웨스틴조선 호텔
+      const isl = new THREE.Mesh(new THREE.SphereGeometry(30, 18, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x3f7a3a)); isl.scale.y = .4; isl.position.set(-300, -.3, -40); world.add(isl); mesh(new THREE.CylinderGeometry(6, 7, 4, 10), LMC(0xeef1f4), -300, 12, -40); mesh(new THREE.ConeGeometry(7.6, 2.5, 10), LMC(0x9aa3ab), -300, 15.2, -40); sign('동백섬 · 누리마루 APEC하우스', -300, 20, -34, .8);
+      building(-220, 36, 30, 16, 22, 0xe8e2d8, { glass: 0x6a8aa8, lit: true, sign: '웨스틴조선 호텔', sh: .6 });
+      // 해변 뒤 해운대해변로 빌딩 줄 (낮은 쪽은 서쪽, 높은 쪽은 동쪽)
+      for (let k = 0; k < 26; k++) { const x = -190 + k * 13.5; if (x > 150) break; building(x, 44, 12, 10, rr(14, 34), [0xeef1f4, 0xd9e2ea, 0xf4ece0, 0xe0d4c8][k % 4], { lit: true }); }
+      // 가운데: SEA LIFE 부산아쿠아리움 · 구남로 광장 · 해운대 시장 입구
+      building(-30, 30, 30, 12, 7, 0x2c6fb7, { glass: 0x1b4f8a, sign: '🐠 SEA LIFE 부산아쿠아리움', sh: .65 }); mesh(new THREE.SphereGeometry(5, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), MAT.glass(), -30, 7, 30);
+      floorPlane(16, 30, std(0xffffff, .85, 0, { map: TEX.tile('gunamro', '#d9cdb8', '#b8ab95', 16, [4, 7]) }), 20, 40, .014); sign('구남로 광장 → 해운대역', 20, 4, 30, .6); bx(32, 0, 40, 6, 4, 6, 0xb04a3a); sign('해운대시장', 32, 5.6, 37, .55);
+      // 동쪽: 엘시티 3동(맵 비율에 맞춘 높이) · 미포 · 해변열차 & 스카이캡슐
+      for (let k = 0; k < 3; k++) building(175 + k * 14, 42, 10, 10, 30 + k * 5, 0xcfdbe6, { glass: 0x7fa6c8, lit: true }); sign('엘시티 LCT', 189, 44, 38, 1);
+      bx(235, 0, 20, 14, 4, 10, 0xe9e4d8); sign('미포 정거장 · 해변열차 & 스카이캡슐', 235, 6, 15, .6);
+      for (let z = 20; z >= -60; z -= 1) mesh(BOX(1.2, .2, 1.05), LMC(0x7a6a5a), 244 + (20 - z) * .1, 6, z).castShadow = false; for (let z = 20; z >= -60; z -= 8) mesh(BOX(.6, 6, .6), LMC(0x9aa3ab), 244 + (20 - z) * .1, 3, z);
+      const caps = []; for (let k = 0; k < 6; k++) caps.push(mesh(BOX(1.6, 1.6, 1.8), LMC([0xff5a5a, 0xffd54f, 0x4fc3f7, 0x7dff6a, 0xb388ff, 0xff9a4a][k]), 0, 7.1, 0)); envAnim.push(() => { caps.forEach((c, k) => { const z = 20 - ((time * 2 + k * 12) % 80); c.position.set(244 + (20 - z) * .1, 7.1, z); }); });
+      const train = new THREE.Group(); world.add(train); for (let k = 0; k < 3; k++) { mesh(BOX(2.2, 2, 5), LMC(k ? 0x2c6fb7 : 0xf4f4f2), 0, 1.2, k * 5.4, train); mesh(BOX(2.22, .7, 4), LMC(0x1b2833), 0, 1.6, k * 5.4, train); } envAnim.push(() => { train.position.set(252, 0, 20 - ((time * 3) % 90)); });
+      // 해변 시설: 파라솔, 샤워장, 화장실, 모래조각, 노점, 가로등
+      for (let r = 0; r < 2; r++) for (let k = 0; k < 44; k++) { const x = -220 + k * 10, z = -8 + r * 8; if (Math.abs(x) < 8 && z > 0) continue; bx(x, 0, z, .15, 2.6, .15, 0x8d6e63); mesh(new THREE.ConeGeometry(1.8, .8, 8), LMC([0xff5a5a, 0x4fc3f7, 0xffd54f, 0xffffff][(k + r) % 4]), x, 2.8, z); }
+      for (const x of [-140, -60, 60, 140]) { bx(x, 0, 18, 6, 3, 3, 0xe9e4d8); sign(x % 120 === 20 || x === 140 ? '🚻 화장실' : '🚿 샤워장', x, 4, 18, .45); }
+      bx(70, 0, -2, 4, 2, 4, 0xd9c49a); for (let k = 0; k < 4; k++) mesh(BOX(1, 2, 1), LMC(0xd9c49a), 68.5 + (k % 2) * 3, 3, -3.5 + Math.floor(k / 2) * 3); sign('🏰 해운대 모래축제', 70, 5.6, -2, .5);
+      stall(-100, 16, 0xff9a4a, '파라솔 대여'); stall(-20, 16, 0xd63a2a, '씨앗호떡'); stall(100, 16, 0x2c6fb7, '튜브 대여');
+      for (let x = -230; x <= 230; x += 14) if (Math.abs(x) > 8) lamp(x, 22);
+      sign('🏖 HAEUNDAE BEACH 해운대해수욕장', 0, 7, 20, 1.1);
     } },
   { name: '제주 한라산', icon: '🌋', w: 92, d: 92, floor: 0x6a8f4a, obj: crate, sky: [0x4fa6ee, 0xeaf6ff], st: 4, shape: ELL(1, 1, 30), outside: { col: 0x2f6b8f, y: .02, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
-    staff: [{ kind: 'police', route: [[-30, 30], [30, 30]], wait: 2 }, { kind: 'haenyeo', route: [[30, 28], [36, 18]], wait: 3 }], people: { tourist: 5, haenyeo: 2, civ: 2, smuggler: 3 },
+    staff: [{ kind: 'police', route: [[-30, 30], [30, 30]], wait: 2 }, { kind: 'haenyeo', route: [[30, 28], [36, 18]], wait: 3 }, { kind: 'hiker', route: [[0, 30], [10, 14], [6, 2], [0, -4], [-8, 4], [-6, 18]], wait: 2 }, { kind: 'hiker', route: [[-14, 26], [-12, 10], [-4, 0], [4, -2], [12, 8], [10, 24]], wait: 3 }, { kind: 'hiker', route: [[20, 20], [12, 6], [2, -3], [-10, -2], [-18, 12]], wait: 2 }, { kind: 'rescue119', route: [[24, 28], [-24, 28]], wait: 3 }], people: { hiker: 6, tourist: 3, haenyeo: 2, smuggler: 3 },
     items: [["fruitBox",3],["cooler",1],["backpack",2]], who: '고돌하르방 한라산국립공원 관리소장', short: '섬 가운데 한라산! 층층이 올라 백록담까지. 돌하르방, 돌담 감귤밭, 유채꽃, 오름, 조랑말, 해녀, 성산일출봉.',
     intro: '제주도 한라산이야! 섬 가운데 솟은 1,947m 화산 꼭대기엔 분화구 호수 백록담이 있어.\n산 아래엔 검은 돌담 감귤밭과 노란 유채꽃밭, 조랑말 목장이 있고, 바닷가엔 해녀 삼촌들, 멀리 성산일출봉도 보여!',
     build(L) {
@@ -3127,39 +3201,43 @@ $('btnMode').onclick = () => {
 let mp = null;
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rd3hzbmR5Ym9qdmp1d2xtZWl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMDE4NDMsImV4cCI6MjEwODY3Nzg0M30.W-ltwTtWmibN6ec_mlkjad7QvN2fFCcOkFxHl3abbZw';
 async function mpJoin() {
-  if (mp || !RANK_CFG.url) return;
+  if (mp || !RANK_CFG.url || !playerId) return;
+  const room = levelIdx;
   try {
     const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm');
     const sb = createClient(RANK_CFG.url, SB_ANON, { realtime: { params: { eventsPerSecond: 20 } } });
-    const me = playerNick || playerId || 'guest' + Math.floor(Math.random() * 9999), key = me + ':' + Math.random().toString(36).slice(2, 6);
-    const ch = sb.channel('k9-hidden', { config: { broadcast: { self: false }, presence: { key } } });
-    mp = { sb, ch, others: new Map(), sendT: 0, me, key };
+    const me = dispName(), key = me + ':' + Math.random().toString(36).slice(2, 6);
+    const ch = sb.channel('k9-map-' + room, { config: { broadcast: { self: false }, presence: { key } } });
+    const joinT = Date.now(); mp = { sb, ch, others: new Map(), sendT: 0, me, key, room, joinT };
     ch.on('broadcast', { event: 'pos' }, ({ payload }) => mpRecv(payload))
       .on('broadcast', { event: 'bark' }, ({ payload }) => { const o = mp && mp.others.get(payload.k); if (o) floatText('멍!', o.x, 1.9, o.z, { h: .5 }); })
       .on('presence', { event: 'leave' }, ({ key: k }) => mpRemove(k))
-      .subscribe(async st => { if (st === 'SUBSCRIBED') { await ch.track({ id: me }); toast('👥 지금 접속한 친구들과 함께 놀 수 있어요!'); updateMpCount(); } });
+      .on('presence', { event: 'sync' }, () => { if (!mp || mp.ch !== ch) return; const all = Object.entries(ch.presenceState()).map(([k, v]) => ({ k, t: (v[0] && v[0].t) || 0 })).sort((a, b) => a.t - b.t || (a.k < b.k ? -1 : 1)); const rank = all.findIndex(e => e.k === key); mp.full = all.length; if (rank >= 5) { toast(t('mp_full')); mpLeave(); } else updateMpCount(); })
+      .subscribe(async st => { if (st === 'SUBSCRIBED') { await ch.track({ id: me, t: joinT }); updateMpCount(); } });
   } catch { toast('📡 함께 놀기 서버에 연결하지 못했어요'); }
 }
 function mpLeave() { if (!mp) return; try { mp.sb.removeChannel(mp.ch); } catch { } mp = null; updateMpCount(); }
 function mpRecv(p) {
-  if (!level || !level.relax || !mp) return;
+  if (!level || !mp || (p.room !== undefined && p.room !== mp.room)) return;
+  if (!mp.others.has(p.k) && mp.others.size >= 4) return;
   let o = mp.others.get(p.k);
   if (!o) {
-    const d = makeDog(BREEDS[p.b] || BREEDS.labrador, String(p.n || '친구').slice(0, 8)), h = makePerson('customs');
-    const t = textSprite('👥 ' + String(p.id).slice(0, 12) + ' 핸들러', { h: .32, bg: 'rgba(120,40,160,.9)' }); t.position.y = 2.5; h.g.add(t);
+    const d = makeDog(BREEDS[p.b] || BREEDS.labrador, String(p.n || '친구').slice(0, 8)), h = makePerson(JOBS[p.j] ? p.j : 'customs', { elite: true });
+    if (mp.others.size === 0) toast(t('mp_join').replace('{n}', String(p.id).slice(0, 12)));
+    const tag = textSprite('👥 ' + String(p.id).slice(0, 12) + ' 핸들러', { h: .32, bg: 'rgba(120,40,160,.9)' }); tag.position.y = 2.5; h.g.add(tag);
     world.add(d.g); world.add(h.g);
     o = { d, h, x: p.x, z: p.z, ph: 0 }; mp.others.set(p.k, o); updateMpCount();
   }
   Object.assign(o, { tx: p.x, tz: p.z, ty: p.y, tdir: p.r, hx: p.hx, hz: p.hz, hr: p.hr, last: time });
 }
 function mpRemove(k) { const o = mp && mp.others.get(k); if (!o) return; world.remove(o.d.g); world.remove(o.h.g); mp.others.delete(k); updateMpCount(); }
-function updateMpCount() { $('mpCount').textContent = mp && level && level.relax ? `👥 함께 노는 중 ${mp.others.size + 1}명` : ''; }
+function updateMpCount() { $('mpCount').textContent = mp && level ? t('mp_count').replace('{n}', mp.others.size + 1) : ''; }
 function updateMp(dt) {
   if (!mp) return;
   mp.sendT -= dt;
   if (mp.sendT <= 0) {
     mp.sendT = .12;
-    mp.ch.send({ type: 'broadcast', event: 'pos', payload: { k: mp.key, id: mp.me, n: dogName, b: dogBreed, x: +dog.x.toFixed(2), z: +dog.z.toFixed(2), y: +dog.y.toFixed(2), r: +dog.dir.toFixed(2), hx: +handler.x.toFixed(2), hz: +handler.z.toFixed(2), hr: +handler.dir.toFixed(2) } });
+    mp.ch.send({ type: 'broadcast', event: 'pos', payload: { k: mp.key, room: mp.room, j: handlerJob, id: mp.me, n: dogName, b: dogBreed, x: +dog.x.toFixed(2), z: +dog.z.toFixed(2), y: +dog.y.toFixed(2), r: +dog.dir.toFixed(2), hx: +handler.x.toFixed(2), hz: +handler.z.toFixed(2), hr: +handler.dir.toFixed(2) } });
   }
   for (const [k, o] of mp.others) {
     if (time - o.last > 6) { mpRemove(k); continue; }
@@ -3354,7 +3432,7 @@ $('btnSnap').onclick = () => {
   cv.width = W; cv.height = Hh + band; const g = cv.getContext('2d');
   g.drawImage(src, 0, 0); g.fillStyle = '#0f2236'; g.fillRect(0, Hh, W, band);
   g.textBaseline = 'middle'; g.fillStyle = '#f4c542'; g.font = `${Math.round(band * .36)}px Jua, sans-serif`;
-  g.fillText(`🐕 ${dogName} & 🧑‍✈️ ${playerNick || playerId} 핸들러`, band * .4, Hh + band * .36);
+  g.fillText(`🐕 ${dogName} & 🧑‍✈️ ${dispName()} 핸들러`, band * .4, Hh + band * .36);
   g.fillStyle = '#ffffff'; g.font = `${Math.round(band * .24)}px Jua, sans-serif`;
   g.fillText(`탐지견 킁킁 게임 · ${level.name} · ${new Date().toLocaleDateString('ko-KR')}`, band * .4, Hh + band * .74);
   const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = `탐지견_${dogName}.png`; document.body.appendChild(a); a.click(); a.remove();
@@ -3555,6 +3633,9 @@ function applyTimeOfDay() {
   setTimeout(() => toast(t('tod_' + ph).replace('{city}', city).replace('{time}', hh + ':' + mm)), 2600);
   if (level && !level.relax) { const c = crowdNow(level); setTimeout(() => toast(t('crowd_' + (c < .45 ? 0 : c < .9 ? 1 : c < 1.2 ? 2 : 3))), 4400); }
 }
+function distToPoly(P, x, z) { let best = 1e9; for (let i = 0; i < P.length; i++) { const [ax, az] = P[i], [bx2, bz] = P[(i + 1) % P.length], vx = bx2 - ax, vz = bz - az, L2 = vx * vx + vz * vz || 1, u = clamp(((x - ax) * vx + (z - az) * vz) / L2, 0, 1); best = Math.min(best, Math.hypot(x - ax - vx * u, z - az - vz * u)); } return best; }
+const SWIM_PAD = 22;
+function inSea(x, z) { return !!(level && level.swimSea && level.poly && !pip(level.poly, x, z) && distToPoly(level.poly, x, z) < SWIM_PAD); }
 function pip(poly, x, z) { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, zi] = poly[i], [xj, zj] = poly[j]; if ((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; }
 function ELL(rx = 1, rz = 1, n = 32, cx = 0, cz = 0) { return Array.from({ length: n }, (_, i) => [cx + Math.cos(i / n * Math.PI * 2) * rx, cz + Math.sin(i / n * Math.PI * 2) * rz]); }
 // 앞뒤가 둥근 긴 통 (열차·비행기)
@@ -3685,7 +3766,7 @@ function loadLevel(i) {
   const SC = def.sc ?? (def.relax ? 1 : 2.24); // 넓이 5배
   const W = def.w * SC, D = def.d * SC;
   level = { ...def, w: W, d: D, w0: def.w, d0: def.d, scaled: SC > 1, bounds: { minX: -W / 2 + 1, maxX: W / 2 - 1 + (def.extraEast || 0), minZ: -D / 2 + 1 - (def.extraZ || 0), maxZ: D / 2 - 1 + (def.extraZ || 0) } };
-  if (def.shape) { level.poly = def.shape.map(([u, v]) => [u * W / 2, v * D / 2]); level.inside = (x, z) => pip(level.poly, x, z); }
+  if (def.shape) { level.poly = def.shape.map(([u, v]) => [u * W / 2, v * D / 2]); level.inside = (x, z) => pip(level.poly, x, z); level.swimSea = !!(def.outside && def.outside.water); }
   if (level.scaled) level.need = Object.fromEntries(Object.entries(def.need).map(([k, n]) => [k, k === 'boss' ? n : Math.ceil(n * 1.5)]));
   const spawn = { x: 0, z: def.d / 2 - 6 };
   level.spawn = spawn;
@@ -3721,6 +3802,7 @@ function loadLevel(i) {
   if (level.seatSpots) { const spots = [...level.seatSpots].sort(() => rnd() - .5).slice(0, Math.round(level.seatSpots.length * .32 * Math.max(.5, level.crowd))); for (const [x, z, cls] of spots) { const p = new Person(cls === 'biz' ? 'civ' : pick(['civ', 'tourist', 'civ']), x, z); p.seated = true; p.dir = Math.PI; p.y = .2; p.g.position.set(x, .2, z); p.g.rotation.y = Math.PI; for (const l of p.legs) l.rotation.x = -1.45; p.body.position.z = .15; if (p.ageGrp === 'baby') p.g.children.filter(c => c.isGroup && c.position.z > .7).forEach(c => p.g.remove(c)); } }
   for (const st of stallSpots) { const p = new Person('merchant', st.x, st.z - 1.25); p.seller = st.txt; p.dir = 0; p.g.rotation.y = 0; p.homeX = st.x; p.homeZ = st.z - 1.25; }
   for (const [x, z, kind, tag] of level.performers || []) { const p = new Person(kind, x, z); p.performer = tag; p.homeX = x; p.homeZ = z; p.y = .8; const lb = textSprite(tag, { h: .3, bg: 'rgba(120,20,90,.9)' }); lb.position.y = 2.5; p.g.add(lb); }
+  for (const [x, z] of level.sunbathers || []) { const p = new Person('beachgoer', x, z); p.lying = true; p.dir = rr(0, 6); }
   spawnAnimals(def);
   if (level.swRoute) for (let k = 0; k < 3; k++) { const r = [...level.swRoute, ...[...level.swRoute].reverse().slice(1, -1)], p = new Person(k ? 'tourist' : 'student', r[0][0] - k, r[0][1] + 1); p.route = r; p.ri = k * 3; p.waitAt = .3; p.target = null; p.wait = k * 2; }
   // 넓어진 구역마다 순찰 직원 2명 + 이용객 3명
@@ -3735,7 +3817,7 @@ function loadLevel(i) {
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
   helps = []; dog.shield = 0; dog.noseT = 0; dog.boneT = 0; if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < (level.scaled ? 2 : 1); n++) spawnHelpItem(k);
   helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
-  if (def.relax) mpJoin(); else mpLeave();
+  if (mp && mp.room !== i) mpLeave(); if (playerId) mpJoin();
   if (people.some(p => p.look && p.villain)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
   // 밀수품 숨기기
   const pool = [...level.search].sort(() => rnd() - .5);
@@ -3825,7 +3907,7 @@ async function win() {
   state = 'win'; setTimeout(() => toast('🌅 히든맵 「노을 활주로」가 열렸어요! 맵 선택에서 확인하세요'), 600);
   const grade = runScore >= 5200 ? 'S' : runScore >= 4300 ? 'A' : runScore >= 3400 ? 'B' : 'C';
   $('wgrade').textContent = grade;
-  $('wstats').innerHTML = `🕵 ${esc(playerNick || playerId)} · ⏱ 총 작전 시간 <b>${fmtTime(runTime)}</b><br>⭐ 최종 점수 <b>${runScore}</b><br>🔍 적발·폐기 <b>${totals.items}건</b> · 🚔 체포 <b>${totals.arrests}명</b> · ⚠ 실수 <b>${totals.mistakes}회</b>`;
+  $('wstats').innerHTML = `🕵 ${esc(dispName())} · ⏱ 총 작전 시간 <b>${fmtTime(runTime)}</b><br>⭐ 최종 점수 <b>${runScore}</b><br>🔍 적발·폐기 <b>${totals.items}건</b> · 🚔 체포 <b>${totals.arrests}명</b> · ⚠ 실수 <b>${totals.mistakes}회</b>`;
   $('win').classList.remove('hidden'); playMusic(0);
   renderRanking($('rankWin'), await fetchRanking(100));
 }
@@ -3897,7 +3979,7 @@ function showMaps(paused = false) {
   pausedGame = paused && !!level;
   hideAll(); state = 'maps'; $('topbar').classList.add('hidden');
   const prog = getProg();
-  $('mapsWho').textContent = t('who_fmt').replace('{nick}', playerNick || playerId).replace('{score}', runScore) + (runActive ? t('run_fmt').replace('{n}', runCleared.size) : '');
+  $('mapsWho').textContent = t('who_fmt').replace('{nick}', dispName()).replace('{score}', runScore) + (runActive ? t('run_fmt').replace('{n}', runCleared.size) : '');
   const lmGate = LEVELS.map((L, i) => i).filter(i => LEVELS[i].gate), lmRest = LEVELS.map((L, i) => i).filter(i => LEVELS[i].landmark && !LEVELS[i].gate);
   const order = [0, 1, 2, 3, 4, ...lmGate, 5, 6, ...lmRest];
   $('mapGrid').innerHTML = order.map(i => [LEVELS[i], i]).map(([L, i]) => {
@@ -3966,7 +4048,7 @@ function restoreLogin() {
   if (store.get('k9pcons', false)) { $('pcons').checked = true; $('age14').checked = true; }
   loadSavedDog(id); $('nick').value = store.get('k9nick:' + id, '') || '';
   const known = id && store.get('k9dog:' + id, null);
-  if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || id) + ' ' + t('hd_word') + ' · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true);
+  if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || (id.includes('@') ? '' : id)) + ' ' + t('hd_word') + ' · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true);
 }
 $('btnCharEdit').onclick = () => showCharBox(true);
 loadSavedDog(store.get('k9id', ''));
@@ -3999,6 +4081,7 @@ async function cloudLoad(id, pw, freshDevice) {
     cloudBusy = false; return fresh;
   } catch { cloudBusy = false; return false; }
 }
+function dispName() { if (playerNick && !playerNick.includes('@')) return playerNick; if (playerId && !playerId.includes('@') && !playerId.startsWith('guest_')) return playerId; return t('hd_word') === 'handler' ? 'K9' : 'K9'; }
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
@@ -4167,7 +4250,7 @@ function updateDebris(dt) {
   debris = debris.filter(d => { if (d.t < d.life) return true; world.remove(d.m); return false; });
 }
 function bark() {
-  if (mp && level.relax) mp.ch.send({ type: 'broadcast', event: 'bark', payload: { k: mp.key } });
+  if (mp) mp.ch.send({ type: 'broadcast', event: 'bark', payload: { k: mp.key } });
   const BR = .8 + .06 * ST().bark;
   const AS = 1.3 - .06 * ST().bark; // 짖기 능력치가 높을수록 공격 간격이 짧다
   dog.barkCd = .375 * AS; dog.barkAnim = .22; SFX.bark();
@@ -4255,7 +4338,7 @@ function updateDog(dt) {
   const sprint = (keys.ShiftLeft || (!twoP && keys.ShiftRight) || touchIn.run) && dog.stamina > 3 && len > .1 && !dog.sniffing;
   dog.stamina = clamp(dog.stamina + (sprint ? -24 * (1.4 - .1 * ST().sta) * (handlerJob === 'soldier' ? .8 : 1) : 14 * (.7 + .1 * ST().sta)) * dt, 0, 100);
   dog.boost -= dt; dog.hurt -= dt;
-  const maxSp = 1.07 * (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (.85 + .06 * ST().spd) * (level && level.scaled ? 1.25 : 1);
+  const maxSp = (dog.swim ? .62 : 1) * 1.07 * (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (.85 + .06 * ST().spd) * (level && level.scaled ? 1.25 : 1);
   const k = 1 - Math.exp(-dt * (dog.grounded ? 10 : 3));
   dog.vx = lerp(dog.vx, mx * maxSp, k); dog.vz = lerp(dog.vz, mz * maxSp, k);
   const pushed = moveCircle(dog, dog.vx * dt, dog.vz * dt, .5, true, dog.y);
@@ -4266,7 +4349,7 @@ function updateDog(dt) {
   // 점프 / 중력
   unstick(dog, .5, dog.y);
   // 점프로도 맵 밖으로 나갈 수 없다
-  dog.x = clamp(dog.x, level.bounds.minX + .3, level.bounds.maxX - .3); dog.z = clamp(dog.z, level.bounds.minZ + .3, level.bounds.maxZ - .3);
+  { const pad = level.swimSea ? SWIM_PAD : 0; dog.x = clamp(dog.x, level.bounds.minX + .3 - pad, level.bounds.maxX - .3 + pad); dog.z = clamp(dog.z, level.bounds.minZ + .3 - pad, level.bounds.maxZ - .3 + pad); }
   // 2단 점프: 공중에서 한 번 더. 핸들러도 함께 뛴다
   if (jumpQ && (dog.grounded || (dog.jumps || 0) < 3)) {
     const air = !dog.grounded;
@@ -4285,6 +4368,9 @@ function updateDog(dt) {
     if (gnd.on && gnd.on.belt) moveCircle(dog, gnd.on.belt * dt, 0, .5, false, dog.y);
   } else if (dog.grounded && dog.vy <= 0 && dog.y - gnd.h < .45) { dog.y = gnd.h; dog.vy = 0; }
   else dog.grounded = false;
+  const wasSwim = dog.swim; dog.swim = inSea(dog.x, dog.z);
+  if (dog.swim) { dog.y = -.42 + Math.sin(time * 3) * .05; dog.vy = 0; dog.grounded = true; dog.jumps = 0; if (!wasSwim) { floatText(t('ts_swim'), dog.x, .9, dog.z, { h: .5, color: '#7fd3ff' }); for (let k = 0; k < 14; k++) spawnP(dog.x, .1, dog.z, mr(-2, 2), mr(2, 4), mr(-2, 2), WHITE, .7); try { noise(.4, .05, 900); } catch { } } if (Math.hypot(dog.vx, dog.vz) > .5 && Math.random() < .5) spawnP(dog.x + mr(-.4, .4), .05, dog.z + mr(-.4, .4), mr(-.6, .6), mr(.6, 1.4), mr(-.6, .6), new THREE.Color(0xd8f2ff), .5); }
+  else if (wasSwim) { dog.y = Math.max(0, dog.y); dog.shake = 1; floatText(t('ts_shake'), dog.x, 1.8, dog.z, { h: .45 }); for (let k = 0; k < 18; k++) spawnP(dog.x, .8, dog.z, mr(-3, 3), mr(1, 3), mr(-3, 3), new THREE.Color(0xbfe8ff), .5); }
   // 계단 산책로: 부드러운 경사로처럼 오르고, 옆으로 떨어지지 않게 길 안쪽으로 붙잡는다
   if (stairHold(dog, .7)) { dog.grounded = true; dog.jumps = 0; }
 
@@ -4328,6 +4414,8 @@ function updateDog(dt) {
   m.legs.forEach((l, i) => l.rotation.x = dog.grounded ? Math.sin(dog.phase + offs[i]) * .75 * lk : (i < 2 ? -.7 : .7));
   m.g.position.y += Math.abs(Math.sin(dog.phase)) * .06 * lk;
   m.g.rotation.x = dog.grounded ? 0 : clamp(-dog.vy * .04, -.3, .3);
+  if (dog.swim) { m.legs.forEach((l, i) => l.rotation.x = Math.sin(time * 9 + i * 1.6) * .9); m.g.rotation.x = -.15; }
+  if (dog.shake > 0) { dog.shake -= dt; m.g.rotation.z = Math.sin(time * 40) * .25 * dog.shake; } else m.g.rotation.z = 0;
   if (dog.flipT > 0) { dog.flipT -= dt; m.g.rotation.x = -(1 - Math.max(0, dog.flipT) / .7) * Math.PI * 2; m.g.position.y += .5; if (dog.grounded) dog.flipT = 0; }
   dog.barkAnim -= dt;
   const sn = dog.sniffing ? 1 : 0;
@@ -4469,7 +4557,7 @@ function updateDog(dt) {
     }
   } else m.head.rotation.y = lerp(m.head.rotation.y, 0, Math.min(1, dt * 5));
   // 자동 이동(산책·공놀이 등) 뒤에도 맵 경계 안으로
-  const bx0 = clamp(dog.x, level.bounds.minX + .3, level.bounds.maxX - .3), bz0 = clamp(dog.z, level.bounds.minZ + .3, level.bounds.maxZ - .3);
+  const bpad = level.swimSea ? SWIM_PAD : 0, bx0 = clamp(dog.x, level.bounds.minX + .3 - bpad, level.bounds.maxX - .3 + bpad), bz0 = clamp(dog.z, level.bounds.minZ + .3 - bpad, level.bounds.maxZ - .3 + bpad);
   if (bx0 !== dog.x || bz0 !== dog.z) { dog.x = bx0; dog.z = bz0; m.g.position.x = dog.x; m.g.position.z = dog.z; }
 }
 
@@ -4549,7 +4637,7 @@ function loop() {
   const dt = Math.min(clock.getDelta(), .05); time += dt;
   if (state === 'play' || state === 'dialog') { playTotal += dt; if (Math.floor(playTotal / 1800) > playNotes) { playNotes++; toast(t('ts_play30').replace('{m}', playNotes * 30)); } }
   if (state === 'play') {
-    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateAnimals(dt); updateDebris(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
+    levelTime += dt; updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateAnimals(dt); updateDebris(dt); if (!level.relax) updateMp(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
     for (const p of people) p.update(dt);
   } else if (state === 'intro') {
     updateIntro(dt); for (const p of people) p.update(dt);
@@ -4603,7 +4691,7 @@ function applyLang() {
   for (const [id, key] of [['pid', 'ph_id'], ['ppw', 'ph_pw'], ['dname', 'ph_dog'], ['nick', 'ph_nick']]) { const el = $(id); if (el.dataset.kop === undefined) el.dataset.kop = el.placeholder; el.placeholder = lang === 'ko' ? el.dataset.kop : (DICT[lang]?.[key] ?? el.dataset.kop); }
   $('btnMode').textContent = t(twoP ? 'mode2' : 'mode1');
   document.documentElement.lang = lang;
-  document.querySelectorAll('.card').forEach(c => c.dir = lang === 'ar' ? 'rtl' : 'ltr');
+  document.querySelectorAll('.card').forEach(c => { c.dir = 'ltr'; for (const ch of c.children) if (!ch.classList.contains('langs')) ch.dir = lang === 'ar' ? 'rtl' : 'ltr'; });
   renderBreeds(); renderJobs(); renderLangs();
   if (state === 'maps') showMaps(pausedGame);
   if (level) renderQuest();
@@ -4623,7 +4711,7 @@ window.__cover = () => {
   document.body.appendChild(d);
 };
 if (location.hash === '#cover') setTimeout(() => window.__cover(), 300);
-window.__game = { get stairPath() { return level && level.stairPath; }, forceClear() { for (const k in level.need) lvStats[k] = level.need[k]; checkQuest(); }, occDbg() { const from = camera.position, dir = new THREE.Vector3(dog.x - from.x, dog.y + .6 - from.y, dog.z - from.z), dist = dir.length(); dir.normalize(); occRay.camera = camera; occRay.set(from, dir); occRay.far = dist; const h = occRay.intersectObjects(world.children, true); return { cam: from.toArray().map(v => v.toFixed(1)), dist: dist.toFixed(1), n: h.length, types: h.slice(0, 6).map(x => x.object.geometry.type + ':' + x.distance.toFixed(1)) }; }, get occ() { return occFaded.size; }, get animals() { return animals; }, get slopes() { return slopes; }, get yaw() { return yaw; }, set yaw(v) { yaw = v; }, tick(n, dt = 1 / 30) { for (let k = 0; k < n; k++) { time += dt; levelTime += dt; updateDog(dt); updateHandler(dt); updateFun(dt); } }, get pgSpots() { return pgSpots; }, get shots() { return shots; }, setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
+window.__game = { get mp() { return mp && { room: mp.room, others: mp.others.size, me: mp.me, joined: !!mp.ch, state: mp.ch && mp.ch.state }; }, get world() { return world; }, get stairPath() { return level && level.stairPath; }, forceClear() { for (const k in level.need) lvStats[k] = level.need[k]; checkQuest(); }, occDbg() { const from = camera.position, dir = new THREE.Vector3(dog.x - from.x, dog.y + .6 - from.y, dog.z - from.z), dist = dir.length(); dir.normalize(); occRay.camera = camera; occRay.set(from, dir); occRay.far = dist; const h = occRay.intersectObjects(world.children, true); return { cam: from.toArray().map(v => v.toFixed(1)), dist: dist.toFixed(1), n: h.length, types: h.slice(0, 6).map(x => x.object.geometry.type + ':' + x.distance.toFixed(1)) }; }, get occ() { return occFaded.size; }, get animals() { return animals; }, get slopes() { return slopes; }, get yaw() { return yaw; }, set yaw(v) { yaw = v; }, tick(n, dt = 1 / 30) { for (let k = 0; k < n; k++) { time += dt; levelTime += dt; updateDog(dt); updateHandler(dt); updateFun(dt); } }, get pgSpots() { return pgSpots; }, get shots() { return shots; }, setHandlerLook, showMaps, openRank, dog, people, LEVELS, startLevel, loadLevel, handler, get ach() { return ach; }, get wallet() { return wallet; }, get mission() { return mission; }, setMissionCd(v) { missionCd = v; }, get hidden() { return hidden; }, get colliders() { return colliders; }, get balls() { return balls; }, get levelTime() { return levelTime; }, get lvStats() { return lvStats; }, get state() { return state; }, get levelIdx() { return levelIdx; }, get runScore() { return runScore; } };
 </script>
 </body>
 </html>
