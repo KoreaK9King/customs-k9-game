@@ -493,7 +493,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031002654';
+const BUILD = '20261031012133';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1248,7 +1248,7 @@ const UPG = [
   ['spd', '🏃 속도', '이동·달리기 속도 +3%', 5, [40, 70, 110, 160, 220]], ['nose', '👃 후각', '냄새 맡는 거리 +4%', 5, [40, 70, 110, 160, 220]], ['sta', '💪 지구력', '기력 소모 감소·회복 증가', 5, [40, 70, 110, 160, 220]],
   ['bark', '📢 짖기', '왕왕 공격 범위 +3%', 5, [40, 70, 110, 160, 220]], ['jump', '🦘 점프', '점프 높이 +2.5%', 5, [30, 50, 80, 120, 170]],
   ['heart', '❤️ 시작 하트', '작전 시작 하트 +1', 2, [150, 300]], ['armor', '🦺 방탄 조끼', '총알·부딪힘 막을 확률 +6%', 5, [50, 90, 140, 200, 270]],
-  ['magnet', '🧲 코인 자석', '코인 줍는 거리 +1m', 3, [30, 60, 100]], ['bone', '🦴 뼈다귀 연사', '뼈다귀 던지는 간격 -10%', 3, [50, 90, 140]], ['leak', '⏳ 반출 지연', '밀수품이 빠져나가는 시간 +8%', 3, [60, 110, 170]],
+  ['magnet', '🧲 코인 자석', '코인 줍는 거리 +1m', 3, [30, 60, 100]], ['bone', '🦴 뼈다귀 연사', '한 번에 뼈다귀 +1개 · 던지는 간격 -6%', 5, [50, 90, 140, 200, 270]], ['leak', '⏳ 반출 지연', '밀수품이 빠져나가는 시간 +8%', 3, [60, 110, 170]],
 ];
 function setDog(breed, name) {
   dogBreed = BREEDS[breed] ? breed : 'labrador'; dogName = name;
@@ -1373,10 +1373,14 @@ function makeBone() {
 }
 function throwBone() {
   if (handler.boneCd > 0) return;
-  handler.boneCd = (1.0 / 1.07) * (1 - .1 * (wallet.up.bone || 0)) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1); handler.throwT = .3;
-  // 탐지견이 바라보는 방향으로 똑바로 던진다 (자동 조준 없음)
-  const src = twoP ? handler : dog, fx = Math.sin(src.dir), fz = Math.cos(src.dir);
-  bones.push({ m: makeBone(), x: src.x + fx * .6, z: src.z + fz * .6, fx, fz, t: 0, range: 6 + (handlerJob === 'police' ? 2 : 0), speed: 14.4 });
+  const lv = wallet.up.bone || 0;
+  handler.boneCd = (1.0 / 1.07) * (1 - .06 * lv) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1); handler.throwT = .3;
+  // 탐지견이 바라보는 방향으로 던진다 (자동 조준 없음). 연사 레벨만큼 뼈다귀가 늘어 부채꼴로 퍼진다
+  const src = twoP ? handler : dog, n = 1 + lv, spread = .2;
+  for (let i = 0; i < n; i++) {
+    const a = src.dir + (i - (n - 1) / 2) * spread, fx = Math.sin(a), fz = Math.cos(a);
+    bones.push({ m: makeBone(), x: src.x + fx * .6, z: src.z + fz * .6, fx, fz, t: 0, range: 6 + (handlerJob === 'police' ? 2 : 0), speed: 14.4 });
+  }
   tone(520, .12, 'triangle', .1, 300);
 }
 let shots = [];
