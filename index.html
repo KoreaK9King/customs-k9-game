@@ -493,7 +493,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030224605';
+const BUILD = '20261031002654';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4075,7 +4075,8 @@ const progKey = () => 'k9prog:' + playerId;
 const getProg = () => store.get(progKey(), { unlocked: 0, best: {} });
 
 function clearWorld() {
-  world.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map?.dispose(); o.material.dispose(); } });
+  const cached = new Set(Object.values(texCache));
+  world.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.isSprite) { o.material.map?.dispose(); o.material.dispose(); } else if (o.material && o.material.map && !cached.has(o.material.map) && o.material.map.isCanvasTexture) { o.material.map.dispose(); } });
   scene.remove(world); world = new THREE.Group(); scene.add(world);
   intro = null; vanAway = null; dogM.g.visible = true; handlerM.g.visible = true; leash.visible = true;
   for (const [o, m] of occFaded) o.material = m; occFaded.clear();
@@ -4536,7 +4537,7 @@ function checkQuest() {
   levelClear();
 }
 function levelClear() {
-  state = 'clear'; SFX.quest();
+  state = 'clear'; SFX.quest(); syncProfile();
   const timeBonus = Math.max(0, Math.round(((240 + (level.sz - 1) * 325) - levelTime) * 2));
   levelScore += 300 + timeBonus;
   const coinsGot = Math.max(10, Math.round(levelScore / 30 * (level.sz || 1))); wallet.coins += coinsGot; store.set(walletKey(), wallet); try { cloudSave(); } catch { }
@@ -4604,7 +4605,7 @@ async function fetchRanking(max = 100) {
   return { list: store.get('k9rank', []).sort((a, b) => b.score - a.score || a.secs - b.secs), online: false };
 }
 function renderRanking(el, { list, online }, limit = 1e9) {
-  const rows = list.slice(0, limit).map((r, i) => `<tr class="${(r.player_id ? r.player_id === playerId : r.nick === playerNick && r.dog === dogName) ? 'me' : ''}"><td>${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${r.title ? `<small style="color:#b07a00">${esc(r.title)}</small> ` : ''}${esc(r.nick || '핸들러')} <small style="color:#8a6d3b">🐕 ${esc(r.dog || '탐지견')}</small></td><td class="n">${r.stage}/6</td><td class="n">${fmtTime(r.secs)}</td><td class="n">${r.score}</td></tr>`).join('');
+  const rows = list.slice(0, limit).map((r, i) => `<tr class="${(r.player_id ? r.player_id === playerId : r.nick === playerNick && r.dog === dogName) ? 'me' : ''}"><td>${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${r.title ? `<small style="color:#b07a00">${esc(r.title)}</small> ` : ''}${esc(r.nick || '핸들러')} ${r.dog ? '<small style="color:#8a6d3b">🐕 ' + esc(r.dog) + '</small>' : ''}</td><td class="n">${r.stage}/6</td><td class="n">${fmtTime(r.secs)}</td><td class="n">${r.score}</td></tr>`).join('');
   el.innerHTML = list.length ? `<table class="rank"><tr>${t('rk_cols').split('|').map((h, i) => `<th${i > 1 ? ' class="n"' : ''}>${h}</th>`).join('')}</tr>${rows}</table>` : '<p style="font-size:14px;color:var(--muted)">아직 기록이 없어요. 첫 번째 주인공이 되어보세요!</p>';
   if (el.id === 'rankFull') $('rankSrv').textContent = online ? `🌐 온라인 랭킹 — 1위부터 전체 ${list.length}명` : '📱 이 기기에 저장된 기록만 표시 중 (온라인 랭킹 서버 미연결)';
 }
@@ -4806,6 +4807,13 @@ let wakeLock = null;
 async function keepAwake() { try { if (!('wakeLock' in navigator) || document.hidden) return; if (wakeLock && !wakeLock.released) return; wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener?.('release', () => { wakeLock = null; }); } catch { } }
 document.addEventListener('visibilitychange', () => { if (!document.hidden) keepAwake(); });
 addEventListener('pointerdown', () => { if (!wakeLock) keepAwake(); }, { passive: true });
+// 휴대폰 메모리가 부족해 3D 화면(WebGL)을 잃으면 자동으로 다시 불러온다 (진행 상황은 이미 저장됨)
+renderer.domElement.addEventListener('webglcontextlost', e => { e.preventDefault(); try { store.set(progKey(), getProg()); store.set(walletKey(), wallet); } catch { } const d = document.createElement('div'); d.style.cssText = 'position:fixed;inset:0;z-index:300;background:#0b1f33;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Jua,sans-serif;font-size:22px;text-align:center;padding:20px'; d.textContent = '🔄 화면을 다시 불러오는 중… (진행 상황은 저장됐어요)'; document.body.appendChild(d); setTimeout(() => location.reload(), 1200); });
+// 예상 못한 오류는 화면 아래에 짧게 보여 준다 (휴대폰에서 원인 찾기용)
+{ let lastErr = 0; const showErr = msg => { if (performance.now() - lastErr < 8000) return; lastErr = performance.now(); let el = document.getElementById('errBar'); if (!el) { el = document.createElement('div'); el.id = 'errBar'; el.style.cssText = 'position:fixed;left:50%;bottom:calc(52px + var(--sb));transform:translateX(-50%);z-index:250;background:rgba(160,30,30,.92);color:#fff;font-size:12px;padding:4px 10px;border-radius:8px;max-width:80vw;pointer-events:none'; document.body.appendChild(el); } el.textContent = '⚠ 오류: ' + String(msg).slice(0, 120); el.style.display = 'block'; clearTimeout(showErr.t); showErr.t = setTimeout(() => el.style.display = 'none', 7000); };
+  addEventListener('error', e => showErr((e.message || 'error') + ' @' + (e.lineno || ''))); addEventListener('unhandledrejection', e => { const m = e.reason && (e.reason.message || e.reason); if (m && !/fetch|network|Load failed|abort/i.test(String(m))) showErr(m); }); }
+// 랭킹에 내 닉네임·탐지견 이름이 늘 최신으로 보이게 서버에 다시 알림
+function syncProfile() { try { if (serverOn() && playerPw && playerId && !String(playerId).startsWith('guest_') && /^[가-힣A-Za-z0-9 ]{1,8}$/.test(dogName) && /^[가-힣A-Za-z0-9_ ]{1,10}$/.test(playerNick || '')) rpc('set_profile', { p_id: playerId, p_pw: playerPw, p_nick: playerNick, p_dog: dogName, p_consent: true }).catch(() => { }); } catch { } }
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
@@ -4830,7 +4838,7 @@ async function login() {
   const freshDevice = !guest && !store.get('k9dog:' + v, null);
   playerId = guest ? 'guest_' + nk : v; playerNick = nk; await checkVip(guest ? '' : v); store.set('k9nick:' + v, nk); setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; if (!guest) { store.set('k9id', $('remember').checked ? v : ''); if ($('remember').checked) store.set('k9ids', [v, ...store.get('k9ids', []).filter(x => x !== v)].slice(0, 5)); } store.set('k9agree', $('agree').checked); if (!guest) store.set('k9pcons', true); runScore = 0; runActive = false;
   if (serverOn() && playerPw) rpc('set_profile', { p_id: v, p_pw: pw, p_nick: nk, p_dog: dn, p_consent: true }).catch(() => { });
-  if (serverOn() && playerPw) { const fresh = await cloudLoad(v, pw, freshDevice); if (fresh) { const dd = store.get('k9dog:' + v, null), hh = store.get('k9hand:' + v, null); if (dd) setDog(dd.breed, dd.name); if (hh) setHandlerLook(hh.job, hh.skin); playerNick = store.get('k9nick:' + v, playerNick) || playerNick; setHandlerLabel(playerNick); applyLang(); toast('☁ 다른 기기에서 쓰던 탐지견과 기록을 불러왔어요'); } loadAch(); loadWallet(); cloudSave(); }
+  if (serverOn() && playerPw) { const fresh = await cloudLoad(v, pw, freshDevice); if (fresh) { setTimeout(syncProfile, 500); const dd = store.get('k9dog:' + v, null), hh = store.get('k9hand:' + v, null); if (dd) setDog(dd.breed, dd.name); if (hh) setHandlerLook(hh.job, hh.skin); playerNick = store.get('k9nick:' + v, playerNick) || playerNick; setHandlerLabel(playerNick); applyLang(); toast('☁ 다른 기기에서 쓰던 탐지견과 기록을 불러왔어요'); } loadAch(); loadWallet(); cloudSave(); }
   if (guest) toast(t('ts_guest'));
   if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
   if (res === 'offline' && !guest) toast('📡 랭킹 서버에 연결하지 못해 이 기기에만 기록돼요');
