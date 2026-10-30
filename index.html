@@ -210,6 +210,15 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 @keyframes ssPulse{50%{transform:scale(1.05)}}
 .ss-note{margin-top:14px;font-family:'Noto Sans KR',sans-serif;font-size:min(3.2vw,15px);opacity:.9}
 @media (orientation:landscape) and (max-height:540px){.ss-logo{max-height:40px}.ss-title{font-size:min(9vh,64px);margin:0}.ss-run{height:44px;margin-bottom:6px}.ss-dog{font-size:32px}.ss-bag{font-size:26px}#btnStart{font-size:24px;padding:8px 34px}.ss-note{margin-top:8px}}
+#loadingScreen{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#21578c 0%,#122f4d 60%,#0b1f33 100%);color:#fff;text-align:center;font-family:Jua,sans-serif;padding:16px;box-sizing:border-box}
+#loadingScreen.hidden{display:none}
+.ld-ic{font-size:56px;animation:ssBob 1s ease-in-out infinite}.ld-t{font-size:min(6vw,30px);margin:6px 0 12px}
+.ld-bar{width:min(70vw,420px);height:16px;margin:0 auto;background:rgba(255,255,255,.15);border-radius:10px;overflow:hidden;border:2px solid rgba(255,255,255,.3)}
+.ld-fill{height:100%;width:0;background:linear-gradient(90deg,#f4c542,#ff9a3c);border-radius:8px;transition:width .25s}
+.ld-paw{margin-top:10px;font-size:20px;letter-spacing:6px;animation:ldPaw 1.2s steps(3) infinite}@keyframes ldPaw{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+.ld-tip{margin-top:14px;font-family:'Noto Sans KR',sans-serif;font-size:min(3.6vw,16px);opacity:.92;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.5}
+#btnStart:disabled{opacity:.6;animation:none;cursor:wait}
+@media (orientation:landscape) and (max-height:540px){.ld-ic{font-size:40px}.ld-t{font-size:22px;margin:2px 0 8px}.ld-tip{margin-top:8px;font-size:13px}}
 #rotateMsg{display:none;position:fixed;inset:0;z-index:200;background:#0b1f33;color:#fff;align-items:center;justify-content:center;text-align:center;font-family:Jua,sans-serif;padding:20px}
 .rm-ic{font-size:64px;animation:rmTurn 1.8s ease-in-out infinite}.rm-t{font-size:26px;margin-top:10px}.rm-s{font-family:'Noto Sans KR',sans-serif;font-size:14px;opacity:.85;margin-top:6px}
 @keyframes rmTurn{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
@@ -248,10 +257,11 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
   <div class="ss-sub">관세청 일일 특강 · K9 탐지견 수사 게임</div>
   <div class="ss-title">🐕 탐지견 킁킁</div>
   <div class="ss-run"><span class="ss-dog">🐕‍🦺</span><span class="ss-bag">🧳</span></div>
-  <button id="btnStart" type="button">▶ 게임 시작</button>
+  <button id="btnStart" type="button" disabled>⏳ 불러오는 중…</button>
   <div class="ss-note">📱 휴대폰은 <b>가로 화면</b>으로 플레이해요 · 소리를 켜면 더 재밌어요 🔊</div>
  </div>
 </div>
+<div id="loadingScreen" class="hidden"><div class="ld-in"><div class="ld-ic" id="ldIcon">🗺</div><div class="ld-t" id="ldTitle">출동 준비 중…</div><div class="ld-bar"><div class="ld-fill" id="ldFill"></div></div><div class="ld-paw">🐾 🐾 🐾</div><div class="ld-tip" id="ldTip"></div></div></div>
 <div id="rotateMsg"><div><div class="rm-ic">📱↻</div><div class="rm-t">휴대폰을 <b>가로로</b> 돌려 주세요</div><div class="rm-s">탐지견 킁킁은 가로 화면에서만 플레이할 수 있어요</div></div></div>
 <div id="pvModal" class="overlay hidden" style="z-index:30"><div class="card" style="max-width:640px">
  <h2 style="margin:0 0 6px">📋 개인정보(이메일) 수집·이용 안내</h2>
@@ -417,7 +427,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030212651';
+const BUILD = '20261030212814';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -4373,7 +4383,18 @@ function loadLevel(i) {
 }
 
 const scaleNums = t => level && level.sz > 1.05 ? t.replace(/(\d+)(개|정|명)/g, (m, n, u) => Math.ceil(+n * (1 + (level.sz - 1) * .42)) + u) : t;
+const LOAD_TIPS = ['💥 점프를 3번 하면 공중 덤블링! 착지하면 쿵! 주변 범인을 공격해요', '👃 [E]·[킁킁]을 누르고 있으면 숨긴 물건 냄새가 길을 알려 줘요', '🪙 맵 곳곳의 코인을 모아 업그레이드 상점에서 탐지견을 키워요', '👥 팀 방을 만들면 친구 5명까지 같은 맵을 함께 수색해요', '🦴 뼈다귀를 던지면 도망가는 범인을 멈출 수 있어요', '❤️ 하트 공을 먹으면 체력이 회복돼요', '📞 실제로 수상한 밀수품을 보면 ☎ 125 (관세청 밀수신고센터)', '🏊 바다가 있는 맵에서는 탐지견과 핸들러가 함께 수영할 수 있어요', '🛃 해외여행에서 산 물건이 면세 한도를 넘으면 세관에 자진신고해요', '🐕 진짜 관세청 탐지견은 마약·총기 냄새를 찾도록 훈련받아요'];
 function startLevel(i) {
+  if (!startLevel.go && LEVELS[i]) {
+    const L = LEVELS[i], ld = $('loadingScreen'), fill = $('ldFill');
+    $('ldIcon').textContent = L.icon || '🗺'; $('ldTitle').textContent = lang === 'ko' ? (L.name + '(으)로 출동 중…') : ((t('m' + i) || L.name) + ' 🚓 GO!'); $('ldTip').textContent = '💡 ' + pick2(LOAD_TIPS);
+    fill.style.transition = 'none'; fill.style.width = '0'; ld.classList.remove('hidden');
+    requestAnimationFrame(() => { fill.style.transition = ''; fill.style.width = '45%'; requestAnimationFrame(() => setTimeout(() => {
+      const t0 = performance.now(); startLevel.go = true; try { startLevel(i); } finally { startLevel.go = false; }
+      fill.style.width = '100%'; setTimeout(() => ld.classList.add('hidden'), Math.max(250, 700 - (performance.now() - t0)));
+    }, 60)); });
+    return;
+  }
   if (LEVELS[i].mega && !hiddenVip && !(team && team.size >= 5)) { toast('🏙 통합 도시는 5명 팀 방에서만 도전할 수 있어요! 맵 선택 화면에서 5명 방을 만들거나 참가하세요'); showMaps(); return; }
   if (LEVELS[i].landmark) { /* 명소 순찰: 작전 점수와 따로 */ }
   else if (!runActive || runCleared.has(i) || LEVELS[i].relax) { runScore = 0; runTime = 0; runStage = 0; runCleared = new Set(); totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = LEVELS[i].relax ? null : startServerRun(i); dog.hp = 3 + (wallet.up.heart || 0); }
@@ -4660,6 +4681,7 @@ const badWord = v => { const n = String(v || '').toLowerCase().replace(/[\s0-9_.
 { const upd = () => { const ok = $('agree').checked, okAcc = ok && $('pread').checked && $('pcons').checked && $('age14').checked; $('btnLogin').style.opacity = okAcc ? '' : '.45'; $('btnGuest').style.opacity = ok ? '' : '.45'; $('btnLogin').title = okAcc ? '' : '필수 항목 4곳에 체크해야 접속할 수 있어요'; };
   for (const id of ['agree', 'pread', 'pcons', 'age14']) $(id).addEventListener('change', upd); setTimeout(upd, 50); setInterval(upd, 1500); }
 // 시작 화면: 누르면 로그인 화면으로 (휴대폰은 전체 화면·가로 고정 시도 — 아이폰은 고정 불가라 회전 안내로 대신)
+$('btnStart').disabled = false; $('btnStart').textContent = '▶ 게임 시작';
 $('btnStart').onclick = async () => {
   try { ac(); actx.resume?.(); } catch { }
   if (isMobile) { try { const el = document.documentElement; if (el.requestFullscreen && !document.fullscreenElement) await el.requestFullscreen({ navigationUI: 'hide' }); } catch { } try { await screen.orientation?.lock?.('landscape'); } catch { } }
