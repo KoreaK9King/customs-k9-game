@@ -477,7 +477,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030223701';
+const BUILD = '20261030223805';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -5376,13 +5376,13 @@ function updateGuide(dt) {
   const tx = T.p ? T.p.x : T.x, tz = T.p ? T.p.z : T.z, d = Math.hypot(tx - dog.x, tz - dog.z), ang = Math.atan2(tx - dog.x, tz - dog.z);
   const col = T.k === 'drug' ? 0xffd23f : T.k === 'gun' ? 0x3fa2ff : 0xff4d4d; guideArrow.m.color.setHex(col);
   if (dog.sniffing || dog.autoSniffT > 0) { guideShowT = 6; idleSniffT = 0; } else { guideShowT -= dt; idleSniffT += dt; }
-  if (idleSniffT > 20 && !level.relax) { idleSniffT = 0; toast(lang === 'ko' ? '👃 킁킁을 눌러 보세요! 냄새가 나는 방향을 화살표로 알려줘요' : '👃 Try sniffing! An arrow will show where the scent comes from'); }
-  guideArrow.g.visible = d > 2.2 && guideShowT > 0; guideArrow.g.position.set(dog.x + Math.sin(ang) * 2, dog.y + .12 + Math.sin(time * 6) * .05, dog.z + Math.cos(ang) * 1.6); guideArrow.g.rotation.y = ang;
+  if (idleSniffT > 20 && !level.relax) { idleSniffT = 0; toast(lang === 'ko' ? '👃 킁킁을 눌러 보세요! 숨긴 물건 쪽으로 냄새 알갱이가 날아가요' : '👃 Try sniffing! Scent particles fly toward hidden items'); }
+  guideArrow.g.visible = false; // 탐지견 옆 화살표는 쓰지 않음 guideArrow.g.position.set(dog.x + Math.sin(ang) * 2, dog.y + .12 + Math.sin(time * 6) * .05, dog.z + Math.cos(ang) * 1.6); guideArrow.g.rotation.y = ang;
   const name = T.k === 'drug' ? ITEM.drug.emoji + ' ' + ITEM.drug.name : T.k === 'gun' ? ITEM.gun.emoji + ' ' + ITEM.gun.name : T.k === 'boss' ? '👑 ' + t('g_boss') : (level.crookEmoji || '🕶') + ' ' + (level.crook || '');
   const txt = (lang === 'ko' ? '🎯 다음: ' : '🎯 ') + name + ' · ' + Math.round(d) + 'm'; if (el.textContent !== txt) el.textContent = txt; el.classList.remove('hidden');
   const lt = (lang === 'ko' ? '👃 냄새 방향 · ' : '👃 Scent · ') + name + ' ' + Math.round(d) + 'm';
   if (lt !== guideLabelTxt) { guideLabelTxt = lt; if (guideLabel) disposeSprite(guideLabel); guideLabel = textSprite(lt, { h: .38, bg: 'rgba(10,25,40,.85)' }); scene.add(guideLabel); }
-  guideLabel.visible = guideArrow.g.visible; guideLabel.position.set(guideArrow.g.position.x, dog.y + 1.1, guideArrow.g.position.z);
+  guideLabel.visible = false; guideLabel.position.set(guideArrow.g.position.x, dog.y + 1.1, guideArrow.g.position.z);
   // 바로 옆이면 왕왕 버튼이 빛나며 '지금!' 신호
   const hot = (T.c && distToBox(dog.x, dog.z, T.c) < 1.8) || (T.p && d < 3.6);
   $('bBark').classList.toggle('hot', !!hot);
@@ -5391,7 +5391,7 @@ function updateGuide(dt) {
 function showGoalBig() {
   if (!level || level.relax) return; const parts = [];
   for (const k in level.need) { const n = level.need[k]; parts.push(k === 'drug' ? '🟡 ' + ITEM.drug.emoji + ' ' + ITEM.drug.name + ' ' + n + (lang === 'ko' ? '개 찾기' : '') : k === 'gun' ? '🔵 ' + ITEM.gun.emoji + ' ' + ITEM.gun.name + ' ' + n + (lang === 'ko' ? '개 찾기' : '') : k === 'boss' ? '👑 ' + t('g_boss') : '🔴 ' + (level.crookEmoji || '') + ' ' + (level.crook || '') + ' ' + n + (lang === 'ko' ? '명 잡기' : '')); }
-  const el = $('goalBig'); el.innerHTML = '<div style="color:#f4c542">' + (lang === 'ko' ? '🎯 이번 임무' : '🎯 Mission') + '</div>' + parts.join('<br>') + '<div style="font-size:.8em;margin-top:6px;opacity:.9">' + (lang === 'ko' ? '👃 킁킁을 누르면 냄새 방향 화살표가 나와요!' : '👃 Sniff to see the scent arrow!') + '</div>';
+  const el = $('goalBig'); el.innerHTML = '<div style="color:#f4c542">' + (lang === 'ko' ? '🎯 이번 임무' : '🎯 Mission') + '</div>' + parts.join('<br>') + '<div style="font-size:.8em;margin-top:6px;opacity:.9">' + (lang === 'ko' ? '👃 킁킁을 누르면 냄새가 숨긴 곳을 알려줘요!' : '👃 Sniff to find hidden items!') + '</div>';
   el.classList.remove('hidden'); clearTimeout(showGoalBig.t); showGoalBig.t = setTimeout(() => el.classList.add('hidden'), 4500);
 }
 function updateCoins(dt) {
