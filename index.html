@@ -251,6 +251,9 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 :is(body.touch,body.pc) #topbar{flex-direction:column!important;top:calc(6px + var(--st))!important;right:calc(8px + var(--sr))!important;left:auto!important;transform:none!important;gap:4px}
 :is(body.touch,body.pc) #topbar>button:not(#tbMenu){display:none}:is(body.touch,body.pc) #topbar.open>button:not(#tbMenu){display:block}
 :is(body.touch,body.pc) #topbar button{width:38px;height:34px;font-size:17px}
+:is(body.touch,body.pc) #topbar>button:is(#tbAuto,#tbCoin){display:block}
+:is(#tbAuto,#tbCoin).on{background:#f4c542!important;box-shadow:0 0 0 2px #fff,0 0 12px #ffd23f}
+#autoBadge{top:calc(36px + var(--st));left:50%;transform:translateX(-50%);background:rgba(244,197,66,.95);color:#173a5e;font-family:Jua,sans-serif;font-size:13px;padding:2px 12px;border-radius:12px;pointer-events:auto;cursor:pointer;white-space:nowrap}
 :is(body.touch,body.pc) #mmwrap{top:calc(6px + var(--st))!important;right:calc(54px + var(--sr))!important;padding:3px!important;background:rgba(12,28,44,.7)}
 :is(body.touch,body.pc) #mmwrap #info{display:none}
 :is(body.touch,body.pc) #quest,:is(body.touch,body.pc) #quest.mini{top:auto!important;left:50%!important;bottom:calc(48px + var(--sb));transform:translateX(-50%);max-width:52vw!important;padding:3px 12px!important;border-width:2px;text-align:center}
@@ -297,11 +300,11 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 
 <div id="quest" class="hud mini"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><div id="qsum"></div><p id="qdesc"></p><div id="qgoals"></div></div>
 <div id="mmwrap" class="hud mini"><button id="mmToggle" type="button">🗺 지도 보기</button><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
-<div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
+<div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><button id="tbAuto" title="자동 플레이 켜기/끄기 (P)" aria-label="자동 플레이">🤖</button><button id="tbCoin" title="코인 자동 사냥 켜기/끄기 (C)" aria-label="코인 자동 사냥">💰</button><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div>
 <div id="mission" class="hud hidden"></div>
-<div id="mpCount" class="hud"></div><div id="sniffLegend" class="hud hidden"></div><div id="guide" class="hud hidden"></div><div id="goalBig" class="hud hidden"></div>
+<div id="mpCount" class="hud"></div><div id="sniffLegend" class="hud hidden"></div><div id="autoBadge" class="hud hidden">🤖 자동 플레이 중 · 누르면 끄기</div><div id="guide" class="hud hidden"></div><div id="goalBig" class="hud hidden"></div>
 <div id="combo" class="hud"></div>
 <div id="photoBar" class="hidden"><button class="big alt" data-pose="4.1">🐕 앉기</button><button class="big alt" data-pose="32.1">🐾 손</button><button class="big alt" data-pose="53.1">💗 배</button><button class="big alt" data-pose="60.1">🪢 터그</button><button class="big alt" data-pose="67.1">💕 장난</button><button class="big alt" data-pose="39.1">🌀 빙글</button><button class="big" id="btnSnap">📷 찰칵!</button><button class="big alt" id="btnPhotoExit">닫기</button></div>
 <div id="keys" class="hud"><b>WASD</b> 이동 · <b>Shift</b> 달리기 · <b>Space</b> 점프 · <b>E</b>(꾹) 냄새 · <b>F</b> 왕왕 · <b>Q</b> 뼈다귀<br>마우스 드래그 / <b>←→</b> 시점 회전 · 휠 줌</div>
@@ -493,7 +496,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031012133';
+const BUILD = '20261031013513';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1246,7 +1249,7 @@ const ST = () => { const b = BREEDS[dogBreed].stat, u = wallet.up, k = .5; retur
 // [키, 이름, 설명, 최대 레벨, 레벨별 가격]
 const UPG = [
   ['spd', '🏃 속도', '이동·달리기 속도 +3%', 5, [40, 70, 110, 160, 220]], ['nose', '👃 후각', '냄새 맡는 거리 +4%', 5, [40, 70, 110, 160, 220]], ['sta', '💪 지구력', '기력 소모 감소·회복 증가', 5, [40, 70, 110, 160, 220]],
-  ['bark', '📢 짖기', '왕왕 공격 범위 +3%', 5, [40, 70, 110, 160, 220]], ['jump', '🦘 점프', '점프 높이 +2.5%', 5, [30, 50, 80, 120, 170]],
+  ['bark', '📢 짖기', '왕왕 공격 범위 +10% · 물건 찾는 거리 +6%', 5, [40, 70, 110, 160, 220]], ['jump', '🦘 점프', '점프 높이 +2.5%', 5, [30, 50, 80, 120, 170]],
   ['heart', '❤️ 시작 하트', '작전 시작 하트 +1', 2, [150, 300]], ['armor', '🦺 방탄 조끼', '총알·부딪힘 막을 확률 +6%', 5, [50, 90, 140, 200, 270]],
   ['magnet', '🧲 코인 자석', '코인 줍는 거리 +1m', 3, [30, 60, 100]], ['bone', '🦴 뼈다귀 연사', '한 번에 뼈다귀 +1개 · 던지는 간격 -6%', 5, [50, 90, 140, 200, 270]], ['leak', '⏳ 반출 지연', '밀수품이 빠져나가는 시간 +8%', 3, [60, 110, 170]],
 ];
@@ -1414,7 +1417,11 @@ function updateBones(dt) {
     if (box) {
       box.wobble = .4;
       if (box.hidden) reveal(box);
-      else { box.boned = true; floatText(`🦴 ${placeOf(box)}: 이상 없음`, b.x, box.topY + 1, b.z, { h: .42, color: '#cfe8ff' }); }
+      else {
+        // 왕왕처럼 깨지는 물건은 부서진다 (뼈다귀는 오탐 감점·부상 없음)
+        box.boned = true; box.checked = true; floatText(`🦴 ${placeOf(box)}: 이상 없음`, b.x, box.topY + 1, b.z, { h: .42, color: '#cfe8ff' });
+        if (['bag', 'crate', 'parcel', 'item'].includes(box.kind)) shatter(box);
+      }
       continue;
     }
     if (!hit) continue;
@@ -4994,19 +5001,20 @@ function updateDebris(dt) {
 }
 function bark() {
   if (mp) mp.ch.send({ type: 'broadcast', event: 'bark', payload: { k: mp.key } });
-  const BR = .8 + .06 * ST().bark;
+  // 왕왕 범위: 견종 능력치 + 업그레이드 레벨마다 +10%
+  const BR = (.8 + .06 * ST().bark) * (1 + .1 * (wallet.up.bark || 0));
   const AS = 1.3 - .06 * ST().bark; // 짖기 능력치가 높을수록 공격 간격이 짧다
   dog.barkCd = .375 * AS; dog.barkAnim = .22; SFX.bark();
   const hx = dog.x + Math.sin(dog.dir) * .9, hz = dog.z + Math.cos(dog.dir) * .9;
   floatText('왕왕!', hx, dog.y + 1.8, hz, { h: .55 });
-  for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; spawnP(hx, dog.y + 1, hz, Math.cos(a) * 5, .6, Math.sin(a) * 5, WHITE, .35); }
+  for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; spawnP(hx, dog.y + 1, hz, Math.cos(a) * 5 * BR, .6, Math.sin(a) * 5 * BR, WHITE, .35); }
   for (const p of people) {
     if (p.dead || p.arrested || p.vip) continue;
     const d = Math.hypot(p.x - dog.x, p.z - dog.z);
     if (p.villain && d < 4.5 * BR) { if (d < 4 * BR && !(p.barkHit > time)) { p.barkHit = time + 1.0 * AS; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
     else if (!p.villain && d < 3) p.stun = Math.max(p.stun, .3);
   }
-  let best = null, bd = 1.8;
+  let best = null, bd = 1.8 * (1 + .06 * (wallet.up.bark || 0));
   for (const c of hidden) { if (c.revealed) continue; const d = distToBox(dog.x, dog.z, c); if (d < bd) { bd = d; best = c; } }
   if (best) return reveal(best);
   for (const c of colliders) {
@@ -5076,6 +5084,146 @@ $('bBark').addEventListener('pointerdown', e => { e.preventDefault(); if (state 
 $('bBone').addEventListener('pointerdown', e => { e.preventDefault(); if (state === 'play') throwBone(); });
 $('bJump').addEventListener('pointerdown', e => { e.preventDefault(); if (state === 'play') jumpQ = true; });
 
+// ================= 자동 플레이 (초보자 수준) =================
+// 사람이 하듯이: 위쪽 '🎯 다음' 안내 쪽으로 헤매며 걷다가 가끔 킁킁, 냄새 표시가 뜬 물건 옆에서 왕왕, 범인은 거리를 두고 짖거나 뼈다귀.
+// 죽지 않을 만큼만 조심한다: 조준(🔫 !)·주먹(😠 !)·폭탄·차량을 피하고, 체력이 낮으면 공을 주우러 간다.
+const auto = { on: false, mode: 'play', mx: 0, mz: 0, sniff: false, run: false, think: 0, goal: null, noise: 0, sniffT: 0, sniffCd: 3, pauseT: 0, pauseCd: 12, lx: 0, lz: 0, stuckT: 0, detourT: 0, dvx: 0, dvz: 0, boneCd: 0, dlgT: 0 };
+const needLeft = k => level.need && level.need[k] && (lvStats[k] || 0) < level.need[k];
+function autoSafeBark() {
+  // 깨끗한 물건 바로 옆에서 짖으면 오탐(부상)이므로, 숨긴 물건이 가깝지 않으면 깨끗한 물건 옆에서는 짖지 않는다
+  if (dog.barkCd > 0) return;
+  if (hidden.some(c => !c.revealed && distToBox(dog.x, dog.z, c) < 1.8)) { barkQ = true; return; }
+  if (colliders.some(c => c.search && !c.checked && !c.revealed && distToBox(dog.x, dog.z, c) < 1.25)) return;
+  barkQ = true;
+}
+function autoBoneClear(p) {
+  // 뼈다귀가 날아갈 길에 시민이 있으면 던지지 않는다
+  const ux = Math.sin(dog.dir), uz = Math.cos(dog.dir);
+  for (const q of people) {
+    if (q === p || q.dead || q.arrested || q.villain) continue;
+    const rx = q.x - dog.x, rz = q.z - dog.z, a = rx * ux + rz * uz;
+    if (a > -.5 && a < 8 && Math.abs(rx * uz - rz * ux) < 2.4) return false;
+  }
+  return true;
+}
+function autoPlay(dt) {
+  auto.mx = auto.mz = 0; auto.sniff = false; auto.run = false;
+  if (state !== 'play' || !level || level.relax) return;
+  auto.think -= dt; auto.boneCd -= dt; auto.sniffCd -= dt; auto.pauseCd -= dt; auto.noise += mr(-1, 1) * dt * 1.5; auto.noise = clamp(auto.noise, -.35, .35);
+  let ax = 0, az = 0, danger = 0;
+  // 1) 위험 피하기
+  for (const B of bombs) { const dx = dog.x - B.x, dz = dog.z - B.z, d = Math.hypot(dx, dz) || .1; if (d < 3.4) { ax += dx / d * 2; az += dz / d * 2; danger++; } }
+  for (const v of vehicles) {
+    if (!(v.cur > .5)) continue;
+    const fx = Math.sin(v.dir), fz = Math.cos(v.dir), rx = dog.x - v.x, rz = dog.z - v.z, a = rx * fx + rz * fz, sd = rx * fz - rz * fx;
+    if (a > -(v.len || 4) / 2 && a < (v.len || 4) / 2 + 4 && Math.abs(sd) < (v.wid || 2) / 2 + 1.6) { const s = sd >= 0 ? 1 : -1; ax += fz * s * 1.5; az += -fx * s * 1.5; danger++; }
+  }
+  const foes = people.filter(p => p.villain && !p.dead && !p.arrested && !p.vip);
+  for (const p of foes) {
+    const dx = dog.x - p.x, dz = dog.z - p.z, d = Math.hypot(dx, dz) || .1;
+    if (p.windup > 0 && d < 3.2) { ax += dx / d * 2.2; az += dz / d * 2.2; danger++; }
+    if (!(p.aim > 0)) p._autoAim = false;
+    else if (d < 17) {
+      // 초보자라 늘 피하지는 못하지만, 체력이 적으면 꼭 옆으로 피한다 (조준 한 번에 한 번만 판단)
+      if (!p._autoAim) { p._autoAim = true; p._autoDodge = auto.mode === 'coin' || dog.hp <= 2 || Math.random() < .6; p._autoSide = Math.random() < .5 ? 1 : -1; }
+      if (p._autoDodge) { ax += -dz / d * p._autoSide * 2; az += dx / d * p._autoSide * 2; danger++; auto.run = true; }
+    }
+  }
+  // 코인 사냥 고수는 범인에게 붙지 않는다
+  if (auto.mode === 'coin') for (const p of foes) { const dx = dog.x - p.x, dz = dog.z - p.z, d = Math.hypot(dx, dz) || .1; if (d < 3.5) { ax += dx / d * 1.5; az += dz / d * 1.5; danger++; } }
+  if (danger) { auto.mx = ax; auto.mz = az; return; }
+  if (auto.mode === 'coin') return coinHunt(dt);
+  // 2) 목표 정하기 (0.35초마다 생각)
+  if (auto.think <= 0) {
+    auto.think = .35;
+    let g = null;
+    if (dog.hp <= 2) { let bd = 28; for (const b of balls) { if (b.got) continue; const d = Math.hypot(b.x - dog.x, b.z - dog.z); if (d < bd) { bd = d; g = { t: 'ball', x: b.x, z: b.z }; } } }
+    if (!g) { let bd = dog.hp <= 1 ? 9 : 15; for (const p of foes) { if (!(needLeft(p.kind) || p.kind === 'smuggler' || p.kind === 'boss')) continue; const d = Math.hypot(p.x - dog.x, p.z - dog.z); if (d < bd) { bd = d; g = { t: 'foe', p }; } } }
+    if (!g) { let bd = 1e9; for (const c of hidden) { if (c.revealed || !c.mk || !needLeft(c.hidden)) continue; const q = center(c), d = Math.hypot(q.x - dog.x, q.z - dog.z); if (d < bd) { bd = d; g = { t: 'item', c, x: q.x, z: q.z }; } } }
+    if (!g) {
+      const T = nextTarget();
+      if (T) {
+        // 안내 거리만 보고 대충 그쪽으로: 가까워질수록 정확해진다
+        const far = Math.min(10, T.d * .35), w = auto.goal && auto.goal.t === 'roam' && auto.goal.k === T.k && Math.hypot(auto.goal.x - dog.x, auto.goal.z - dog.z) > 2 ? auto.goal : null;
+        g = w || { t: 'roam', k: T.k, x: (T.p ? T.p.x : T.x) + mr(-far, far), z: (T.p ? T.p.z : T.z) + mr(-far, far) };
+        if (T.p && T.d < 16) g = { t: 'foe', p: T.p };
+      }
+    }
+    auto.goal = g;
+  }
+  const g = auto.goal; if (!g) return;
+  // 가끔 멈춰서 둘러보고, 물건을 모르면 킁킁
+  if (auto.pauseT > 0) { auto.pauseT -= dt; return; }
+  if (auto.pauseCd <= 0 && g.t === 'roam') { auto.pauseCd = mr(10, 18); auto.pauseT = mr(.4, .9); return; }
+  if (auto.sniffT > 0) { auto.sniffT -= dt; auto.sniff = true; return; }
+  if (g.t === 'roam' && auto.sniffCd <= 0) { auto.sniffCd = mr(3.5, 6.5); auto.sniffT = mr(1, 1.6); return; }
+  let tx, tz, stop = .6;
+  if (g.t === 'foe') {
+    const p = g.p; if (p.dead || p.arrested) { auto.think = 0; return; }
+    const d = Math.hypot(p.x - dog.x, p.z - dog.z);
+    // 주먹이 닿지 않는 거리(약 3m)에서 짖고, 너무 붙으면 물러난다
+    if (d < 2.4) { auto.mx = (dog.x - p.x) / d; auto.mz = (dog.z - p.z) / d; return; }
+    if (d < 3.7) { autoSafeBark(); dog.dir += angDiff(dog.dir, Math.atan2(p.x - dog.x, p.z - dog.z)) * Math.min(1, dt * 8); return; }
+    if (d < 7 && auto.boneCd <= 0 && Math.abs(angDiff(dog.dir, Math.atan2(p.x - dog.x, p.z - dog.z))) < .3 && autoBoneClear(p)) { throwBone(); auto.boneCd = mr(.8, 1.6); }
+    tx = p.x; tz = p.z; stop = 3.2; if (d > 12 && dog.stamina > 45) auto.run = true;
+  } else if (g.t === 'item') {
+    if (g.c.revealed) { auto.think = 0; return; }
+    if (distToBox(dog.x, dog.z, g.c) < 1.3) { autoSafeBark(); return; }
+    tx = g.x; tz = g.z; stop = 0;
+  } else { tx = g.x; tz = g.z; if (Math.hypot(tx - dog.x, tz - dog.z) > 18 && dog.stamina > 55) auto.run = true; }
+  let dx = tx - dog.x, dz = tz - dog.z; const d = Math.hypot(dx, dz);
+  if (d < stop) { if (g.t === 'roam') { auto.goal = null; auto.sniffCd = 0; } return; }
+  // 사람처럼 약간 비틀거리며 걷기
+  const a = Math.atan2(dx, dz) + (g.t === 'item' ? 0 : auto.noise); dx = Math.sin(a); dz = Math.cos(a);
+  // 막히면 점프하고 옆으로 돌아간다
+  auto.stuckT += dt;
+  if (auto.stuckT > 1) { const moved = Math.hypot(dog.x - auto.lx, dog.z - auto.lz); auto.stuckT = 0; auto.lx = dog.x; auto.lz = dog.z; if (moved < .6 && auto.detourT <= 0) { const s = Math.random() < .5 ? 1 : -1; auto.dvx = -dz * s + dx * .3; auto.dvz = dx * s + dz * .3; auto.detourT = mr(.8, 1.5); jumpQ = true; } }
+  if (auto.detourT > 0) { auto.detourT -= dt; dx = auto.dvx; dz = auto.dvz; }
+  auto.mx = dx; auto.mz = dz;
+}
+// 코인 자동 사냥 (최고 등급 플레이어처럼): 값과 거리로 다음 두 개까지 내다보고 최단 경로로, 기력 관리하며 전력 질주
+function coinScore(c, fx, fz) { const d = Math.hypot(c.x - fx, c.z - fz); return c.v / (d + 1.5); }
+function coinHunt(dt) {
+  auto.think -= dt;
+  if (auto.think <= 0 || !auto.goal || !coins.includes(auto.goal.c)) {
+    auto.think = .15; let best = null, bs = -1;
+    for (const c of coins) {
+      // 한 수 앞: 이 코인 다음에 주울 코인까지 합쳐서 고른다
+      let nx = 0; for (const c2 of coins) if (c2 !== c) nx = Math.max(nx, coinScore(c2, c.x, c.z));
+      const s = coinScore(c, dog.x, dog.z) + nx * .6; if (s > bs) { bs = s; best = c; }
+    }
+    auto.goal = best ? { t: 'coin', c: best } : null;
+  }
+  const g = auto.goal;
+  // 코인이 없으면 맵 가운데 쪽에서 다음 코인을 기다린다
+  const tx = g ? g.c.x : (level.bounds.minX + level.bounds.maxX) / 2, tz = g ? g.c.z : (level.bounds.minZ + level.bounds.maxZ) / 2;
+  let dx = tx - dog.x, dz = tz - dog.z; const d = Math.hypot(dx, dz);
+  if (!g && d < 4) return;
+  dx /= d || 1; dz /= d || 1;
+  // 기력: 먼 거리는 달리고, 바닥나기 전에 걸으며 회복 (25 아래면 60까지 걷기)
+  if (dog.stamina < 25) auto.rest = true; else if (dog.stamina > 60) auto.rest = false;
+  auto.run = !auto.rest && d > 3;
+  // 막히면 바로 점프하고 옆으로 돌아간다 (고수는 반응이 빠르다)
+  auto.stuckT += dt;
+  if (auto.stuckT > .5) { const moved = Math.hypot(dog.x - auto.lx, dog.z - auto.lz); auto.stuckT = 0; auto.lx = dog.x; auto.lz = dog.z; if (moved < .5 && auto.detourT <= 0) { const s = (dx * (dog.z - tz) - dz * (dog.x - tx)) > 0 ? 1 : -1; auto.dvx = -dz * s + dx * .4; auto.dvz = dx * s + dz * .4; auto.detourT = .6; jumpQ = true; } }
+  if (auto.detourT > 0) { auto.detourT -= dt; dx = auto.dvx; dz = auto.dvz; }
+  auto.mx = dx; auto.mz = dz;
+}
+function setAuto(on, mode = 'play') {
+  auto.on = on; auto.mode = mode; auto.goal = null; auto.think = 0; auto.rest = false;
+  const b = $('autoBadge'); b.classList.toggle('hidden', !on);
+  b.textContent = mode === 'coin' ? '💰 코인 자동 사냥 중 · 누르면 끄기' : '🤖 자동 플레이 중 · 누르면 끄기';
+  $('tbAuto').classList.toggle('on', on && mode === 'play'); $('tbCoin').classList.toggle('on', on && mode === 'coin');
+  toast(!on ? '⏹ 자동 꺼짐' : mode === 'coin' ? '💰 코인 자동 사냥 켜짐 (C 키 / 💰 다시 누르면 꺼짐)' : '🤖 자동 플레이 켜짐 (P 키 / 🤖 다시 누르면 꺼짐) · 조작하면 그동안은 내가 움직여요');
+}
+const toggleAuto = mode => setAuto(!(auto.on && auto.mode === mode), mode);
+// 자동 플레이 중에는 안내 대화창도 사람처럼 잠깐 읽고 넘긴다
+$('tbAuto').addEventListener('click', e => { e.stopPropagation(); toggleAuto('play'); });
+$('tbCoin').addEventListener('click', e => { e.stopPropagation(); toggleAuto('coin'); });
+addEventListener('keydown', e => { if (e.repeat || e.target.tagName === 'INPUT' || state !== 'play') return; if (e.code === 'KeyP') toggleAuto('play'); if (e.code === 'KeyC') toggleAuto('coin'); });
+$('autoBadge').addEventListener('click', () => setAuto(false));
+setInterval(() => { if (!auto.on) return; if (state === 'howto' && !$('howto').classList.contains('hidden')) { auto.dlgT += .5; if (auto.dlgT >= 2.5) { auto.dlgT = 0; $('btnHowtoOk').click(); } } else if (state === 'dialog') { auto.dlgT += .5; if (auto.dlgT >= 2.5) { auto.dlgT = 0; closeDialog(); } } else auto.dlgT = 0; }, 500);
+
 // ================= 강아지 업데이트 =================
 let scentShown = 0;
 function updateDog(dt) {
@@ -5084,9 +5232,12 @@ function updateDog(dt) {
   if (!twoP) { if (keys.ArrowLeft) yaw += dt * 2; if (keys.ArrowRight) yaw -= dt * 2; if (keys.ArrowUp) iy += 1; if (keys.ArrowDown) iy -= 1; }
   const fx = -Math.sin(yaw), fz = -Math.cos(yaw), rx = -fz, rz = fx;
   let mx = rx * ix + fx * iy, mz = rz * ix + fz * iy;
+  // 자동 플레이: 사람이 조작하지 않을 때만 대신 움직인다
+  const autoOn = auto.on && !twoP && Math.abs(ix) + Math.abs(iy) < .05;
+  if (autoOn) { autoPlay(dt); mx = auto.mx; mz = auto.mz; }
   const len = Math.hypot(mx, mz); if (len > 1) { mx /= len; mz /= len; }
-  dog.sniffing = !!(keys.KeyE || touchIn.sniff) && dog.grounded;
-  const sprint = (keys.ShiftLeft || (!twoP && keys.ShiftRight) || touchIn.run || Math.hypot(touchIn.x, touchIn.y) > .93) && dog.stamina > 3 && len > .1 && !dog.sniffing;
+  dog.sniffing = !!(keys.KeyE || touchIn.sniff || (autoOn && auto.sniff)) && dog.grounded;
+  const sprint = (keys.ShiftLeft || (!twoP && keys.ShiftRight) || touchIn.run || Math.hypot(touchIn.x, touchIn.y) > .93 || (autoOn && auto.run)) && dog.stamina > 3 && len > .1 && !dog.sniffing;
   dog.stamina = clamp(dog.stamina + (sprint ? -24 * (1.4 - .1 * ST().sta) * (handlerJob === 'soldier' ? .8 : 1) : 14 * (.7 + .1 * ST().sta)) * dt, 0, 100);
   dog.boost -= dt; dog.hurt -= dt;
   const maxSp = (dog.swim ? (handlerJob === 'rescue' ? .87 : .62) : 1) * 1.07 * (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (.85 + .06 * ST().spd) * (level ? 1 + (level.sz - 1) * .22 : 1);
