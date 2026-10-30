@@ -477,9 +477,10 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030223805';
+const BUILD = '20261030224146';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
-(async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
+window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
+window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { } if (typeof cloudTouch === 'function') cloudTouch(k); },
@@ -3740,7 +3741,7 @@ async function lobbyJoin() {
     const sb = createClient(RANK_CFG.url, SB_ANON), key = Math.random().toString(36).slice(2, 10);
     const ch = sb.channel('k9-lobby', { config: { presence: { key } } }); Object.assign(lobby, { sb, ch, key });
     ch.on('broadcast', { event: 'closeRoom' }, ({ payload }) => { if (team && payload && payload.code === team.code && !team.host) { $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); toast('🗑 방장이 방을 삭제했어요. 혼자 플레이로 바뀌었어요'); } lobbyRooms = lobbyRooms.filter(r => r.code !== (payload && payload.code)); renderRooms(); })
-      .on('presence', { event: 'sync' }, () => { const R = {}; for (const v of Object.values(ch.presenceState())) { const e = v[0]; if (!e || !e.code) continue; const r = R[e.code] || (R[e.code] = { code: e.code, size: e.size, n: 0, host: e.nick, map: e.map, t: e.t, nicks: [], hmap: null }); r.n++; r.nicks.push(String(e.nick || '').replace(/[<>&"]/g, '')); if (e.h) { r.hostFixed = true; r.host = e.nick; if (e.map !== null && e.map !== undefined) r.hmap = e.map; } if (e.t < r.t) { r.t = e.t; if (!r.hostFixed) r.host = e.nick; } if (e.map !== null && e.map !== undefined) r.map = e.map; } lobbyRooms = Object.values(R).sort((a, b) => a.t - b.t); renderRooms(); if (team && !team.host && state === 'maps') { const rr = lobbyRooms.find(q => q.code === team.code), hm = rr && rr.hmap; if (hm !== null && hm !== undefined && LEVELS[hm] && team.follow !== hm) { team.follow = hm; toast('👥 방장이 고른 맵으로 접속해요!'); setTimeout(() => { if (team && state === 'maps') startLevel(hm); }, 700); } } })
+      .on('presence', { event: 'sync' }, () => { const R = {}; for (const v of Object.values(ch.presenceState())) { const e = v[0]; if (!e || !e.code) continue; const r = R[e.code] || (R[e.code] = { code: e.code, size: e.size, n: 0, host: e.nick, map: e.map, t: e.t, nicks: [], hmap: null }); r.n++; r.nicks.push(String(e.nick || '').replace(/[<>&"]/g, '')); if (e.h) { r.hostFixed = true; r.host = e.nick; if (e.map !== null && e.map !== undefined) r.hmap = e.map; } if (e.t < r.t) { r.t = e.t; if (!r.hostFixed) r.host = e.nick; } if (e.map !== null && e.map !== undefined) r.map = e.map; } lobbyRooms = Object.values(R).sort((a, b) => a.t - b.t); renderRooms(); kickRanks(); if (team && !team.host && state === 'maps') { const rr = lobbyRooms.find(q => q.code === team.code), hm = rr && rr.hmap; if (hm !== null && hm !== undefined && LEVELS[hm] && team.follow !== hm) { team.follow = hm; toast('👥 방장이 고른 맵으로 접속해요!'); setTimeout(() => { if (team && state === 'maps') startLevel(hm); }, 700); } } })
       .subscribe(st => { if (st === 'SUBSCRIBED') { lobby.on = true; lobbyTrack(); } });
   } catch { }
 }
@@ -4771,6 +4772,18 @@ if (!isMobile) document.body.classList.add('pc');
 $('bars').appendChild($('info'));
 $('tbMenu').onclick = () => $('topbar').classList.toggle('open');
 for (const b of document.querySelectorAll('#topbar button:not(#tbMenu)')) b.addEventListener('click', () => $('topbar').classList.remove('open'));
+{ let tapT = 0;
+  document.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') return; const b = e.target.closest && e.target.closest('#topbar button, #mmToggle'); if (!b) return; e.preventDefault(); tapT = performance.now(); b.click(); }, true);
+  document.addEventListener('click', e => { if (e.isTrusted && performance.now() - tapT < 600 && e.target.closest && e.target.closest('#topbar button, #mmToggle')) { e.stopPropagation(); e.preventDefault(); } }, true); }
+// 랭킹은 늘 최신으로: 화면에 보이는 랭킹을 15초마다·새 사람이 들어올 때 새로 받아온다
+async function refreshRanks() {
+  try {
+    if (!$('login').classList.contains('hidden')) renderRanking($('rankMini'), await fetchRanking(100));
+    if (!$('rank').classList.contains('hidden')) renderRanking($('rankFull'), await fetchRanking(1000));
+  } catch { }
+}
+setInterval(refreshRanks, 15000);
+let rankKick = null; const kickRanks = () => { clearTimeout(rankKick); rankKick = setTimeout(refreshRanks, 2500); };
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
