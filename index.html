@@ -393,7 +393,7 @@ body.touch #sniffLegend{bottom:auto;top:calc(8px + var(--st));font-size:13px}
   <kbd>F</kbd><span>🐕 왕왕 짖기 — 수상한 물건 옆이면 적발! 가까운 밀수범은 놀라 멈추고 체력 -1, +30점</span>
   <kbd>Q</kbd><span>🦴 핸들러가 뼈다귀를 앞으로 가까이(6m) 던지기 — 밀수범은 체력 -1(+30점), 가방·상자를 맞히면 속을 검사해요</span>
   <kbd>👥 2인 모드</kbd><span>P1 탐지견: WASD·왼쪽 Shift·Space·E·F / P2 핸들러: 방향키 이동 · Enter 뼈다귀 (목줄 5m)</span>
-  <kbd>마우스 드래그</kbd><span>카메라 회전 (휠: 줌) · 🗺 일시정지 · 🔄 다시 시작 · 📸 사진</span>
+  <kbd>마우스 드래그</kbd><span>카메라 회전 (휠: 줌) · 🗺 일시정지 · 🔄 다시 시작 · 📸 사진</span><kbd>마우스 클릭</kbd><span>왼쪽 = 🐕 왕왕 공격 · 가운데(휠) 누르기 = 👃 킁킁 · 오른쪽 = 🦴 뼈다귀</span>
  </div>
  <div class="ctl touchonly">
   <kbd>조이스틱</kbd><span>이동</span><kbd>조이스틱 끝까지</kbd><span>밀면 달려요</span><kbd>점프</kbd><span>상자 위로 뛰어오르기</span>
@@ -455,7 +455,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030214241';
+const BUILD = '20261030215425';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -485,7 +485,7 @@ const DICT = {
     mp_h1: 'Choose your patrol area', mp_p: 'Clear the maps in order to add up your score for the ranking. Clearing a map unlocks the next one.',
     b_rank: '🏆 Ranking', b_logout: 'Change ID', b_resume: '▶ Back to game', b_restart: '🔄 Restart this map',
     ht_sub: 'Pre-mission briefing', ht_h1: '🐕‍🦺 How to play', ht_p: 'You control the <b>detector dog</b>. Your <b>handler</b> holds the leash and stays with you. The dog sniffs, and the team catches smugglers together.',
-    ht_ctl: '<kbd>W A S D</kbd><span>Move (push bags and boxes)</span><kbd>Shift</kbd><span>Run</span><kbd>Space</kbd><span>Jump · press again in the air for a double jump</span><kbd>E (hold)</kbd><span>Sniff — scent particles lead to hidden items; smugglers get a red mark</span><kbd>F</kbd><span>🐕 Bark — find items next to you, stun and hit smugglers</span><kbd>Q</kbd><span>🦴 Handler throws a bone forward</span><kbd>Mouse drag</kbd><span>Rotate camera (wheel: zoom) · 🗺 pause · 🔄 restart · 📸 photo</span>',
+    ht_ctl: '<kbd>W A S D</kbd><span>Move (push bags and boxes)</span><kbd>Shift</kbd><span>Run</span><kbd>Space</kbd><span>Jump · press again in the air for a double jump</span><kbd>E (hold)</kbd><span>Sniff — scent particles lead to hidden items; smugglers get a red mark</span><kbd>F</kbd><span>🐕 Bark — find items next to you, stun and hit smugglers</span><kbd>Q</kbd><span>🦴 Handler throws a bone forward</span><kbd>Mouse drag</kbd><span>Rotate camera (wheel: zoom) · 🗺 pause · 🔄 restart · 📸 photo</span><kbd>Mouse click</kbd><span>Left = 🐕 Bark · Middle (hold) = 👃 Sniff · Right = 🦴 Bone</span>',
     ht_touch: '<kbd>Joystick</kbd><span>Move</span><kbd>Joystick (all the way)</kbd><span>Run</span><kbd>Jump</kbd><span>Jump on boxes</span><kbd>Sniff</kbd><span>Hold to sniff</span><kbd>Bark</kbd><span>Find items / hit smugglers</span><kbd>🦴</kbd><span>Throw a bone</span><kbd>Drag / pinch</kbd><span>Rotate / zoom camera</span>',
     ht_rules: '❤️ Start with 3 hearts (up to 7). Wrong alerts, hitting people, vehicles and bombs cost hearts. 🎾 Balls heal you!',
     ht_ok: 'Got it! Let\'s go!', dk_ok: 'Got it! Woof!', cl_next: 'Next map ▶', cl_maps: 'Map select', rk_sub: 'Player ranking', rk_h1: '🏆 Hall of Fame', rk_close: 'Close',
@@ -4940,7 +4940,7 @@ function bark() {
 // ================= 입력 =================
 let keys = {}, barkQ = false, jumpQ = false, dragging = null;
 // 맵에 들어갈 때 기본 시점(조금 높게 내려다보기), 그 뒤엔 휠·두 손가락으로 줌 아웃 가능
-const CAM0 = { dist: 11.5, pitch: .52 };
+const CAM0 = { dist: 17, pitch: .62 };
 let yaw = 0, pitch = CAM0.pitch, camDist = CAM0.dist;
 const touchIn = { x: 0, y: 0, sniff: false, run: false };
 addEventListener('keydown', e => {
@@ -4973,6 +4973,12 @@ const ptrEnd = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null;
 cvs.addEventListener('pointerup', ptrEnd); cvs.addEventListener('pointercancel', ptrEnd);
 cvs.addEventListener('wheel', e => { camDist = clamp(camDist + e.deltaY * .012, 4.5, 42); }, { passive: true });
 cvs.addEventListener('contextmenu', e => e.preventDefault());
+// 마우스: 왼쪽 클릭(끌지 않고) = 왕왕 공격 · 가운데(휠) 버튼 누르고 있기 = 킁킁 · 오른쪽 클릭 = 뼈다귀 던지기 (왼쪽 끌기는 카메라 회전)
+const mDown = {};
+cvs.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; mDown[e.button] = { x: e.clientX, y: e.clientY }; if (e.button === 1) { e.preventDefault(); keys.KeyE = true; } if (e.button === 2 && state === 'play') throwBone(); });
+cvs.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') return; const d = mDown[e.button]; delete mDown[e.button]; if (e.button === 1) keys.KeyE = false; if (e.button === 0 && d && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6 && state === 'play') barkQ = true; });
+cvs.addEventListener('auxclick', e => e.preventDefault());
+addEventListener('blur', () => { keys.KeyE = false; });
 const joy = $('joy'), knob = $('knob'); let joyId = null;
 function joyMove(e) {
   const r = joy.getBoundingClientRect(); let dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
