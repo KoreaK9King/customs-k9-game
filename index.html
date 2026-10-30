@@ -272,6 +272,22 @@ body.pc #howto .ctl{grid-template-columns:auto 1fr auto 1fr;gap:5px 10px;font-si
 body.pc #goalBig{font-size:18px;top:11%}
 body.pc #bars{bottom:calc(10px + var(--sb))}
 body.pc #keys{display:none}
+
+/* 화면 간결하게: 위쪽 한 줄(다음 목표 또는 돌발 미션), 아래쪽 한 막대(목표 진행·하트·기력·점수) */
+:is(body.touch,body.pc) #quest{display:none!important}
+:is(body.touch,body.pc) #sniffLegend{display:none!important}
+:is(body.touch,body.pc) #bars #qsum{display:block;font-family:Jua,sans-serif;font-size:13px;color:#ffe08a;white-space:nowrap;margin-right:4px}
+:is(body.touch,body.pc) #mission{top:calc(6px + var(--st))!important;font-size:13px!important;padding:3px 12px!important}
+:is(body.touch,body.pc) #combo{top:calc(40px + var(--st))!important;font-size:16px!important}
+body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}body.touch #bars{gap:6px!important}
+/* 조작 버튼을 양쪽 끝으로 */
+@media (pointer:coarse) and (orientation:landscape){
+ body.touch #joy{left:calc(4px + var(--sl))!important;bottom:calc(4px + var(--sb))!important}
+ body.touch #bBark{right:calc(6px + var(--sr))!important;bottom:calc(6px + var(--sb))!important;width:78px!important;height:78px!important}
+ body.touch #bJump{right:calc(92px + var(--sr))!important;bottom:calc(2px + var(--sb))!important;width:58px!important;height:58px!important}
+ body.touch #bSniff{right:calc(12px + var(--sr))!important;bottom:calc(92px + var(--sb))!important;width:58px!important;height:58px!important}
+ body.touch #bBone{right:calc(84px + var(--sr))!important;bottom:calc(72px + var(--sb))!important;width:48px!important;height:48px!important;font-size:20px!important}
+}
 @media (prefers-reduced-motion:reduce){#toast{transition:none}.ss-dog,.ss-bag,#btnStart,.rm-ic{animation:none}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
@@ -477,7 +493,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030224247';
+const BUILD = '20261030224605';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4492,7 +4508,7 @@ function renderQuest() {
   if (!level) return;
   $('qzone').textContent = level.gate ? `${t('qz_gate')} · ${mapName(levelIdx)}` : level.landmark ? `${t('qz_lm')} · ${mapName(levelIdx)}` : level.relax ? `🌅 HIDDEN MAP · ${mapName(levelIdx)}` : `${level.icon} MAP ${levelIdx + 1}/6 · ${mapName(levelIdx)}`;
   $('qtitle').textContent = mapName(levelIdx); $('qdesc').textContent = lang === 'ko' ? scaleNums(level.short) + (level.scaled && levelIdx < 6 ? ' · 🗺 A~D 구역까지 넓어졌어요!' : '') : t('s' + levelIdx);
-  $('qsum').textContent = '📋 ' + Object.entries(level.need).map(([k, n]) => (t('g_' + k).replace(/ (적발|체포)$/, '')) + ' ' + Math.min(lvStats[k] || 0, n) + '/' + n).join(' · ') + '  ▾';
+  $('qsum').textContent = Object.entries(level.need).map(([k, n]) => (k === 'drug' ? ITEM.drug.emoji : k === 'gun' ? ITEM.gun.emoji : k === 'boss' ? '👑' : (level.crookEmoji || '🕶')) + Math.min(lvStats[k] || 0, n) + '/' + n).join(' ');
   $('qgoals').innerHTML = Object.entries(level.need).map(([k, n]) => { const v = Math.min(lvStats[k] || 0, n); return `<div class="goal ${v >= n ? 'done' : ''}"><span>${t('g_' + k)}</span><b>${v}/${n}</b></div>`; }).join('');
 }
 function addScore(n) { levelScore = Math.max(-500, levelScore + n); }
@@ -4770,7 +4786,7 @@ const appMode = () => matchMedia('(display-mode: fullscreen), (display-mode: sta
 let fullTry = 0;
 if (isMobile && canFull) addEventListener('pointerup', () => { if (appMode() || document.fullscreenElement || document.webkitFullscreenElement || !$('startScreen').classList.contains('hidden') || performance.now() - fullTry < 15000) return; fullTry = performance.now(); goFull(); }, { passive: true });
 if (!isMobile) document.body.classList.add('pc');
-$('bars').appendChild($('info'));
+$('bars').appendChild($('info')); $('bars').prepend($('qsum'));
 $('tbMenu').onclick = () => $('topbar').classList.toggle('open');
 for (const b of document.querySelectorAll('#topbar button:not(#tbMenu)')) b.addEventListener('click', () => $('topbar').classList.remove('open'));
 { let tapT = 0;
@@ -5398,7 +5414,7 @@ function updateGuide(dt) {
   if (idleSniffT > 20 && !level.relax) { idleSniffT = 0; toast(lang === 'ko' ? '👃 킁킁을 눌러 보세요! 숨긴 물건 쪽으로 냄새 알갱이가 날아가요' : '👃 Try sniffing! Scent particles fly toward hidden items'); }
   guideArrow.g.visible = false; // 탐지견 옆 화살표는 쓰지 않음 guideArrow.g.position.set(dog.x + Math.sin(ang) * 2, dog.y + .12 + Math.sin(time * 6) * .05, dog.z + Math.cos(ang) * 1.6); guideArrow.g.rotation.y = ang;
   const name = T.k === 'drug' ? ITEM.drug.emoji + ' ' + ITEM.drug.name : T.k === 'gun' ? ITEM.gun.emoji + ' ' + ITEM.gun.name : T.k === 'boss' ? '👑 ' + t('g_boss') : (level.crookEmoji || '🕶') + ' ' + (level.crook || '');
-  const txt = (lang === 'ko' ? '🎯 다음: ' : '🎯 ') + name + ' · ' + Math.round(d) + 'm'; if (el.textContent !== txt) el.textContent = txt; el.classList.remove('hidden');
+  const txt = (lang === 'ko' ? '🎯 다음: ' : '🎯 ') + name + ' · ' + Math.round(d) + 'm'; if (el.textContent !== txt) el.textContent = txt; el.classList.toggle('hidden', !$('mission').classList.contains('hidden'));
   const lt = (lang === 'ko' ? '👃 냄새 방향 · ' : '👃 Scent · ') + name + ' ' + Math.round(d) + 'm';
   if (lt !== guideLabelTxt) { guideLabelTxt = lt; if (guideLabel) disposeSprite(guideLabel); guideLabel = textSprite(lt, { h: .38, bg: 'rgba(10,25,40,.85)' }); scene.add(guideLabel); }
   guideLabel.visible = false; guideLabel.position.set(guideArrow.g.position.x, dog.y + 1.1, guideArrow.g.position.z);
