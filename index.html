@@ -477,7 +477,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030224146';
+const BUILD = '20261030224247';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4434,7 +4434,7 @@ function loadLevel(i) {
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
   clearSniffMarks(); setupCoins(); helps = []; dog.shield = 0; dog.noseT = 0; dog.boneT = 0; dog.autoSniffT = 0; if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
   helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
-  if (mp && mp.room !== i) mpLeave(); if (team) team.picked = i; if (playerId) { mpJoin(); lobbyJoin(); setTimeout(lobbyTrack, 300); }
+  if (mp && mp.room !== i) mpLeave(); keepAwake(); if (team) team.picked = i; if (playerId) { mpJoin(); lobbyJoin(); setTimeout(lobbyTrack, 300); }
   if (people.some(p => p.look && p.villain)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
   applyCrime(def); setTimeout(() => { if (state === 'play' || state === 'dialog' || state === 'intro') showGoalBig(); }, 3200);
   if (!def.relax && CRIME[def.name] && false) setTimeout(() => toast(lang === 'ko' ? `🚨 이 맵의 범인: ${level.crookEmoji} ${level.crook} · 찾을 물건: ${ITEM.drug.emoji} ${ITEM.drug.name}, ${ITEM.gun.emoji} ${ITEM.gun.name}` : `🚨 Suspects here: ${level.crookEmoji} ${level.crook}`), 2600);
@@ -4755,6 +4755,7 @@ const badWord = v => { const n = String(v || '').toLowerCase().replace(/[\s0-9_.
 { const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), standalone = navigator.standalone || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches; if (ios && !standalone) $('iosTip').style.display = 'block'; }
 $('btnStart').disabled = false; $('btnStart').textContent = '▶ 게임 시작';
 $('btnStart').onclick = async () => {
+  keepAwake();
   try { ac(); actx.resume?.(); } catch { }
   if (isMobile && !appMode()) await goFull();
   $('startScreen').classList.add('hidden'); try { renderer.setSize(innerWidth, innerHeight); } catch { }
@@ -4784,6 +4785,11 @@ async function refreshRanks() {
 }
 setInterval(refreshRanks, 15000);
 let rankKick = null; const kickRanks = () => { clearTimeout(rankKick); rankKick = setTimeout(refreshRanks, 2500); };
+// 게임하는 동안 휴대폰 화면이 꺼지지 않게 (화면 켜짐 유지)
+let wakeLock = null;
+async function keepAwake() { try { if (!('wakeLock' in navigator) || document.hidden) return; if (wakeLock && !wakeLock.released) return; wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener?.('release', () => { wakeLock = null; }); } catch { } }
+document.addEventListener('visibilitychange', () => { if (!document.hidden) keepAwake(); });
+addEventListener('pointerdown', () => { if (!wakeLock) keepAwake(); }, { passive: true });
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
