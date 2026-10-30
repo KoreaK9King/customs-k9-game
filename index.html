@@ -102,6 +102,7 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 .rank td{padding:5px 6px;border-bottom:1px solid #f0e8d6}
 .rank td.n{text-align:right}.rank tr.me td{background:#fff1bf;font-weight:700}
 .rankwrap{max-height:260px;overflow:auto;margin-top:6px}
+#login #rankMini{max-height:150px;border:2px solid #e6dcc4;border-radius:10px;margin-bottom:8px}
 .srv{font-size:12px;color:var(--muted);margin-top:6px}
 #mapGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
 .mapsep{grid-column:1/-1;margin-top:10px;padding:8px 12px;border-radius:10px;background:#13335a;color:#fff;font-weight:800}.mapsep small{color:#f4c542;font-weight:600}
@@ -174,7 +175,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  #mapGrid{gap:6px;margin-top:6px}.mapcard{padding:6px 4px;border-width:2px}.mapcard .ic{font-size:20px}.mapcard .nm{font-size:13px}
  .shopbtn{font-size:11px;padding:4px 2px;border-width:2px}.badge{font-size:16px;padding:4px 5px;min-width:56px}.badge small{font-size:9.5px}
  #coverTitle{display:none}
- body.touch #login #rankMini,body.touch #login h2:has(#topTxt),body.touch #login .notice[style*="13335a"]{display:none}
+ body.touch #login .notice[style*="13335a"]{display:none}body.touch #login #rankMini{max-height:92px}body.touch #login h2:has(#topTxt){font-size:14px!important}
  body.touch #badges.fold .badgerow,body.touch #badges.fold p,body.touch #shop.fold .shoprow,body.touch #shop.fold p{display:none}body.touch #badges h2,body.touch #shop h2{cursor:pointer}body.touch #badges.fold h2::after,body.touch #shop.fold h2::after{content:" ▸ 눌러서 보기";font-size:11px;color:var(--muted)}
  body.touch #logo{max-height:34px!important;margin-bottom:4px!important}
  body.touch #breedInfo,body.touch #jobInfo{font-size:11px!important;line-height:1.4!important}
@@ -252,8 +253,18 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  </div>
 </div>
 <div id="rotateMsg"><div><div class="rm-ic">📱↻</div><div class="rm-t">휴대폰을 <b>가로로</b> 돌려 주세요</div><div class="rm-s">탐지견 킁킁은 가로 화면에서만 플레이할 수 있어요</div></div></div>
+<div id="pvModal" class="overlay hidden" style="z-index:30"><div class="card" style="max-width:640px">
+ <h2 style="margin:0 0 6px">📋 개인정보(이메일) 수집·이용 안내</h2>
+ <div id="pvModalBody" style="max-height:52vh;overflow:auto;font-size:14px;line-height:1.7;background:#fff;border:2px solid #e6dcc4;border-radius:10px;padding:10px 12px"></div>
+ <div id="pvModalHint" style="font-size:12px;font-weight:700;color:#b5402a;margin-top:6px">⬇ 안내를 끝까지 내려서 읽어 주세요</div>
+ <label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-size:15px;font-weight:700"><input type="checkbox" id="pvModalChk" disabled style="width:22px;height:22px"> <span><b>[필수]</b> 위 내용을 끝까지 읽었어요</span></label>
+ <div class="row"><button class="big" id="pvModalOk" disabled style="opacity:.45">확인</button><button class="big alt" id="pvModalClose">닫기</button></div>
+</div></div>
 <div id="login" class="overlay"><div class="card">
  <div class="langs"></div>
+<h2 style="margin-top:2px;font-size:17px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span id="topTxt">🏆 TOP 100 랭킹</span> <button class="alt" id="btnRankAll" style="font-size:13px;padding:6px 12px;border-radius:10px">📋 전체 랭킹 보기</button></h2>
+ <div class="rankwrap" id="rankMini"></div>
+
  <img id="logo" src="logo.png" alt="관세청" style="display:block;max-height:56px;max-width:60%;margin:0 auto 10px" onerror="this.remove()">
  <div class="sub">관세청 일일 특강 교육 게임</div>
  <h1>🐕 탐지견 킁킁 게임</h1>
@@ -273,7 +284,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
   · <b>동의하지 않을 권리</b>: 동의하지 않을 수 있어요. 다만 동의하지 않으면 계정을 만들 수 없어 게임에 접속할 수 없어요.<br>
   · <b>만 14세 미만</b>은 법에 따라 <b>보호자(법정대리인)의 동의</b>가 필요해요. 보호자와 함께 읽고 동의해 주세요.
   </div></details>
-  <div id="pvHint" style="font-size:12px;font-weight:700;color:#b5402a;margin-top:6px">📖 [자세히 보기]를 눌러 안내를 끝까지 읽으면 동의에 체크할 수 있어요</div>
+  <div id="pvHint" style="font-size:12px;font-weight:700;color:#b5402a;margin-top:6px">📖 [자세히 보기]를 눌러 안내 창을 끝까지 읽고 체크하면 동의할 수 있어요</div>
   <label style="display:flex;gap:6px;align-items:flex-start;margin-top:6px"><input type="checkbox" id="pread" style="width:18px;height:18px;flex:none"> <span><b>[필수]</b> 개인정보 안내(📖 자세히 보기)를 끝까지 읽었어요</span></label>
   <label style="display:flex;gap:6px;align-items:flex-start;margin-top:4px"><input type="checkbox" id="pcons" style="width:18px;height:18px;flex:none"> <span id="pvC1"><b>[필수]</b> 위 개인정보(이메일) 수집·이용에 동의해요</span></label>
   <label style="display:flex;gap:6px;align-items:flex-start;margin-top:4px"><input type="checkbox" id="age14" style="width:18px;height:18px;flex:none"> <span id="pvC2"><b>[필수]</b> 만 14세 이상이에요 · 만 14세 미만이면 보호자가 함께 읽고 동의했어요</span></label>
@@ -296,8 +307,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  <div class="agreebox"><label><input type="checkbox" id="agree"> <span id="agreeTxt">✅ 게임 이용 안내에 동의해요 · 친구에게 친절하게, 비밀번호는 비밀! (이 게임은 개인정보를 수집하지 않아요)</span></label><div id="ageTxt">🎮 이용 등급: 전체 이용가 (권장 만 7세 이상 · 자체 기준)</div></div>
  <div class="row"><button class="big" id="btnLogin">접속하기</button><button class="big alt hidden" id="btnGuest">👀 체험하기</button></div>
  <div style="text-align:right;margin-top:4px"><button class="alt" id="btnDelMe" style="font-size:12px;padding:5px 10px;border-radius:9px">🗑 내 정보 삭제</button></div>
- <h2 style="margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span id="topTxt">🏆 TOP 100 랭킹</span> <button class="alt" id="btnRankAll" style="font-size:13px;padding:6px 12px;border-radius:10px">📋 전체 랭킹 보기</button></h2>
- <div class="rankwrap" id="rankMini"></div>
+
  <div class="notice" style="background:#13335a;color:#fff;font-size:13px">📢 <b style="color:#f4c542">관세청 공익광고</b> · 마약·총기 밀수 신고는 <b style="color:#f4c542">☎ 125</b> (관세청 밀수신고센터) · 여행자 휴대품은 자진신고하세요</div>
  <div class="notice">※ 관세청 일일 특강용 교육 게임입니다. 세관 업무 이해를 돕기 위해 만들었으며, 등장인물과 사건은 모두 가상입니다.</div>
 </div></div>
@@ -407,7 +417,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261030205228';
+const BUILD = '20261030212651';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 (async () => { try { const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } })();
 const store = {
@@ -4628,10 +4638,20 @@ if (isMobile) { for (const id of ['badges', 'shop']) { $(id).classList.add('fold
   const unlock = () => { boxes.forEach(b => b.disabled = false); $('pread').checked = true; $('pvHint').textContent = '✅ 안내를 모두 읽었어요. 아래 나머지 두 곳에 체크해 주세요'; $('pvHint').style.color = '#2e7d32'; };
   const lock = () => { if (boxes.every(b => b.checked)) { unlock(); $('pvHint').style.display = 'none'; return; } boxes.forEach(b => b.disabled = true); };
   const atEnd = () => body.scrollTop + body.clientHeight >= body.scrollHeight - 6;
-  $('pvMore').addEventListener('click', e => { e.preventDefault(); det.open = !det.open; });
+  // '자세히 보기'를 누르면 큰 창으로: 끝까지 읽으면 [필수] 읽음 체크 → 확인
+  const mb = $('pvModalBody'), mchk = $('pvModalChk'), mok = $('pvModalOk');
+  const mEnd = () => mb.scrollTop + mb.clientHeight >= mb.scrollHeight - 6;
+  const mReady = () => { mchk.disabled = false; $('pvModalHint').textContent = '✅ 다 읽었어요. 아래에 체크하고 [확인]을 눌러 주세요'; $('pvModalHint').style.color = '#2e7d32'; };
+  const openPv = () => { mb.innerHTML = body.innerHTML; mb.scrollTop = 0; mchk.checked = $('pread').checked; mchk.disabled = !mchk.checked; mok.disabled = !mchk.checked; mok.style.opacity = mchk.checked ? '' : '.45'; $('pvModalHint').textContent = '⬇ 안내를 끝까지 내려서 읽어 주세요'; $('pvModalHint').style.color = '#b5402a'; $('pvModal').classList.remove('hidden'); setTimeout(() => { if (mEnd()) mReady(); }, 300); };
+  window.__openPv = openPv;
+  mb.addEventListener('scroll', () => { if (mEnd()) mReady(); });
+  mchk.addEventListener('change', () => { mok.disabled = !mchk.checked; mok.style.opacity = mchk.checked ? '' : '.45'; });
+  mok.onclick = () => { if (!mchk.checked) return; $('pvModal').classList.add('hidden'); unlock(); toast('✅ 개인정보 안내를 읽었어요. 나머지 두 곳에 체크해 주세요'); };
+  $('pvModalClose').onclick = () => $('pvModal').classList.add('hidden');
+  $('pvMore').addEventListener('click', e => { e.preventDefault(); det.open = false; openPv(); });
   det.addEventListener('toggle', () => { if (det.open) setTimeout(() => { if (atEnd()) unlock(); }, 300); });
   body.addEventListener('scroll', () => { if (atEnd()) unlock(); });
-  for (const b of boxes) b.closest('label').addEventListener('click', e => { if (b.disabled) { e.preventDefault(); det.open = true; body.scrollIntoView({ block: 'nearest' }); toast('📖 개인정보 안내를 끝까지 읽어 주세요'); } });
+  for (const b of boxes) b.closest('label').addEventListener('click', e => { if (b.disabled) { e.preventDefault(); openPv(); } });
   setTimeout(lock, 0); }
 // 욕설·비속어·혐오 표현 거르기 (띄어쓰기·숫자·기호 섞어도 잡음)
 const BAD_WORDS = ['시발', '씨발', '씨빨', '시바', '씨바', 'ㅅㅂ', 'ㅆㅂ', '병신', 'ㅂㅅ', '븅신', '좆', '존나', '졸라', 'ㅈㄴ', '개새', '새끼', '쌔끼', 'ㅅㄲ', '미친', '미쳤', 'ㅁㅊ', '지랄', 'ㅈㄹ', '닥쳐', '꺼져', '엿먹', '니애미', '느금', '애미', '애비', '창녀', '걸레', '섹스', '야동', '자지', '보지', '찐따', '장애인', '틀딱', '한남', '김치녀', '죽어', '자살', 'fuck', 'shit', 'bitch', 'sex', 'porn', 'dick', 'pussy', 'nigger', 'nigga', 'asshole', 'bastard', 'cunt', 'kill'];
@@ -4652,7 +4672,7 @@ async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
   const isMail = EMAIL_RE.test(v);
   if (!guest && !isMail && !/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr(t('err_email'));
-  if (!guest && !$('pread').checked) { const d = $('pvMore').closest('details'); d.open = true; $('pvBody').scrollIntoView({ block: 'nearest' }); return loginErr('📖 먼저 [자세히 보기]를 눌러 개인정보 안내를 끝까지 읽어 주세요.'); }
+  if (!guest && !$('pread').checked) { window.__openPv && window.__openPv(); return loginErr('📖 먼저 [자세히 보기]를 눌러 개인정보 안내를 끝까지 읽어 주세요.'); }
   if (!guest && (!$('pcons').checked || !$('age14').checked)) return loginErr(t('err_consent'));
   if (!guest && pw.length < 4) return loginErr(t('err_pw'));
   if (!$('agree').checked) return loginErr(t('err_agree'));
