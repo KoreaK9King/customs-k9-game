@@ -85,7 +85,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 .bar i{display:block;height:100%;width:100%;border-radius:6px}
 #stam i{background:linear-gradient(90deg,#4fc3f7,#7dffa1)}#scent i{background:linear-gradient(90deg,#ffe082,#ff7043);width:0}
 .lbl{font-size:12px;opacity:.85;white-space:nowrap}
-.howShort{display:none}
+.howShort{display:none}.howGrid{margin:6px 0}.howGrid kbd{background:var(--navy);color:#fff;border-radius:6px;padding:1px 7px;font-family:inherit;font-size:12.5px;white-space:nowrap;margin-left:4px;vertical-align:1px}.howGrid .igc{text-align:left}.howGrid .igc b{font-size:16px;white-space:nowrap}.howGrid .igc small{font-size:12.5px}.how2p{font-size:12.5px!important;color:#40566c;margin:2px 0 4px!important}@media (orientation:landscape) and (max-height:540px){.howGrid{grid-template-columns:repeat(4,1fr)!important;gap:5px!important;margin:4px 0!important}.howGrid .igc{padding:4px 7px!important}.howGrid .igc i{font-size:22px!important}.howGrid .igc b{font-size:14px!important}.howGrid kbd{font-size:11.5px}.howGrid .igc small{font-size:11.5px!important;line-height:1.25}.how2p{font-size:11.5px!important}}@media (max-width:560px){.howGrid{grid-template-columns:repeat(2,1fr)!important}}
 #toast{top:calc(96px + var(--st));left:50%;transform:translateX(-50%);font-family:Jua,sans-serif;font-size:22px;background:rgba(0,0,0,.6);padding:8px 18px;border-radius:24px;opacity:0;transition:opacity .25s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1}
 #coverTitle{position:fixed;z-index:40;left:0;right:0;top:7%;text-align:center;font-family:Jua,sans-serif;pointer-events:none}
@@ -390,6 +390,13 @@ body.touch #topbar>#tbAuto,body.touch #topbar>#tbCoin{position:fixed;top:calc(6p
 #autoBox{position:fixed;top:calc(6px + var(--st));left:calc(8px + var(--sl));z-index:12;display:flex;flex-direction:column;gap:4px;align-items:flex-start}
 #topbar #autoBox button{display:block!important;position:static!important}
 #topbar #tbAutoMenu{width:44px!important;height:38px!important;font-size:19px!important}
+#bagBox{position:fixed;top:calc(6px + var(--st));left:calc(58px + var(--sl));z-index:12}
+#topbar #bagBox #bagBtn{display:block!important;position:relative!important;width:44px!important;height:38px!important;font-size:19px!important}
+#bagN{position:absolute;right:-4px;top:-4px;min-width:17px;height:17px;border-radius:9px;background:#e74c3c;color:#fff;font-size:11px;line-height:17px;font-weight:800;padding:0 3px}#bagN.zero{display:none}
+#bagPanel{display:none;margin-top:4px;background:rgba(255,253,246,.97);border:3px solid #1b2b3c;border-radius:14px;padding:6px;width:min(330px,64vw);max-height:calc(100dvh - 70px);overflow:auto;box-shadow:0 4px 0 rgba(0,0,0,.25)}#bagBox.open #bagPanel{display:block}
+.bagHead{font-family:Jua,sans-serif;font-size:15px;color:var(--navy);margin:0 2px 5px}.bagHead small{font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--muted);margin-left:4px}
+#bagList{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}#bagList button{position:relative;display:flex!important;flex-direction:column;align-items:center;gap:1px;padding:4px 2px;border:2px solid #1b2b3c;border-radius:10px;background:#fff;font:inherit;font-size:11px;line-height:1.15;color:var(--ink);cursor:pointer;width:auto!important;height:auto!important}
+#bagList button i{font-style:normal;font-size:18px}#bagList button{font-size:10.5px!important;word-break:keep-all}#bagList button em{position:absolute;right:3px;top:2px;font-style:normal;font-weight:800;font-size:11px;color:#c0392b}#bagList .bagEmpty{grid-column:1/-1;font-size:12px;color:var(--muted);text-align:center;padding:6px}
 #autoList{display:none;flex-direction:column;gap:4px}#autoBox.open #autoList{display:flex}
 #topbar #autoList button{width:auto!important;height:auto!important;padding:7px 14px!important;font-size:14px!important;text-align:left;white-space:nowrap;font-family:Jua,sans-serif}
 :is(#tbAuto,#tbCoin,#tbItem,#tbAutoMenu).on{background:#f4c542!important;box-shadow:0 0 0 2px #fff,0 0 12px #ffd23f}
@@ -446,7 +453,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 
 <div id="quest" class="hud mini"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><div id="qsum"></div><p id="qdesc"></p><div id="qgoals"></div></div>
 <div id="mmwrap" class="hud mini"><button id="mmToggle" type="button">🗺 지도 보기</button><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
-<div id="wx" class="hud hidden"></div><div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><div id="autoBox"><button id="tbAutoMenu" title="자동 사냥 (누르면 3가지)" aria-label="자동 사냥">🤖</button><div id="autoList"><button id="tbAuto" title="자동 플레이 (P)">🤖 자동 플레이</button><button id="tbCoin" title="코인 자동 사냥 (C)">💰 코인 사냥</button><button id="tbItem" title="아이템 자동 사냥 (I)">🎁 아이템 사냥</button></div></div><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
+<div id="wx" class="hud hidden"></div><div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><div id="bagBox"><button id="bagBtn" title="아이템 가방 (B)" aria-label="아이템 가방">🎒<span id="bagN">0</span></button><div id="bagPanel"><div class="bagHead">🎒 아이템 가방 <small>눌러서 사용 · B 키</small></div><div id="bagList"></div></div></div><div id="autoBox"><button id="tbAutoMenu" title="자동 사냥 (누르면 3가지)" aria-label="자동 사냥">🤖</button><div id="autoList"><button id="tbAuto" title="자동 플레이 (P)">🤖 자동 플레이</button><button id="tbCoin" title="코인 자동 사냥 (C)">💰 코인 사냥</button><button id="tbItem" title="아이템 자동 사냥 (I)">🎁 아이템 사냥</button></div></div><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div>
 <div id="mission" class="hud hidden"></div>
@@ -590,7 +597,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
   <kbd>점프</kbd><span>상자 위로 뛰어오르기</span><kbd>킁킁</kbd><span>꾹 눌러 냄새 맡기</span>
   <kbd>멍!</kbd><span>짖어서 적발 / 밀수범 멈추기</span><kbd>화면 드래그</kbd><span>카메라 회전</span>
  </div>
- <div class="itemguide"><div class="igt">🎁 아이템 소개 <small>맵에서 이름표가 붙은 빛나는 상자를 먹어요</small></div>
+ <div class="itemguide"><div class="igt">🎁 아이템 소개 <small>빛나는 상자를 주우면 🎒 가방에 모여요 · 🎒 버튼(B 키)을 눌러 필요할 때 사용!</small></div>
   <div class="igg"><div class="igc" style="--c:#4f9ad8"><i>🛡</i><b>방탄조끼</b><small>공격 1번 막기</small></div><div class="igc" style="--c:#ff9a4a"><i>👃</i><b>슈퍼 코 간식</b><small>20초 · 냄새 범위 1.5배</small></div><div class="igc" style="--c:#c9a54a"><i>🦴</i><b>뼈다귀 가방</b><small>20초 · 뼈다귀 2배 빨리</small></div><div class="igc" style="--c:#3fbf4a"><i>✨</i><b>자동 킁킁</b><small>10초 · 저절로 냄새 맡기</small></div><div class="igc" style="--c:#e0a800"><i>🌟</i><b>슈퍼 간식</b><small>10초 · 커지고 무적</small></div><div class="igc" style="--c:#d4b800"><i>⚡</i><b>번개 간식</b><small>8초 · 30% 빨라져요</small></div><div class="igc" style="--c:#e8475b"><i>❤️</i><b>구급상자</b><small>체력 +1</small></div><div class="igc" style="--c:#2fa6dc"><i>🥤</i><b>시원한 물</b><small>15초 · 안 지치고 달리기</small></div><div class="igc" style="--c:#5fb4e0"><i>❄️</i><b>얼음 호루라기</b><small>5초 · 주변 범인 얼음</small></div><div class="igc" style="--c:#d84a4a"><i>🧲</i><b>코인 자석</b><small>15초 · 코인 끌어오기</small></div><div class="igc" style="--c:#9bb81f"><i>🎾</i><b>하트 공</b><small>체력 +1 · 6초 빨라짐</small></div><div class="igc" style="--c:#2e86c1"><i>📡</i><b>X-RAY 스캐너</b><small>7초 · 숨긴 물건 투시</small></div></div></div>
  </div>
  <div class="mpsec" data-p="badges"><div id="badges"></div></div>
@@ -608,21 +615,17 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
  <div class="sub">출동 전 브리핑</div>
  <h1>🐕‍🦺 조작법 익히기</h1>
  <p style="margin:4px 0 8px">당신은 <b>탐지견</b>을 조종합니다. 세관 <b>핸들러</b>가 목줄을 잡고 항상 함께 다녀요. 탐지견이 냄새로 찾고, 팀이 함께 밀수범을 잡습니다.</p>
- <div class="ctl">
-  <kbd>W A S D</kbd><span>이동 (가방·상자에 부딪히면 밀려나요)</span>
-  <kbd>Shift</kbd><span>달리기 (기력이 줄어요)</span>
-  <kbd>Space</kbd><span>점프 — 공중에서 한 번 더 누르면 2단 점프! 핸들러도 같이 뛰어요</span>
-  <kbd>E 꾹 누르기</kbd><span>냄새 맡기 — 숨은 물건 쪽으로 냄새 입자가 흐르고, 밀수범 발밑에 빨간 원이 떠요</span>
-  <kbd>F</kbd><span>🐕 왕왕 짖기 — 수상한 물건 옆이면 적발! 가까운 밀수범은 놀라 멈추고 체력 -1, +30점</span>
-  <kbd>Q</kbd><span>🦴 핸들러가 뼈다귀를 앞으로 가까이(6m) 던지기 — 밀수범은 체력 -1(+30점), 가방·상자를 맞히면 속을 검사해요</span>
-  <kbd>👥 2인 모드</kbd><span>P1 탐지견: WASD·왼쪽 Shift·Space·E·F / P2 핸들러: 방향키 이동 · Enter 뼈다귀 (목줄 5m)</span>
-  <kbd>마우스 드래그</kbd><span>카메라 회전 (휠: 줌) · 🗺 일시정지 · 🔄 다시 시작 · 📸 사진</span><kbd>마우스 클릭</kbd><span>왼쪽 = 🐕 왕왕 공격 · 가운데(휠) 누르기 = 👃 킁킁 · 오른쪽 = 🦴 뼈다귀</span>
+ <div class="igg howGrid">
+  <div class="igc" style="--c:#2c6fb7"><i>🕹</i><b>이동 <kbd>W A S D</kbd></b><small>📱 조이스틱 · 방향키도 돼요</small></div>
+  <div class="igc" style="--c:#e67e22"><i>🏃</i><b>달리기 <kbd>Shift</kbd></b><small>📱 조이스틱 끝까지 밀기</small></div>
+  <div class="igc" style="--c:#27ae60"><i>🦘</i><b>점프 <kbd>Space</kbd></b><small>📱 점프 버튼 · 두 번 = 2단</small></div>
+  <div class="igc" style="--c:#8e44ad"><i>👃</i><b>킁킁 <kbd>E 꾹</kbd></b><small>📱 킁킁 버튼 꾹 누르기</small></div>
+  <div class="igc" style="--c:#c0392b"><i>🐕</i><b>왕왕 <kbd>F</kbd></b><small>📱 왕왕 버튼 · 적발·공격</small></div>
+  <div class="igc" style="--c:#b07a2a"><i>🦴</i><b>뼈다귀 <kbd>Q</kbd></b><small>📱 뼈다귀 버튼 · 핸들러가 던짐</small></div>
+  <div class="igc" style="--c:#16a085"><i>🎥</i><b>카메라 <kbd>마우스</kbd></b><small>📱 화면 드래그 · 두 손가락 줌</small></div>
+  <div class="igc" style="--c:#34495e"><i>🤖</i><b>자동 <kbd>P · C · I</kbd></b><small>📱 왼쪽 위 🤖 · 순찰·코인·아이템</small></div>
  </div>
- <div class="ctl touchonly">
-  <kbd>조이스틱</kbd><span>이동</span><kbd>조이스틱 끝까지</kbd><span>밀면 달려요</span><kbd>점프</kbd><span>상자 위로 뛰어오르기</span>
-  <kbd>킁킁</kbd><span>꾹 눌러 냄새 맡기</span><kbd>왕왕</kbd><span>짖어서 적발 / 밀수범 공격</span><kbd>뼈다귀</kbd><span>핸들러가 뼈다귀 던지기</span>
-  <kbd>화면 드래그</kbd><span>카메라 회전</span>
- </div>
+ <p class="how2p">👥 2인 모드: P1 탐지견 = 위 키 그대로 · P2 핸들러 = 방향키 이동 · Enter 뼈다귀 (목줄 5m)</p>
  <p style="font-size:14px;margin:6px 0">❤️ 하트 3개로 시작해 최대 7개까지 모아요(🎾 공·돌발 미션) · 깨끗한 물건을 적발하거나, 시민을 맞히거나, 차량에 부딪히면 하트가 줄어요. 🎾 공을 주우면 회복! 밀수범 체력이 0이 되면 체포됩니다.<br>🛡 방탄조끼(공격 1번 막기) · 👃 슈퍼 코 간식(냄새 범위 1.5배) · 🦴 뼈다귀 가방(2배 빨리 던지기) · 📡 X-RAY도 주워요!</p>
  <p class="howShort">❤️ 하트가 다 닳으면 다시 시작 · 🎾 공을 주우면 회복 · 깨끗한 짐을 적발하거나 시민·차에 부딪히면 하트가 줄어요</p>
  <div class="row"><button class="big" id="btnHowtoOk">알겠어요! 출동!</button></div>
@@ -679,7 +682,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2059';
+const BUILD = '20261031-2107';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -6573,6 +6576,41 @@ function updateHelpItems(dt) {
     h.g.position.y = .55 + Math.sin(time * 3 + h.x) * .15; h.g.rotation.y += dt * 2;
     if (Math.hypot(h.x - dog.x, h.z - dog.z) < 1.1 && dog.y < 1.5) {
       h.got = true; world.remove(h.g); SFX.found(); burst(h.x, .8, h.z, [new THREE.Color(HELP_KINDS[h.kind].col), WHITE], 25, 3);
+      bagAdd(h.kind);
+    }
+  }
+  dog.noseT = Math.max(0, (dog.noseT || 0) - dt); dog.boneT = Math.max(0, (dog.boneT || 0) - dt); dog.autoSniffT = Math.max(0, (dog.autoSniffT || 0) - dt); dog.staT = Math.max(0, (dog.staT || 0) - dt); dog.magT = Math.max(0, (dog.magT || 0) - dt);
+  updateGiant(dt);
+}
+// 🎒 아이템 가방 — 종류마다 최대 9개, 맵을 옮겨도 이번 게임 동안 유지
+const bag = {}, BAG_MAX = 9;
+HELP_KINDS.ball = { name: '하트 공', emoji: '🎾', col: 0xc8e632 };
+function bagAdd(kind) {
+  if ((bag[kind] || 0) >= BAG_MAX) { toast('🎒 ' + HELP_KINDS[kind].name + '은(는) 가방에 ' + BAG_MAX + '개까지만 넣을 수 있어요'); return; }
+  bag[kind] = (bag[kind] || 0) + 1; renderBag();
+  floatText('🎒 +' + HELP_KINDS[kind].emoji, dog.x, dog.y + 2.2, dog.z, { h: .5, color: '#ffe08a' });
+  toast('🎒 ' + HELP_KINDS[kind].emoji + ' ' + HELP_KINDS[kind].name + '을(를) 가방에 넣었어요! 필요할 때 🎒 버튼(B)으로 꺼내 써요');
+}
+function renderBag() {
+  const ks = Object.keys(bag).filter(k => bag[k] > 0), n = ks.reduce((a, k) => a + bag[k], 0);
+  $('bagN').textContent = n; $('bagN').classList.toggle('zero', !n);
+  $('bagList').innerHTML = ks.length ? ks.map(k => '<button type="button" data-k="' + k + '"><i>' + HELP_KINDS[k].emoji + '</i>' + HELP_KINDS[k].name + '<em>×' + bag[k] + '</em></button>').join('') : '<div class="bagEmpty">아직 비어 있어요. 맵에서 아이템을 주워 보세요!</div>';
+}
+function useHelp(kind) {
+  if (!bag[kind] || state !== 'play') return;
+  const hpMax = Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7);
+  if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax) { toast('❤️ 하트가 꽉 찼어요! 하트가 줄었을 때 쓰세요'); return; }
+  bag[kind]--; renderBag(); SFX.found(); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(HELP_KINDS[kind].col), WHITE], 25, 3);
+  if (kind === 'ball') { dog.hp = Math.min(hpMax, dog.hp + 1); dog.boost = 6; floatText('🎾 ❤️ +1', dog.x, dog.y + 2, dog.z, { h: .55, color: '#ff8a80' }); toast('🎾 하트 공! 하트 +1, 잠깐 빨라져요'); return; }
+  applyHelp(kind);
+}
+$('bagBtn').addEventListener('click', e => { e.stopPropagation(); $('bagBox').classList.toggle('open'); renderBag(); });
+$('bagList').addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) { e.stopPropagation(); useHelp(b.dataset.k); } });
+addEventListener('keydown', e => { if (e.repeat || e.target.tagName === 'INPUT' || state !== 'play') return; if (e.code === 'KeyB') { $('bagBox').classList.toggle('open'); renderBag(); } else if ($('bagBox').classList.contains('open') && /^Digit[1-9]$/.test(e.code)) { const k = Object.keys(bag).filter(q => bag[q] > 0)[+e.code.slice(5) - 1]; if (k) useHelp(k); } });
+renderBag();
+function applyHelp(kind) {
+  const h = { kind };
+  {
       if (h.kind === 'shield') dog.shield = Math.min(2, (dog.shield || 0) + 1);
       else if (h.kind === 'nose') dog.noseT = 20;
       else if (h.kind === 'giant') { dog.giantT = 10; floatText('🌟 슈퍼 탐지견!', dog.x, dog.y + 2.4, dog.z, { h: .65, color: '#ffd23f' }); tone(523, .12, 'square', .08); tone(659, .12, 'square', .08, 0, .12); tone(784, .2, 'square', .08, 0, .24); }
@@ -6584,10 +6622,7 @@ function updateHelpItems(dt) {
       else if (h.kind === 'magnet') dog.magT = 15;
       else dog.boneT = 20;
       toast(HELP_KINDS[h.kind].msg || t(HELP_KINDS[h.kind].label));
-    }
   }
-  dog.noseT = Math.max(0, (dog.noseT || 0) - dt); dog.boneT = Math.max(0, (dog.boneT || 0) - dt); dog.autoSniffT = Math.max(0, (dog.autoSniffT || 0) - dt); dog.staT = Math.max(0, (dog.staT || 0) - dt); dog.magT = Math.max(0, (dog.magT || 0) - dt);
-  updateGiant(dt);
 }
 // 슈퍼 간식: 탐지견·핸들러가 30% 커지고(부드럽게) 무적·조금 빨라짐, 끝나기 2초 전부터 깜빡여 알려 준다
 let giantS = 1;
@@ -6604,7 +6639,7 @@ function updateHelp(dt) {
   if (!level || level.relax) return;
   helpT -= dt; if (helpT > 0) return; helpT = 30;
   const live = balls.filter(b => !b.got).length;
-  if (Math.random() < .4 && helps.filter(h => !h.got).length < Math.round(5 + (level.sz - 1) * 3.6)) { spawnHelpItem(pick2(Object.keys(HELP_KINDS))); return; }
+  if (Math.random() < .4 && helps.filter(h => !h.got).length < Math.round(5 + (level.sz - 1) * 3.6)) { spawnHelpItem(pick2(Object.keys(HELP_KINDS).filter(k => k !== 'ball'))); return; }
   if ((!xray || xray.got) && Math.random() < .45) { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const tg = textSprite('📡 X-RAY 스캐너', { h: .46 }); tg.position.y = .55; g.add(tg); xray = { x: p.x, z: p.z, got: false, m: g }; toast(t('ts_newx')); } return; }
   if (live < Math.round(3 + (level.sz - 1) * 8)) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) { balls.push({ x: p.x, z: p.z, m: ballLabel(mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z)) }); toast(t('ts_newball')); } }
 }
@@ -7069,7 +7104,7 @@ function updateDog(dt) {
     if (d < .85) moveCircle(dog, dx / d * (.85 - d), dz / d * (.85 - d), .5, false, dog.y);
   }
 
-  for (const b of balls) { if (b.got) continue; b.m.position.y = .5 + Math.sin(time * 3 + b.x) * .15; b.m.rotation.y += dt * 3; if (Math.hypot(b.x - dog.x, b.z - dog.z) < 1 && dog.y < 1.2) { b.got = true; ballsGot++; world.remove(b.m); dog.hp = Math.min(7, dog.hp + 1); dog.boost = 6; SFX.found(); burst(b.x, .6, b.z, [new THREE.Color(0xc8e632), WHITE], 25, 3); toast(t('ts_ball')); } }
+  for (const b of balls) { if (b.got) continue; b.m.position.y = .5 + Math.sin(time * 3 + b.x) * .15; b.m.rotation.y += dt * 3; if (Math.hypot(b.x - dog.x, b.z - dog.z) < 1 && dog.y < 1.2) { b.got = true; ballsGot++; world.remove(b.m); burst(b.x, .6, b.z, [new THREE.Color(0xc8e632), WHITE], 25, 3); if (dog.hp >= Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7)) { SFX.found(); bagAdd('ball'); } else { dog.hp = Math.min(7, dog.hp + 1); dog.boost = 6; SFX.found(); toast(t('ts_ball')); } } }
   if (barkQ && dog.barkCd <= 0) bark();
   barkQ = false; dog.barkCd -= dt;
 
@@ -7499,11 +7534,13 @@ function drawMinimap() {
 const clock = new THREE.Clock();
 let hudTick = 0, beltOffset = 0, playTotal = 0, playNotes = 0, megaFrame = 0, rescueT = 0;
 loadLevel(0); state = 'login';
+const tbEl = document.getElementById('topbar'), tbHidden = () => tbEl.classList.contains('hidden');
 function loop() {
   requestAnimationFrame(loop);
   const dt = Math.min(clock.getDelta(), .05); time += dt;
   if (state === 'play' || state === 'dialog') { playTotal += dt; if (Math.floor(playTotal / 1800) > playNotes) { playNotes++; toast(t('ts_play30').replace('{m}', playNotes * 30)); } }
   if (state === 'play') {
+    if (tbHidden()) tbEl.classList.remove('hidden'); // 어떤 화면을 거쳐 돌아와도 메뉴·🤖·🎒 버튼은 항상 보인다
     levelTime += dt; updateCoins(dt);
     if (intel.pending && levelTime >= intel.at && !(mp && mp.ch)) showIntel();
     crowdTick(dt);
