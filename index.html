@@ -405,6 +405,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
  body.touch #bBone{right:calc(84px + var(--sr))!important;bottom:calc(72px + var(--sb))!important;width:48px!important;height:48px!important;font-size:20px!important}
 }
 @media (prefers-reduced-motion:reduce){#toast{transition:none}.ss-dog,.ss-bag,#btnStart,.rm-ic{animation:none}}
+#wx{position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:5;max-width:min(92vw,620px);padding:4px 12px;border-radius:14px;background:rgba(15,25,45,.62);color:#fff;font-size:12px;line-height:1.4;text-align:center;pointer-events:none;white-space:normal}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
@@ -413,7 +414,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 
 <div id="quest" class="hud mini"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><div id="qsum"></div><p id="qdesc"></p><div id="qgoals"></div></div>
 <div id="mmwrap" class="hud mini"><button id="mmToggle" type="button">🗺 지도 보기</button><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
-<div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><button id="tbAuto" title="자동 플레이 켜기/끄기 (P)" aria-label="자동 플레이">🤖</button><button id="tbCoin" title="코인 자동 사냥 켜기/끄기 (C)" aria-label="코인 자동 사냥">💰</button><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
+<div id="wx" class="hud hidden"></div><div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><button id="tbAuto" title="자동 플레이 켜기/끄기 (P)" aria-label="자동 플레이">🤖</button><button id="tbCoin" title="코인 자동 사냥 켜기/끄기 (C)" aria-label="코인 자동 사냥">💰</button><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div>
 <div id="mission" class="hud hidden"></div>
@@ -645,7 +646,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1805';
+const BUILD = '20261031-1812';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -5191,22 +5192,154 @@ function skyDome(top, bot, ph) {
   envAnim.push(() => { g.position.set(camera.position.x, 0, camera.position.z); if (stars) stars.material.opacity = .75 + Math.sin(time * 2.3) * .15; });
   return g;
 }
-function applyTimeOfDay() {
+// ================= 실시간 날씨(Open-Meteo) + 해·달 위치(천문 계산) =================
+// 맵마다 실제 위치(위도, 경도, 지역명)
+const GEO = { '공항 입국장': [37.4602, 126.4407, '인천공항'], '공항 화물터미널': [37.4436, 126.4559, '인천공항 화물터미널'], '국제우편·특송센터': [37.4489, 126.4628, '인천 국제우편물류센터'], '국제 여객선': [37.3683, 126.6253, '인천항'],
+  '부두 컨테이너 야적장': [35.0767, 128.8167, '부산신항'], '보세창고 (보스전)': [35.1028, 129.0403, '부산항'], '우체국': [37.5627, 126.9817, '서울 중구'], '교도소': [37.3935, 126.9862, '경기 의왕'], '서울역': [37.5547, 126.9707, '서울역'],
+  'KTX': [36.3326, 127.4342, '대전 부근'], '버스터미널': [37.5049, 127.0049, '서울 서초'], '명동': [37.5636, 126.985, '서울 명동'], '경복궁': [37.5796, 126.977, '서울 종로'], '홍대': [37.5563, 126.9236, '서울 마포'],
+  '롯데월드타워': [37.5126, 127.1026, '서울 잠실'], '동대문': [37.5665, 127.0092, '서울 동대문'], '광안리 해변': [35.1532, 129.1186, '부산 광안리'], '숭례문': [37.56, 126.9753, '서울 중구'], '수원화성': [37.2871, 127.0118, '수원'],
+  '경주': [35.8347, 129.219, '경주'], 'N서울타워': [37.5512, 126.9882, '서울 남산'], '해운대': [35.1587, 129.1604, '부산 해운대'], '제주 한라산': [33.3617, 126.5292, '제주 한라산'], '포항 스페이스워크': [36.0625, 129.3897, '포항'],
+  '전주 한옥마을': [35.8151, 127.153, '전주'], '광화문광장': [37.572, 126.9769, '서울 종로'], '청와대': [37.5866, 126.9748, '서울 종로'], '국회의사당': [37.5317, 126.9142, '서울 여의도'], '감천문화마을': [35.0975, 129.0106, '부산 사하'],
+  '대전 한빛탑': [36.3765, 127.3872, '대전'], '대한민국 통합 도시': [37.5665, 126.978, '서울'] };
+const geoOf = name => GEO[name] || [37.5665, 126.978, '서울'];
+const WX = {}; let wxReady = false;
+const nowDate = () => window.__tFix != null ? new Date(window.__tFix) : new Date();
+function fetchWeather() {
+  try { const c = JSON.parse(localStorage.getItem('k9wx') || 'null'); if (c && Date.now() - c.t < 15 * 60e3) { Object.assign(WX, c.d); wxReady = true; return Promise.resolve(); } } catch {}
+  const names = Object.keys(GEO), q = k => names.map(n => GEO[n][k]).join(',');
+  const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + q(0) + '&longitude=' + q(1) + '&current=temperature_2m,weather_code,precipitation,rain,showers,snowfall,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul';
+  return fetch(url).then(r => r.json()).then(j => { const arr = Array.isArray(j) ? j : [j]; names.forEach((n, i) => { if (arr[i] && arr[i].current) WX[n] = arr[i].current; }); wxReady = true; try { localStorage.setItem('k9wx', JSON.stringify({ t: Date.now(), d: WX })); } catch {} }).catch(() => { wxReady = true; });
+}
+setInterval(() => { try { localStorage.removeItem('k9wx'); } catch {} fetchWeather().then(() => { if (level && state === 'play') applyTimeOfDay(true); }); }, 15 * 60e3);
+// WMO 날씨 코드 → 종류
+function wxKind(w) {
+  if (!w) return { k: 'none', ko: '날씨 정보 없음', ic: '❔' };
+  const c = w.weather_code, snow = (w.snowfall || 0) > 0 || [71, 73, 75, 77, 85, 86].includes(c), wet = (w.rain || 0) + (w.showers || 0) > 0 || (c >= 51 && c <= 67) || (c >= 80 && c <= 82);
+  if (c >= 95) return { k: 'storm', ko: '뇌우', ic: '⛈' };
+  if (snow && wet) return { k: 'sleet', ko: '진눈깨비', ic: '🌨' };
+  if (snow) return { k: 'snow', ko: c === 75 || c === 86 ? '함박눈' : '눈', ic: '❄' };
+  if (wet) return { k: 'rain', ko: c >= 51 && c <= 57 ? '이슬비' : (w.precipitation || 0) >= 5 || c === 65 || c === 82 ? '강한 비' : '비', ic: '🌧' };
+  if (c === 45 || c === 48) return { k: 'fog', ko: '안개', ic: '🌫' };
+  if (c === 3 || w.cloud_cover >= 85) return { k: 'cloud', ko: '흐림', ic: '☁' };
+  if (c === 2 || w.cloud_cover >= 40) return { k: 'pcloud', ko: '구름 조금', ic: '⛅' };
+  return { k: 'clear', ko: '맑음', ic: '☀' };
+}
+const windName = d => ['북', '북동', '동', '남동', '남', '남서', '서', '북서'][Math.round(((d % 360) + 360) % 360 / 45) % 8] + '풍';
+const windFeel = v => v < 1 ? '바람 없음' : v < 4 ? '산들바람' : v < 8 ? '바람 조금 강함' : v < 14 ? '강한 바람' : '매우 강한 바람';
+// 천문 계산 (SunCalc 방식): 고도·방위각(남쪽 기준, 서쪽 +)
+const RADD = Math.PI / 180, OBL = RADD * 23.4397;
+function astroBase(date, lat, lon) { const d = date.valueOf() / 864e5 - .5 + 2440588 - 2451545, lw = RADD * -lon, phi = RADD * lat; return { d, lw, phi }; }
+function altAz(ra, dec, d, lw, phi) { const H = RADD * (280.16 + 360.9856235 * d) - lw - ra; return { alt: Math.asin(Math.sin(phi) * Math.sin(dec) + Math.cos(phi) * Math.cos(dec) * Math.cos(H)), az: Math.atan2(Math.sin(H), Math.cos(H) * Math.sin(phi) - Math.tan(dec) * Math.cos(phi)) }; }
+function sunEq(d) { const M = RADD * (357.5291 + .98560028 * d), C = RADD * (1.9148 * Math.sin(M) + .02 * Math.sin(2 * M) + .0003 * Math.sin(3 * M)), L = M + C + RADD * 102.9372 + Math.PI; return { ra: Math.atan2(Math.sin(L) * Math.cos(OBL), Math.cos(L)), dec: Math.asin(Math.sin(OBL) * Math.sin(L)) }; }
+function moonEq(d) { const L = RADD * (218.316 + 13.176396 * d), M = RADD * (134.963 + 13.064993 * d), F = RADD * (93.272 + 13.22935 * d), l = L + RADD * 6.289 * Math.sin(M), b = RADD * 5.128 * Math.sin(F);
+  return { ra: Math.atan2(Math.sin(l) * Math.cos(OBL) - Math.tan(b) * Math.sin(OBL), Math.cos(l)), dec: Math.asin(Math.sin(b) * Math.cos(OBL) + Math.cos(b) * Math.sin(OBL) * Math.sin(l)), dist: 385001 - 20905 * Math.cos(M) }; }
+function astroNow(name) {
+  const [lat, lon] = geoOf(name), { d, lw, phi } = astroBase(nowDate(), lat, lon), se = sunEq(d), me = moonEq(d), sp = altAz(se.ra, se.dec, d, lw, phi), mp = altAz(me.ra, me.dec, d, lw, phi);
+  const ph = Math.acos(Math.sin(se.dec) * Math.sin(me.dec) + Math.cos(se.dec) * Math.cos(me.dec) * Math.cos(se.ra - me.ra)), inc = Math.atan2(149598000 * Math.sin(ph), me.dist - 149598000 * Math.cos(ph));
+  const ang = Math.atan2(Math.cos(se.dec) * Math.sin(se.ra - me.ra), Math.sin(se.dec) * Math.cos(me.dec) - Math.cos(se.dec) * Math.sin(me.dec) * Math.cos(se.ra - me.ra));
+  // 방위각(남쪽 기준) → 게임 방향: 동 = +x, 남 = +z, 위 = +y
+  const dir = p => { const b = p.az + Math.PI; return new THREE.Vector3(Math.sin(b) * Math.cos(p.alt), Math.sin(p.alt), -Math.cos(b) * Math.cos(p.alt)); };
+  return { sunAlt: sp.alt / RADD, moonAlt: mp.alt / RADD, sunDir: dir(sp), moonDir: dir(mp), moonFrac: (1 + Math.cos(inc)) / 2, waxing: ang < 0 };
+}
+const moonName = (f, wax) => f > .96 ? '보름달' : f < .04 ? '그믐(삭)' : f > .4 && f < .6 ? (wax ? '상현달' : '하현달') : f < .4 ? (wax ? '초승달' : '그믐달') : (wax ? '차오르는 달' : '기우는 달');
+const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+function moonTex(f, wax) {
+  const N = 128, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d'), img = g.createImageData(N, N), r = N * .36;
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const nx = (x - N / 2) / r, ny = (y - N / 2) / r, rr2 = nx * nx + ny * ny, i = (y * N + x) * 4;
+    if (rr2 <= 1) { const w = Math.sqrt(1 - ny * ny), lit = (wax ? nx : -nx) >= w * (1 - 2 * f), crater = (Math.sin(nx * 9 + 1) * Math.sin(ny * 7) > .55) ? .82 : 1, v = lit ? 246 * crater : 38; img.data[i] = v; img.data[i + 1] = v * (lit ? .97 : 1.05); img.data[i + 2] = lit ? v * .86 : 62; img.data[i + 3] = lit ? 255 : 120; }
+    else if (rr2 < 2.2) { const a = (1 - (rr2 - 1) / 1.2) * .28 * f; img.data[i] = 210; img.data[i + 1] = 222; img.data[i + 2] = 255; img.data[i + 3] = a * 255; } }
+  g.putImageData(img, 0, 0); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+// 하늘에 실제 방향으로 해·달 띄우기
+function addCelestial(g, A, cloud) {
+  const R = 300, out = [];
+  if (A.sunAlt > -3) { const p = A.sunDir.clone().multiplyScalar(R); p.y = Math.max(p.y, 4); const low = 1 - sstep(0, 20, A.sunAlt);
+    const sm = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(low > .5 ? '#ffcf6a' : '#fffbe8', low > .5 ? 'rgba(255,140,70,A)' : 'rgba(255,240,200,A)'), fog: false, depthWrite: false, transparent: true, opacity: 1 - cloud * .75 }));
+    sm.scale.setScalar(70 + low * 50); sm.position.copy(p); g.add(sm); out.push(sm); }
+  if (A.moonAlt > -2) { const p = A.moonDir.clone().multiplyScalar(R * .97); p.y = Math.max(p.y, 4); const day = sstep(-4, 8, A.sunAlt);
+    const mm2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: moonTex(A.moonFrac, A.waxing), fog: false, depthWrite: false, transparent: true, opacity: (1 - day * .6) * (1 - cloud * .8) }));
+    mm2.scale.setScalar(46); mm2.position.copy(p); g.add(mm2); out.push(mm2); }
+  return out;
+}
+// 비·눈·진눈깨비·바람 먼지 입자 (카메라 주변 상자 안에서 순환)
+let wxFx = null;
+function weatherFx(kind, w) {
+  if (wxFx) { world.remove(wxFx.g); wxFx = null; }
+  const ws = w ? w.wind_speed_10m || 0 : 0, wd = w ? w.wind_direction_10m || 0 : 0, b = (wd + 180) * RADD, wx = Math.sin(b) * ws, wz = -Math.cos(b) * ws;
+  const g = new THREE.Group(); world.add(g); const BX = 44, BY = 26, BZ = 44, mob = isMobile ? .55 : 1, sys = [];
+  const rand = () => [mr(-BX, BX), mr(0, BY), mr(-BZ, BZ)];
+  const precip = w ? Math.max(w.precipitation || 0, (w.rain || 0) + (w.showers || 0)) : 0;
+  if (kind === 'rain' || kind === 'storm' || kind === 'sleet') {
+    const n = Math.round(clamp(500 + precip * 450, 600, 3000) * mob), pos = new Float32Array(n * 6), vy = kind === 'sleet' ? -11 : -22, sx = wx * .9, sz = wz * .9, k = .05;
+    for (let i = 0; i < n; i++) { const [x, y, z] = rand(); pos.set([x, y, z, x - sx * k, y - vy * k, z - sz * k], i * 6); }
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const ln = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({ color: 0xbfd4ea, transparent: true, opacity: .55, fog: false, depthWrite: false })); ln.frustumCulled = false; g.add(ln);
+    sys.push({ geo, pos, n, stride: 6, vx: sx, vy, vz: sz });
+  }
+  if (kind === 'snow' || kind === 'sleet') {
+    const sf = w ? w.snowfall || 0 : 0, n = Math.round(clamp(600 + sf * 900, 700, 2600) * mob), pos = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) pos.set(rand(), i * 3);
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const pt = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xffffff, size: .22, transparent: true, opacity: .95, fog: false, depthWrite: false })); pt.frustumCulled = false; g.add(pt);
+    sys.push({ geo, pos, n, stride: 3, vx: wx * .7, vy: -2.2, vz: wz * .7, sway: 1 });
+  }
+  if (ws >= 4 && !['rain', 'storm', 'snow', 'sleet'].includes(kind)) { // 바람이 세면 낙엽·먼지가 날린다
+    const n = Math.round(clamp(ws * 30, 120, 600) * mob), pos = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) { const p = rand(); p[1] *= .3; pos.set(p, i * 3); }
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const pt = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xc9a46a, size: .16, transparent: true, opacity: .8, depthWrite: false })); pt.frustumCulled = false; g.add(pt);
+    sys.push({ geo, pos, n, stride: 3, vx: wx * 1.3, vy: -.15, vz: wz * 1.3, sway: 2, low: 1 });
+  }
+  const fx = wxFx = { g, sys, wx, wz, ws, kind, flash: 0, next: 4 + Math.random() * 8 };
+  envAnim.push(dt => {
+    if (wxFx !== fx) return; const cx = camera.position.x, cy = camera.position.y, cz = camera.position.z;
+    for (const S of fx.sys) { const P = S.pos, gust = 1 + Math.sin(time * 1.3) * .25;
+      for (let i = 0; i < S.n; i++) { const o = i * S.stride; let x = P[o] + S.vx * gust * dt + (S.sway ? Math.sin(time * 1.7 + i) * dt * S.sway : 0), y = P[o + 1] + S.vy * dt, z = P[o + 2] + S.vz * gust * dt;
+        let dx = x - cx, dz = z - cz; if (dx > BX) x -= 2 * BX; else if (dx < -BX) x += 2 * BX; if (dz > BZ) z -= 2 * BZ; else if (dz < -BZ) z += 2 * BZ;
+        if (y < 0) y += S.low ? BY * .3 : BY; if (y > cy + BY) y -= BY;
+        if (S.stride === 6) { const ox = P[o + 3] - P[o], oy = P[o + 4] - P[o + 1], oz = P[o + 5] - P[o + 2]; P[o] = x; P[o + 1] = y; P[o + 2] = z; P[o + 3] = x + ox; P[o + 4] = y + oy; P[o + 5] = z + oz; }
+        else { P[o] = x; P[o + 1] = y; P[o + 2] = z; } }
+      S.geo.attributes.position.needsUpdate = true; }
+    if (fx.kind === 'storm') { fx.next -= dt; if (fx.next < 0) { fx.next = 5 + Math.random() * 10; fx.flash = .18; setTimeout(() => tone(55, .9, 'sawtooth', .05), 400 + Math.random() * 900); }
+      if (fx.flash > 0) { fx.flash -= dt; hemi.intensity = level.baseI.h * 3; } else if (level.baseI) hemi.intensity = level.hemiNow; }
+  });
+}
+function wxLabel(name, w, K) { const [, , area] = geoOf(name); if (!w) return '📍 ' + area + ' · ' + K.ic + ' ' + K.ko;
+  return '📍 ' + area + ' · ' + K.ic + ' ' + K.ko + (((w.precipitation || 0) > 0) ? ' ' + w.precipitation + 'mm' : '') + ' · 💨 ' + windName(w.wind_direction_10m) + ' ' + (w.wind_speed_10m || 0).toFixed(1) + 'm/s · 🌡 ' + Math.round(w.temperature_2m) + '°C'; }
+function applyTimeOfDay(silent) {
   if (!level || level.sunset) return;
-  const h = localHour(), ph = dayNow = dayPhase(h), out = !!level.outdoor;
+  const A = level.astro = astroNow(level.name), w = window.__wxFix || WX[level.name], K = level.wxK = wxKind(w);
+  const h = localHour(), ph = dayNow = A.sunAlt > 8 ? 'day' : A.sunAlt > -6 ? 'dusk' : 'night', out = !!level.outdoor;
+  const cloud = !w ? .2 : clamp((w.cloud_cover || 0) / 100, 0, 1) * (['rain', 'storm', 'snow', 'sleet', 'fog'].includes(K.k) ? 1 : .75), dark = ['rain', 'storm', 'sleet'].includes(K.k) ? 1 : ['snow', 'fog', 'cloud'].includes(K.k) ? .6 : 0;
   let [top, bot] = level.sky || SKY_DAY[levelIdx] || SKY_DAY[0];
   if (ph === 'dusk') { top = 0x3d3b7a; bot = 0xffa262; } else if (ph === 'night') { top = 0x060a20; bot = out ? 0x22305e : 0x1a2340; }
   if (level.dim && ph === 'day') { top = 0x2e3448; bot = 0x8a8f9e; }
+  if (out && dark + cloud > .3) { const gy = new THREE.Color(ph === 'night' ? 0x1c2230 : ph === 'dusk' ? 0x6a6470 : 0x8d96a0), m = clamp(cloud * .55 + dark * .4, 0, .85); top = new THREE.Color(top).lerp(gy, m).getHex(); bot = new THREE.Color(bot).lerp(gy, m * .9).getHex(); }
   if (scene.background && scene.background.isTexture) scene.background.dispose();
-  scene.background = new THREE.Color(bot); if (skyG) world.remove(skyG); { const [st, dc, cl] = skyFor(ph, top, bot); skyG = skyDome2(st, dc, cl, ph); }
+  scene.background = new THREE.Color(bot); if (skyG) world.remove(skyG);
+  { const [st, dc, cl] = skyFor(ph, top, bot); dc.rings = []; dc.pos = [0, -900, 0]; cl.n = Math.round(4 + cloud * 36); if (dark + cloud > .6) cl.col = ph === 'night' ? 0x2a3040 : dark ? 0x8f969e : 0xd9dde2; skyG = skyDome2(st, dc, cl, ph);
+    if (ph === 'night' && cloud > .5) skyG.children.forEach(c => { if (c.isPoints) c.visible = false; });
+    if (out) addCelestial(skyG, A, cloud);
+    if (w && out) { const ws = w.wind_speed_10m || 0, b = (w.wind_direction_10m + 180) * RADD, vx = Math.sin(b) * ws * .6, vz = -Math.cos(b) * ws * .6, cls = skyG.children.filter(c => c.isMesh && c.geometry.type === 'BoxGeometry'), g0 = skyG;
+      envAnim.push(dt => { if (skyG !== g0) return; for (const c of cls) { c.position.x += vx * dt; c.position.z += vz * dt; if (c.position.x > 180) c.position.x -= 360; if (c.position.x < -180) c.position.x += 360; if (c.position.z > 140) c.position.z -= 360; if (c.position.z < -220) c.position.z += 360; } }); } }
   scene.fog.color.set(bot);
-  const k = ph === 'night' ? (out ? .4 : .7) : ph === 'dusk' ? .8 : 1;
-  sun.intensity *= k; hemi.intensity *= ph === 'night' ? (out ? .6 : .85) : ph === 'dusk' ? .9 : 1;
-  if (ph === 'night') { sun.color.set(0x9db4ff); hemi.color.set(0xb8c6ff); } else if (ph === 'dusk') { sun.color.set(0xffb27a); hemi.color.set(0xffe0c8); }
+  if (out) { const [fn, ff] = K.k === 'fog' ? [12, 70] : dark >= 1 ? [30, 130] : K.k === 'snow' ? [26, 120] : [80, 220]; scene.fog.near = fn; scene.fog.far = ff; }
+  // 밝기: 해 고도(구름 가림 포함) / 밤에는 달의 위상만큼 달빛
+  level.baseI = level.baseI || { h: hemi.intensity, s: sun.intensity };
+  const dayK = sstep(-6, 12, A.sunAlt), sunUp = sstep(-2, 25, A.sunAlt), moonK = A.moonAlt > 0 ? A.moonFrac * sstep(0, 15, A.moonAlt) : 0, shade = 1 - cloud * .55 - dark * .15;
+  if (out) { sun.intensity = level.baseI.s * Math.max(sunUp * shade, (1 - dayK) * (.12 + moonK * .45) * (1 - cloud * .6), .08); hemi.intensity = level.baseI.h * ((.35 + .65 * dayK) * (1 - dark * .25) + (1 - dayK) * moonK * .25); }
+  else { sun.intensity = level.baseI.s * (ph === 'night' ? .7 : ph === 'dusk' ? .8 : 1); hemi.intensity = level.baseI.h * (ph === 'night' ? .85 : ph === 'dusk' ? .9 : 1); }
+  level.hemiNow = hemi.intensity;
+  level.lightDir = out ? (A.sunAlt > -2 ? A.sunDir : A.moonAlt > 0 ? A.moonDir : null) : null;
+  if (ph === 'night') { sun.color.set(0x9db4ff); hemi.color.set(0xb8c6ff); } else if (ph === 'dusk') { sun.color.set(0xffb27a); hemi.color.set(0xffe0c8); } else { sun.color.set(new THREE.Color(0xffd7a0).lerp(new THREE.Color(0xfff6e8), sstep(8, 35, A.sunAlt)).lerp(new THREE.Color(0xdfe6ee), cloud * .6)); hemi.color.set(0xffffff); }
+  if (out) weatherFx(K.k, w); else if (wxFx) { world.remove(wxFx.g); wxFx = null; }
+  { const el = $('wx'); if (el) { el.textContent = wxLabel(level.name, w, K) + ' · ' + (A.sunAlt > 0 ? (cloud > .6 ? '☁ 구름 뒤 해 고도 ' : '☀ 해 고도 ') + Math.round(A.sunAlt) + '°' : (A.moonAlt > 0 ? '🌙 ' + moonName(A.moonFrac, A.waxing) + ' ' + Math.round(A.moonFrac * 100) + '% · 고도 ' + Math.round(A.moonAlt) + '°' : '🌑 달 없음')); el.classList.remove('hidden'); } }
+  if (silent) return;
   // 밤에는 바깥 맵에 가로등 불빛
   if (ph === 'night' && out) for (let k = 0; k < 8; k++) { const b = level.bounds, x = mr(b.minX + 6, b.maxX - 6), z = mr(b.minZ + 6, b.maxZ - 6), l = new THREE.PointLight(0xffd59a, 12, 18, 1.8); l.position.set(x, 6, z); world.add(l); }
-  const [, city] = LANG_TZ[lang] || LANG_TZ.ko, hh = Math.floor(h), mm = String(Math.floor((h - hh) * 60)).padStart(2, '0');
-  setTimeout(() => toast(t('tod_' + ph).replace('{city}', city).replace('{time}', hh + ':' + mm)), 2600);
+  const city = geoOf(level.name)[2], kst = new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(nowDate());
+  setTimeout(() => toast(t('tod_' + ph).replace('{city}', city).replace('{time}', kst)), 2600);
+  if (w) setTimeout(() => toast(K.ic + ' 지금 ' + city + '은(는) ' + K.ko + ' · ' + windName(w.wind_direction_10m) + ' ' + (w.wind_speed_10m || 0).toFixed(1) + 'm/s(' + windFeel(w.wind_speed_10m || 0) + ') · ' + Math.round(w.temperature_2m) + '°C' + (out ? '' : ' (실내 맵이라 바깥 날씨만 알려 줘요)')), 6200);
   if (level && !level.relax) { const c = crowdNow(level); setTimeout(() => toast(t('crowd_' + (c < .45 ? 0 : c < .9 ? 1 : c < 1.2 ? 2 : 3)) + (lang === 'ko' ? ' (' + '일월화수목금토'[localDow()] + '요일 ' + Math.floor(h) + '시 유동인구 기준)' : '')), 4400); }
 }
 function distToPoly(P, x, z) { let best = 1e9; for (let i = 0; i < P.length; i++) { const [ax, az] = P[i], [bx2, bz] = P[(i + 1) % P.length], vx = bx2 - ax, vz = bz - az, L2 = vx * vx + vz * vz || 1, u = clamp(((x - ax) * vx + (z - az) * vz) / L2, 0, 1); best = Math.min(best, Math.hypot(x - ax - vx * u, z - az - vz * u)); } return best; }
@@ -5365,7 +5498,7 @@ function loadLevel(i) {
     const [pts, rad] = r;
     for (let k = 0; k < pts.length; k++) { const [ax, az] = pts[k], [bx, bz] = pts[(k + 1) % pts.length], L2 = Math.hypot(bx - ax, bz - az); for (let t = 0; t <= L2; t += 1.5) level.avoid.push({ x: ax + (bx - ax) * t / (L2 || 1), z: az + (bz - az) * t / (L2 || 1), r: rad }); }
   }
-  applyTimeOfDay();
+  level.wxApplied = wxReady; applyTimeOfDay();
   smallRoads(level); def.build(level); clearRoadProps(level);
   applyExtras(level);
   applyShape(level, def);
@@ -5429,6 +5562,9 @@ function loadLevel(i) {
 
 const scaleNums = t => level && level.sz > 1.05 ? t.replace(/(\d+)(개|정|명)/g, (m, n, u) => Math.ceil(+n * (1 + (level.sz - 1) * .42)) + u) : t;
 const LOAD_TIPS = ['💥 점프를 3번 하면 공중 덤블링! 착지하면 쿵! 주변 범인을 공격해요', '👃 [E]·[킁킁]을 누르고 있으면 숨긴 물건 냄새가 길을 알려 줘요', '🪙 맵 곳곳의 코인을 모아 업그레이드 상점에서 탐지견을 키워요', '👥 팀 방을 만들면 친구 5명까지 같은 맵을 함께 수색해요', '🦴 뼈다귀를 던지면 도망가는 범인을 멈출 수 있어요', '❤️ 하트 공을 먹으면 체력이 회복돼요', '📞 실제로 수상한 밀수품을 보면 ☎ 125 (관세청 밀수신고센터)', '🏊 바다가 있는 맵에서는 탐지견과 핸들러가 함께 수영할 수 있어요', '🛃 해외여행에서 산 물건이 면세 한도를 넘으면 세관에 자진신고해요', '🐕 진짜 관세청 탐지견은 마약·총기 냄새를 찾도록 훈련받아요'];
+fetchWeather().then(() => { if (level && !level.wxApplied && !level.sunset) { level.wxApplied = true; applyTimeOfDay(true); } });
+setInterval(() => { const el = $('wx'); if (el) el.classList.toggle('hidden', !level || level.sunset || !['play', 'dialog'].includes(state)); }, 700);
+setInterval(() => { if (level && !level.sunset && state === 'play') { const A = level.astro = astroNow(level.name); if (level.outdoor) level.lightDir = A.sunAlt > -2 ? A.sunDir : A.moonAlt > 0 ? A.moonDir : null; } }, 60e3);
 function startLevel(i) {
   if (!startLevel.go && LEVELS[i]) {
     if (startLevel.busy) return; // 연타로 같은 맵을 두 번 불러오지 않게
@@ -6811,7 +6947,7 @@ function updateCamera(dt) {
   updateOcclusion(dt);
   if (window.__view) { const v = window.__view; camera.position.set(v[0], v[1], v[2]); camera.lookAt(v[3], v[4], v[5]); }
   if (level && level.ship) camera.rotateZ(Math.sin(time * .7) * .03);
-  if (level && level.sunset) sun.position.set(tx - 40, 14, tz - 30); else sun.position.set(tx + 22, 45, tz + 16); sun.target.position.set(tx, 0, tz);
+  if (level && level.sunset) sun.position.set(tx - 40, 14, tz - 30); else if (level && level.lightDir) { const L = level.lightDir; sun.position.set(tx + L.x * 60, Math.max(L.y * 60, 6), tz + L.z * 60); } else sun.position.set(tx + 22, 45, tz + 16); sun.target.position.set(tx, 0, tz);
 }
 
 // ================= 미니맵 =================
