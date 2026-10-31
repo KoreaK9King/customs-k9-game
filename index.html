@@ -646,7 +646,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1829';
+const BUILD = '20261031-1842';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -2970,7 +2970,7 @@ const LEVELS = [
       for (const x of [-30, 0, 30]) { const e = mesh(BOX(3, .4, 9), MAT.metal(0xb7bec3, .3), x, 2.4, -32); e.rotation.x = -.42; addCol(x, -32, 3.4, 7, e, { topY: 99 }); for (const sx of [-1.6, 1.6]) { const r = mesh(BOX(.2, .9, 9.4), MAT.glass(), x + sx, 3, -32); r.rotation.x = -.42; } }
       sign('⬆ 2층 법무부 입국심사 → 1층 수하물 찾는 곳', 0, 7.5, -33, .8);
       // 수하물 수취대 6개 (남북으로 길게)
-      const belts0 = [11, 12, 13, 14, 15, 16];
+      const belts0 = [14, 13, 12, 11, 10, 9];
       [-60, -36, -12, 12, 36, 60].forEach((cx, n) => {
         const Lz = Math.abs(cx) > 50 ? 10 : 14, cz = Math.abs(cx) > 50 ? -16 : -18;
         solid(cx, cz, 3.4, Lz, .55, MAT.metal(0x6b7378, .4));
@@ -2983,7 +2983,7 @@ const LEVELS = [
       floorPlane(150, 10, MAT.col(0xd8d2c6, .4), 0, -4, .012); sign('🛃 세관 검사 CUSTOMS · 녹색 = 신고 물품 없음 / 적색 = 세관 신고', 0, 6.2, -10, .7);
       // 출구 C·D·E가 있는 칸막이벽
       for (const [x0, x1] of [[-75, -57], [-43, -7], [7, 43], [57, 75]]) { const w = x1 - x0; bx((x0 + x1) / 2, 0, 2, w, 3.2, .4, 0xe9eef2); mesh(BOX(w, .5, .45), MAT.col(0x1f3b5a, .5), (x0 + x1) / 2, 3.2, 2); }
-      for (const [x, n] of [[-50, 'C'], [0, 'D'], [50, 'E']]) { mesh(BOX(14, 1.2, .5), MAT.col(0xf2c500, .6), x, 4, 2); sign('출구 ' + n + ' EXIT ' + n, x, 5.6, 2.6, .7); floorPlane(14, 1, MAT.col(0x666666, .4), x, 2, .02); }
+      for (const [x, n] of [[-50, 'D'], [0, 'C·D'], [50, 'C']]) { mesh(BOX(14, 1.2, .5), MAT.col(0xf2c500, .6), x, 4, 2); sign('출구 ' + n + ' EXIT ' + n, x, 5.6, 2.6, .7); floorPlane(14, 1, MAT.col(0x666666, .4), x, 2, .02); }
       // 환영홀: 마중 인파 펜스, 카운터, 벤치, 기둥
       for (const x of [-50, 0, 50]) for (const sx of [-1, 1]) { mesh(BOX(.12, 1, .12), MAT.metal(0x999999), x + sx * 9, .5, 7); mesh(BOX(.12, 1, .12), MAT.metal(0x999999), x + sx * 9, .5, 11); mesh(BOX(.06, .1, 4), MAT.col(0x1f3b5a, .5), x + sx * 9, .9, 9); }
       for (const [x, t, c] of [[-60, '💱 환전 EXCHANGE', 0x2c6fb7], [-35, '🚗 렌터카 RENT-A-CAR', 0x27ae60], [35, '📶 로밍·유심 ROAMING', 0x8e44ad], [60, '☕ 카페 · 편의점', 0xb5402f]]) { bx(x, 0, 32, 10, 1.1, 2, 0xf4f4f2); mesh(BOX(10, 1.2, .3), MAT.col(c, .5), x, 2.6, 33); sign(t, x, 4, 32, .55); }
@@ -3462,7 +3462,7 @@ function stationTrains(L, lines, { stopX = 0, span } = {}) {
   }
 }
 // ===== 맵 바깥 배경: 맵 성격에 맞는 먼 풍경 (충돌 없음 · 그림자 없음) =====
-const FAR_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'airport', '국제우편·특송센터': 'logistics', '국제 여객선': 'coast', '부두 컨테이너 야적장': 'port', '보세창고 (보스전)': 'industrial', '노을 활주로': 'airport', '우체국': 'city', '교도소': 'rural', '서울역': 'city', '버스터미널': 'city', '명동': 'city', '경복궁': 'heritage', '홍대': 'city', '롯데월드타워': 'city', '동대문': 'city', '광안리 해변': 'city', '숭례문': 'city', '수원화성': 'heritage', '경주': 'tomb', 'N서울타워': 'mountain', '해운대': 'city', '제주 한라산': 'jeju', '포항 스페이스워크': 'city', '전주 한옥마을': 'heritage', '광화문광장': 'city', '청와대': 'heritage', '국회의사당': 'city', '감천문화마을': 'village', '대전 한빛탑': 'city' };
+const FAR_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'airport', '국제우편·특송센터': 'logistics', '국제 여객선': 'coast', '인천항 국제여객터미널': 'port', '부두 컨테이너 야적장': 'port', '보세창고 (보스전)': 'industrial', '노을 활주로': 'airport', '우체국': 'city', '교도소': 'rural', '서울역': 'city', '버스터미널': 'city', '명동': 'city', '경복궁': 'heritage', '홍대': 'city', '롯데월드타워': 'city', '동대문': 'city', '광안리 해변': 'city', '숭례문': 'city', '수원화성': 'heritage', '경주': 'tomb', 'N서울타워': 'mountain', '해운대': 'city', '제주 한라산': 'jeju', '포항 스페이스워크': 'city', '전주 한옥마을': 'heritage', '광화문광장': 'city', '청와대': 'heritage', '국회의사당': 'city', '감천문화마을': 'village', '대전 한빛탑': 'city' };
 const NAMSAN = ['서울역', '명동', '숭례문', '동대문', '광화문광장', '경복궁', '청와대', '우체국', '홍대'];
 let winTex = null;
 function farWinTex() {
@@ -4661,6 +4661,67 @@ const LANDMARK_LIST = [
       for (let x = -45; x <= 45; x += 15) if (Math.abs(x) > 8) lamp(x, 64); flowers(-30, 62, 24, 4, [0xf44336, 0xffeb3b, 0xffffff], 40);
 
     } },
+  { name: '인천항 국제여객터미널', gate: true, icon: '🛳', sc: 1, w: 200, d: 150, floor: () => std(0xffffff, .9, 0, { map: TEX.asphalt([30, 30]) }), mmCol: 0x8f949a, shapeFloor: true, obj: luggage, ns: 24, st: 3, music: 4, sky: [0x4f9be6, 0xd6ecfb],
+    shape: [[-1, 1], [-1, -.83], [1, -.83], [1, 1]], outside: { col: 0x3d8fc4, y: -.4, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
+    veh: [{ type: 'forklift', route: [[-90, -50], [90, -50], [90, -54], [-90, -54]] }, { type: 'truck', col: 0x2c6fb7, box: 0xf4f4f2, tag: '🚛 카페리 화물', route: [[66, -44], [-95, -44], [-95, -47], [66, -47]] }, { type: 'bus', route: [[-95, 25], [95, 25], [95, 29], [-95, 29]] }, { type: 'taxi', route: [[95, 29], [-95, 29], [-95, 25], [95, 25]] }],
+    staff: [{ kind: 'customs', route: [[-60, -10], [-2, -10]], wait: 2.5 }, { kind: 'customs', route: [[-56, -32], [-24, -32]], wait: 2 }, { kind: 'crew', route: [[-40, -58], [40, -58]], wait: 2 }, { kind: 'customs', route: [[8, -14], [60, -14]], wait: 2.5 }, { kind: 'police', route: [[-80, 36], [80, 36]], wait: 2 }],
+    people: { civ: 10, tourist: 8, merchant: 5, smuggler: 4 }, hide: { drug: 5, gun: 3 }, need: { drug: 3, gun: 1, smuggler: 3 },
+    items: [["marketBox", 4], ["clothBundle", 3], ["cooler", 2], ["dutyBag", 2], ["backpack", 2]], who: '바다빛 인천본부세관 여객과장', chief: 'customs',
+    short: '인천항 국제여객터미널(실제 1/2 축척)! 한중 카페리에서 내린 승객이 지나는 1층 입국장(검역·입국심사·수하물·세관 검사)과 출국장, 부두와 주차장까지 수색해요.',
+    intro: '인천 송도의 국제여객터미널이야. 중국에서 온 한중 카페리가 방금 부두에 닿았어!\n배에서 내린 승객은 승하선 브리지 → 검역 → 입국심사 → 수하물 → 세관 검사대를 지나 대합실로 나와.\n보따리상 짐 속에 마약과 총기가 섞였다는 제보야.\n세관 검사대, 수취대, 부두의 화물 트레일러, 주차장 차량 사이까지 꼼꼼히 킁킁!',
+    build(L) {
+      // 인천항 국제여객터미널: 길이 약 270m·폭 약 100m(→1/2). 북쪽(-z) 부두·카페리, 남쪽(+z) 도로·주차장
+      const TX = 66, TN = -36, TS = 14, H = 8;
+      floorPlane(TX * 2, TS - TN, std(0xffffff, .3, 0, { map: TEX.tile('marble', '#d6d0c4', '#b0a898', 6, [TX / 4, (TS - TN) / 8]) }), 0, (TN + TS) / 2, .012);
+      // 외벽(유리 커튼월) — 출입구는 비워 둔다
+      const glassWall = (x0, x1, z) => { const w = x1 - x0; bx((x0 + x1) / 2, 0, z, w, H, .5, 0x9fc3d8); mesh(BOX(w, .6, .7), LMC(0xe9edf0), (x0 + x1) / 2, H + .3, z); };
+      const glassWallZ = (x, z0, z1) => { const d = z1 - z0; bx(x, 0, (z0 + z1) / 2, .5, H, d, 0x9fc3d8); mesh(BOX(.7, .6, d), LMC(0xe9edf0), x, H + .3, (z0 + z1) / 2); };
+      glassWall(-TX, -43, TN); glassWall(-37, 27, TN); glassWall(33, TX, TN);
+      glassWall(-TX, -33, TS); glassWall(-27, 27, TS); glassWall(33, TX, TS);
+      glassWallZ(-TX, TN, -14); glassWallZ(-TX, -8, TS); glassWallZ(TX, TN, -14); glassWallZ(TX, -8, TS);
+      // 물결 모양 지붕 테두리(바다를 닮은 곡선 지붕)
+      for (let k = 0; k <= 22; k++) { const x = -TX + k * (TX * 2 / 22); mesh(BOX(6.4, .5, 1.2), LMC(0xf4f4f2), x, H + 1 + Math.sin(k * .55) * 1.2, TS + .3).castShadow = false; mesh(BOX(6.4, .5, 1.2), LMC(0xf4f4f2), x, H + 1 + Math.sin(k * .55) * 1.2, TN - .3).castShadow = false; }
+      sign('🛳 인천항 국제여객터미널 INCHEON PORT INTERNATIONAL PASSENGER TERMINAL', 0, H + 4, TS + 1, 1.3);
+      // 가운데 칸막이: 서쪽 = 1층 입국장, 동쪽 = 출국 수속(실제는 2·3층). 대합실 쪽으로만 통한다
+      bx(0, 0, -15, .5, H, 42, 0xe9eef2);
+      // ── 입국장(서쪽) ── 하선 브리지 입구 → 검역 → 입국심사 → 수하물 → 세관 검사
+      sign('⬇ 하선 승객 입구 ARRIVAL (승하선 브리지)', -40, H - 1, TN + 1, .7);
+      bx(-46, 0, -31, .8, 2.2, .8, 0x2b3a4a); bx(-34, 0, -31, .8, 2.2, .8, 0x2b3a4a); sign('🌡 검역 · 발열 감시 카메라 QUARANTINE', -40, 3.4, -31, .55, 'rgba(30,110,90,.95)');
+      for (const x of [-60, -52, -44, -28, -20, -12]) { bx(x, 0, -24, 3, 1.2, 1.8, 0x2b3a4a); mesh(BOX(3, 1, .1), MAT.glass(), x, 1.7, -24.9); }
+      sign('🛂 법무부 입국심사 IMMIGRATION', -36, 4.2, -24, .7);
+      for (const [cx, n] of [[-48, 1], [-24, 2]]) { solid(cx, -16, 16, 3.2, .55, MAT.metal(0x6b7378, .4)); mesh(RBOX(15, .3, 1, .1), MAT.metal(0xb7bec3, .3), cx, .7, -16); for (let i = 0; i < 6; i++) mesh(RBOX(.7, .45, .45, .06), MAT.shell(pick(bagColors)), cx - 6.5 + i * 2.6, .85, -16 + (i % 2 ? .9 : -.9)); sign('🧳 수하물 수취대 ' + n, cx, 3.2, -16, .55); }
+      for (const [x, red] of [[-50, false], [-40, true], [-20, false], [-10, true]]) customsGate(x, -4, red);
+      for (const [x0, x1] of [[-TX, -51.6], [-48.4, -44.4], [-36, -21.6], [-18.4, -13.6], [-6.4, -.25]]) { bx((x0 + x1) / 2, 0, -3.4, x1 - x0, 2.6, .3, 0xe9eef2); }
+      sign('🛃 인천본부세관 휴대품 검사 · 녹색 = 신고 물품 없음 / 적색 = 세관 신고', -33, 6, -6, .7);
+      // 입국 대합실: 마중 펜스, 환전·여행 안내·편의점, 벤치, 기둥
+      for (const [x, t, c] of [[-56, '💱 환전 EXCHANGE', 0x2c6fb7], [-38, 'ℹ 여행자 안내 · 버스 시간표', 0x27ae60], [-14, '🏪 편의점 · 카페', 0xb5402f]]) { bx(x, 0, 10.5, 9, 1.1, 1.8, 0xf4f4f2); mesh(BOX(9, 1, .3), LMC(c), x, 2.6, 11.4); sign(t, x, 3.8, 10.5, .5); }
+      for (const x of [-50, -30, -10]) for (const z of [2, 7]) bench(x, z);
+      for (const x of [-56, -40, -22]) pillar(x, 5, H);
+      sign('입국 대합실 ARRIVAL HALL', -30, H - 1, 12, .7);
+      // ── 출국장(동쪽) ── 선사 체크인 → 보안검색·출국심사 → 면세점·승선 대기 → 승선 브리지
+      for (let x = 10; x <= 58; x += 8) { bx(x, 0, 6, 6, 1.1, 1.4, 0xf0ede6); mesh(BOX(6, .8, .2), LMC(0x1f4e8c), x, 2.6, 6.8); }
+      sign('🎫 한중 카페리 선사 체크인 CHECK-IN (웨이하이·칭다오·톈진·다롄…)', 34, 4, 6, .6);
+      for (const x of [16, 30, 44, 56]) { bx(x, 0, -10, 2, 1.4, 4, 0xdfe3e6); mesh(BOX(1.4, .1, 3), LMC(0x26292c), x, 1.45, -10); }
+      sign('🔍 보안검색 · 출국심사 SECURITY', 36, 3.6, -10, .6);
+      for (const x of [12, 24, 48, 60]) { bx(x, 0, -24, 8, 2.2, 2.4, 0xd7c9a8); mesh(BOX(8, .5, .3), glow(0xffd36b, .8), x, 2.6, -22.7).castShadow = false; }
+      sign('🛍 면세점 DUTY FREE', 36, 4.2, -24, .65, 'rgba(120,70,20,.92)');
+      for (const x of [18, 26, 44, 52]) bench(x, -31);
+      sign('⬆ 승선 게이트 BOARDING', 30, H - 1, TN + 1, .7);
+      // ── 부두(북쪽) ── 계류 중인 한중 카페리 2척, 승하선 브리지, 계선주, 화물 트레일러
+      { const f = ship(-30, -71, 92); f.scale.setScalar(1.05); const f2 = ship(66, -71, 60); f2.rotation.y = Math.PI; }
+      for (const gx of [-40, 30]) { mesh(BOX(3, 3, 28), LMC(0xd9dde2), gx, 7.5, -50).castShadow = false; for (const z of [-44, -56]) mesh(BOX(.6, 6, .6), MAT.metal(0x777777), gx, 3, z); }
+      for (let x = -95; x <= 95; x += 12) { mesh(CYL(.35, .45, .8, 10), LMC(0x2b2b2b), x, .4, -61.4); addCol(x, -61.4, .9, .9, null, { topY: .8 }); }
+      for (let x = -95; x <= 95; x += 6) mesh(BOX(3, .02, .25), MAT.col(0xf2c500, .5), x, .03, -59.5);
+      for (const x of [72, 78, 84, 90]) { solid(x, -42, 3, 9, 2.8, MAT.col(pick([0xb03a2e, 0x2471a3, 0x1e8449, 0xca6f1e]), .6)); }
+      sign('⚓ 카페리 부두 FERRY BERTH (세관 화물 검사)', 81, 5, -42, .7);
+      // ── 남쪽 ── 승하차 도로(버스·택시), 지붕 있는 보행로, 주차장
+      floorPlaneW(200, 10, MAT.col(0x3a3d42, .95), 0, 27, .02); for (let x = -95; x <= 95; x += 8) mesh(BOX(4, .02, .25), MAT.col(0xffffff, .5), x, .04, 27);
+      for (let x = -60; x <= 60; x += 15) { mesh(BOX(.3, 4, .3), MAT.metal(0x9aa3ab), x, 2, 20); } mesh(BOX(126, .3, 6), LMC(0xf4f4f2), 0, 4.1, 19).castShadow = false;
+      sign('🚌 버스 · 🚕 택시 승차장', -50, 5.2, 21, .6);
+      for (let x = -90; x <= 90; x += 6) { if (Math.abs(x) < 9) continue; for (const z of [44, 56]) { mesh(BOX(.15, .02, 5), MAT.col(0xffffff, .5), x - 3, .03, z); if (rnd() < .65) bx(x, 0, z, 2.2, 1.4, 4.2, pick([0xf4f4f2, 0x222222, 0x9aa3ab, 0xc0392b, 0x2c6fb7])); } }
+      sign('🅿 여객터미널 주차장', 50, 3.5, 50, .6);
+      L.search = colliders.filter(c => c.topY > .5 && c.topY < 1.6 && c.maxX - c.minX < 5 && c.maxZ - c.minZ < 5 && c.minZ > 40).slice(0, 12);
+    } },
 ];
 const LANDMARK_START = LEVELS.length;
 LANDMARK_LIST.forEach((o, n) => LEVELS.push(LMDEF({ ...o, n })));
@@ -5025,6 +5086,7 @@ const CRIME = {
   '공항 화물터미널': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수범', 'Smuggler']],
   '국제우편·특송센터': [['🌿', '합성 대마', 'Synthetic cannabis'], ['🔪', '불법 도검', 'Illegal blade'], ['📦', '국제 택배 밀수범', 'Parcel smuggler']],
   '국제 여객선': [['🚬', '밀수 담배', 'Smuggled cigarettes'], ['💊', '마약', 'Drugs'], ['🧳', '보따리 밀수상', 'Suitcase trader']],
+  '인천항 국제여객터미널': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🧳', '보따리 밀수상', 'Suitcase trader']],
   '부두 컨테이너 야적장': [['🎇', '불법 화약', 'Illegal gunpowder'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
   '보세창고 (보스전)': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
   '우체국': [['💵', '보이스피싱 현금', 'Phishing cash'], ['🌿', '마약 소포', 'Drug parcel'], ['📞', '보이스피싱 수거책', 'Phishing courier']],
@@ -5085,7 +5147,7 @@ const CROWD = {
   hiking: [.1, .1, .1, .1, .2, .5, 1, 1.3, 1.4, 1.3, 1.2, 1.1, 1, .9, .7, .5, .3, .2, .1, .1, .1, .1, .1, .1],
   works: [.7, .65, .6, .6, .65, .75, .9, 1, 1.05, 1.05, 1.05, 1, .95, 1, 1.05, 1.05, 1, .95, .9, .85, .8, .75, .75, .7],
 };
-const CROWD_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'works', '국제우편·특송센터': 'works', '국제 여객선': 'airport', '부두 컨테이너 야적장': 'works', '보세창고 (보스전)': 'works',
+const CROWD_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'works', '국제우편·특송센터': 'works', '국제 여객선': 'airport', '인천항 국제여객터미널': 'airport', '부두 컨테이너 야적장': 'works', '보세창고 (보스전)': 'works',
   '우체국': 'office', '교도소': 'office', '서울역': 'commute', 'KTX': 'commute', '버스터미널': 'commute', '비행기': 'airport', '명동': 'nightlife', '경복궁': 'heritage', '홍대': 'nightlife', '롯데월드타워': 'view', '동대문': 'nightlife',
   '광안리 해변': 'beach', '숭례문': 'heritage', '수원화성': 'heritage', '경주': 'heritage', 'N서울타워': 'view', '해운대': 'beach', '제주 한라산': 'hiking', '포항 스페이스워크': 'view', '전주 한옥마을': 'heritage', '광화문광장': 'view', '청와대': 'office', '국회의사당': 'office', '감천문화마을': 'heritage', '대전 한빛탑': 'view' };
 const AGE_MIX = {
@@ -5111,7 +5173,7 @@ function applyAge(p) {
   else p.age = 20 + Math.floor(rnd() * 45);
 }
 const ANIMALS_OF = {
-  '공항 입국장': [['qdog', 1]], '공항 화물터미널': [['pigeon', 4]], '국제우편·특송센터': [['qdog', 1]], '국제 여객선': [['seagull', 6]], '부두 컨테이너 야적장': [['seagull', 6], ['cat', 2]], '보세창고 (보스전)': [['cat', 1]], '노을 활주로': [['magpie', 3]],
+  '공항 입국장': [['qdog', 1]], '공항 화물터미널': [['pigeon', 4]], '국제우편·특송센터': [['qdog', 1]], '국제 여객선': [['seagull', 6]], '인천항 국제여객터미널': [['seagull', 8]], '부두 컨테이너 야적장': [['seagull', 6], ['cat', 2]], '보세창고 (보스전)': [['cat', 1]], '노을 활주로': [['magpie', 3]],
   '우체국': [['guideDog', 1]], '교도소': [['magpie', 3], ['cat', 1]], '서울역': [['pigeon', 8]], 'KTX': [['guideDog', 1]], '버스터미널': [['pigeon', 4]], '비행기': [['guideDog', 1]],
   '명동': [['petDog', 2], ['pigeon', 3]], '경복궁': [['magpie', 4], ['duck', 3]], '홍대': [['petDog', 3], ['cat', 2]], '롯데월드타워': [['duck', 5], ['petDog', 2]], '동대문': [['pigeon', 4], ['cat', 1]],
   '광안리 해변': [['seagull', 8], ['petDog', 2]], '숭례문': [['pigeon', 6]], '수원화성': [['magpie', 3], ['petDog', 2]], '경주': [['magpie', 3], ['cat', 2], ['horse', 2]], 'N서울타워': [['magpie', 3], ['petDog', 2]],
@@ -5260,7 +5322,7 @@ function skyDome(top, bot, ph) {
 }
 // ================= 실시간 날씨(Open-Meteo) + 해·달 위치(천문 계산) =================
 // 맵마다 실제 위치(위도, 경도, 지역명)
-const GEO = { '공항 입국장': [37.4602, 126.4407, '인천공항'], '공항 화물터미널': [37.4436, 126.4559, '인천공항 화물터미널'], '국제우편·특송센터': [37.4489, 126.4628, '인천 국제우편물류센터'], '국제 여객선': [37.3683, 126.6253, '인천항'],
+const GEO = { '공항 입국장': [37.4602, 126.4407, '인천공항'], '공항 화물터미널': [37.4436, 126.4559, '인천공항 화물터미널'], '국제우편·특송센터': [37.4489, 126.4628, '인천 국제우편물류센터'], '국제 여객선': [37.3683, 126.6253, '인천항'], '인천항 국제여객터미널': [37.3683, 126.6253, '인천항 국제여객터미널'],
   '부두 컨테이너 야적장': [35.0767, 128.8167, '부산신항'], '보세창고 (보스전)': [35.1028, 129.0403, '부산항'], '우체국': [37.5627, 126.9817, '서울 중구'], '교도소': [37.3935, 126.9862, '경기 의왕'], '서울역': [37.5547, 126.9707, '서울역'],
   'KTX': [36.3326, 127.4342, '대전 부근'], '버스터미널': [37.5049, 127.0049, '서울 서초'], '명동': [37.5636, 126.985, '서울 명동'], '경복궁': [37.5796, 126.977, '서울 종로'], '홍대': [37.5563, 126.9236, '서울 마포'],
   '롯데월드타워': [37.5126, 127.1026, '서울 잠실'], '동대문': [37.5665, 127.0092, '서울 동대문'], '광안리 해변': [35.1532, 129.1186, '부산 광안리'], '숭례문': [37.56, 126.9753, '서울 중구'], '수원화성': [37.2871, 127.0118, '수원'],
