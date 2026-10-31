@@ -695,7 +695,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2329';
+const BUILD = '20261031-2333';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -8185,6 +8185,26 @@ function drawMinimap() {
   for (const c of colliders) { if (c.disabled || !c.mesh || !(c.pushable || c.revealed)) continue; const [x1, y1] = P(c.minX, c.minZ), [x2, y2] = P(c.maxX, c.maxZ); g.fillStyle = c.revealed ? '#2ecc71' : '#a98a64'; g.fillRect(x1, y1, Math.max(2, x2 - x1), Math.max(2, y2 - y1)); }
   for (const h of (typeof helps !== 'undefined' ? helps : [])) { if (h.got) continue; const [x, y] = P(h.x, h.z); g.fillStyle = '#7fd3ff'; g.fillRect(x - 2.5, y - 2.5, 5, 5); }
   for (const bl of balls) { if (bl.got) continue; const [x, y] = P(bl.x, bl.z); g.fillStyle = '#c8e632'; g.beginPath(); g.arc(x, y, 2.5, 0, 7); g.fill(); }
+  // 목표 냄새 구역: 아직 덜 찾은 물건 종류마다 가장 가까운 것 1개를 대략적인 원으로 (정확한 자리는 킁킁으로)
+  // 원 크기는 난이도를 따른다 (쉬움 작게 · 극강 크게), 원 중심은 물건에서 조금 비켜 있다
+  if (!level.relax && state === 'play') {
+    const R = 13 / (DQ().sniff || 1), hint = [];
+    for (const [k, n] of Object.entries(level.need)) {
+      if ((lvStats[k] || 0) >= n) continue;
+      let best = null, bd = 1e9;
+      for (const c of hidden) { if (c.revealed || c.hidden !== k || c.disabled) continue; const p = center(c), d = Math.hypot(p.x - dog.x, p.z - dog.z); if (d < bd) { bd = d; best = c; } }
+      if (best) hint.push([k, best]);
+    }
+    g.save(); g.setLineDash([4, 3]); g.font = 'bold 15px sans-serif'; g.textAlign = 'center';
+    for (const [k, c] of hint) {
+      if (!c.hz) { const a = Math.random() * 6.283, m = Math.random() * R * .6; c.hz = [Math.cos(a) * m, Math.sin(a) * m]; }
+      const p = center(c), [x, y] = P(p.x + c.hz[0], p.z + c.hz[1]), rr2 = Math.max(9, R * S), col = k === 'drug' ? '255,210,63' : '63,162,255';
+      g.globalAlpha = .8 + Math.sin(time * 3) * .2; g.fillStyle = 'rgba(' + col + ',.28)'; g.strokeStyle = 'rgb(' + col + ')'; g.lineWidth = 2.5;
+      g.beginPath(); g.arc(x, y, rr2, 0, 7); g.fill(); g.stroke(); g.globalAlpha = 1;
+      g.lineWidth = 3; g.strokeStyle = 'rgba(0,0,0,.7)'; g.strokeText('?', x, y + 4); g.fillStyle = '#fff'; g.fillText('?', x, y + 4);
+    }
+    g.restore();
+  }
   for (const c of hidden) {
     if (c.revealed || !(c.ping > 0)) continue;
     c.ping -= 1 / 30;
@@ -8199,7 +8219,10 @@ function drawMinimap() {
     else if (p.villain && (p.glow > 0 || p.kind === 'boss')) g.fillStyle = '#ff2b2b';
     else continue;
     g.beginPath(); g.arc(x, y, p.kind === 'boss' ? 6 : 4, 0, 7); g.fill();
+    if (p.villain && !p.vip) { g.strokeStyle = '#fff'; g.lineWidth = 1.5; g.stroke(); g.globalAlpha = .5 + Math.sin(time * 6) * .4; g.beginPath(); g.arc(x, y, (p.kind === 'boss' ? 6 : 4) + 4, 0, 7); g.strokeStyle = '#ff2b2b'; g.stroke(); g.globalAlpha = 1; }
   }
+  // 범례
+  if (!level.relax && !$('mmwrap').classList.contains('mini')) { g.font = 'bold 10px sans-serif'; g.textAlign = 'left'; const lg = '🟡 마약 냄새 구역  🔵 총기 냄새 구역  🔴 추적 대상', w = g.measureText(lg).width + 10; g.fillStyle = 'rgba(0,0,0,.55)'; g.fillRect(4, H - 18, Math.min(W - 8, w), 15); g.fillStyle = '#fff'; g.fillText(lg, 9, H - 7); }
   g.fillStyle = '#ff9f1a';
   for (const v of vehicles) { const [x, y] = P(v.x, v.z); g.save(); g.translate(x, y); g.rotate(-v.dir); g.fillRect(-v.wid * S / 2, -v.len * S / 2, v.wid * S, v.len * S); g.restore(); }
   { const [hx, hy] = P(handler.x, handler.z); g.fillStyle = '#ffffff'; g.strokeStyle = '#1f6fd1'; g.lineWidth = 2; g.beginPath(); g.arc(hx, hy, 3.5, 0, 7); g.fill(); g.stroke(); }
