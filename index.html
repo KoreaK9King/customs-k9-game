@@ -682,7 +682,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2222';
+const BUILD = '20261031-2236';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1652,8 +1652,12 @@ function arrivalsCurb(L) {
   const ZW = L.d / 2, CURB = ZW + 4.5, SW = ZW + 2.2, LANE = [ZW + 8.5, ZW + 16, ZW + 23];
   floorPlaneW(300, 4.6, MAT.col(0xb9b6ae, .9), 0, ZW + 2.3, .045); mesh(BOX(300, .25, .4), MAT.col(0xdcdad3, .8), 0, .12, ZW + 4.7).castShadow = false;
   // 자동문 (유리 두 짝이 양옆으로 열린다)
-  const doors = [-50, 0, 50].map(x => { bx(x, 0, ZW, .5, 3.4, .5, 0x2b3a4a, false); bx(x + 4.6, 0, ZW, .5, 3.4, .5, 0x2b3a4a, false); mesh(BOX(5.1, .5, .6), MAT.col(0x2b3a4a, .5), x + 2.3, 3.3, ZW).castShadow = false;
-    const pl = [-1, 1].map(sd => { const m = mesh(BOX(2.05, 2.9, .12), MAT.glass(), x + 2.3 + sd * 1.03, 1.5, ZW + .15); m.castShadow = false; return m; }); sign('🚪 자동문 · 택시·버스 타는 곳', x + 2.3, 4.2, ZW + .4, .42); return { x: x + 2.3, pl, o: 0 }; });
+  for (const [x0, x1] of [[-75, -50.25], [-45.15, -.25], [4.85, 49.75], [54.85, 75]]) { bx((x0 + x1) / 2, 0, ZW, x1 - x0, 3.4, .4, 0xe9eef2); mesh(BOX(x1 - x0, .5, .45), MAT.col(0x1f3b5a, .5), (x0 + x1) / 2, 3.4, ZW); }
+  floorPlaneW(150, 18, MAT.col(0x3a3d42, .95), 0, ZW + 15.6, .03); for (let x = -72; x <= 72; x += 8) for (const z of [ZW + 12.2, ZW + 19.6]) mesh(BOX(4, .02, .22), MAT.col(0xffffff, .5), x, .05, z).castShadow = false;
+  for (let x = -74; x <= 74; x += 2.5) mesh(BOX(.15, 1, .15), MAT.metal(0x9aa3ab), x, .5, ZW + 26.6).castShadow = false; mesh(BOX(150, .2, .12), MAT.col(0xf2c500, .5), 0, .95, ZW + 26.6).castShadow = false;
+  sign('🚧 공항 진입로 — 여기까지만!', 0, 2.2, ZW + 26.4, .5);
+  const doors = [-50, 0, 50].map(x => { bx(x, 0, ZW, .5, 3.4, .5, 0x2b3a4a); bx(x + 4.6, 0, ZW, .5, 3.4, .5, 0x2b3a4a); mesh(BOX(5.1, .5, .6), MAT.col(0x2b3a4a, .5), x + 2.3, 3.3, ZW).castShadow = false;
+    const pl = [-1, 1].map(sd => { const m = mesh(BOX(2.05, 2.9, .12), MAT.glass(), x + 2.3 + sd * 1.03, 1.5, ZW + .15); m.castShadow = false; return m; }); sign('🚪 자동문 · 택시·버스 타는 곳', x + 2.3, 4.2, ZW + .4, .42); sign('🚪 자동문 · 입국장', x + 2.3, 4.2, ZW - .4, .42); return { x: x + 2.3, pl, o: 0 }; });
   // 승차장 표지
   sign('🚕 택시 승차장 TAXI', 50, 4.4, CURB - .6, .6, 'rgba(200,150,0,.94)'); sign('🚌 공항버스 정류장 AIRPORT BUS', -30, 4.4, CURB - .6, .6, 'rgba(30,90,170,.94)');
   for (const x of [-30, 50]) { bx(x - 6, 0, CURB - .9, .15, 3.6, .15, 0x777777, false); bx(x + 6, 0, CURB - .9, .15, 3.6, .15, 0x777777, false); mesh(BOX(13, .15, 2.4), MAT.glass(), x, 3.6, CURB - 1.6).castShadow = false; }
@@ -1668,10 +1672,13 @@ function arrivalsCurb(L) {
     trav.push({ P, bag, x: ex + rr(-2, 2), z: 3, ph: 0, dir: 0, path: [[d.x + rr(-.6, .6), ZW - 1.5], [d.x, ZW + 1.6], spot ? [spot.x + rr(-1.5, 1.5), SW] : [pick([-140, 140]), SW]], spot, st: 'walk' }); if (spot) spot.wait.push(trav[trav.length - 1]); };
   envAnim.push(dt => {
     spawnT -= dt; if (spawnT <= 0) { spawnT = rr(1.6, 3.2); spawn(); }
-    // 자동문: 여행객이 가까이 오면 열린다 (탐지견에겐 안 열림 — 입국장 밖으로는 못 나가요)
-    for (const D of doors) { const near = trav.some(T => Math.abs(T.x - D.x) < 3 && Math.abs(T.z - ZW) < 3.2); D.o += ((near ? 1 : 0) - D.o) * Math.min(1, dt * 6); D.pl[0].position.x = D.x - 1.03 - D.o * 1.9; D.pl[1].position.x = D.x + 1.03 + D.o * 1.9; }
+    // 자동문: 여행객·탐지견·핸들러가 가까이 오면 열린다 (출국장처럼 밖으로 나갈 수 있어요)
+    for (const D of doors) { const near = trav.some(T => Math.abs(T.x - D.x) < 3 && Math.abs(T.z - ZW) < 3.2) || [dog, handler].some(o => Math.abs(o.x - D.x) < 3 && Math.abs(o.z - ZW) < 3.5); D.o += ((near ? 1 : 0) - D.o) * Math.min(1, dt * 6); D.pl[0].position.x = D.x - 1.03 - D.o * 1.9; D.pl[1].position.x = D.x + 1.03 + D.o * 1.9; }
     // 차량: 도착 → 정차(승객 태움) → 출발
-    for (const S of spots) { const g = S.g, bus = S.kind === 'bus', dirx = bus ? 1 : -1; S.t -= dt;
+    for (const S of spots) { const g = S.g, bus = S.kind === 'bus', dirx = bus ? 1 : -1, half = bus ? 5.8 : 2.4; S.t -= dt;
+      if (g.visible) { const ax = dog.x - S.cx, az = dog.z - S.z;
+        if (Math.abs(ax) < half + .4 && Math.abs(az) < 1.7) { dog.z = S.z + (az < 0 ? -1.75 : 1.75); }
+        if ((S.st === 'in' || S.st === 'out') && Math.abs(az) < 2.2 && dirx * ax > 0 && dirx * ax < half + 5) { if (!(S.honk > time)) { S.honk = time + 2.5; floatText(bus ? '🚌 빵빵!' : '🚕 빵!', S.cx, 3.4, S.z, { h: .4 }); } g.position.set(S.cx, 0, S.z); continue; } }
       if (S.st === 'away') { if (S.t <= 0) { S.st = 'in'; S.cx = -dirx * 160; S.z = LANE[bus ? 1 : 2]; g.visible = true; } }
       else if (S.st === 'in') { S.cx += dirx * dt * 16; if (dirx * (S.cx - S.x) >= -12) { S.z += (LANE[0] - S.z) * Math.min(1, dt * 2.2); } if (dirx * (S.cx - S.x) >= 0) { S.cx = S.x; S.z = LANE[0]; S.st = 'stop'; S.t = bus ? 22 : 30; S.on = 0; } }
       else if (S.st === 'stop') { if (S.on >= S.cap || S.t <= 0 || (!bus && S.on >= 1)) { S.st = 'out'; S.t = bus ? 1.2 : .6; } }
@@ -3120,7 +3127,7 @@ const ITEM = {
 };
 const LEVELS = [
   {
-    diff: { stars: 1, speed: .85, flee: .85, hp: 1, bossHp: 5, sniff: 30, vehicle: 1 }, extras: { gates: [[-56, -3, false], [-44, -3, true], [-6, -3, false], [6, -3, true], [44, -3, false], [56, -3, true]], decor: [['infoDesk', 1], ['dutyFree', 2]], items: [["shampoo",3],["shoeSole",3],["dutyBag",2],["golfBag",1]] }, name: '공항 입국장', icon: '✈', sc: 1, w: 150, d: 80, outdoor: true, noWx: true, bg: 0xdfe7ec, music: 1, shape: [[-1, 1], [-1, -.55], [-.8, -.75], [-.5, -.92], [0, -1], [.5, -.92], [.8, -.75], [1, -.55], [1, 1]], outside: { col: 0x5b6066, y: .03 }, rail: { h: 3.2, col: 0x9fc6dc, t: .25 },
+    diff: { stars: 1, speed: .85, flee: .85, hp: 1, bossHp: 5, sniff: 30, vehicle: 1 }, extras: { gates: [[-56, -3, false], [-44, -3, true], [-6, -3, false], [6, -3, true], [44, -3, false], [56, -3, true]], decor: [['infoDesk', 1], ['dutyFree', 2]], items: [["shampoo",3],["shoeSole",3],["dutyBag",2],["golfBag",1]] }, name: '공항 입국장', icon: '✈', sc: 1, w: 150, d: 80, extraS: 28, outdoor: true, noWx: true, bg: 0xdfe7ec, music: 1, shape: [[-1, 1.7], [-1, 1], [-1, -.55], [-.8, -.75], [-.5, -.92], [0, -1], [.5, -.92], [.8, -.75], [1, -.55], [1, 1], [1, 1.7]], outside: { col: 0x5b6066, y: .03 }, rail: { h: 3.2, col: 0x9fc6dc, t: .25 },
     staff: [
       { kind: 'customs', route: [[-66, -8], [66, -8]], wait: 2.5 },
       { kind: 'customs', route: [[-24, -8], [-24, -28]], wait: 1.5 },
@@ -5960,7 +5967,8 @@ function shipHull(L) {
 function edgeWall(L, h, col, thick = .35, cren = false) {
   const P = L.poly;
   for (let i = 0; i < P.length; i++) {
-    const [ax, az] = P[i], [bx2, bz] = P[(i + 1) % P.length], len = Math.hypot(bx2 - ax, bz - az), m = mesh(BOX(len + thick, h, thick), MAT.col(col, .8), (ax + bx2) / 2, h / 2, (az + bz) / 2);
+    const [ax, az] = P[i], [bx2, bz] = P[(i + 1) % P.length]; if (L.extraS && Math.min(az, bz) > L.d / 2 - .01) continue;
+    const len = Math.hypot(bx2 - ax, bz - az), m = mesh(BOX(len + thick, h, thick), MAT.col(col, .8), (ax + bx2) / 2, h / 2, (az + bz) / 2);
     m.rotation.y = -Math.atan2(bz - az, bx2 - ax); m.castShadow = h > 2;
     if (cren) for (let t = 1; t < len; t += 1.6) { const c = mesh(BOX(.7, .6, thick + .1), MAT.col(col, .8), ax + (bx2 - ax) * t / len, h + .3, az + (bz - az) * t / len); c.rotation.y = m.rotation.y; c.castShadow = false; }
   }
@@ -6100,7 +6108,7 @@ function loadLevel(i) {
   levelIdx = i; const def = LEVELS[i];
   const SC = def.sc ?? (def.relax ? 1 : 2.24); // 넓이 5배
   const W = def.w * SC, D = def.d * SC;
-  level = { ...def, w: W, d: D, w0: def.w, d0: def.d, scaled: SC > 1, bounds: { minX: -W / 2 + 1, maxX: W / 2 - 1 + (def.extraEast || 0), minZ: -D / 2 + 1 - (def.extraZ || 0), maxZ: D / 2 - 1 + (def.extraZ || 0) } };
+  level = { ...def, w: W, d: D, w0: def.w, d0: def.d, scaled: SC > 1, bounds: { minX: -W / 2 + 1, maxX: W / 2 - 1 + (def.extraEast || 0), minZ: -D / 2 + 1 - (def.extraZ || 0), maxZ: D / 2 - 1 + (def.extraZ || 0) + (def.extraS || 0) } };
   if (def.shape) { level.poly = def.shape.map(([u, v]) => [u * W / 2, v * D / 2]); level.inside = (x, z) => pip(level.poly, x, z); level.swimSea = !!(def.outside && def.outside.water); level.seaSouth = def.shape.some(p => p[1] === 1); } // 위쪽 끝까지 땅인 맵은 바다가 남쪽에만 있다
   level.fav = ({ 1: .35, 2: .30, 3: .25, 4: .20, 5: .15 })[def.diff.stars] || 0; level.diff = { ...def.diff, speed: def.diff.speed / (1 + level.fav) / 1.15, flee: def.diff.flee / (1 + level.fav) / 1.15 };
   { const Q = DIFFS[diffMode]; level.dm = diffMode; level.diff.speed *= Q.spd; level.diff.flee *= Q.spd; level.diff.bossHp = Math.max(2, Math.round(level.diff.bossHp * Q.boss)); level.diff.sniff *= Q.sniff; level.diff.vehicle = (level.diff.vehicle || 1) * Q.veh; level.fav = (1 + level.fav) * Q.gun - 1; }
