@@ -682,7 +682,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2118';
+const BUILD = '20261031-2134';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1823,6 +1823,31 @@ const LINES = {
   flee: ['으악, 들켰다!', '저 개 좀 치워요!', '난 아무것도 몰라!', '도망쳐!'],
   bossFlee: ['감히 날 잡으려고?', '내 물건에 손대지 마라!', '못 잡을걸!'],
 };
+// 맵 분위기에 맞는 먹거리 (CROWD_OF 종류 → 음식·음료), 일부 맵은 그 지역 먹거리
+const FOOD_OF = { airport: ['🍙 김밥', '🥪 샌드위치', '🍔 햄버거', '🥐 크루아상', '🍜 라면'], commute: ['🍙 삼각김밥', '🍞 빵', '🥪 샌드위치', '🍜 우동', '🍢 어묵'], office: ['🍙 김밥', '🍞 빵', '🍱 도시락'], works: ['🍙 김밥', '🍞 빵', '🍱 도시락'],
+  heritage: ['🍡 꿀떡', '🍢 어묵', '🥟 만두', '🍠 군고구마'], nightlife: ['🍢 떡볶이', '🍡 탕후루', '🌭 핫도그', '🧇 와플', '🍗 치킨'], view: ['🍦 아이스크림', '🥨 프레첼', '🌭 핫도그', '🍩 도넛'], beach: ['🌽 옥수수', '🍦 아이스크림', '🦑 오징어구이', '🍉 수박'], hiking: ['🍙 주먹밥', '🥚 삶은 달걀', '🍫 초콜릿', '🍊 귤'] };
+const FOOD_MAP = { '전주 한옥마을': ['🍚 비빔밥', '🥖 초코파이', '🍢 길거리 꼬치', '🥟 만두'], '경주': ['🍘 경주빵', '🥞 찰보리빵', '🍡 꿀떡'], '수원화성': ['🍗 통닭', '🥟 만두'], '제주 한라산': ['🍊 귤', '🍙 주먹밥', '🥚 삶은 달걀'], '해운대': ['🦑 오징어구이', '🌽 옥수수', '🍦 아이스크림', '🥟 씨앗호떡'], '광안리 해변': ['🍗 치킨', '🌽 옥수수', '🍦 아이스크림'], '명동': ['🍡 탕후루', '🦞 랍스터구이', '🍢 떡볶이', '🥚 계란빵'], '동대문': ['🍢 떡볶이', '🥟 만두', '🌭 핫도그'], '감천문화마을': ['🥟 씨앗호떡', '🍢 어묵'] };
+const DRINK_OF = { beach: ['🥤 주스', '🧋 버블티', '☕ 아이스 아메리카노'], hiking: ['🍵 따뜻한 차', '💧 물', '☕ 커피'], nightlife: ['🧋 버블티', '☕ 라떼', '🥤 에이드'] };
+const DRINKS = ['☕ 아메리카노', '☕ 카페라떼', '🧋 버블티', '🍵 녹차', '☕ 아이스 아메리카노'];
+const KID_SNACK = ['🍦 아이스크림', '🧃 주스', '🍭 사탕', '🍪 쿠키'];
+const EAT_LINES = ['냠냠, 맛있다~', '이거 진짜 맛있어!', '배고팠는데 딱이다', '한 입 먹어 볼래?', '역시 이 맛이지!'];
+const SIP_LINES = ['후~ 따뜻하다', '카페인 충전 완료!', '아~ 시원하다', '여기 커피 맛있네', '잠 좀 깨야지'];
+const PHOTO_LINES = ['자, 김치~! 📸', '하나 둘 셋, 찰칵!', '여기 배경 진짜 예쁘다', '한 장 더 찍자!', '인생샷 건졌다!'];
+const SELFIE_LINES = ['셀카 한 장~ 🤳', '여기 왔다고 인증샷!', '각도 좋고~ 찰칵'];
+const POSE_LINES = ['✌️ 브이!', '예쁘게 찍어 줘~', '나 눈 감았어? 다시!', '😄 김치~'];
+const LOVE_LINES = ['💕 오늘 같이 와서 좋다', '사랑해~ 💗', '손 꼭 잡고 다니자', '우리 여기 또 오자 💑', '너랑 있으니까 다 좋아'];
+const FAMILY_LINES = ['얘들아, 손 잡고 다니자~', '엄마 아빠 옆에 꼭 붙어 있어!', '다리 아프면 말해~', '저기 가 보자!'];
+const KID_FAMILY = ['엄마! 저거 봐!', '아빠, 업어 줘~', '배고파요~', '우와, 신기하다!', '저거 사 줘요!'];
+function mapFood(kid) { if (kid) return pick2(KID_SNACK); const c = CROWD_OF[level && level.name]; return pick2((level && FOOD_MAP[level.name] && Math.random() < .7) ? FOOD_MAP[level.name] : FOOD_OF[c] || FOOD_OF.airport); }
+function mapDrink(kid) { if (kid) return pick2(['🧃 주스', '🥛 우유', '🧋 버블티']); const c = CROWD_OF[level && level.name]; return pick2(DRINK_OF[c] && Math.random() < .6 ? DRINK_OF[c] : DRINKS); }
+// 손(오른팔 끝)에 드는 소품: 음식·음료는 이모지 그림, 사진기는 작은 카메라
+function handProp(p, kind, emoji) {
+  dropProp(p);
+  if (kind === 'photo') { const g = new THREE.Group(); mesh(BOX(.34, .22, .14), MAT.col(0x222222, .5, .3), 0, 0, 0, g); mesh(BOX(.12, .12, .12), MAT.col(0x555555, .3, .5), 0, 0, .12, g); mesh(BOX(.08, .05, .05), MAT.col(0xdddddd, .4), .1, .13, 0, g); g.position.set(-.15, -.68, .14); p.arms[1].add(g); p.prop = g; return; }
+  const sp = textSprite(emoji.split(' ')[0], { bg: null, h: .34 }); sp.position.set(0, -.78, .12); p.arms[1].add(sp); p.prop = sp; p.propSprite = true;
+}
+function dropProp(p) { if (!p.prop) return; p.prop.parent && p.prop.parent.remove(p.prop); if (p.propSprite) disposeSprite(p.prop); p.prop = null; p.propSprite = false; }
+const ACT_PROP = new Set(['eat', 'coffee', 'photo']);
 const PHONE = ['여보세요? 지금 도착했어', '응, 짐 찾고 있어', '조금만 기다려 줘~', '방금 내렸어!'];
 class Person {
   constructor(kind, x, z, look) {
@@ -1873,20 +1898,49 @@ class Person {
     return { dir: best || [awx, awz], low };
   }
   startAct() {
-    this.act = null;
+    this.act = null; dropProp(this);
     if (this.villain || this.route) { if (Math.random() < .35) this.say(pick2(this.lines())); return; }
+    if (this.kind !== 'chief' && this.kind !== 'customs' && this.kind !== 'officer' && this.dailyAct()) return;
     const r = Math.random();
     const partner = r < .45 && people.find(p => p !== this && !p.villain && !p.route && !p.dead && !p.arrested && p.kind !== 'officer' && p.act !== 'talk' && Math.hypot(p.x - this.x, p.z - this.z) < 5);
     if (partner) { this.act = 'talk'; this.partner = partner; this.wait = mr(4, 7); this.talkT = 0; Object.assign(partner, { act: 'talk', partner: this, wait: this.wait, target: null, talkT: 1 }); }
     else if (r < .7) { this.act = 'phone'; this.wait = mr(3, 5); this.say('📱 ' + pick2(PHONE)); }
     else { this.act = 'look'; this.wait = mr(2, 4); }
   }
+  // 일상 행동: 사진(📸)·밥(🍙)·커피(☕)·연인(💕). 가족·연인 무리면 다 함께 한다
+  dailyAct() {
+    const casual = GROUP_KINDS.includes(this.kind); if (!casual && !WORK_KINDS.includes(this.kind)) return false;
+    const c = CROWD_OF[level && level.name], tour = casual && ['heritage', 'view', 'beach', 'airport', 'nightlife', 'hiking'].includes(c), kid = this.ageGrp === 'child';
+    const crew = (this.crew || []).filter(f => !f.dead && !f.arrested && f.leader === this), mate = this.mate && !this.mate.dead && this.mate.leader === this ? this.mate : null;
+    const w = { photo: tour ? 3 : casual ? .8 : 0, eat: 2.2, coffee: kid ? .6 : 2.2, love: mate ? 3 : 0, none: 4.5 }, tot = Object.values(w).reduce((a, b) => a + b, 0);
+    let x = Math.random() * tot, act = 'none'; for (const k in w) { if ((x -= w[k]) < 0) { act = k; break; } }
+    if (act === 'none') return false;
+    this.wait = act === 'love' ? mr(5, 8) : act === 'photo' ? mr(3.5, 5.5) : mr(4.5, 7.5); this.act = act; this.actT = mr(.3, 1);
+    if (act === 'eat') { const f = mapFood(kid); handProp(this, 'eat', f); this.say(f.split(' ')[0] + ' ' + pick2(EAT_LINES)); }
+    else if (act === 'coffee') { const d = mapDrink(kid); handProp(this, 'coffee', d); this.say(d.split(' ')[0] + ' ' + pick2(SIP_LINES)); }
+    else if (act === 'photo') { handProp(this, 'photo'); this.say(pick2(crew.length ? PHOTO_LINES : SELFIE_LINES)); this.selfie = !crew.length; }
+    else if (act === 'love') { this.partner = mate; this.say(pick2(LOVE_LINES)); }
+    for (const f of crew) { // 함께 온 사람들도 같이
+      f.wait = this.wait; f.target = null; f.partner = this; dropProp(f); f.act = act === 'photo' ? 'pose' : act; f.actT = mr(.5, 1.5);
+      if (act === 'eat') handProp(f, 'eat', mapFood(f.ageGrp === 'child'));
+      else if (act === 'coffee') handProp(f, 'coffee', mapDrink(f.ageGrp === 'child'));
+    }
+    if (act !== 'love' && crew.length && Math.random() < .5) { const k = crew.find(f => f.ageGrp === 'child'); if (k) setTimeout(() => !k.dead && k.say(pick2(KID_FAMILY)), 1200); }
+    return true;
+  }
   idleAct(dt) {
+    if (ACT_PROP.has(this.act) || this.act === 'love' || this.act === 'pose') {
+      this.actT -= dt; const p = this.partner;
+      if (this.act === 'love' && p) { this.dir += angDiff(this.dir, Math.atan2(p.x - this.x, p.z - this.z)) * Math.min(1, dt * 5); if (this.actT <= 0) { this.actT = mr(.9, 1.6); if (!this.leader) floatText(pick2(['💕', '💗', '💞', '❤️']), (this.x + p.x) / 2, 2.3, (this.z + p.z) / 2, { h: .45 }); if (!this.bubble && Math.random() < .35) this.say(pick2(LOVE_LINES)); } }
+      else if (this.act === 'pose' && p) { this.dir += angDiff(this.dir, Math.atan2(p.x - this.x, p.z - this.z)) * Math.min(1, dt * 5); if (this.actT <= 0) { this.actT = mr(2, 3); if (!this.bubble && Math.random() < .5) this.say(pick2(POSE_LINES)); } }
+      else if (this.act === 'photo') { if (this.actT <= 0) { this.actT = mr(1.1, 1.8); const hx = this.x + Math.sin(this.dir) * .5, hz = this.z + Math.cos(this.dir) * .5; for (let k = 0; k < 8; k++) spawnP(hx, 1.75 * this.g.scale.y, hz, mr(-1.5, 1.5), mr(-.5, 1.5), mr(-1.5, 1.5), WHITE, .25); floatText('📸 찰칵!', hx, 2.4 * this.g.scale.y, hz, { h: .32 }); } }
+      else if (this.actT <= 0) { this.actT = mr(2.5, 4); if (!this.bubble && Math.random() < .3) this.say(this.act === 'eat' ? pick2(EAT_LINES) : pick2(SIP_LINES)); }
+    }
     if (this.act === 'talk' && this.partner) {
       const p = this.partner; this.dir += angDiff(this.dir, Math.atan2(p.x - this.x, p.z - this.z)) * Math.min(1, dt * 6);
       this.talkT -= dt; if (this.talkT <= 0) { this.talkT = mr(1.8, 2.8); this.say(pick2(this.lines())); }
     } else if (this.act === 'look') this.dir += Math.sin(time * 1.5 + this.phase) * dt;
-    if (this.wait <= 0) { this.act = null; this.partner = null; }
+    if (this.wait <= 0) { this.act = null; this.partner = null; this.selfie = false; dropProp(this); }
   }
   update(dt) {
     if (this.dead) return;
@@ -1969,7 +2023,18 @@ class Person {
       } else if ((mode === 'melee' || (mode === 'flee' && !this.fighter && d < 1.8 && this.escT > 0 && Math.random() < .3)) && this.atkCd <= 0 && !(this.aim > 0)) { this.windup = this.kind === 'boss' ? .5 : .72 - .05 * this.lv; this.atkCd = this.kind === 'boss' ? 1.8 : 3.3 - .22 * this.lv; floatText('😠 !', this.x, 2.6, this.z, { h: .45, color: '#ff6b6b' }); if (Math.random() < .3) this.say(pick2(['덤벼라!', '잡을 수 있으면 잡아봐!', '저리 가, 멍멍이!'])); }
     } else {
       if (d > fleeR + 4) this.alerted = false;
-      if (this.wait > 0) { this.wait -= dt; this.idleAct(dt); }
+      const LD = this.leader && !this.leader.dead && !this.leader.arrested ? this.leader : null; if (this.leader && !LD) { this.leader = null; this.mate = null; }
+      if (LD) {
+        const sa = Math.sin(LD.dir), ca = Math.cos(LD.dir), [ox, ob] = this.slot, front = LD.act === 'photo' && LD.wait > 0 && !LD.selfie;
+        const gx = front ? LD.x + sa * 2.6 + ca * ox * 1.3 : LD.x + ca * ox - sa * ob, gz = front ? LD.z + ca * 2.6 - sa * ox * 1.3 : LD.z - sa * ox - ca * ob;
+        const tx = gx - this.x, tz = gz - this.z, td = Math.hypot(tx, tz);
+        if (td > 14) { const p = placeFree({ minX: LD.x - 2, maxX: LD.x + 2, minZ: LD.z - 2, maxZ: LD.z + 2 }, .8, .8, .2); if (p) { this.x = p.x; this.z = p.z; } }
+        if (td > (this.wait > 0 ? 1.2 : .45)) { sp = Math.min(3, 1.4 * (LD.spd || 1) * (td > 2 ? 1.6 : 1.05)); vx = tx / td * sp; vz = tz / td * sp; }
+        else if (this.wait > 0) { this.wait -= dt; this.idleAct(dt); }
+        else { this.dir += angDiff(this.dir, LD.dir) * Math.min(1, dt * 4); if (this.act) { this.act = null; dropProp(this); } }
+        if (this.wait > 0 && td > 1.2) this.wait -= dt;
+      }
+      else if (this.wait > 0) { this.wait -= dt; this.idleAct(dt); }
       else {
         if (!this.target && this.route) { this.ri = (this.ri + 1) % this.route.length; this.target = { x: this.route[this.ri][0], z: this.route[this.ri][1] }; }
         if (!this.target) { this.target = pickWanderTarget(this); this.via = levelVia(this, this.target); }
@@ -2007,6 +2072,18 @@ class Person {
     if (this.windup > 0) this.arms[0].rotation.x = this.arms[1].rotation.x = -2.6;
     if (this.aim > 0) this.arms[1].rotation.x = -1.55;
     if (this.wait > 0 && this.act === 'phone') this.arms[1].rotation.x = -2.6;
+    this.arms[0].rotation.z = 0; this.arms[1].rotation.z = 0;
+    if (this.prop && !(this.wait > 0 && ACT_PROP.has(this.act))) dropProp(this);
+    if (this.wait > 0 && sp === 0) {
+      const a = this.act, t = time * 2 + this.phase;
+      if (a === 'eat') this.arms[1].rotation.x = -1.3 - Math.max(0, Math.sin(t * 1.3)) * 1.3;
+      else if (a === 'coffee') this.arms[1].rotation.x = Math.sin(t * .9) > .6 ? -2.5 : -1.2;
+      else if (a === 'photo') { if (this.selfie) { this.arms[1].rotation.x = -2.2; this.arms[1].rotation.z = -.5; } else { this.arms[0].rotation.x = this.arms[1].rotation.x = -1.65; this.arms[0].rotation.z = .35; this.arms[1].rotation.z = -.35; } }
+      else if (a === 'clap') { const c = Math.sin(time * 16) * .25; this.arms[0].rotation.x = this.arms[1].rotation.x = -1.4; this.arms[0].rotation.z = .5 + c; this.arms[1].rotation.z = -.5 - c; }
+      else if (a === 'pose') { this.arms[1].rotation.x = -2.9; this.arms[1].rotation.z = .3; if (this.ageGrp === 'child') this.arms[0].rotation.x = -2.9; }
+      else if (a === 'love') { this.arms[0].rotation.x = this.arms[1].rotation.x = -.9; this.arms[0].rotation.z = .2; this.arms[1].rotation.z = -.2; this.body.rotation.z = Math.sin(time * 2 + this.phase) * .04; }
+    }
+    if (sp > 0 && (this.mate || this.holdHand)) { const side = this.leader ? (this.slot[0] > 0 ? 0 : 1) : (this.mate && this.mate.slot && this.mate.slot[0] < 0 ? 0 : 1); this.arms[side].rotation.x = -.25; this.arms[side].rotation.z = side ? .45 : -.45; }
     if (this.wait > 0 && this.act === 'talk') this.arms[0].rotation.x = -.5 + Math.sin(time * 5 + this.phase) * .4;
     if (!this.bubble && !this.villain && Math.hypot(dog.x - this.x, dog.z - this.z) < 2.8 && !(this.greetT > time)) { this.greetT = time + 12; this.say(pick2(this.lines())); }
     else if (!this.bubble && Math.random() < dt * (this.kind === 'chief' ? .22 : .045)) this.say(pick2(this.lines()));
@@ -5527,6 +5604,30 @@ function buildAgeQueue(def) {
   return q;
 }
 const AGE_KINDS = ['civ', 'tourist', 'hanbok'];
+const GROUP_KINDS = ['civ', 'tourist', 'hanbok', 'student', 'beachgoer', 'hiker', 'kid'], WORK_KINDS = ['worker', 'postal', 'inmate', 'fisher', 'haenyeo'];
+const SLOTS = [[.85, .1], [-.85, .1], [0, 1.3], [.95, 1.35], [-.95, 1.35]];
+function makeGroups(def) {
+  const c = CROWD_OF[def.name]; if (!c || c === 'works') return;
+  const pool = people.filter(p => !p.villain && !p.route && !p.seated && !p.lying && !p.performer && !p.seller && GROUP_KINDS.includes(p.kind)).sort(() => Math.random() - .5);
+  const used = new Set(), take = (fn) => { const p = pool.find(q => !used.has(q) && fn(q)); if (p) used.add(p); return p; };
+  const adult = q => q.ageGrp === 'adult' || q.ageGrp === 'baby';
+  const join = (L, f, i) => { f.leader = L; f.slot = SLOTS[i]; (L.crew = L.crew || []).push(f); const p = placeFree({ minX: L.x - 2.5, maxX: L.x + 2.5, minZ: L.z - 2.5, maxZ: L.z + 2.5 }, .8, .8, .2); if (p) { f.x = p.x; f.z = p.z; f.g.position.set(f.x, 0, f.z); } f.wait = 0; f.target = null; };
+  let fam = 0, cpl = 0; const famMax = Math.ceil(pool.filter(adult).length * .22);
+  // 가족: 아이 하나에 부모 1~2명, 형제·조부모가 붙기도 한다
+  for (const kid of pool.filter(q => q.ageGrp === 'child' || (q.ageGrp === 'teen' && Math.random() < .35))) {
+    if (used.has(kid) || fam >= famMax) continue; const L = take(adult); if (!L) break; used.add(kid); fam++;
+    const crew = [kid]; if (Math.random() < .6) { const m = take(adult); if (m) { crew.unshift(m); L.mate = m; m.mate = L; } }
+    if (Math.random() < .3) { const sib = take(q => q.ageGrp === 'child' || q.ageGrp === 'teen'); if (sib) crew.push(sib); }
+    if (Math.random() < .2) { const gp = take(q => q.ageGrp === 'senior'); if (gp) crew.push(gp); }
+    crew.forEach((f, i) => join(L, f, i)); kid.holdHand = true;
+    L.spd = Math.min(...[L, ...crew].map(p => p.spd || 1)); L.family = true; if (Math.random() < .5) L.say(pick2(FAMILY_LINES));
+  }
+  // 연인: 남은 어른·청소년 중 일부를 짝지어 손잡고 다닌다
+  const rest = pool.filter(q => !used.has(q) && (q.ageGrp === 'adult' || q.ageGrp === 'teen'));
+  const share = { nightlife: .7, beach: .65, view: .65, heritage: .6, airport: .35, hiking: .35, commute: .25, office: .15 }[c] || .3;
+  for (let i = 0; i + 1 < rest.length; i += 2) { if (Math.random() > share) continue; const a = rest[i], b = rest[i + 1]; used.add(a); used.add(b); join(a, b, 0); a.mate = b; b.mate = a; cpl++; }
+  level.groups = { fam, cpl };
+}
 function applyAge(p) {
   if (!level || !AGE_KINDS.includes(p.kind) || !level.ageQ || !level.ageQ.length) { p.ageGrp = 'adult'; return; }
   const g = level.ageQ.shift(); p.ageGrp = g;
@@ -5603,7 +5704,7 @@ function crowdTick(dt) {
   const delta = Math.round(level.ambBase * (c - level.crowd)); level.crowdKey = key; level.crowd = c;
   if (!kinds.length || !delta) return;
   if (delta > 0) for (let k = 0; k < delta; k++) { const p = placeFree(level.bounds, 1, 1, .5, [...level.avoid, { x: dog.x, z: dog.z, r: 10 }]); if (p) new Person(pick(kinds), p.x, p.z); }
-  else { let n = -delta; for (let i = people.length - 1; i >= 0 && n > 0; i--) { const p = people[i]; if (p.villain || p.arrested || p.dead || p.owned || p.seated || !kinds.includes(p.kind) || Math.hypot(p.x - dog.x, p.z - dog.z) < 14) continue; world.remove(p.g); people.splice(i, 1); n--; } }
+  else { let n = -delta; for (let i = people.length - 1; i >= 0 && n > 0; i--) { const p = people[i]; if (p.villain || p.arrested || p.dead || p.owned || p.seated || p.crew || p.leader || !kinds.includes(p.kind) || Math.hypot(p.x - dog.x, p.z - dog.z) < 14) continue; world.remove(p.g); people.splice(i, 1); n--; } }
   const live = people.filter(p => !p.villain && kinds.includes(p.kind)).length;
   toast('🕐 ' + '일월화수목금토'[dow] + '요일 ' + h + '시 — 유동인구가 ' + (delta > 0 ? '늘어나요 ↑' : '줄어들어요 ↓') + ' (시민 ' + live + '명)');
 }
@@ -6018,6 +6119,7 @@ function loadLevel(i) {
       if (kind === 'boss') { const lb = textSprite('👑 밀수 조직 보스', { h: .38, bg: 'rgba(120,20,40,.9)' }); lb.position.y = 2.75; per.g.add(lb); }
     }
   }
+  makeGroups(def);
   const freePt = ([x, z]) => { const inB = (px, pz) => colliders.some(c => !c.disabled && !c.pushable && c.topY > .6 && px > c.minX - .45 && px < c.maxX + .45 && pz > c.minZ - .45 && pz < c.maxZ + .45); if (!inB(x, z)) return [x, z]; for (let r = .8; r < 8; r += .6) for (let a = 0; a < 6.28; a += .5) { const px = x + Math.cos(a) * r, pz = z + Math.sin(a) * r; if (!inB(px, pz) && (!level.inside || level.inside(px, pz))) return [px, pz]; } return [x, z]; };
   for (const o0 of def.staff || []) { const o = { ...o0, route: o0.route.map(freePt) }; const p = new Person(o.kind, o.route[0][0], o.route[0][1]); p.route = o.route; p.ri = 0; p.waitAt = o.wait ?? .4; p.target = null; p.wait = mr(0, 1.5); }
   for (const o of [...(def.vehicles || []), ...(level.ringVehicles || [])]) new Vehicle(o.type, o.route, o.start || 0, o);
@@ -6587,7 +6689,7 @@ function reveal(c) {
   s.position.set(p.x, c.topY + 1.1, p.z); scene.add(s);
   effects.push({ kind: 'reveal', s, t: 0, c });
   SFX.found(); toast(lang === 'ko' ? `${info.emoji} ${placeOf(c)} 속 ${info.name} 적발! 세관 단속반 출동…` : `${info.emoji} ${t('i_' + c.hidden)} ${t('ts_found')}`);
-  burst(p.x, c.topY, p.z, [info.color, WHITE], 30, 3);
+  burst(p.x, c.topY, p.z, [info.color, WHITE], 30, 3); cheerNear(p.x, p.z, 'found');
 }
 let leakT = 0, helpT = 30;
 // 하트 공·X-ray가 일정 시간마다 새로 나타난다 (기본 36초 → 20% 빠르게 30초)
@@ -6712,10 +6814,31 @@ function destroyItem(c) {
   if (c.mesh && !c.pushable) { const chk = textSprite('✔ 검사완료', { h: .3, bg: 'rgba(30,140,70,.9)' }); chk.position.y = c.childY ?? 1.5; c.mesh.add(chk); }
   checkQuest();
 }
+const CHEER = {
+  arrest: ['우와, 잡았다! 👏', '탐지견 최고야!', '정말 멋져요! 👍', '나쁜 사람 잡혔다!', '덕분에 안심이에요~', '세관 아저씨들 대단해!', '박수~! 👏👏', '역시 탐지견이야!', '용감하다, 멍멍이!', '와, 순식간에 잡았네!', '고마워요, 탐지견! 💙', '오늘의 영웅이다!'],
+  found: ['코가 진짜 좋구나! 👃', '저걸 어떻게 찾았지?', '대단하다, 탐지견!', '와, 숨겨 놓은 걸 찾았어!', '잘했어 멍멍아~ 🐶', '역시 킁킁 탐지견!', '똑똑하다! 👍', '이제 안전하겠다~', '박수 쳐 주자! 👏', '나쁜 물건 찾았네!', '최고의 코다!', '멋져요! ✨'],
+  kid: ['우와아~ 멋지다!', '강아지 최고! 🐶', '나도 탐지견 될래!', '짱이다! 👍', '멍멍이 짱!'],
+  senior: ['허허, 기특하구먼!', '아이고, 장하다!', '대견하네 그려~', '참 똑똑한 개로구나!']
+};
+// 근처(16m) 시민 최대 5명이 사건 쪽을 보고 박수 치며 한 마디씩 (조금씩 시차를 두고)
+function cheerNear(x, z, kind) {
+  const near = people.filter(p => !p.villain && !p.dead && !p.arrested && !p.performer && p.kind !== 'chief' && Math.hypot(p.x - x, p.z - z) < 16)
+    .sort((a, b) => Math.hypot(a.x - x, a.z - z) - Math.hypot(b.x - x, b.z - z)).slice(0, 5);
+  const used = new Set();
+  near.forEach((p, i) => setTimeout(() => {
+    if (p.dead || p.arrested || state !== 'play') return;
+    const pool = p.ageGrp === 'child' && Math.random() < .7 ? CHEER.kid : p.ageGrp === 'senior' && Math.random() < .7 ? CHEER.senior : CHEER[kind];
+    let line = pick2(pool); for (let k = 0; k < 6 && used.has(line); k++) line = pick2(pool); used.add(line);
+    if (p.bubble) { disposeSprite(p.bubble); p.bubble = null; }
+    p.say(line); p.greetT = time + 6;
+    if (!p.seated && !p.lying && !p.route) { dropProp(p); p.act = 'clap'; p.wait = 2.2; p.target = null; p.dir = Math.atan2(x - p.x, z - p.z); }
+    if (i < 2) floatText('👏', p.x, 2.6 * p.g.scale.y, p.z, { h: .4 });
+  }, 350 + i * 450 + Math.random() * 250));
+}
 function arrest(p) {
   guideT = 0; guideTarget = null;
   p.arrested = true; p.ring.visible = false; spawnAgent({ p });
-  SFX.arrest(); chiefSay(pick2(['체포 성공! 👏', '멋지다, 팀워크 최고!']));
+  SFX.arrest(); chiefSay(pick2(['체포 성공! 👏', '멋지다, 팀워크 최고!'])); cheerNear(p.x, p.z, 'arrest');
   const pts = (p.kind === 'boss' ? 600 : 200) * comboHit(); addScore(pts); totals.arrests++; if (p.kind === 'boss') ach.boss++; else ach.arrest++; checkBadges();
   floatText(`🚔 ${p.kind === 'boss' ? '' : (level.crookEmoji || '') + ' ' + (level.crook || '') + ' '}체포! +${pts}`, p.x, 3, p.z, { color: '#7dd3ff' });
   toast(t(p.kind === 'boss' ? 'ts_boss' : 'ts_arrest'));
