@@ -88,6 +88,15 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 .howShort{display:none}.howGrid{margin:6px 0}.howGrid kbd{background:var(--navy);color:#fff;border-radius:6px;padding:1px 7px;font-family:inherit;font-size:12.5px;white-space:nowrap;margin-left:4px;vertical-align:1px}.howGrid .igc{text-align:left}.howGrid .igc b{font-size:16px;white-space:nowrap}.howGrid .igc small{font-size:12.5px}.how2p{font-size:12.5px!important;color:#40566c;margin:2px 0 4px!important}@media (orientation:landscape) and (max-height:540px){.howGrid{grid-template-columns:repeat(4,1fr)!important;gap:5px!important;margin:4px 0!important}.howGrid .igc{padding:4px 7px!important}.howGrid .igc i{font-size:22px!important}.howGrid .igc b{font-size:14px!important}.howGrid kbd{font-size:11.5px}.howGrid .igc small{font-size:11.5px!important;line-height:1.25}.how2p{font-size:11.5px!important}}@media (max-width:560px){.howGrid{grid-template-columns:repeat(2,1fr)!important}}
 #toast{top:calc(96px + var(--st));left:50%;transform:translateX(-50%);font-family:Jua,sans-serif;font-size:22px;background:rgba(0,0,0,.6);padding:8px 18px;border-radius:24px;opacity:0;transition:opacity .25s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1}
+#tut{position:fixed;z-index:30;top:calc(150px + var(--st));left:50%;transform:translateX(-50%);width:min(440px,calc(100vw - 32px));background:rgba(19,51,90,.94);border:2px solid #f4c542;border-radius:16px;padding:10px 14px 12px;color:#fff;font-family:Jua,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35);pointer-events:auto}
+#tut.hidden{display:none}
+#tutStep{font-size:13px;color:#f4c542}
+#tutTxt{font-size:19px;line-height:1.35;margin:2px 0 8px;white-space:pre-line}
+#tutBar{height:6px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden}#tutBar i{display:block;height:100%;width:0;background:#f4c542;transition:width .2s}
+#tutSkip{position:absolute;top:6px;right:8px;font-size:12px;padding:3px 8px;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;border:0}
+.tutPulse{animation:tutPulse 1s infinite}@keyframes tutPulse{0%,100%{box-shadow:0 0 0 0 rgba(244,197,66,.9)}50%{box-shadow:0 0 0 12px rgba(244,197,66,0)}}
+body.touch #tut{top:calc(118px + var(--st))}
+@media (max-height:520px){#tut,body.touch #tut{top:calc(108px + var(--st));width:min(330px,calc(100vw - 32px));padding:5px 10px 7px;border-radius:12px}#tutTxt{font-size:14px;margin:0 0 5px}#tutStep{font-size:11px}}
 #annBanner{position:fixed;left:50%;top:calc(140px + var(--st));transform:translateX(-50%);z-index:14;display:none;background:#13335a;color:#fff;border:3px solid #f4c542;border-radius:14px;padding:8px 18px;font-family:Jua,sans-serif;font-size:19px;white-space:nowrap;max-width:94vw;overflow:hidden;text-overflow:ellipsis;box-shadow:0 4px 0 rgba(0,0,0,.35);pointer-events:none}
 #annBanner.show{display:block}
 @media (max-width:700px){#annBanner{font-size:13px;padding:5px 10px;top:calc(84px + var(--st))}}
@@ -614,6 +623,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 </div></div>
 
 <div id="intel" class="overlay hidden"><div class="ibox"><div class="isrc" id="intelSrc"></div><h2>🚨 마약·총기 첩보가 접수되었습니다!!</h2><p id="intelTxt"></p><div class="imotto" id="intelMotto"></div><button id="intelOk">🫡 확인! 다시 수색 시작</button></div></div>
+<div id="tut" class="hidden"><div id="tutStep"></div><div id="tutTxt"></div><div id="tutBar"><i></i></div><button id="tutSkip">건너뛰기</button></div>
 <div id="howto" class="overlay hidden"><div class="card">
  <div class="sub">출동 전 브리핑</div>
  <h1>🐕‍🦺 조작법 익히기</h1>
@@ -631,7 +641,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
  <p class="how2p">👥 2인 모드: P1 탐지견 = 위 키 그대로 · P2 핸들러 = 방향키 이동 · Enter 뼈다귀 (목줄 5m)</p>
  <p style="font-size:14px;margin:6px 0">❤️ 하트 3개로 시작해 최대 7개까지 모아요(🎾 공·돌발 미션) · 깨끗한 물건을 적발하거나, 시민을 맞히거나, 차량에 부딪히면 하트가 줄어요. 🎾 공을 주우면 회복! 밀수범 체력이 0이 되면 체포됩니다.<br>🛡 방탄조끼(공격 1번 막기) · 👃 슈퍼 코 간식(냄새 범위 1.5배) · 🦴 뼈다귀 가방(2배 빨리 던지기) · 📡 X-RAY도 주워요!</p>
  <p class="howShort">❤️ 하트가 다 닳으면 다시 시작 · 🎾 공을 주우면 회복 · 깨끗한 짐을 적발하거나 시민·차에 부딪히면 하트가 줄어요</p>
- <div class="row"><button class="big" id="btnHowtoOk">알겠어요! 출동!</button></div>
+ <div class="row"><button class="big" id="btnHowtoOk">알겠어요! 출동!</button><button id="btnTutAgain" style="font-size:14px;padding:8px 12px">🎓 튜토리얼 다시 하기</button></div>
 </div></div>
 <div id="dlg" class="overlay hidden"><div class="card">
  <div class="drow"><div class="face" id="dface">🎖</div><div style="flex:1;min-width:0"><div class="who" id="dwho"></div><div class="txt" id="dtxt"></div></div></div>
@@ -685,7 +695,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2324';
+const BUILD = '20261031-2329';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -6641,6 +6651,7 @@ function startLevel(i) {
   $('topbar').classList.remove('hidden');
   const intro = () => showDialog(lang !== 'ko' ? LEVELS[i].relax ? t('intro_hidden').replace('{dog}', dogName) : t('intro').replace('{map}', mapName(i)).replace('{dog}', dogName) : scaleNums(LEVELS[i].intro) + (level.scaled && levelIdx < 6 ? '\n\n🗺 이번 맵은 A~D 구역까지 넓어졌어. 미니맵을 보며 구석구석 수색해!' : ''), null, LEVELS[i].who);
   playIntro(() => { if (!seenHowto) showHowto(intro); else intro(); });
+  tut.on = false; $('tut').classList.add('hidden'); tutPulse(null); { let n = 0; setTimeout(function wt() { if (state === 'play') tutStart(); else if (levelIdx === i && !tutDone() && ++n < 240) setTimeout(wt, 500); }, 600); }
 }
 function hideAll() { for (const id of ['login', 'maps', 'mpanel', 'dlg', 'clear', 'rank', 'win', 'howto']) $(id).classList.add('hidden'); }
 
@@ -6823,6 +6834,43 @@ function showIntel() {
 function closeIntel() { $('intel').classList.add('hidden'); if (state !== 'intel') return; state = 'play'; keys = {}; }
 $('intel').addEventListener('pointerdown', e => { e.preventDefault(); closeIntel(); });
 addEventListener('keydown', e => { if (state === 'intel' && (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape')) { e.preventDefault(); closeIntel(); } });
+// 첫 3분 튜토리얼: 이동 → 킁킁 → 적발 → 체포. 행동을 하면 다음 단계, 오래 못 하면 알아서 넘어간다
+const TUT_STEPS = [
+  { txt: '🕹 먼저 움직여 볼까요?\n📱 왼쪽 조이스틱 · 💻 W A S D', pulse: null, max: 25, prog: T => Math.min(1, T.moved / 6) },
+  { txt: '👃 킁킁 버튼을 꾹 눌러 냄새를 맡아요\n💻 E 키를 꾹 · 냄새가 진한 쪽에 표시가 떠요', pulse: 'bSniff', max: 30, prog: T => Math.min(1, T.sniff / 1.2) },
+  { txt: '🧳 냄새 표시를 따라가서 수상한 짐 앞에서 왕왕!\n💻 F 키 · 깨끗한 짐을 짖으면 하트가 줄어요', pulse: 'bBark', max: 70, prog: T => totals.items > T.base ? 1 : 0 },
+  { txt: '🎯 짐 주인(빨간 표시)을 쫓아가 왕왕으로 공격해 체포!\n체력이 0이 되면 체포돼요', pulse: 'bBark', max: 70, prog: T => totals.arrests > T.base ? 1 : 0 },
+];
+const tut = { on: false, k: 0, t: 0, moved: 0, sniff: 0, base: 0, px: 0, pz: 0 };
+function tutDone() { return store.get('k9tut', 0) === 1; }
+function tutPulse(id) { for (const b of ['bSniff', 'bBark']) $(b) && $(b).classList.toggle('tutPulse', b === id); }
+function tutShow() {
+  const S = TUT_STEPS[tut.k]; $('tutStep').textContent = '🎓 첫 출동 튜토리얼 ' + (tut.k + 1) + '/' + TUT_STEPS.length; $('tutTxt').textContent = S.txt;
+  $('tutBar').firstChild.style.width = '0'; tutPulse(S.pulse); $('tut').classList.remove('hidden');
+}
+function tutStart() {
+  if (tut.on || tutDone() || !level || level.relax || level.mega) return;
+  Object.assign(tut, { on: true, k: 0, t: 0, moved: 0, sniff: 0, px: dog.x, pz: dog.z }); tutShow();
+}
+function tutEnd(skipped) {
+  tut.on = false; store.set('k9tut', 1); $('tut').classList.add('hidden'); tutPulse(null);
+  if (!skipped) { wallet.coins += 50; store.set(walletKey(), wallet); try { cloudSave(); } catch { } toast('🎓 튜토리얼 완료! +50 코인 · 남은 목표는 왼쪽 위 임무창에서 확인해요'); }
+}
+function tutNext() {
+  tut.k++; tut.t = 0; if (tut.k >= TUT_STEPS.length) return tutEnd(false);
+  tut.base = tut.k === 2 ? totals.items : totals.arrests; SFX.good ? SFX.good() : tone(784, .12, 'square', .05); tutShow();
+}
+function tutTick(dt) {
+  if (!tut.on) return;
+  if (!level || level.relax || level.mega) { tut.on = false; $('tut').classList.add('hidden'); tutPulse(null); return; }
+  $('tut').classList.toggle('hidden', state !== 'play'); if (state !== 'play') return;
+  tut.t += dt; tut.moved += Math.hypot(dog.x - tut.px, dog.z - tut.pz) < 3 ? Math.hypot(dog.x - tut.px, dog.z - tut.pz) : 0; tut.px = dog.x; tut.pz = dog.z;
+  if (dog.sniffing) tut.sniff += dt;
+  const S = TUT_STEPS[tut.k], p = S.prog(tut); $('tutBar').firstChild.style.width = Math.max(p, tut.t / S.max * .999) * 100 + '%';
+  if (p >= 1 || tut.t > S.max) tutNext();
+}
+$('tutSkip').onclick = e => { e.stopPropagation(); tutEnd(true); toast('🎓 튜토리얼은 ❓ 조작법에서 다시 할 수 있어요'); };
+$('btnTutAgain').onclick = () => { store.set('k9tut', 0); toast('🎓 다음 출동 때 튜토리얼이 다시 나와요'); };
 function showHowto(cb) { state = 'howto'; howtoCb = cb; $('howto').classList.remove('hidden'); keys = {}; }
 $('btnHowtoOk').onclick = () => { seenHowto = true; $('howto').classList.add('hidden'); const cb = howtoCb; howtoCb = null; if (cb) cb(); else state = 'play'; };
 function showMaps(paused = false) {
@@ -8187,6 +8235,7 @@ function loop() {
     yaw += dt * .08; dogM.tail.rotation.y = Math.sin(time * 9) * .6;
     if (state !== 'dialog') for (const p of people) p.update(dt);
   }
+  tutTick(dt);
   for (const c of colliders) if (c.wobble > 0) { c.wobble -= dt; c.mesh.rotation.z = Math.sin(c.wobble * 40) * c.wobble * .3; }
   beltOffset += dt;
   for (const b of belts) if (b.mesh.material.map) b.mesh.material.map.offset.x = -beltOffset * .6;
