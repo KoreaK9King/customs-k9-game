@@ -4,6 +4,35 @@
 <meta charset="utf-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<script>
+// 카카오톡·인스타 등 앱 안 브라우저는 위아래 막대 때문에 화면이 좁고 전체 화면이 안 된다 → 폰 기본 브라우저(크롬·사파리)로 바로 넘긴다
+(function () {
+  var ua = navigator.userAgent || '', url = location.href, android = /Android/i.test(ua), ios = /iPhone|iPad|iPod/i.test(ua);
+  var kakao = /KAKAOTALK/i.test(ua), line = /\bLine\//i.test(ua), inApp = kakao || line || /Instagram|FBAN|FBAV|NAVER\(inapp|everytimeApp|DaumApps|SamsungBrowser\/[\d.]+ .*wv|; wv\)/i.test(ua);
+  if (!inApp || /[?&]stay=1/.test(url)) return;
+  function go() {
+    if (kakao) location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
+    else if (line) location.href = url + (url.indexOf('?') < 0 ? '?' : '&') + 'openExternalBrowser=1';
+    else if (android) location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+  }
+  window.__openExternal = go;
+  try { if (sessionStorage.getItem('k9ext') !== '1') { sessionStorage.setItem('k9ext', '1'); go(); } } catch (e) { go(); }
+  // 넘어가지 않았을 때(아이폰 인스타 등) 안내 창
+  addEventListener('DOMContentLoaded', function () {
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(8,18,28,.93);color:#fff;display:flex;align-items:center;justify-content:center;padding:16px;font-family:sans-serif;text-align:center';
+    d.innerHTML = '<div style="max-width:440px"><div style="font-size:40px">🐕</div><b style="font-size:19px">크게 플레이하려면 크롬·사파리로 열어 주세요</b>' +
+      '<p style="font-size:14px;line-height:1.6;margin:10px 0 14px;opacity:.9">지금은 앱 안 브라우저라 위아래 막대 때문에 게임 화면이 작아요.' + (ios && !kakao ? '<br>오른쪽 아래(또는 위) <b>⋯ / 공유 → Safari로 열기</b>를 눌러 주세요.' : '') + '</p>' +
+      '<button id="xOpen" style="font-size:17px;font-weight:700;padding:12px 22px;border-radius:12px;border:0;background:#ffd54f;color:#13335a;margin:4px">🌐 브라우저로 열기</button>' +
+      '<button id="xCopy" style="font-size:15px;padding:12px 16px;border-radius:12px;border:0;background:#fff;color:#13335a;margin:4px">🔗 주소 복사</button><br>' +
+      '<button id="xStay" style="font-size:13px;padding:8px 12px;border:0;background:none;color:#cfd8e3;text-decoration:underline;margin-top:8px">그냥 여기서 할게요</button></div>';
+    document.body.appendChild(d);
+    d.querySelector('#xOpen').onclick = go;
+    d.querySelector('#xCopy').onclick = function () { var u = url.split('#')[0]; (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { this.textContent = '✅ 복사됨! 크롬·사파리 주소창에 붙여넣기'; }.bind(this), function () { prompt('이 주소를 복사해 크롬·사파리에 붙여넣으세요', u); }); };
+    d.querySelector('#xStay').onclick = function () { d.remove(); };
+  });
+})();
+</script>
 <title>탐지견 킁킁 게임</title>
 <meta name="description" content="킁킁! 탐지견이 되어 공항·항만에서 숨은 마약과 총기를 찾고 밀수범을 잡는 3D 블록 게임">
 <meta property="og:type" content="website">
@@ -527,7 +556,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1330';
+const BUILD = '20261031-1334';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
