@@ -645,7 +645,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1703';
+const BUILD = '20261031-1713';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1632,7 +1632,7 @@ function makePerson(kind, opt = {}) {
   else if (kind === 'busker') { shirt = pick([0xff4fa3, 0x222222, 0xffd54f]); pants = 0x2a3d66; }
   else if (kind === 'student') { shirt = 0xf4f4f2; pants = 0x1f2a44; }
   else if (kind === 'monk') { shirt = 0x8a8a80; pants = 0x8a8a80; }
-  else if (kind === 'inmate') { shirt = 0x7b9cc2; pants = 0x7b9cc2; }
+  else if (kind === 'inmate') { shirt = 0xf2f2ee; pants = 0xf2f2ee; }
   else if (kind === 'merchant') { shirt = pick([0xc0392b, 0x2e86c1, 0x27ae60]); pants = 0x3a3a3a; }
   else if (kind === 'hiker') { shirt = pick([0xd84a3a, 0xff8a3a, 0x2e7d4f, 0x2c6fb7]); pants = 0x3a3f47; }
   else if (kind === 'rescue119') { shirt = 0xff6a13; pants = 0x1f2a44; }
@@ -1681,7 +1681,13 @@ function makePerson(kind, opt = {}) {
   if (kind === 'busker') mesh(BOX(.3, .9, .12), MAT.col(0xa0522d, .5), .1, 1.05, .2, body);
   if (kind === 'student') { mesh(BOX(.52, .4, .28), MAT.col(0x1f2a44, .6), 0, 1.25, 0, body); mesh(BOX(.4, .5, .2), MAT.col(pick([0xe74c3c, 0x3498db, 0x2ecc71]), .6), 0, 1.15, -.24, body); }
   if (kind === 'monk') H(BOX(.5, .06, .5), skin, 0, .26, 0);
-  if (kind === 'inmate') mesh(BOX(.2, .12, .03), MAT.col(0xffffff, .5), -.13, 1.35, .14, body);
+  if (kind === 'inmate') { // 흑백 가로줄 죄수복 + 수용 번호표
+    const bk = MAT.col(0x161616, .7);
+    for (let y = .86; y < 1.5; y += .16) mesh(BOX(.51, .07, .27), bk, 0, y, 0, body);
+    for (const lp of legs) for (let y = -.1; y > -.62; y -= .16) mesh(BOX(.25, .07, .25), bk, 0, y, 0, lp);
+    for (const ap of arms) for (let y = -.06; y > -.46; y -= .16) mesh(BOX(.23, .07, .23), bk, 0, y, 0, ap);
+    mesh(BOX(.2, .1, .03), MAT.col(0xffffff, .5), -.13, 1.26, .15, body);
+  }
   if (kind === 'merchant') mesh(BOX(.52, .62, .04), MAT.col(0xf4f4f2, .6), 0, 1.0, .145, body);
   if (kind === 'hiker') { H(BOX(.56, .12, .56), MAT.col(0x3a3f47, .7), 0, .27, .04); mesh(BOX(.45, .6, .26), MAT.col(pick([0x2c6fb7, 0x3a3f47, 0xd84a3a]), .6), 0, 1.15, -.27, body); mesh(BOX(.05, 1.3, .05), MAT.metal(0x888888), .45, .65, .25, body); }
   if (kind === 'rescue119') { H(BOX(.54, .14, .54), MAT.col(0xff6a13, .6), 0, .28, .03); mesh(BOX(.3, .12, .03), MAT.col(0xffffff, .4), 0, 1.36, .145, body); mesh(BOX(.36, .14, .03), MAT.col(0xffffff, .4), 0, 1.25, -.145, body); mesh(new THREE.TorusGeometry(.3, .08, 6, 12), MAT.col(0xff3a1a, .5), .45, 1, .1, body).rotation.y = Math.PI / 2; }
@@ -3008,9 +3014,16 @@ const LEVELS = [
       { kind: 'postal', route: [[8, 2.5], [-20, 2.5]], wait: 1.2 },
       { kind: 'postal', route: [[15, -15], [15, 10]], wait: 2 },
       { kind: 'customs', route: [[12, 1.6], [12.4, 1.6]], wait: 3 },
+      { kind: 'customs', route: [[-44.5, -5.6], [-40.5, -5.6]], wait: 3 }, { kind: 'customs', route: [[-40.5, 10.4], [-44.5, 10.4]], wait: 3 },
+      { kind: 'postal', route: [[31.5, -14], [31.5, 14]], wait: 2 },
     ],
-    people: { worker: 2, civ: 1, smuggler: 3 }, hide: { drug: 5, gun: 1 }, need: { drug: 3, smuggler: 2 },
-    who: '정우진 국제우편세관장', short: '작은 택배 상자와 우편 자루 속 마약 3개를 찾고, 밀수범 2명을 잡으세요. 컨베이어 위로 점프!',
+    vehicles: [
+      { type: 'truck', col: 0xf4f4f2, box: 0xe9ecef, tag: '🚛 11톤 국제우편 입고', route: [[-55, -29], [55, -29], [55, -24.5], [-55, -24.5]] }, { type: 'truck', col: 0xf4f4f2, box: 0xe9ecef, tag: '🚛 11톤 국제우편 입고', route: [[-55, -29], [55, -29], [55, -24.5], [-55, -24.5]], start: 2 },
+      { type: 'truck', col: 0xff7a1a, box: 0xf4f4f2, tag: '🚚 EMS 특송 출고', route: [[55, 35], [-55, 35], [-55, 31], [55, 31]] }, { type: 'truck', col: 0xff7a1a, box: 0xf4f4f2, tag: '🚚 EMS 특송 출고', route: [[55, 35], [-55, 35], [-55, 31], [55, 31]], start: 2 },
+      { type: 'forklift', route: [[-55, 24.5], [55, 24.5], [55, 27.5], [-55, 27.5]] }, { type: 'forklift', route: [[-55, 24.5], [55, 24.5], [55, 27.5], [-55, 27.5]], start: 2 },
+    ],
+    people: { worker: 5, postal: 3, civ: 1, smuggler: 3 }, hide: { drug: 5, gun: 1 }, need: { drug: 3, smuggler: 2 },
+    who: '정우진 국제우편세관장', short: '북쪽 입고 도크(11톤 화물차), 서쪽 세관 X선 검색 라인, 동쪽 크로스벨트 분류기·롤케이지, 남쪽 출고 도크(특송 트럭)까지 소포와 우편 자루를 수색해요. 차량·지게차 통로 조심!',
     intro: '국제우편·특송센터에 온 걸 환영해!\n해외에서 온 소포에 마약을 숨겨 보내는 수법이 늘고 있어.\n\n점프해서 컨베이어 벨트 위로 올라갈 수도 있어.\n벨트 위에 서면 몸이 같이 움직이니 조심하고!\n마약 3개, 밀수범 2명을 부탁해.',
     build(L) {
       floorPlane(L.w, L.d, std(0xffffff, .5, 0, { map: TEX.tile('epoxy', '#a9b4ad', '#98a39c', 4, [L.w / 10, L.d / 10]) }));
@@ -3039,6 +3052,68 @@ const LEVELS = [
         const s = mesh(SPH(.5, 14, 10), MAT.fabric(0x8d8f7a), x, .45, z); s.scale.set(1, .9, .8);
         mesh(CYL(.08, .2, .3, 8), MAT.fabric(0x8d8f7a), x, .95, z);
         addCol(x, z, 1, .8, s, { kind: 'sack', search: true, topY: .9, childY: .9 });
+      }
+      if (L.scaled) { // ── 실제 우편물류센터 동선: 입고 도크 → X선 검색 → 분류기 → 출고 도크
+        const HD = L.d / 2, lane = M('mailLane', () => std(0x5f6b74, .9)), ylw = MAT.col(0xf1c40f, .6), bk = MAT.col(0x1a1a1a, .6);
+        const strip = (cz, d) => { floorPlane(116, d, lane, 0, cz, .01); for (const e of [-d / 2, d / 2]) floorPlane(116, .2, ylw, 0, cz + e, .014); for (let x = -54; x <= 54; x += 7) mesh(BOX(2.4, .02, .25), LMC(0xffffff), x, .02, cz).castShadow = false; };
+        strip(-26.75, 8); strip(33, 7.4); strip(26, 6.4);
+        sign('🚛 화물차 통로', -20, 3.6, -21.6, .5, 'rgba(200,120,0,.92)'); sign('🚚 특송 트럭 통로', 20, 3.6, 37.4, .5, 'rgba(200,120,0,.92)'); sign('🚜 지게차 통로', -20, 3.6, 22, .5, 'rgba(200,120,0,.92)');
+        // 도크 셔터(북·남 벽): 셔터 + 노랑/검정 범퍼 + 번호
+        for (const sd of [-1, 1]) for (let k = 0; k < 12; k++) {
+          const x = -55 + k * 10, z = sd * (HD - .1);
+          mesh(BOX(3.4, 3.2, .12), M('shutter', () => std(0xb8bfc4, .5, .5)), x, 1.6, z).castShadow = false;
+          for (let y = .4; y < 3.2; y += .4) mesh(BOX(3.4, .04, .14), LMC(0x8f979c), x, y, z).castShadow = false;
+          for (const bxo of [-1.9, 1.9]) for (let y = 0; y < 2; y++) mesh(BOX(.3, .5, .3), y ? bk : ylw, x + bxo, .25 + y * .5, z - sd * .2);
+          sign((sd < 0 ? '입고 ' : '출고 ') + (k + 1), x, 3.9, z - sd * .3, .32, sd < 0 ? 'rgba(30,80,160,.92)' : 'rgba(200,90,20,.92)');
+        }
+        sign('📥 입고 도크 INBOUND · 해외 항공·선박 우편', 0, 6.2, -HD + .6, .8, 'rgba(30,80,160,.92)'); sign('📤 출고 도크 OUTBOUND · 전국 배송', 0, 6.2, HD - .6, .8, 'rgba(200,90,20,.92)');
+        // 입고 도크에 대 놓은 11톤 윙바디 화물차
+        for (const x of [-45, -15, 25, 45]) { const g = new THREE.Group(); g.position.set(x, 0, 0); world.add(g);
+          mesh(BOX(2.5, 2.7, 8.4), MAT.ribs(0xe9ecef), 0, 2.15, -HD + 4.6, g); mesh(BOX(2.52, .3, 8.42), LMC(0x2c6fb7), 0, 1.1, -HD + 4.6, g);
+          mesh(RBOX(2.4, 2.3, 2, .2), LMC(0xf4f4f2), 0, 1.75, -HD + 9.8, g); mesh(BOX(2.1, .8, .06), glow(0xbfe6ff, .4), 0, 2.2, -HD + 10.82, g);
+          for (const sx of [-1.1, 1.1]) for (const z of [-HD + 2, -HD + 6.5, -HD + 10]) mesh(CYL(.45, .45, .3, 12), MAT.col(0x111111, .8), sx, .45, z, g).rotation.z = Math.PI / 2;
+          addCol(x, -HD + 5.7, 2.6, 10.8, g, { topY: 3.5 }); }
+        // 출고 도크의 1톤 특송 탑차
+        for (let k = 0; k < 9; k++) { const x = -50 + k * 12.5, g = new THREE.Group(); g.position.set(x, 0, 0); world.add(g);
+          mesh(BOX(2, 2, 3.6), LMC(0xf4f4f2), 0, 1.4, HD - 2.3, g); mesh(BOX(2.02, .35, 3.62), LMC(k % 2 ? 0xff7a1a : 0x2e8b57), 0, 1.2, HD - 2.3, g);
+          mesh(BOX(1.9, 1.5, 1.4), LMC(0xf4f4f2), 0, 1.1, HD - 4.8, g); mesh(BOX(1.7, .6, .06), glow(0xbfe6ff, .4), 0, 1.4, HD - 5.52, g);
+          for (const sx of [-.9, .9]) for (const z of [HD - 1.4, HD - 4.6]) mesh(CYL(.33, .33, .25, 10), MAT.col(0x111111, .8), sx, .33, z, g).rotation.z = Math.PI / 2;
+          addCol(x, HD - 3.25, 2.1, 5, g, { topY: 2.4 }); }
+        // 서쪽: 세관 X선 검색 라인 5줄 (투입 벨트 → X선 터널·납 커튼 → 배출 벨트 → 판독 모니터 → 개장 검사대)
+        for (let k = 0; k < 5; k++) { const z = -16 + k * 8;
+          for (const [x0, x1] of [[-57, -51], [-47.4, -42]]) { mesh(BOX(x1 - x0, .8, 1.1), MAT.metal(0x6b747a, .5), (x0 + x1) / 2, .4, z); mesh(BOX(x1 - x0, .06, .95), MAT.col(0x1a1a1a, .7), (x0 + x1) / 2, .83, z); addCol((x0 + x1) / 2, z, x1 - x0, 1.1, null, { topY: .86 }); for (let j = 0; j < 3; j++) mesh(BOX(.5, .35, .45), MAT.cardboard(), x0 + 1 + j * 2, 1.04, z); }
+          mesh(RBOX(3.6, 1.9, 1.7, .12), MAT.col(0xdfe3e6, .4, .2), -49.2, .95, z); mesh(BOX(3.62, .25, 1.72), ylw, -49.2, 1.6, z); addCol(-49.2, z, 3.6, 1.7, null, { topY: 1.9 });
+          for (const ex of [-51.02, -47.38]) for (let j = 0; j < 5; j++) mesh(BOX(.04, .7, .16), MAT.col(0x3a3f46, .8), ex, .95, z - .36 + j * .18);
+          mesh(BOX(1.6, .8, .8), LMC(0x4a5560), -49.2, .4, z + 1.95); addCol(-49.2, z + 1.95, 1.6, .8, null, { topY: .8 });
+          for (const mx of [-49.6, -48.8]) mesh(BOX(.7, .5, .06), glow(0x7fd3ff, .9), mx, 1.1, z + 1.7);
+          mesh(BOX(2.4, .9, 1.2), MAT.metal(0xc9cfd3, .3), -39.5, .45, z); addCol(-39.5, z, 2.4, 1.2, null, { topY: .9 });
+          for (const bx2 of [-40.2, -38.8]) mesh(BOX(.9, .35, .7), LMC(0xff8c1a), bx2, 1.08, z);
+          sign('X선 ' + (11 + k) + '라인', -49.2, 3, z, .34, 'rgba(19,51,90,.92)'); }
+        sign('🛃 세관 X선 판독·개장 검사 구역', -48, 5.6, 0, .8, 'rgba(19,51,90,.92)');
+        // 동쪽: 크로스벨트 자동 분류기(루프) + 은색 슈트 + 목적지별 롤케이지
+        { const X0 = 38.2, X1 = 51.8, Z0 = -15.8, Z1 = 15.8, cx = (X0 + X1) / 2;
+          addCol(cx, 0, X1 - X0, Z1 - Z0, null, { topY: 1.05 });
+          for (const x of [X0 + .8, X1 - .8]) { mesh(BOX(1.6, .95, Z1 - Z0), MAT.metal(0x6b747a, .5), x, .48, 0); mesh(BOX(1.4, .06, Z1 - Z0 - .2), MAT.col(0x2a2d31, .7), x, .98, 0); }
+          for (const z of [Z0 + .8, Z1 - .8]) { mesh(BOX(X1 - X0, .95, 1.6), MAT.metal(0x6b747a, .5), cx, .48, z); mesh(BOX(X1 - X0 - .2, .06, 1.4), MAT.col(0x2a2d31, .7), cx, .98, z); }
+          floorPlane(X1 - X0 - 3.2, Z1 - Z0 - 3.2, MAT.col(0x3c4650, .8), cx, 0, .016);
+          mesh(BOX(4, 2.4, 3), LMC(0x4a5560), cx, 1.2, 0); mesh(BOX(3.4, .8, .06), glow(0x7dff6a, .8), cx, 1.8, 1.53);
+          sign('🔄 크로스벨트 자동 분류기 SORTER', cx, 5, 0, .7, 'rgba(200,40,30,.92)');
+          const A = X1 - X0 - 1.6, B = Z1 - Z0 - 1.6, per = 2 * (A + B), trays = [];
+          for (let k = 0; k < 26; k++) { const sz = rr(.35, .6); trays.push({ m: mesh(BOX(sz, sz * .7, sz), MAT.cardboard(), 0, 1.01 + sz * .35, 0), u: k / 26 * per }); }
+          const at = u => { u = ((u % per) + per) % per; if (u < A) return [X0 + .8 + u, Z0 + .8]; u -= A; if (u < B) return [X1 - .8, Z0 + .8 + u]; u -= B; if (u < A) return [X1 - .8 - u, Z1 - .8]; u -= A; return [X0 + .8, Z1 - .8 - u]; };
+          envAnim.push(dt => { for (const t of trays) { t.u += dt * 2.2; const [x, z] = at(t.u); t.m.position.x = x; t.m.position.z = z; } });
+          const DEST = ['서울', '경기', '인천', '강원', '대전', '충청', '대구', '경북', '부산', '경남', '광주', '전라', '제주', '국제 EMS', '반송', '세관 검사'];
+          let d = 0;
+          for (const sd of [-1, 1]) for (let z = -12; z <= 12; z += 3.4) {
+            const edge = sd < 0 ? X0 : X1, ch = mesh(BOX(2.2, .1, 1.2), MAT.metal(0xd7dde1, .25), edge + sd * 1.05, .78, z); ch.rotation.z = sd * .3;
+            const cxg = edge + sd * 3.4, g = new THREE.Group(); g.position.set(cxg, 0, z); world.add(g);
+            mesh(BOX(1.1, 1.7, .9), M('cageR', () => std(0xc0392b, .5, .6, { wireframe: true })), 0, .95, 0, g); mesh(BOX(1.1, .06, .9), MAT.metal(0x6a747a), 0, .12, 0, g);
+            for (let j = 0; j < 3; j++) mesh(BOX(.4, .3, .4), MAT.cardboard(), rr(-.3, .3), .3 + j * .35, rr(-.2, .2), g);
+            addCol(cxg, z, 1.1, .9, g, { kind: 'cage', search: true, topY: 1.8, childY: 2.4 });
+            addCol(edge + sd * 1.05, z, 2.1, 1.2, null, { topY: 1 });
+            sign(DEST[d++ % DEST.length], cxg, 2.5, z, .3, 'rgba(200,40,30,.9)');
+          }
+        }
       }
       sign('✉ 국제우편·특송센터 INTL MAIL', 0, 5.5, -L.d / 2 + 1.5, 1.1);
       L.search = scatter(L, 16, parcel, .8, .8);
@@ -3775,9 +3850,9 @@ const LANDMARK_LIST = [
       for (let z = -16; z <= 24; z += 8) mesh(BOX(62, .15, .6), glow(0xfff8e0, .8), -16, 5.4, z).castShadow = false;
     } },
   { name: '교도소', gate: true, icon: '🔒', w: 76, d: 58, floor: FLOOR(() => TEX.concrete('prison', '#9a968d', [.25, .25])), mmCol: 0x9a968d, obj: crate, sky: [0x6d7a88, 0xd0d6dc], st: 4, shape: [[-1, 1], [-1, -1], [1, -1], [1, 1]], rail: { h: 6, col: 0x8f8b84, t: .8 },
-    staff: [{ kind: 'police', route: [[-30, -12], [30, -12]], wait: 2 }, { kind: 'police', route: [[-30, 14], [30, 14]], wait: 2 }, { kind: 'police', route: [[-32, -24], [-32, 24]], wait: 2 }], veh: [{ type: 'bus', road: true, route: [[-24, 22], [24, 22], [24, 20.5], [-24, 20.5]] }], people: { inmate: 6, civ: 3, smuggler: 3 },
+    staff: [{ kind: 'police', route: [[-30, -12], [30, -12]], wait: 2 }, { kind: 'police', route: [[-30, 14], [30, 14]], wait: 2 }, { kind: 'police', route: [[-32, -24], [-32, 24]], wait: 2 }, { kind: 'police', route: [[-11, -16.8], [11, -16.8]], wait: 3 }], veh: [{ type: 'bus', road: true, route: [[-24, 22], [24, 22], [24, 20.5], [-24, 20.5]] }], people: { inmate: 6, civ: 3, smuggler: 3 },
     items: [["book",3],["laundry",3],["lunchbox",2]], who: '최철문 교도소장', short: '높은 담장과 감시탑, 수용동, 운동장, 면회실을 순찰하며 몰래 반입되는 물품을 막아요.',
-    intro: '교도소 면회일이야. 영치품과 세탁물 상자에 마약과 무기를 숨겨 들여보내려는 사람들이 있대.\n감시탑 아래 높은 담장 안, 수용동·운동장·면회실을 꼼꼼히 순찰하자!',
+    intro: '교도소 면회일이야. 영치품과 세탁물 상자에 마약과 무기를 숨겨 들여보내려는 사람들이 있대.\n감시탑 아래 높은 담장 안, 수용동·운동장·면회실을 꼼꼼히 순찰하자!\n북쪽 쇠창살 감방 7칸에선 수감자들이 꺼내 달라고 소리쳐. 속지 말고 임무에 집중!',
     build(L) {
       for (const [x, z] of [[-35, -26], [35, -26], [-35, 26], [35, 26], [0, -26]]) { bx(x, 0, z, 3, 9, 3, 0x7d7a73); mesh(BOX(4.2, 2.2, 4.2), LMC(0x5b5a55), x, 10.1, z); mesh(BOX(4.4, .3, 4.4), LMC(0x3d3c38), x, 11.3, z); const sl = mesh(BOX(.6, .4, .6), glow(0xffee88, 1.6), x, 10.4, z + 2.1); envAnim.push(() => { sl.position.x = x + Math.sin(time + z) * 1.4; }); }
       for (let x = -37; x <= 37; x += 1.2) for (const z of [-28.6, 28.6]) mesh(new THREE.TorusGeometry(.35, .06, 4, 8), MAT.metal(0x888888), x, 6.4, z).castShadow = false;
@@ -3788,6 +3863,34 @@ const LANDMARK_LIST = [
       building(26, 10, 12, 8, 4, 0xb7b2a8, { sign: '영치품 접수' }); for (let k = 0; k < 5; k++) mesh(BOX(1, .8, 1), MAT.cardboard(), 21 + k * 2.4, .4, 15.4);
       for (const x of [-14, 14]) { bx(x, 0, 26.5, 1.4, 5, 1.4, 0x6d6a63); } mesh(BOX(29, 1, 1.4), LMC(0x6d6a63), 0, 4.6, 26.5); sign('🔒 OO교도소 — 반입 금지 물품 단속 중', 0, 7, 26.5, .9);
       for (const x of [-12, 12]) { bx(x, 0, 24, .2, 1, .2, 0xdddddd); mesh(BOX(5, .2, .2), LMC(0xe74c3c), x + (x < 0 ? 2.5 : -2.5), 1, 24); }
+      { // 수용동 내부: 쇠창살 감방 7칸 — 꺼내 달라고 조르는 수감자들
+        const X0 = -12.6, CW = 3.6, ZB = -24.2, ZF = -19.2, H = 3.6, bar = MAT.metal(0x2b2d31, .4), wallM = LMC(0x8a867e);
+        floorPlane(26, 9.4, MAT.col(0x6f6c66, .9), 0, -19.9, .013);
+        const back = mesh(BOX(25.6, H, .4), wallM, 0, H / 2, ZB);
+        addCol(0, (ZB + ZF) / 2 - .1, 25.6, ZF - ZB + .6, back, { topY: H + .3 }); // 감방 안으로는 못 들어간다
+        for (let k = 0; k <= 7; k++) mesh(BOX(.3, H, ZF - ZB), wallM, X0 + k * CW, H / 2, (ZB + ZF) / 2);
+        mesh(BOX(25.6, .3, .3), bar, 0, H, ZF); mesh(BOX(25.6, .3, ZF - ZB + .3), LMC(0x6d6a63), 0, H + .15, ZB + .3);
+        sign('🔒 수용동 내부 · 쇠창살 감방 1~7호', 0, H + 1.7, ZF + .3, .55, 'rgba(60,60,70,.92)');
+        const BEG = ['꺼내 주세요!', '억울해요! 저 좀 내보내 줘요!', '문 좀 열어 주세요~', '다시는 안 그럴게요!', '멍멍아, 열쇠 좀 가져와 줘!', '여기서 나가고 싶어요!', '면회 온 사람 없어요?'];
+        for (let k = 0; k < 7; k++) {
+          const cx = X0 + CW * (k + .5);
+          for (let j = 0; j < 9; j++) mesh(BOX(.07, H, .07), bar, cx - 1.6 + j * .4, H / 2, ZF);
+          for (const y of [.25, 1.3, 2.6]) mesh(BOX(CW - .3, .08, .1), bar, cx, y, ZF);
+          mesh(BOX(1.2, .55, 2.2), LMC(0x5d6066), cx - .9, .28, ZB + 1.4); mesh(BOX(1.1, .12, 1.6), LMC(0x7a8a6a), cx - .9, .6, ZB + 1.7); mesh(BOX(.9, .15, .4), LMC(0xf2f2ee), cx - .9, .62, ZB + .5);
+          mesh(BOX(.5, .45, .5), LMC(0xdfe3e6), cx + 1.15, .23, ZB + .55);
+          sign((k + 1) + '호', cx, H + .55, ZF + .1, .32, 'rgba(40,40,46,.9)');
+          const P = makePerson('inmate'); P.g.position.set(cx + .2, 0, ZF - .55); world.add(P.g);
+          const bub = textSprite(BEG[k], { h: .42, bg: 'rgba(150,25,25,.92)' }); bub.position.set(cx, 3, ZF + .5); world.add(bub);
+          const ph = k * 1.3;
+          envAnim.push(() => {
+            const u = (time + ph) % 6, beg = u < 3.2; bub.visible = beg;
+            for (let a = 0; a < 2; a++) { P.arms[a].rotation.x = -2.6 + (beg ? Math.sin(time * 9 + a * 2) * .25 : .4); P.arms[a].rotation.z = (a ? -1 : 1) * .25; }
+            P.body.position.y = beg ? Math.abs(Math.sin(time * 6)) * .08 : 0; P.g.rotation.y = beg ? Math.sin(time * 3 + k) * .25 : 0;
+            if (beg && u < .05 && state === 'play' && Math.hypot(dog.x - cx, dog.z - ZF) < 7) tone(300 + k * 30, .12, 'triangle', .03);
+          });
+        }
+        for (let x = -10; x <= 10; x += 5) mesh(BOX(2.4, .12, .4), glow(0xfff4d0, .9), x, H + .32, ZF + 1.6).castShadow = false;
+      }
     } },
   { name: '서울역', fill: 'city', icon: '🚉', w: 90, d: 64, floor: TILE('#c9c3b6', '#a9a294', .2), obj: luggage, sky: [0x5aa8ef, 0xe2f0fb], st: 3, veh: [{ type: 'taxi', road: 'asphalt', route: [[-42, 13], [42, 13], [42, 10.5], [-42, 10.5]] }, { type: 'bus', route: [[42, 10.5], [-42, 10.5], [-42, 13], [42, 13]], start: 1 }],
     people: { civ: 6, tourist: 3, student: 2, smuggler: 3 }, items: [["coinLocker",3],["trashBin",2],["backpack",2],["golfBag",1]], who: '정기차 서울역장', short: '옛 서울역(붉은 벽돌·초록 돔), 유리 신역사, 하늘 정원 서울로7017, KTX 승강장을 순찰해요.',
@@ -4698,7 +4801,32 @@ function updateAnimals(dt) {
     A.g.position.set(A.x, A.y, A.z); A.g.rotation.y = A.dir;
   }
 }
-function crowdNow(def) { const prof = CROWD[CROWD_OF[def.name]]; if (!prof) return 1; const h = Math.floor(localHour()) % 24; return prof[h]; }
+// 요일별 배율 (일~토) — 공개 통계 경향을 단순화: 코레일·고속버스 요일별 이용객(금·일 정점), 인천공항 요일별 여객(금·일 많음),
+// 서울 생활인구(번화가 금·토 밤, 고궁·전망·해변·산 주말 집중), 관공서·물류(평일 위주, 일요일 최소)
+const CROWD_WEEK = {
+  commute: [1.15, .9, .88, .9, .95, 1.25, 1.1], office: [.2, 1.05, 1, 1, 1, 1.05, .45], heritage: [1.4, .7, .75, .75, .8, .95, 1.5],
+  nightlife: [1, .75, .8, .85, .95, 1.3, 1.45], view: [1.3, .8, .8, .85, .9, 1.1, 1.4], beach: [1.35, .8, .8, .8, .85, 1.05, 1.4],
+  airport: [1.08, .95, .92, .94, .98, 1.1, 1.03], hiking: [1.6, .6, .6, .65, .7, .85, 1.7], works: [.55, 1.05, 1.1, 1.1, 1.1, 1.05, .75],
+};
+function localDow() {
+  const [tz] = LANG_TZ[lang] || LANG_TZ.ko;
+  try { return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'short' }).format(new Date())); } catch { return new Date().getDay(); }
+}
+function crowdNow(def, h = Math.floor(localHour()) % 24, dow = localDow()) { const c = CROWD_OF[def.name], prof = CROWD[c]; if (!prof) return 1; return Math.round(prof[h] * ((CROWD_WEEK[c] || [])[dow] ?? 1) * 100) / 100; }
+// 플레이 중 정각이 바뀌면 그 시각·요일의 유동인구에 맞춰 시민 NPC를 늘리거나 줄인다
+let crowdT = 0;
+function crowdTick(dt) {
+  if (!level || level.relax || level.mega || (mp && mp.ch) || !level.crowdKey) return;
+  if ((crowdT += dt) < 5) return; crowdT = 0;
+  const h = Math.floor(localHour()) % 24, dow = localDow(), key = dow * 24 + h; if (key === level.crowdKey) return;
+  const c = crowdNow(level, h, dow), kinds = Object.keys(level.people || {}).filter(k => k !== 'smuggler' && k !== 'boss');
+  const delta = Math.round(level.ambBase * (c - level.crowd)); level.crowdKey = key; level.crowd = c;
+  if (!kinds.length || !delta) return;
+  if (delta > 0) for (let k = 0; k < delta; k++) { const p = placeFree(level.bounds, 1, 1, .5, [...level.avoid, { x: dog.x, z: dog.z, r: 10 }]); if (p) new Person(pick(kinds), p.x, p.z); }
+  else { let n = -delta; for (let i = people.length - 1; i >= 0 && n > 0; i--) { const p = people[i]; if (p.villain || p.arrested || p.dead || p.owned || p.seated || !kinds.includes(p.kind) || Math.hypot(p.x - dog.x, p.z - dog.z) < 14) continue; world.remove(p.g); people.splice(i, 1); n--; } }
+  const live = people.filter(p => !p.villain && kinds.includes(p.kind)).length;
+  toast('🕐 ' + '일월화수목금토'[dow] + '요일 ' + h + '시 — 유동인구가 ' + (delta > 0 ? '늘어나요 ↑' : '줄어들어요 ↓') + ' (시민 ' + live + '명)');
+}
 const LANG_TZ = { ko: ['Asia/Seoul', '서울'], en: ['America/New_York', 'New York'], zh: ['Asia/Shanghai', '北京'], hi: ['Asia/Kolkata', 'दिल्ली'], ar: ['Asia/Riyadh', 'الرياض'], vi: ['Asia/Ho_Chi_Minh', 'Hà Nội'], ja: ['Asia/Tokyo', '東京'], ru: ['Europe/Moscow', 'Москва'] };
 function localHour() {
   const [tz] = LANG_TZ[lang] || LANG_TZ.ko;
@@ -4793,7 +4921,7 @@ function applyTimeOfDay() {
   if (ph === 'night' && out) for (let k = 0; k < 8; k++) { const b = level.bounds, x = mr(b.minX + 6, b.maxX - 6), z = mr(b.minZ + 6, b.maxZ - 6), l = new THREE.PointLight(0xffd59a, 12, 18, 1.8); l.position.set(x, 6, z); world.add(l); }
   const [, city] = LANG_TZ[lang] || LANG_TZ.ko, hh = Math.floor(h), mm = String(Math.floor((h - hh) * 60)).padStart(2, '0');
   setTimeout(() => toast(t('tod_' + ph).replace('{city}', city).replace('{time}', hh + ':' + mm)), 2600);
-  if (level && !level.relax) { const c = crowdNow(level); setTimeout(() => toast(t('crowd_' + (c < .45 ? 0 : c < .9 ? 1 : c < 1.2 ? 2 : 3))), 4400); }
+  if (level && !level.relax) { const c = crowdNow(level); setTimeout(() => toast(t('crowd_' + (c < .45 ? 0 : c < .9 ? 1 : c < 1.2 ? 2 : 3)) + (lang === 'ko' ? ' (' + '일월화수목금토'[localDow()] + '요일 ' + Math.floor(h) + '시 유동인구 기준)' : '')), 4400); }
 }
 function distToPoly(P, x, z) { let best = 1e9; for (let i = 0; i < P.length; i++) { const [ax, az] = P[i], [bx2, bz] = P[(i + 1) % P.length], vx = bx2 - ax, vz = bz - az, L2 = vx * vx + vz * vz || 1, u = clamp(((x - ax) * vx + (z - az) * vz) / L2, 0, 1); best = Math.min(best, Math.hypot(x - ax - vx * u, z - az - vz * u)); } return best; }
 const SWIM_PAD = 60;
@@ -4961,6 +5089,7 @@ function loadLevel(i) {
   const off = new Person('chief', spawn.x + 2.6, spawn.z + 1, def.chief); off.wait = 1.5;
   const ol = textSprite('🎖 ' + def.who, { h: .38 }); ol.position.set(0, 2.5, 0); off.g.add(ol);
   const crowd = def.relax ? 1 : crowdNow(def); level.crowd = crowd; level.ageQ = buildAgeQueue(def);
+  level.crowdKey = localDow() * 24 + Math.floor(localHour()) % 24; level.ambBase = Object.entries(def.people).filter(([k]) => k !== 'smuggler' && k !== 'boss').reduce((a, [, n0]) => a + n0 * (1 + (level.sz - 1) * .85), 0);
   for (const [kind, n0] of Object.entries(def.people)) for (let k = 0, n = Math.max(kind === 'smuggler' || kind === 'boss' ? 0 : 1, Math.round((kind !== 'boss' && !def.mega ? n0 * (1 + (level.sz - 1) * .85) : n0) * (kind === 'smuggler' || kind === 'boss' ? 1 : crowd))); k < n; k++) {
     const far = kind === 'boss' ? [{ ...spawn, r: 22 }] : level.avoid;
     const p = placeFree(level.bounds, 1, 1, .5, far); if (p) {
@@ -6470,6 +6599,7 @@ function loop() {
   if (state === 'play') {
     levelTime += dt; updateCoins(dt);
     if (intel.pending && levelTime >= intel.at && !(mp && mp.ch)) showIntel();
+    crowdTick(dt);
     if (handlerJob === 'rescue' && !level.relax) { rescueT = (rescueT || 0) + dt; if (rescueT >= 40) { rescueT = 0; if (dog.hp < 5) { dog.hp++; floatText('🚑 응급처치! ❤️+1', dog.x, dog.y + 1.8, dog.z, { h: .5, color: '#ff8a80' }); tone(660, .12, 'triangle', .07); tone(880, .15, 'triangle', .06, 0, .12); } } } mobileCull(); updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateAnimals(dt); updateDebris(dt); if (!level.relax) updateMp(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
     if (level.mega || isMobile) { megaFrame++; people.forEach((p, k) => { const far = !p.dead && !p.arrested && Math.abs(p.x - dog.x) + Math.abs(p.z - dog.z) > (isMobile ? 70 : 95); if (!p.dead && !p.arrested) p.g.visible = !far; if (!far) { p.update(dt + (p.acc || 0)); p.acc = 0; } else { p.acc = (p.acc || 0) + dt; if ((megaFrame + k) % 6 === 0) { p.update(Math.min(p.acc, .25)); p.acc = 0; } } }); }
     else for (const p of people) p.update(dt);
