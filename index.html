@@ -249,7 +249,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  #howto .card p,#clear .card p,#win .card p,#howto .card .sub{font-size:12px!important;line-height:1.45;margin:3px 0}
  #howto .ctl{grid-template-columns:auto 1fr auto 1fr;gap:4px 8px;font-size:11.5px;padding:7px;margin:5px 0}#howto .ctl kbd{font-size:10.5px;padding:1px 6px}
  #howto .row,#clear .row,#win .row,#dlg .row,#pvModal .row{margin-top:6px}
- #dlg .txt{font-size:12.5px!important}#pvModalBody{font-size:12px!important;max-height:46vh!important}
+ #dlg .txt{font-size:12.5px!important}#pvModalBody{font-size:12px!important;line-height:1.5!important;max-height:none!important;column-count:2;column-gap:18px}
  #clear .stats,#win .stats{font-size:12.5px;line-height:1.6}
  #goalBig{font-size:14px;padding:7px 14px;border-width:2px;top:11%;max-width:62vw}
 }
@@ -330,7 +330,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  #mpanel #mapGrid{grid-template-columns:repeat(11,1fr)!important;gap:4px!important;margin-top:4px!important}#mpanel .mapcard{padding:3px 2px!important;gap:0!important;border-width:2px!important}#mpanel .mapcard .no{display:none}#mpanel .mapcard .ic{font-size:16px!important;line-height:1.1}#mpanel .mapcard .nm{font-size:11px!important;line-height:1.15}#mpanel .mapcard .st{font-size:8.5px!important;line-height:1.2}#mpanel .mapcard .st:not(:last-child){display:none}#mpanel .mapsep{grid-column:1/-1;font-size:11px!important;margin:2px 0!important;padding:3px 8px!important}
  #mpanel .mapcard.done::after{display:none}#mpanel .mapcard.done .nm::before{content:"✅";font-size:9px}#mpanel #mapsIntro{display:none}
  #mpanel #rankMini{max-height:calc(100vh - 120px)!important;overflow:auto}
- #dlg .card,#howto .card,#clear .card,#win .card,#pvModal .card{max-width:min(660px,78vw)!important}
+ #dlg .card,#howto .card,#clear .card,#win .card{max-width:min(660px,78vw)!important}#pvModal .card{max-width:94vw!important;width:94vw!important}
  #dlg .txt{font-size:14.5px!important;line-height:1.55}#dlg .card{padding:12px 18px!important}
  #howto .card p{font-size:13.5px!important}#howto .ctl{font-size:12.5px!important}
  #howto .card{max-width:min(820px,90vw)!important;max-height:calc(100dvh - 16px)!important;padding:8px 14px!important}#howto .sub,#howto .card>p{display:none!important}#howto .card>p.howShort{display:block!important;font-size:12.5px!important;margin:4px 0!important}
@@ -348,13 +348,20 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 @media (max-width:560px){#hubTiles,#maps.paused #hubTiles{grid-template-columns:repeat(3,1fr)}}
 /* 맵 선택: 구분 없이 번호순으로 한 화면에 */
 #mpanel[data-p="map"] .card{max-width:1100px;width:96vw}
+#mpanel .mapsep{grid-column:1/-1!important;margin:4px 0 0!important;padding:4px 10px!important;border-radius:9px;background:#13335a;color:#fff;font-family:Jua,sans-serif;font-size:15px!important;display:block!important}#mpanel .mapsep small{color:#f4c542;font-family:'Noto Sans KR',sans-serif;font-size:12px;margin-left:6px}
+#mpanel .mapcard{min-height:74px;align-content:center}
+#mpanel #mapGrid{display:block!important}#mpanel .mapflex .mapcard.done .nm::before{content:none}#mpanel .mapflex .mapcard.done::before{content:"✅";position:absolute;left:3px;top:2px;font-size:11px}.mapflex{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 2px}
+.mapflex .mapcard{flex:1 1 calc(12.5% - 5px);min-width:0}.mapflex.lm .mapcard{flex-basis:calc(10% - 5px)}
+#mpanel .mapcard .nm{font-family:Jua,'Noto Sans KR',sans-serif;word-break:keep-all}#mpanel .mapcard .ic{font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif}
+@media (orientation:landscape) and (max-height:540px){#mpanel .mapcard .nm{font-size:12.5px!important}#mpanel .mapcard .ic{font-size:22px!important;width:100%}#mpanel .mapflex .mapcard{min-height:60px!important}.mapflex{gap:4px;margin:3px 0 1px}}
+@media (max-width:560px){.mapflex .mapcard,.mapflex.lm .mapcard{flex-basis:calc(25% - 5px)}}
 #mpanel #mapGrid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:6px;margin-top:6px}
 #mpanel .mapcard{padding:4px 3px;gap:0;border-width:2px;flex-direction:row;flex-wrap:wrap;justify-content:center;column-gap:4px}
 #mpanel .mapcard .no{display:inline!important;font-size:12px;color:#fff;background:#13335a;border-radius:6px;padding:0 5px;letter-spacing:0}
 #mpanel .mapcard .ic{font-size:18px;line-height:1.1}#mpanel .mapcard .nm{font-size:13px;line-height:1.15;width:100%}
 #mpanel .mapcard .st{font-size:9.5px;line-height:1.2;width:100%}#mpanel .mapcard .st:not(:last-child){display:none}
 #mpanel .mapcard.done::after{display:none}#mpanel .mapcard.done .nm::before{content:"✅";font-size:10px}#mpanel #mapsIntro{display:none}
-@media (orientation:landscape) and (max-height:540px){#mpanel #mapGrid{grid-template-columns:repeat(12,1fr)!important;gap:3px!important}#mpanel .mapcard{padding:2px 1px!important}#mpanel .mapcard .st{display:none}#mpanel .mapcard .nm{font-size:10.5px!important;line-height:1.1}#mpanel .mapcard .ic{font-size:14px!important}#mpanel .mapcard .no{font-size:10px!important;padding:0 3px}}
+@media (orientation:landscape) and (max-height:540px){#mpanel #mapGrid{grid-template-columns:repeat(10,1fr)!important;gap:4px!important}#mpanel .mapsep{font-size:12.5px!important;padding:2px 8px!important;margin:2px 0 0!important}#mpanel .mapsep small{font-size:10px}#mpanel .mapcard{padding:2px 1px!important;min-height:49px}#mpanel .mapcard .st{display:none}#mpanel .mapcard .no{font-size:10px!important;padding:0 3px}}
 @media (max-width:560px){#mpanel #mapGrid{grid-template-columns:repeat(4,1fr);gap:4px}#mpanel .mapcard .nm{font-size:11px}#mpanel .mapcard .st{display:none}#mpanel .mapcard .ic{font-size:15px}}
 /* 클리어·승리 화면 버튼은 카드가 넘쳐도 항상 아래에 보이게 */
 #win .card>.row:last-child,#clear .card>.row:last-child{position:sticky;bottom:0;background:var(--card);padding:6px 0 2px;z-index:1}
@@ -430,6 +437,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 }
 @media (prefers-reduced-motion:reduce){#toast{transition:none}.ss-dog,.ss-bag,#btnStart,.rm-ic{animation:none}}
 #wx{position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:5;max-width:min(92vw,620px);padding:4px 12px;border-radius:14px;background:rgba(15,25,45,.62);color:#fff;font-size:12px;line-height:1.4;text-align:center;pointer-events:none;white-space:normal}
+#pvModalBody{max-height:none;overflow:visible}@media (min-width:700px){#pvModalBody{column-count:2;column-gap:20px}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
@@ -482,10 +490,10 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 </div></div>
 <div id="loadingScreen" class="hidden"><div class="ld-in"><div class="ld-ic" id="ldIcon">🗺</div><div class="ld-t" id="ldTitle">출동 준비 중…</div><div class="ld-bar"><div class="ld-fill" id="ldFill"></div></div><div class="ld-paw">🐾 🐾 🐾</div><div class="ld-tip" id="ldTip"></div></div></div>
 <div id="rotateMsg"><div><div class="rm-ic">📱↻</div><div class="rm-t">휴대폰을 <b>가로로</b> 돌려 주세요</div><div class="rm-s">탐지견 킁킁은 가로 화면에서만 플레이할 수 있어요</div></div></div>
-<div id="pvModal" class="overlay hidden" style="z-index:30"><div class="card" style="max-width:640px">
+<div id="pvModal" class="overlay hidden" style="z-index:30"><div class="card" style="max-width:860px">
  <h2 style="margin:0 0 6px">📋 개인정보(이메일) 수집·이용 안내</h2>
- <div id="pvModalBody" style="max-height:52vh;overflow:auto;font-size:14px;line-height:1.7;background:#fff;border:2px solid #e6dcc4;border-radius:10px;padding:10px 12px"></div>
- <div id="pvModalHint" style="font-size:12px;font-weight:700;color:#b5402a;margin-top:6px">⬇ 안내를 끝까지 내려서 읽어 주세요</div>
+ <div id="pvModalBody" style="font-size:14px;line-height:1.6;background:#fff;border:2px solid #e6dcc4;border-radius:10px;padding:10px 12px"></div>
+ <div id="pvModalHint" style="font-size:12px;font-weight:700;color:#b5402a;margin-top:6px">📖 안내를 끝까지 읽어 주세요</div>
  <label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-size:15px;font-weight:700"><input type="checkbox" id="pvModalChk" disabled style="width:22px;height:22px"> <span><b>[필수]</b> 위 내용을 끝까지 읽었어요</span></label>
  <div class="row"><button class="big" id="pvModalOk" disabled style="opacity:.45">확인</button><button class="big alt" id="pvModalClose">닫기</button></div>
 </div></div>
@@ -671,7 +679,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2014';
+const BUILD = '20261031-2029';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -3499,7 +3507,7 @@ function stationTrains(L, lines, { stopX = 0, span } = {}) {
   }
 }
 // ===== 맵 바깥 배경: 맵 성격에 맞는 먼 풍경 (충돌 없음 · 그림자 없음) =====
-const FAR_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'airport', '국제우편·특송센터': 'logistics', '국제 여객선': 'coast', '인천항 국제여객터미널': 'port', '부두 컨테이너 야적장': 'port', '보세창고 (보스전)': 'industrial', '노을 활주로': 'airport', '우체국': 'city', '교도소': 'rural', '서울역': 'city', '버스터미널': 'city', '명동': 'city', '경복궁': 'heritage', '홍대': 'city', '롯데월드타워': 'city', '동대문': 'city', '광안리 해변': 'city', '숭례문': 'city', '수원화성': 'heritage', '경주': 'tomb', 'N서울타워': 'mountain', '해운대': 'city', '제주 한라산': 'jeju', '포항 스페이스워크': 'city', '전주 한옥마을': 'heritage', '광화문광장': 'city', '청와대': 'heritage', '국회의사당': 'city', '감천문화마을': 'village', '대전 한빛탑': 'city' };
+const FAR_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'airport', '국제우편·특송센터': 'logistics', '국제 여객선': 'coast', '인천공항 T2 출국장': 'airport', '인천항 국제여객터미널': 'port', '부두 컨테이너 야적장': 'port', '보세창고 (보스전)': 'industrial', '노을 활주로': 'airport', '우체국': 'city', '교도소': 'rural', '서울역': 'city', '버스터미널': 'city', '명동': 'city', '경복궁': 'heritage', '홍대': 'city', '롯데월드타워': 'city', '동대문': 'city', '광안리 해변': 'city', '숭례문': 'city', '수원화성': 'heritage', '경주': 'tomb', 'N서울타워': 'mountain', '해운대': 'city', '제주 한라산': 'jeju', '포항 스페이스워크': 'city', '전주 한옥마을': 'heritage', '광화문광장': 'city', '청와대': 'heritage', '국회의사당': 'city', '감천문화마을': 'village', '대전 한빛탑': 'city' };
 const NAMSAN = ['서울역', '명동', '숭례문', '동대문', '광화문광장', '경복궁', '청와대', '우체국', '홍대'];
 let winTex = null;
 function farWinTex() {
@@ -4853,6 +4861,68 @@ const LANDMARK_LIST = [
         fence(0, 74.6, 200, .4); fence(-99.6, 6, .4, 137); fence(99.6, 6, .4, 137); }
       L.search = colliders.filter(c => c.topY > .5 && c.topY < 1.6 && c.maxX - c.minX < 5 && c.maxZ - c.minZ < 5 && c.minZ > 40).slice(0, 12);
     } },
+  { name: '인천공항 T2 출국장', gate: true, icon: '🧳', sc: 1, w: 200, d: 180, floor: 0xcfd3d6, mmCol: 0xd6d0c4, obj: luggage, ns: 26, st: 3, music: 4, sky: [0x4f9be6, 0xdcecf8],
+    veh: [{ type: 'bus', route: [[-95, 69], [95, 69], [95, 73], [-95, 73]] }, { type: 'taxi', route: [[95, 73], [-95, 73], [-95, 69], [95, 69]] }],
+    staff: [{ kind: 'attendant', route: [[-80, 30], [-10, 30]], wait: 2.5 }, { kind: 'attendant', route: [[10, 30], [80, 30]], wait: 2.5 }, { kind: 'customs', route: [[-60, -4], [-40, -4]], wait: 2 }, { kind: 'customs', route: [[40, -4], [60, -4]], wait: 2 }, { kind: 'customs', route: [[-50, -30], [50, -30]], wait: 3 }, { kind: 'police', route: [[-80, 52], [80, 52]], wait: 2 }, { kind: 'pilot', route: [[-60, -46], [60, -46]], wait: 3 }],
+    people: { civ: 14, tourist: 10, kid: 3, smuggler: 4 }, hide: { drug: 5, gun: 3 }, need: { drug: 3, gun: 1, smuggler: 3 },
+    items: [["dutyBag", 4], ["backpack", 3], ["golfBag", 2], ["cooler", 1]], who: '하늘길 인천공항세관 출국검사과장', chief: 'customs',
+    short: '인천공항 제2여객터미널 3층 출국장! 체크인 카운터 A~H → 출국장 1·2 보안검색 → 출국심사·자동출입국심사 → 면세구역 → 탑승구와 탑승교(브리지)까지 따라가며 수색해요.',
+    intro: '인천국제공항 제2여객터미널 3층 출국장이야. 해외로 떠나는 짐 속에 마약과 총기를 숨겨 내보내려 한대!\n출발 도로에서 들어와 체크인 카운터(A~H)와 셀프 백드롭, 출국장 1·2의 보안검색대,\n법무부 출국심사·자동출입국심사를 지나면 면세구역과 탑승구가 나와.\n탑승교(브리지) 끝에는 비행기가 기다리고 있어. 비행기에 오르기 전에 꼭 찾아내자!',
+    build(L) {
+      // 인천공항 T2 3층 출국장. 남쪽(+z) 출발 도로 → 체크인 → 보안검색·출국심사 → 면세구역 → 탑승구 → 북쪽(-z) 계류장 비행기
+      const H = 9;
+      floorPlane(200, 142, std(0xffffff, .25, 0, { map: TEX.tile('marble', '#dcd8cf', '#b9b3a6', 6, [25, 18]) }), 0, -1, .012);
+      // 가로 벽: gaps = [[가운데 x, 폭], ...] 자리는 비워 둔다
+      const wallX = (z, gaps, c = 0xbcd6e4, h = H) => { let x0 = -100; for (const [gx, gw] of [...gaps, [300, 0]]) { const x1 = Math.min(100, gx - gw / 2); if (x1 > x0) { bx((x0 + x1) / 2, 0, z, x1 - x0, h, .5, c); mesh(BOX(x1 - x0, .5, .7), LMC(0xeef1f3), (x0 + x1) / 2, h + .25, z).castShadow = false; } x0 = gx + gw / 2; } };
+      // ── 출발 도로(남쪽): 차도·캐노피·입구 ──
+      floorPlaneW(200, 12, MAT.col(0x3a3d42, .95), 0, 71, .02); for (let x = -95; x <= 95; x += 8) mesh(BOX(4, .02, .25), MAT.col(0xffffff, .5), x, .04, 71);
+      mesh(BOX(200, .4, 10), LMC(0xf2f4f5), 0, 7, 62).castShadow = false; for (let x = -80; x <= 80; x += 20) mesh(BOX(.4, 7, .4), MAT.metal(0x9aa3ab), x, 3.5, 66);
+      wallX(58, [[-60, 8], [-20, 8], [20, 8], [60, 8]]);
+      for (const x of [-60, -20, 20, 60]) sign('🚪 ' + (x < 0 ? '출국장 2 방향' : '출국장 1 방향'), x, 4.4, 58.6, .45);
+      sign('✈ 인천국제공항 제2여객터미널 출발 DEPARTURES · 3F', 0, H + 3, 59, 1.3);
+      sign('🚕 택시 · 🚌 버스 하차장 (출발층 3층)', -60, 5.5, 64, .55);
+      // ── 체크인 카운터 A~H ──
+      const AIR = [['A', '대한항공 일등석·프레스티지'], ['B', '대한항공'], ['C', '대한항공'], ['D', '대한항공 · 셀프 백드롭'], ['E', '델타항공 · 아에로멕시코'], ['F', '에어프랑스 · KLM'], ['G', '중화항공 · 가루다'], ['H', '진에어 · 샤먼항공']];
+      AIR.forEach(([k, a], n) => { const x = -84 + n * 24; bx(x, 0, 30, 5, 1.1, 30, 0xeceae4); mesh(BOX(5.2, .1, 30.2), LMC(0x1f4e8c), x, 1.15, 30); mesh(BOX(4, 3, .4), LMC(0x13335a), x, 6.5, 45); mesh(BOX(.4, 5.3, .4), MAT.metal(0x8a9399), x, 3.2, 45);
+        sign(k, x, 7.2, 45.3, 1.4, 'rgba(19,51,90,.95)'); sign('체크인 ' + k + ' · ' + a, x, 5.2, 45.5, .42);
+        for (let z = 18; z <= 42; z += 4) { mesh(BOX(1.1, .5, .8), MAT.metal(0x2b3a4a), x - 3.1, .6, z); mesh(BOX(1.1, .5, .8), MAT.metal(0x2b3a4a), x + 3.1, .6, z); } });
+      for (let n = 0; n < 7; n++) { const x = -72 + n * 24; for (const z of [50, 52.5]) { bx(x - 2, 0, z, .9, 1.6, .7, 0x2c6fb7); bx(x + 2, 0, z, .9, 1.6, .7, 0x2c6fb7); } }
+      sign('🖥 셀프 체크인 키오스크 · 셀프 백드롭', -36, 3.3, 51, .5); sign('🖥 셀프 체크인 키오스크 · 셀프 백드롭', 36, 3.3, 51, .5);
+      for (const [x, z, t, c] of [[-96, 12, '💱 환전소', 0x2c6fb7], [-96, 24, '📦 수하물 포장 · 택배', 0x8a5a2b], [96, 12, '💊 약국 · 🏪 편의점', 0x27ae60], [96, 24, '📱 로밍 · 유심 센터', 0xd84a4a]]) { bx(x, 0, z, 6, 2.6, 8, c); sign(t, x - Math.sign(x) * 3.5, 3.6, z, .45); }
+      bx(0, 0, 12, 10, 1.2, 3, 0xf4f4f2); mesh(BOX(10.2, .3, 3.2), LMC(0x27ae60), 0, 1.35, 12); sign('ℹ 안내 데스크 INFORMATION', 0, 3.4, 12, .6);
+      for (const x of [-72, -48, -24, 24, 48, 72]) pillar(x, 10, H);
+      sign('📺 출발 안내 · 탑승구 확인 DEPARTURES', 0, 7, 8.3, .6, 'rgba(10,10,10,.9)');
+      // ── 출국장 1(동쪽)·2(서쪽): 보안검색 → 출국심사 ──
+      wallX(4, [[-50, 14], [50, 14]], 0xd8dde1); wallX(-12, [[-50, 14], [50, 14]], 0xd8dde1);
+      for (const [cx, nm] of [[-50, '출국장 2 DEPARTURE 2'], [50, '출국장 1 DEPARTURE 1']]) {
+        sign('🛂 ' + nm, cx, H - 2, 4.6, .75, 'rgba(160,30,30,.92)');
+        for (const dx of [-4.5, 0, 4.5]) { bx(cx + dx - 1.2, 0, -1, 1.2, 1.1, 5, 0x4a5560); mesh(BOX(1.4, 1.3, 1.8), MAT.metal(0xb7bec3, .3), cx + dx - 1.2, 1.7, -1); for (const sx of [.3, 1.9]) mesh(BOX(.2, 2.3, .2), LMC(0xd7dde2), cx + dx + sx, 1.15, -2.5); mesh(BOX(1.8, .25, .3), LMC(0xd7dde2), cx + dx + 1.1, 2.4, -2.5); }
+        sign('🔍 보안검색 SECURITY CHECK', cx, 3.6, -1, .5);
+        for (const dx of [-5.5, 5.5]) { bx(cx + dx, 0, -8, 2.2, 1.4, 2.2, 0x2b3a4a); mesh(BOX(2.2, 1, .1), MAT.glass(), cx + dx, 1.9, -6.9); }
+        for (const dx of [-2, 2]) { mesh(BOX(.4, 1.1, 1.6), MAT.metal(0x9aa3ab), cx + dx, .55, -8); mesh(BOX(.5, .2, .5), glow(0x3fe07a, 1), cx + dx, 1.2, -8.6); }
+        sign('🛂 법무부 출국심사 · 자동출입국심사', cx, 3.9, -8, .5);
+      }
+      // ── 면세구역(에어사이드) ──
+      sign('🛍 면세구역 DUTY FREE', 0, H - 1.5, -12.6, .9, 'rgba(120,70,20,.92)');
+      const SHOP = [[-82, -22, '신라면세점 · 화장품 향수', 0xc89b3c], [-60, -22, '신세계면세점 · 패션', 0x2b2b2b], [-82, -38, '현대면세점 · 주류 담배', 0x6b2a2a], [-60, -38, '명품 부티크', 0x1d1d1d], [60, -22, '한국 기념품 · K-뷰티', 0xd84a6a], [82, -22, '전자제품 · 시계', 0x2c6fb7], [60, -38, '식품 · 김 · 홍삼', 0x8a5a2b], [82, -38, '장난감 · 캐릭터 숍', 0xf2a03d]];
+      for (const [x, z, t, c] of SHOP) { bx(x, 0, z, 16, 3.2, 10, 0xf4efe6); mesh(BOX(16.1, .7, 10.1), LMC(c), x, 3.55, z); mesh(BOX(12, .6, .1), glow(0xffe7a8, .7), x, 2.4, z + 5.06).castShadow = false; sign('🛍 ' + t, x, 4.9, z + 5.2, .48); }
+      bx(0, 0, -30, 22, .6, 14, 0x7fa86a); for (let k = 0; k < 6; k++) tree(-8 + (k % 3) * 8, -26 - Math.floor(k / 3) * 8, 1.1); sign('🌿 실내 정원', 0, 5, -22.6, .55, 'rgba(40,110,60,.92)');
+      bx(-26, 0, -42, 12, 3, 8, 0xe9dcc3); sign('🏯 한국전통문화센터', -26, 4.4, -37.8, .5); bx(26, 0, -42, 12, 3, 8, 0x13335a); sign('🛋 항공사 라운지', 26, 4.4, -37.8, .5);
+      for (const x of [-40, 40]) { bx(x, 0, -20, 6, 1, 3, 0xf4f4f2); sign(x < 0 ? '🍜 푸드코트' : '☕ 카페', x, 2.6, -20, .45); }
+      // ── 탑승구·탑승교·비행기(북쪽) ──
+      const GATES = [[-70, 250, 0x1f5fa8], [-25, 248, 0x2c6fb7], [25, 233, 0xc0392b], [70, 231, 0x4fa3d9]];
+      wallX(-56, [[-95, 6], ...GATES.map(([x]) => [x + 4.5, 3.4]), [95, 6]], 0x9fc3d8); for (const x of [-95, 95]) sign('🚪 직원 전용 출입문 (계류장)', x, 3.6, -55.4, .4);
+      for (let x = -90; x <= 90; x += 9) { if (GATES.some(([g]) => Math.abs(x - g) < 8)) continue; for (const z of [-48, -51]) { mesh(BOX(6, .45, 1), LMC(0x3a4a5a), x, .5, z); mesh(BOX(6, .7, .2), LMC(0x3a4a5a), x, .9, z - .45); } addCol(x, -49.5, 6, 4, null, { topY: .7 }); }
+      for (const [x, g, liv] of GATES) {
+        bx(x - 3, 0, -52, 3.2, 1.1, 1.4, 0xf4f4f2); mesh(BOX(3.4, .3, 1.6), LMC(0x13335a), x - 3, 1.25, -52); sign('🛫 탑승구 ' + g + ' GATE', x, 5.6, -55.4, .6);
+        // 탑승교: 걸어 들어갈 수 있는 통로(양옆 벽·지붕)
+        const bX = x + 4.5; for (const sx of [-1.8, 1.8]) bx(bX + sx, 0, -61, .3, 2.8, 10, 0xd9dde2); mesh(BOX(3.9, .3, 10), LMC(0xc9cdd2), bX, 2.95, -61).castShadow = false; sign('탑승교 BOARDING BRIDGE', bX, 3.8, -57, .35);
+        const p = bigPlane(liv); p.rotation.y = -Math.PI / 2; p.position.set(x, 0, -80); world.add(p); addCol(x, -80, 4.6, 28, null, { topY: 7, keep: true }); addCol(x, -80, 30, 3, null, { topY: 4, keep: true });
+        mesh(BOX(1.8, 2.2, .3), LMC(0x2b3a4a), bX - 1, 1.1, -66.2);
+      }
+      sign('✈ 계류장 APRON · 탑승을 기다리는 비행기', 0, 6, -70, .7);
+      for (let x = -95; x <= 95; x += 6) mesh(BOX(3, .02, .25), MAT.col(0xf2c500, .5), x, .03, -58.5);
+    } },
 ];
 const LANDMARK_START = LEVELS.length;
 LANDMARK_LIST.forEach((o, n) => LEVELS.push(LMDEF({ ...o, n })));
@@ -5226,6 +5296,7 @@ const CRIME = {
   '국제우편·특송센터': [['🌿', '합성 대마', 'Synthetic cannabis'], ['🔪', '불법 도검', 'Illegal blade'], ['📦', '국제 택배 밀수범', 'Parcel smuggler']],
   '국제 여객선': [['🚬', '밀수 담배', 'Smuggled cigarettes'], ['💊', '마약', 'Drugs'], ['🧳', '보따리 밀수상', 'Suitcase trader']],
   '인천항 국제여객터미널': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🧳', '보따리 밀수상', 'Suitcase trader']],
+  '인천공항 T2 출국장': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🧳', '출국 밀반출범', 'Outbound smuggler']],
   '부두 컨테이너 야적장': [['🎇', '불법 화약', 'Illegal gunpowder'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
   '보세창고 (보스전)': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
   '우체국': [['💵', '보이스피싱 현금', 'Phishing cash'], ['🌿', '마약 소포', 'Drug parcel'], ['📞', '보이스피싱 수거책', 'Phishing courier']],
@@ -5286,7 +5357,7 @@ const CROWD = {
   hiking: [.1, .1, .1, .1, .2, .5, 1, 1.3, 1.4, 1.3, 1.2, 1.1, 1, .9, .7, .5, .3, .2, .1, .1, .1, .1, .1, .1],
   works: [.7, .65, .6, .6, .65, .75, .9, 1, 1.05, 1.05, 1.05, 1, .95, 1, 1.05, 1.05, 1, .95, .9, .85, .8, .75, .75, .7],
 };
-const CROWD_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'works', '국제우편·특송센터': 'works', '국제 여객선': 'airport', '인천항 국제여객터미널': 'airport', '부두 컨테이너 야적장': 'works', '보세창고 (보스전)': 'works',
+const CROWD_OF = { '인천공항 T2 출국장': 'airport', '공항 입국장': 'airport', '공항 화물터미널': 'works', '국제우편·특송센터': 'works', '국제 여객선': 'airport', '인천항 국제여객터미널': 'airport', '부두 컨테이너 야적장': 'works', '보세창고 (보스전)': 'works',
   '우체국': 'office', '교도소': 'office', '서울역': 'commute', 'KTX': 'commute', '버스터미널': 'commute', '비행기': 'airport', '명동': 'nightlife', '경복궁': 'heritage', '홍대': 'nightlife', '롯데월드타워': 'view', '동대문': 'nightlife',
   '광안리 해변': 'beach', '숭례문': 'heritage', '수원화성': 'heritage', '경주': 'heritage', 'N서울타워': 'view', '해운대': 'beach', '제주 한라산': 'hiking', '포항 스페이스워크': 'view', '전주 한옥마을': 'heritage', '광화문광장': 'view', '청와대': 'office', '국회의사당': 'office', '감천문화마을': 'heritage', '대전 한빛탑': 'view' };
 const AGE_MIX = {
@@ -5461,7 +5532,7 @@ function skyDome(top, bot, ph) {
 }
 // ================= 실시간 날씨(Open-Meteo) + 해·달 위치(천문 계산) =================
 // 맵마다 실제 위치(위도, 경도, 지역명)
-const GEO = { '공항 입국장': [37.4602, 126.4407, '인천공항'], '공항 화물터미널': [37.4436, 126.4559, '인천공항 화물터미널'], '국제우편·특송센터': [37.4489, 126.4628, '인천 국제우편물류센터'], '국제 여객선': [37.3683, 126.6253, '인천항'], '인천항 국제여객터미널': [37.4241, 126.6055, '인천항 국제여객터미널'],
+const GEO = { '인천공항 T2 출국장': [37.4692, 126.4336, '인천공항 제2여객터미널'], '공항 입국장': [37.4602, 126.4407, '인천공항'], '공항 화물터미널': [37.4436, 126.4559, '인천공항 화물터미널'], '국제우편·특송센터': [37.4489, 126.4628, '인천 국제우편물류센터'], '국제 여객선': [37.3683, 126.6253, '인천항'], '인천항 국제여객터미널': [37.4241, 126.6055, '인천항 국제여객터미널'],
   '부두 컨테이너 야적장': [35.0767, 128.8167, '부산신항'], '보세창고 (보스전)': [35.1028, 129.0403, '부산항'], '우체국': [37.5617, 126.9822, '서울중앙우체국'], '교도소': [37.3935, 126.9862, '경기 의왕'], '서울역': [37.5547, 126.9707, '서울역'],
   'KTX': [36.3326, 127.4342, '대전 부근'], '버스터미널': [37.5049, 127.0049, '서울 서초'], '명동': [37.5636, 126.985, '서울 명동'], '경복궁': [37.5796, 126.977, '서울 종로'], '홍대': [37.5563, 126.9236, '서울 마포'],
   '롯데월드타워': [37.5126, 127.1026, '서울 잠실'], '동대문': [37.5665, 127.0092, '서울 동대문'], '광안리 해변': [35.1532, 129.1186, '부산 광안리'], '숭례문': [37.56, 126.9753, '서울 중구'], '수원화성': [37.2871, 127.0118, '수원'],
@@ -6040,14 +6111,20 @@ function showMaps(paused = false) {
   hideAll(); state = 'maps'; $('topbar').classList.add('hidden');
   const prog = getProg();
   $('mapsWho').textContent = t('who_fmt').replace('{nick}', dispName()).replace('{score}', runScore) + (runActive ? t('run_fmt').replace('{n}', runCleared.size) : '') + ' · 🗺 ' + LEVELS.filter((L, i) => prog.best[i] !== undefined).length + '/' + LEVELS.length;
-  const lmGate = LEVELS.map((L, i) => i).filter(i => LEVELS[i].gate), lmRest = LEVELS.map((L, i) => i).filter(i => LEVELS[i].landmark && !LEVELS[i].gate && !LEVELS[i].mega), megaI = LEVELS.findIndex(L => L.mega);
-  const order = [0, 1, 2, 3, 4, ...lmGate, 5, 6, ...lmRest, megaI];
-  $('mapGrid').innerHTML = order.map(i => [LEVELS[i], i]).map(([L, i], no) => {
-    const locked = hiddenVip ? false : L.mega ? !lmRest.every(k => prog.best[k] !== undefined) : L.hidden ? prog.best[5] === undefined : i === 5 ? ![0, 1, 2, 3, 4, ...lmGate].every(k => prog.best[k] !== undefined || runCleared.has(k)) : false, cleared = !L.hidden && prog.best[i] !== undefined, inRun = runActive && runCleared.has(i);
+  const isOp = i => LEVELS[i].gate || LEVELS[i].name === 'KTX';
+  const lmGate = LEVELS.map((L, i) => i).filter(i => LEVELS[i].gate), opX = LEVELS.map((L, i) => i).filter(i => isOp(i) && !LEVELS[i].gate), lmRest = LEVELS.map((L, i) => i).filter(i => LEVELS[i].landmark && !isOp(i) && !LEVELS[i].mega), megaI = LEVELS.findIndex(L => L.mega);
+  const ops = [0, 1, 2, 3, 4, ...lmGate, ...opX, 5, 6, megaI], order = [...ops, ...lmRest];
+  const megaNeed = order.filter(i => i !== megaI && !LEVELS[i].relax), SEC = { [ops[0]]: ['🛃 관세 작전', ops.length + '곳 · 마지막 🏙 통합 도시는 모든 맵을 클리어하면 열려요 (팀 방 전용)'], [lmRest[0]]: ['🏯 대한민국 명소', lmRest.length + '곳 · 자유롭게 순찰'] };
+  const card = ([L, i]) => {
+    const done = megaNeed.filter(k => prog.best[k] !== undefined).length;
+    const locked = hiddenVip ? false : L.mega ? !megaNeed.every(k => prog.best[k] !== undefined) : L.hidden ? prog.best[5] === undefined : i === 5 ? ![0, 1, 2, 3, 4, ...lmGate].every(k => prog.best[k] !== undefined || runCleared.has(k)) : false, cleared = !L.hidden && prog.best[i] !== undefined, inRun = runActive && runCleared.has(i);
     const cur = pausedGame && i === levelIdx;
-    const st = cur ? t('st_cur') : locked ? (L.mega ? '🔒 명소 순찰을 모두 마치면 열려요' : L.hidden ? t('st_lockH') : t('st_lockB')) : inRun ? t('st_run') : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
-    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared done' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${(L.hidden || L.mega) && locked ? "❓" : L.icon}</span><span class="no">${no + 1}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(Math.max(0, 5 - L.diff.stars))}</span></button>`;
-  }).join('');
+    const st = cur ? t('st_cur') : locked ? (L.mega ? `🔒 모든 맵 클리어 필요 (${done}/${megaNeed.length})` : L.hidden ? t('st_lockH') : t('st_lockB')) : inRun ? t('st_run') : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
+    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared done' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${(L.hidden || L.mega) && locked ? "❓" : L.icon}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(Math.max(0, 5 - L.diff.stars))}</span></button>`;
+  };
+  // 구역마다 줄을 꽉 채우는 카드 묶음
+  const grp = (h, ids, cls) => `<div class="mapsep">${h[0]} <small>${h[1]}</small></div><div class="mapflex ${cls}">${ids.map(i => card([LEVELS[i], i])).join('')}</div>`;
+  $('mapGrid').innerHTML = grp(SEC[ops[0]], ops, 'ops') + grp(SEC[lmRest[0]], lmRest, 'lm');
   renderBadges(); renderShop(); hubSubs();
   $('btnRestartMap').classList.toggle('hidden', !pausedGame); $('maps').classList.toggle('paused', pausedGame);
   if (playerId) lobbyJoin(); renderRooms(); $('btnResumeTop').classList.toggle('hidden', !pausedGame);
@@ -6196,7 +6273,7 @@ function dispName() { if (playerNick && !playerNick.includes('@')) return player
   const mb = $('pvModalBody'), mchk = $('pvModalChk'), mok = $('pvModalOk');
   const mEnd = () => mb.scrollTop + mb.clientHeight >= mb.scrollHeight - 6;
   const mReady = () => { mchk.disabled = false; $('pvModalHint').textContent = '✅ 다 읽었어요. 아래에 체크하고 [확인]을 눌러 주세요'; $('pvModalHint').style.color = '#2e7d32'; };
-  const openPv = () => { mb.innerHTML = body.innerHTML; mb.scrollTop = 0; mchk.checked = $('pread').checked; mchk.disabled = !mchk.checked; mok.disabled = !mchk.checked; mok.style.opacity = mchk.checked ? '' : '.45'; $('pvModalHint').textContent = '⬇ 안내를 끝까지 내려서 읽어 주세요'; $('pvModalHint').style.color = '#b5402a'; $('pvModal').classList.remove('hidden'); setTimeout(() => { if (mEnd()) mReady(); }, 300); };
+  const openPv = () => { mb.innerHTML = body.innerHTML; mb.scrollTop = 0; mchk.checked = $('pread').checked; mchk.disabled = !mchk.checked; mok.disabled = !mchk.checked; mok.style.opacity = mchk.checked ? '' : '.45'; $('pvModalHint').textContent = '📖 안내를 끝까지 읽어 주세요'; $('pvModalHint').style.color = '#b5402a'; $('pvModal').classList.remove('hidden'); setTimeout(() => { if (mEnd()) mReady(); }, 300); };
   window.__openPv = openPv;
   mb.addEventListener('scroll', () => { if (mEnd()) mReady(); });
   mchk.addEventListener('change', () => { mok.disabled = !mchk.checked; mok.style.opacity = mchk.checked ? '' : '.45'; });
