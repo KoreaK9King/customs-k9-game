@@ -276,8 +276,36 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 .mpsec{display:none}#mpanel[data-p="map"] .mpsec[data-p="map"],#mpanel[data-p="ctl"] .mpsec[data-p="ctl"],#mpanel[data-p="badges"] .mpsec[data-p="badges"],#mpanel[data-p="shop"] .mpsec[data-p="shop"],#mpanel[data-p="team"] .mpsec[data-p="team"]{display:block}
 #mpanel #badges h2,#mpanel #shop h2{display:none}
 #mpanel .mpsec[data-p]{display:none}#mpanel[data-p="char"] .mpsec[data-p="char"],#mpanel[data-p="pv"] .mpsec[data-p="pv"],#mpanel[data-p="lrank"] .mpsec[data-p="lrank"],#mpanel[data-p="info"] .mpsec[data-p="info"]{display:block}
-#mpanel #rankMini{max-height:none!important}#mpanel .notice[style*="13335a"]{display:block!important}
+#mpanel #rankMini{max-height:none!important}
+#skins{display:none!important} /* 피부색 선택은 쓰지 않는다 */#mpanel .notice[style*="13335a"]{display:block!important}
 @media (orientation:landscape) and (max-height:540px){#creds{display:grid;grid-template-columns:1fr 1fr;gap:10px}#creds label{margin-top:0!important;font-size:13px}#creds label small{display:none}#creds input{padding:6px 8px!important;font-size:14px!important}#login .card>.sub{display:none}#login .card>h1{font-size:19px!important;margin:0 0 4px!important}#login .card .row{margin-top:4px}#login #btnLogin{padding:6px 28px}}
+/* ===== 가로 휴대폰(아이폰 13 Pro Max 926x428 기준) 설명창 공통 ===== */
+@media (orientation:landscape) and (max-height:540px){
+ .overlay{padding:max(4px,var(--st)) max(8px,var(--sr)) max(4px,var(--sb)) max(8px,var(--sl))!important}
+ .overlay .card{max-height:100%!important;max-width:min(880px,100%)!important}
+ #mpanel .card{width:100%;padding:0 14px 4px!important}
+ #charBox{display:grid;grid-template-columns:1fr 1fr;column-gap:12px;align-items:end}
+ #charBox>*{grid-column:1/-1}
+ #charBox>:nth-child(1){grid-column:1;grid-row:1}#charBox>:nth-child(2){grid-column:1;grid-row:2}#charBox>:nth-child(3){grid-column:2;grid-row:1}#charBox>:nth-child(4){grid-column:2;grid-row:2}
+ #charBox label,#charBox>div:not([id]){margin-top:6px!important;font-size:13px}#charBox input{padding:6px 8px!important;font-size:14px!important}
+ #breeds{grid-template-columns:repeat(6,1fr)!important;gap:5px!important}.breed{padding:3px 2px!important;font-size:10.5px!important;gap:1px!important}.breed img{max-width:64px!important}.breed small{font-size:9px}
+ #jobs{grid-template-columns:repeat(4,1fr)!important;gap:5px!important}#jobs .breed span{font-size:20px!important}
+ .skin{width:26px;height:26px}#breedInfo,#jobInfo{margin-top:4px!important;padding:5px 8px!important}
+ .mphead{padding:5px 0 3px!important;margin-bottom:2px!important}.mphead b{font-size:15px!important}#mpClose{width:30px!important;height:30px!important;font-size:15px!important}
+ #mpanel .row .big{padding:6px 26px;font-size:16px}
+ #jobs .breed{flex-direction:row;justify-content:center;gap:6px!important;padding:4px!important}#jobs .breed span{font-size:18px!important}
+ #jobInfo small{display:none}
+ #breedInfo small{display:none}#breedInfo{font-size:11.5px!important;line-height:1.5!important}.breed img{max-width:44px!important}#charBox>div:not([id]){margin-top:3px!important}
+ #mpanel #mapGrid{grid-template-columns:repeat(11,1fr)!important;gap:4px!important;margin-top:4px!important}#mpanel .mapcard{padding:3px 2px!important;gap:0!important;border-width:2px!important}#mpanel .mapcard .no{display:none}#mpanel .mapcard .ic{font-size:16px!important;line-height:1.1}#mpanel .mapcard .nm{font-size:11px!important;line-height:1.15}#mpanel .mapcard .st{font-size:8.5px!important;line-height:1.2}#mpanel .mapcard .st:not(:last-child){display:none}#mpanel .mapsep{grid-column:1/-1;font-size:11px!important;margin:2px 0!important;padding:3px 8px!important}
+ #mpanel .mapcard.done::after{display:none}#mpanel .mapcard.done .nm::before{content:"✅";font-size:9px}#mpanel #mapsIntro{display:none}
+ #mpanel #rankMini{max-height:calc(100vh - 120px)!important;overflow:auto}
+ #dlg .card,#howto .card,#clear .card,#win .card,#pvModal .card{max-width:min(660px,78vw)!important}
+ #dlg .txt{font-size:14.5px!important;line-height:1.55}#dlg .card{padding:12px 18px!important}
+ #howto .card p{font-size:13.5px!important}#howto .ctl{font-size:12.5px!important}
+ #clear .card p,#clear .stats{font-size:14px!important}
+ #win #wgrade{font-size:40px!important;line-height:1!important}#win .rankwrap{max-height:28vh}#win .card h1{margin:0!important}
+ #mpanel .mpsec>.row:last-child{position:sticky;bottom:-10px;background:var(--card);margin:6px 0 0;padding:6px 0}
+}
 #loginTiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 4px}#loginTiles .hubtile{padding:8px 4px}#loginTiles .hubtile .hi{font-size:24px}#loginTiles .hubtile b{font-size:15px}
 .hubtile.need{border-color:#d9822b;background:#fff1dc;box-shadow:0 4px 0 #d9822b}.hubtile.need small{color:#b5402a;font-weight:700}
 @media (orientation:landscape) and (max-height:540px){#loginTiles{gap:6px;margin:6px 0 2px}#loginTiles .hubtile{padding:4px 2px}#loginTiles .hubtile .hi{font-size:18px}#loginTiles .hubtile b{font-size:12.5px}#loginTiles .hubtile small{font-size:9.5px}}
@@ -568,7 +596,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1343';
+const BUILD = '20261031-1349';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4723,7 +4751,7 @@ function showMaps(paused = false) {
     const locked = hiddenVip ? false : L.mega ? !lmRest.every(k => prog.best[k] !== undefined) : L.hidden ? prog.best[5] === undefined : i === 5 ? ![0, 1, 2, 3, 4, ...lmGate].every(k => prog.best[k] !== undefined || runCleared.has(k)) : false, cleared = !L.hidden && prog.best[i] !== undefined, inRun = runActive && runCleared.has(i);
     const cur = pausedGame && i === levelIdx;
     const st = cur ? t('st_cur') : locked ? (L.mega ? '🔒 명소 순찰을 모두 마치면 열려요' : L.hidden ? t('st_lockH') : t('st_lockB')) : inRun ? t('st_run') : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
-    return (L.mega ? '<div class="mapsep">🏙 최종 히든 · ★7 최고 난이도 · 5명 팀 전용</div>' : '') + (i === lmRest[0] ? `<div class="mapsep">${t('sep_lm').replace('{n}', lmRest.length)} <small>${t('sep_note')}</small></div>` : '') + `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared done' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${(L.hidden || L.mega) && locked ? "❓" : L.icon}</span><span class="no">${L.hidden || L.mega ? "HIDDEN" : L.gate ? t("lbl_gate") + " " + (lmGate.indexOf(i) + 1) : L.landmark ? t("lbl_lm") + " " + (lmRest.indexOf(i) + 1) : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(Math.max(0, 5 - L.diff.stars))}</span></button>`;
+    return (i === lmRest[0] ? `<div class="mapsep">${t('sep_lm').replace('{n}', lmRest.length)} <small>${t('sep_note')}</small></div>` : '') + `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared done' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${(L.hidden || L.mega) && locked ? "❓" : L.icon}</span><span class="no">${L.hidden || L.mega ? "HIDDEN" : L.gate ? t("lbl_gate") + " " + (lmGate.indexOf(i) + 1) : L.landmark ? t("lbl_lm") + " " + (lmRest.indexOf(i) + 1) : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(Math.max(0, 5 - L.diff.stars))}</span></button>`;
   }).join('');
   renderBadges(); renderShop(); hubSubs();
   $('pauseRow').classList.toggle('hidden', !pausedGame);
@@ -4787,7 +4815,7 @@ let pickJob = 'customs', pickSkin = 1;
 function renderJobs() {
   $('jobs').innerHTML = Object.entries(JOBS).map(([k, j]) => `<button type="button" class="breed ${k === pickJob ? 'on' : ''}" role="radio" aria-checked="${k === pickJob}" data-j="${k}"><span style="font-size:26px">${j.icon}</span>${t('j_' + k)}</button>`).join('');
   $('skins').innerHTML = `<span style="font-size:13px">${t('skin')}</span>` + SKIN_TONES.map((c, i) => `<button type="button" class="skin ${i === pickSkin ? 'on' : ''}" aria-label="피부색 ${i + 1}" data-s="${i}" style="background:#${new THREE.Color(c).getHexString()}"></button>`).join('');
-  $('jobInfo').innerHTML = `<b>${JOBS[pickJob].icon} ${t('j_' + pickJob)}</b> — ${t('jd_' + pickJob)}<br><small>${t('skin_note')}</small>`;
+  $('jobInfo').innerHTML = `<b>${JOBS[pickJob].icon} ${t('j_' + pickJob)}</b> — ${t('jd_' + pickJob)}`;
 }
 $('jobs').addEventListener('click', e => { const t = e.target.closest('[data-j]'); if (t) { pickJob = t.dataset.j; renderJobs(); } });
 $('skins').addEventListener('click', e => { const t = e.target.closest('[data-s]'); if (t) { pickSkin = +t.dataset.s; renderJobs(); } });
