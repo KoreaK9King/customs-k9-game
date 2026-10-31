@@ -119,8 +119,8 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 .mapcard .nm{font-family:Jua,sans-serif;font-size:16px}.mapcard .st{font-size:11.5px;color:#56708a}
 .mapcard.locked{opacity:.45;cursor:not-allowed}
 .mapcard{position:relative;overflow:hidden}
-.mapcard.done::after{content:"CLEAR";position:absolute;right:4px;top:4px;transform:rotate(-14deg);font-family:Jua,sans-serif;font-size:14px;letter-spacing:.06em;color:#d32f2f;border:3px solid #d32f2f;border-radius:50%;padding:7px 6px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 2px rgba(255,255,255,.6);opacity:.85;pointer-events:none}
-.mapcard.done .st::before{content:"🔁 다시 하기 · "}.mapcard.cleared{background:#e3f6e8}
+.mapcard.done::after{content:"CLEAR";position:absolute;right:3px;top:3px;transform:rotate(-12deg);font-family:Jua,sans-serif;font-size:10px;letter-spacing:.04em;color:#d32f2f;border:2px solid #d32f2f;border-radius:8px;padding:1px 4px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 2px rgba(255,255,255,.6);opacity:.85;pointer-events:none}
+.mapcard.done .st::before{content:""}.mapcard.cleared{background:#e3f6e8}
 #dlg .drow{display:flex;gap:16px;align-items:flex-start}
 #dlg .face{font-size:48px;line-height:1;background:#e3edf7;border-radius:16px;padding:8px}
 #dlg .who{font-weight:700;color:var(--navy);margin-bottom:4px}
@@ -234,6 +234,20 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 @media (orientation:landscape) and (max-height:540px){.ss-logo{max-height:40px}.ss-title{font-size:min(9vh,64px);margin:0}.ss-run{height:44px;margin-bottom:6px}.ss-dog{font-size:32px}.ss-bag{font-size:26px}#btnStart{font-size:24px;padding:8px 34px}.ss-note{margin-top:8px}}
 #loadingScreen{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#21578c 0%,#122f4d 60%,#0b1f33 100%);color:#fff;text-align:center;font-family:Jua,sans-serif;padding:16px;box-sizing:border-box}
 #loadingScreen.hidden{display:none}
+/* 맵 선택 허브: 타일을 누르면 창(#mpanel)으로 연다 */
+#hubTiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0}
+.hubtile{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px;border:3px solid #1b2b3c;border-radius:14px;background:#fff8e6;color:var(--ink);font-family:inherit;cursor:pointer;box-shadow:0 4px 0 #1b2b3c;transition:transform .08s}
+.hubtile:active{transform:translateY(3px);box-shadow:0 1px 0 #1b2b3c}
+.hubtile .hi{font-size:30px;line-height:1.1}.hubtile b{font-family:Jua,sans-serif;font-size:17px;color:var(--navy)}.hubtile small{font-size:11.5px;color:var(--muted);min-height:1.2em}
+.hubtile.main{grid-column:1/-1;flex-direction:row;justify-content:center;gap:10px;background:#ffd54f;padding:14px}.hubtile.main .hi{font-size:34px}.hubtile.main b{font-size:22px}
+#mpanel{z-index:22}#mpanel .card{max-width:760px;padding-top:0}
+.mphead{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;background:var(--card);padding:12px 0 8px;margin-bottom:4px;border-bottom:2px solid #e6dcc4}
+.mphead b{font-family:Jua,sans-serif;font-size:21px;color:var(--navy)}
+#mpClose{border:3px solid #1b2b3c;background:#fff;color:#1b2b3c;line-height:1;padding:0;border-radius:10px;width:40px;height:40px;font-size:18px;font-weight:900;cursor:pointer;flex:none}
+.mpsec{display:none}#mpanel[data-p="map"] .mpsec[data-p="map"],#mpanel[data-p="ctl"] .mpsec[data-p="ctl"],#mpanel[data-p="badges"] .mpsec[data-p="badges"],#mpanel[data-p="shop"] .mpsec[data-p="shop"],#mpanel[data-p="team"] .mpsec[data-p="team"]{display:block}
+#mpanel #badges h2,#mpanel #shop h2{display:none}
+@media (orientation:landscape) and (max-height:540px){#hubTiles{grid-template-columns:repeat(6,1fr);gap:6px;margin:6px 0}.hubtile{padding:6px 2px}.hubtile .hi{font-size:22px}.hubtile b{font-size:13px}.hubtile small{font-size:9.5px}.hubtile.main{grid-column:auto;flex-direction:column;gap:2px;padding:6px 2px}.hubtile.main .hi{font-size:22px}.hubtile.main b{font-size:13px}.mphead{padding:6px 0 4px}.mphead b{font-size:16px}#mpClose{width:34px;height:34px}}
+@media (max-width:560px){#hubTiles{grid-template-columns:repeat(3,1fr)}}
 /* 클리어·승리 화면 버튼은 카드가 넘쳐도 항상 아래에 보이게 */
 #win .card>.row:last-child,#clear .card>.row:last-child{position:sticky;bottom:0;background:var(--card);padding:6px 0 2px;z-index:1}
 .ld-ic{font-size:56px;animation:ssBob 1s ease-in-out infinite}.ld-t{font-size:min(6vw,30px);margin:6px 0 12px}
@@ -399,8 +413,22 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
  <div class="sub" id="mapsWho">플레이어</div>
  <button class="big hidden" id="btnResumeTop" style="margin:8px 0;width:100%">▶ 게임으로 돌아가기</button>
  <h1>순찰할 관문을 고르세요</h1>
- <p style="margin:4px 0 0;font-size:14px">맵 1~5와 추가 관문 1~4, 모두 9곳을 원하는 순서대로 클리어하세요! 9곳을 모두 깨면 👑 보스전(맵 6)이 열리고, 보스전을 클리어하면 🌅 히든맵이 열려요. 점수는 한 작전 동안 누적돼요.</p>
- <div id="mapGrid"></div>
+ <div class="row" id="pauseRow"><button class="big" id="btnResume">▶ 게임으로 돌아가기</button><button class="big alt" id="btnRestartMap">🔄 이 맵 다시 시작</button></div>
+ <div id="hubTiles">
+  <button class="hubtile main" data-p="map"><span class="hi">🗺</span><b>맵 선택</b><small id="hubMapSub">관문을 골라 출동!</small></button>
+  <button class="hubtile" data-p="shop"><span class="hi">🪙</span><b>업그레이드</b><small id="hubShopSub"></small></button>
+  <button class="hubtile" data-p="badges"><span class="hi">🏅</span><b>배지</b><small id="hubBadgeSub"></small></button>
+  <button class="hubtile" data-p="team"><span class="hi">👥</span><b>팀 방</b><small id="hubTeamSub">최대 5명</small></button>
+  <button class="hubtile" data-p="ctl"><span class="hi">🎮</span><b>조작법</b><small>키·버튼 안내</small></button>
+  <button class="hubtile" id="btnRankOpen"><span class="hi">🏆</span><b>랭킹</b><small>전체 순위</small></button>
+ </div>
+ <div class="row hidden"><button class="big alt" id="btnMode">👤 1인 모드 (눌러서 2인 협동 모드로)</button></div>
+ <div class="row"><button class="big alt" id="btnHomeStart">🏠 홈</button><button class="big alt" id="btnLogout">아이디 변경</button></div>
+</div></div>
+<div id="mpanel" class="overlay hidden"><div class="card">
+ <div class="mphead"><b id="mpTitle"></b><button id="mpClose" aria-label="닫기">✕</button></div>
+ <div class="mpsec" data-p="map"><p id="mapsIntro" style="margin:0;font-size:14px">맵 1~5와 추가 관문 1~4, 모두 9곳을 원하는 순서대로 클리어하세요! 9곳을 모두 깨면 👑 보스전(맵 6)이 열리고, 보스전을 클리어하면 🌅 히든맵이 열려요. 점수는 한 작전 동안 누적돼요.</p><div id="mapGrid"></div></div>
+ <div class="mpsec" data-p="ctl">
  <div class="ctl">
   <kbd>W A S D</kbd><span>이동 (가방·상자에 부딪히면 밀려나요)</span>
   <kbd>Shift</kbd><span>달리기</span>
@@ -414,14 +442,15 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
   <kbd>점프</kbd><span>상자 위로 뛰어오르기</span><kbd>킁킁</kbd><span>꾹 눌러 냄새 맡기</span>
   <kbd>멍!</kbd><span>짖어서 적발 / 밀수범 멈추기</span><kbd>화면 드래그</kbd><span>카메라 회전</span>
  </div>
- <div id="badges"></div>
- <div id="shop"></div>
- <div class="row" id="pauseRow"><button class="big" id="btnResume">▶ 게임으로 돌아가기</button><button class="big alt" id="btnRestartMap">🔄 이 맵 다시 시작</button></div>
- <div class="row hidden"><button class="big alt" id="btnMode">👤 1인 모드 (눌러서 2인 협동 모드로)</button></div>
- <div class="row" id="teamRow" style="flex-wrap:wrap;gap:6px;align-items:center"><b style="color:var(--navy)">👥 팀 방</b><span style="font-size:13px;color:var(--muted)">(최대 5명)</span><input type="hidden" id="teamSize" value="5"><button class="alt" id="btnTeamNew" style="font-size:14px;padding:8px 12px;border-radius:10px">방 만들기</button><input id="teamCode" dir="ltr" placeholder="방 번호 (예: 1234)" maxlength="6" style="width:150px;font-size:15px;padding:7px;border-radius:8px;border:2px solid #d6cdb8"><button class="alt" id="btnTeamJoin" style="font-size:14px;padding:8px 12px;border-radius:10px">접속</button><button class="alt hidden" id="btnTeamOut" style="font-size:14px;padding:8px 12px;border-radius:10px">나가기</button></div>
- <div class="sub" id="teamInfo" style="text-align:center;min-height:1em"></div>
- <div id="teamList" style="display:flex;flex-direction:column;gap:6px;margin:6px 0"></div>
- <div class="row"><button class="big alt" id="btnHomeStart">🏠 홈</button><button class="big alt" id="btnRankOpen">🏆 랭킹 보기</button><button class="big alt" id="btnLogout">아이디 변경</button></div>
+ </div>
+ <div class="mpsec" data-p="badges"><div id="badges"></div></div>
+ <div class="mpsec" data-p="shop"><div id="shop"></div></div>
+ <div class="mpsec" data-p="team">
+  <div class="row" id="teamRow" style="flex-wrap:wrap;gap:6px;align-items:center;justify-content:center"><input type="hidden" id="teamSize" value="5"><button class="alt" id="btnTeamNew" style="font-size:14px;padding:8px 12px;border-radius:10px">방 만들기</button><input id="teamCode" dir="ltr" placeholder="방 번호 (예: 1234)" maxlength="6" style="width:150px;font-size:15px;padding:7px;border-radius:8px;border:2px solid #d6cdb8"><button class="alt" id="btnTeamJoin" style="font-size:14px;padding:8px 12px;border-radius:10px">접속</button><button class="alt hidden" id="btnTeamOut" style="font-size:14px;padding:8px 12px;border-radius:10px">나가기</button></div>
+  <p style="font-size:13px;margin:6px 0 0;text-align:center;color:var(--muted)">방을 만들어 번호를 친구에게 알려 주거나, 친구의 방 번호로 접속하세요. (최대 5명)</p>
+  <div class="sub" id="teamInfo" style="text-align:center;min-height:1em"></div>
+  <div id="teamList" style="display:flex;flex-direction:column;gap:6px;margin:6px 0"></div>
+ </div>
 </div></div>
 
 <div id="howto" class="overlay hidden"><div class="card">
@@ -498,7 +527,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1324';
+const BUILD = '20261031-1330';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -3776,12 +3805,13 @@ async function lobbyJoin() {
 }
 function lobbyTrack() { if (!lobby || !lobby.on) return; if (!lobby.ch) return; try { team ? lobby.ch.track({ code: team.code, size: team.size, h: !!team.host, nick: dispName().slice(0, 12), map: team.picked ?? null, t: team.t || (team.t = Date.now()) }) : lobby.ch.track({ viewer: 1, t: Date.now() }); } catch { } }
 function renderRooms() {
+  try { hubSubs(); } catch { }
   const el = $('teamList'); if (!el) return;
   const list = lobbyRooms.filter(r => !team || r.code !== team.code), mine = team && (lobbyRooms.find(r => r.code === team.code) || { n: 1, size: team.size, map: null });
   const mineHtml = mine ? '<div style="background:#fff1bf;border:2px solid #e0a800;border-radius:10px;padding:7px 10px;font-size:14px;color:var(--ink);display:flex;justify-content:space-between"><span>' + (team.host ? '⭐ 내가 만든 방 ' : '👥 참가 중인 방 ') + '<b>' + team.code + '</b> · ' + (LEVELS[mine.hmap ?? mine.map] ? LEVELS[mine.hmap ?? mine.map].icon + ' ' + t('m' + (mine.hmap ?? mine.map)) : (team.host ? '맵을 고르면 친구들도 같은 맵으로 접속돼요' : '방장이 맵을 고르는 중 · 잠시 기다려 주세요')) + '<br><small>참가자: ' + ((mine.nicks && mine.nicks.length) ? mine.nicks.join(', ') : dispName()) + '</small>' + '</span><span>' + mine.n + '/' + team.size + '명 ' + (mine.n < 2 ? '· 친구 기다리는 중' : '') + (team.host ? '<br><button class="big" id="btnTeamGo" style="font-size:15px;padding:6px 14px;margin:4px 0">▶ 팀 게임 시작 (맵 고르기)</button>' : (!mine.hostFixed ? '<br><b style="color:#b5402a">⚠ 방장이 없어요</b> <button class="big" id="btnBeHost" style="font-size:14px;padding:5px 12px;margin:4px 0">▶ 팀 게임 시작 (내가 방장)</button>' : '')) + (team.host ? ' <button class="alt" id="btnRoomDel" style="font-size:12px;padding:3px 8px;border-radius:8px;margin-left:6px">🗑 방 삭제</button>' : ' <button class="alt" id="btnRoomLeave" style="font-size:12px;padding:3px 8px;border-radius:8px;margin-left:6px">🚪 나가기</button>') + '</span></div>' : '';
   el.innerHTML = mineHtml + (!list.length ? '<div class="sub" style="text-align:center;opacity:.75">' + (team ? '다른 열린 방은 없어요' : '지금 열린 팀 방이 없어요 · 그냥 맵을 고르면 혼자 플레이해요') + '</div>' : '<div style="font-weight:800;color:var(--navy)">📋 열린 팀 방 (눌러서 접속)</div>' + list.map(r => { const full = r.n >= r.size, L = LEVELS[r.map]; return '<button class="alt roomBtn" data-c="' + r.code + '" data-s="' + r.size + '" data-m="' + (r.hmap ?? r.map ?? '') + '" ' + (full ? 'disabled' : '') + ' style="font-size:14px;padding:8px 10px;border-radius:10px;text-align:left;display:flex;justify-content:space-between;gap:8px' + (full ? ';opacity:.5' : '') + '"><span>👥 <b>' + r.code + '</b> · ' + String(r.host).replace(/[<>&"]/g, '') + ' 님의 방 · ' + (LEVELS[r.hmap ?? r.map] ? LEVELS[r.hmap ?? r.map].icon + ' ' + t('m' + (r.hmap ?? r.map)) : '맵 고르는 중') + '</span><span>' + r.n + '/' + r.size + (full ? ' 꽉 참' : ' 접속 ▶') + '</span></button>'; }).join(''));
 }
-$('teamList').addEventListener('click', e => { if (e.target.closest('#btnTeamGo')) { $('mapGrid').scrollIntoView({ behavior: 'smooth', block: 'start' }); toast('👆 맵을 누르면 팀원 모두 그 맵으로 함께 들어가요!'); return; } if (e.target.closest('#btnBeHost')) { becomeHost(); renderRooms(); $('mapGrid').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; } if (e.target.closest('#btnRoomLeave')) { const code = team && team.code; $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); renderRooms(); toast('🚪 방 ' + code + ' 에서 나왔어요. 혼자 플레이로 바뀌었어요'); return; } if (e.target.closest('#btnRoomDel')) { if (!team || !team.host) return; if (!confirm('방 ' + team.code + ' 을(를) 삭제할까요? 들어와 있는 친구들도 모두 나가게 돼요.')) return; const code = team.code; try { lobby && lobby.ch && lobby.ch.send({ type: 'broadcast', event: 'closeRoom', payload: { code } }); } catch { } $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); lobbyRooms = lobbyRooms.filter(r => r.code !== code); renderRooms(); toast('🗑 방 ' + code + ' 을(를) 삭제했어요'); return; } const b = e.target.closest('.roomBtn'); if (!b || b.disabled) return; if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } $('teamCode').value = b.dataset.c + '-' + b.dataset.s; teamSet(b.dataset.c, +b.dataset.s); toast('👥 방 ' + b.dataset.c + ' 에 접속했어요!' + (b.dataset.m === '' ? ' 방장이 맵을 고르면 자동으로 들어가요' : '')); if (b.dataset.m !== '' && LEVELS[+b.dataset.m] && !$('mapGrid').querySelector('.mapcard[data-i="' + b.dataset.m + '"]')?.disabled) startLevel(+b.dataset.m); });
+$('teamList').addEventListener('click', e => { if (e.target.closest('#btnTeamGo')) { openPanel('map'); toast('👆 맵을 누르면 팀원 모두 그 맵으로 함께 들어가요!'); return; } if (e.target.closest('#btnBeHost')) { becomeHost(); renderRooms(); openPanel('map'); return; } if (e.target.closest('#btnRoomLeave')) { const code = team && team.code; $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); renderRooms(); toast('🚪 방 ' + code + ' 에서 나왔어요. 혼자 플레이로 바뀌었어요'); return; } if (e.target.closest('#btnRoomDel')) { if (!team || !team.host) return; if (!confirm('방 ' + team.code + ' 을(를) 삭제할까요? 들어와 있는 친구들도 모두 나가게 돼요.')) return; const code = team.code; try { lobby && lobby.ch && lobby.ch.send({ type: 'broadcast', event: 'closeRoom', payload: { code } }); } catch { } $('teamCode').value = ''; teamSet(null); if (mp) mpLeave(); lobbyRooms = lobbyRooms.filter(r => r.code !== code); renderRooms(); toast('🗑 방 ' + code + ' 을(를) 삭제했어요'); return; } const b = e.target.closest('.roomBtn'); if (!b || b.disabled) return; if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } $('teamCode').value = b.dataset.c + '-' + b.dataset.s; teamSet(b.dataset.c, +b.dataset.s); toast('👥 방 ' + b.dataset.c + ' 에 접속했어요!' + (b.dataset.m === '' ? ' 방장이 맵을 고르면 자동으로 들어가요' : '')); if (b.dataset.m !== '' && LEVELS[+b.dataset.m] && !$('mapGrid').querySelector('.mapcard[data-i="' + b.dataset.m + '"]')?.disabled) startLevel(+b.dataset.m); });
 function mpStat(k) { if (mp && team && mp.ch) try { mp.ch.send({ type: 'broadcast', event: 'stat', payload: { k, room: mp.room } }); } catch { } }
 function mpGotStat(p) {
   if (!level || !mp || !team || p.room !== mp.room || !(p.k in level.need)) return;
@@ -4012,7 +4042,7 @@ function renderShop() {
 $('shop').addEventListener('click', e => {
   const b = e.target.closest('.shopbtn'); if (!b || b.disabled) return;
   const U = UPG.find(x => x[0] === b.dataset.k); if (!U) return; const lv = wallet.up[U[0]] || 0, c = U[4][lv]; if (lv >= U[3] || wallet.coins < c) return;
-  wallet.coins -= c; wallet.up[U[0]] = lv + 1; store.set(walletKey(), wallet); try { cloudSave(); } catch { } SFX.found(); toast(U[1] + ' Lv' + (lv + 1) + ' 업그레이드!'); renderShop();
+  wallet.coins -= c; wallet.up[U[0]] = lv + 1; store.set(walletKey(), wallet); try { cloudSave(); } catch { } SFX.found(); toast(U[1] + ' Lv' + (lv + 1) + ' 업그레이드!'); renderShop(); hubSubs();
 });
 // 사진 모드
 let photoPose = 4.1, photoDir = 0;
@@ -4497,7 +4527,7 @@ function startLevel(i) {
     }, 80); }, 30);
     return;
   }
-  if (LEVELS[i].mega && !hiddenVip && !(team && team.size >= 5)) { toast('🏙 통합 도시는 5명 팀 방에서만 도전할 수 있어요! 맵 선택 화면에서 5명 방을 만들거나 참가하세요'); showMaps(); return; }
+  if (LEVELS[i].mega && !hiddenVip && !(team && team.size >= 5)) { toast('🏙 통합 도시는 5명 팀 방에서만 도전할 수 있어요! 팀 방에서 5명 방을 만들거나 참가하세요'); showMaps(); openPanel('team'); return; }
   if (LEVELS[i].landmark) { /* 명소 순찰: 작전 점수와 따로 */ }
   else if (!runActive || runCleared.has(i) || LEVELS[i].relax) { runScore = 0; runTime = 0; runStage = 0; runCleared = new Set(); totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = LEVELS[i].relax ? null : startServerRun(i); dog.hp = 3 + (wallet.up.heart || 0); }
   if (!LEVELS[i].landmark) runActive = !LEVELS[i].relax;
@@ -4507,7 +4537,7 @@ function startLevel(i) {
   const intro = () => showDialog(lang !== 'ko' ? LEVELS[i].relax ? t('intro_hidden').replace('{dog}', dogName) : t('intro').replace('{map}', mapName(i)).replace('{dog}', dogName) : scaleNums(LEVELS[i].intro) + (level.scaled && levelIdx < 6 ? '\n\n🗺 이번 맵은 A~D 구역까지 넓어졌어. 미니맵을 보며 구석구석 수색해!' : ''), null, LEVELS[i].who);
   playIntro(() => { if (!seenHowto) showHowto(intro); else intro(); });
 }
-function hideAll() { for (const id of ['login', 'maps', 'dlg', 'clear', 'rank', 'win', 'howto']) $(id).classList.add('hidden'); }
+function hideAll() { for (const id of ['login', 'maps', 'mpanel', 'dlg', 'clear', 'rank', 'win', 'howto']) $(id).classList.add('hidden'); }
 
 let dlgCb = null;
 function showDialog(text, cb, who) {
@@ -4654,7 +4684,7 @@ function showMaps(paused = false) {
     const st = cur ? t('st_cur') : locked ? (L.mega ? '🔒 명소 순찰을 모두 마치면 열려요' : L.hidden ? t('st_lockH') : t('st_lockB')) : inRun ? t('st_run') : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
     return (L.mega ? '<div class="mapsep">🏙 최종 히든 · ★7 최고 난이도 · 5명 팀 전용</div>' : '') + (i === lmRest[0] ? `<div class="mapsep">${t('sep_lm').replace('{n}', lmRest.length)} <small>${t('sep_note')}</small></div>` : '') + `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared done' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${(L.hidden || L.mega) && locked ? "❓" : L.icon}</span><span class="no">${L.hidden || L.mega ? "HIDDEN" : L.gate ? t("lbl_gate") + " " + (lmGate.indexOf(i) + 1) : L.landmark ? t("lbl_lm") + " " + (lmRest.indexOf(i) + 1) : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(Math.max(0, 5 - L.diff.stars))}</span></button>`;
   }).join('');
-  renderBadges(); renderShop();
+  renderBadges(); renderShop(); hubSubs();
   $('pauseRow').classList.toggle('hidden', !pausedGame);
   if (playerId) lobbyJoin(); renderRooms(); $('btnResumeTop').classList.toggle('hidden', !pausedGame);
   $('maps').classList.remove('hidden');
@@ -4668,6 +4698,21 @@ function restartLevel() {
   loadLevel(levelIdx); levelTime = carry; state = 'play'; $('topbar').classList.remove('hidden');
   toast('🔄 맵을 다시 시작했어요 (흐른 시간은 이어져요)');
 }
+// 허브 타일 → 창 열기
+const PANEL_T = { map: '🗺 맵 선택', shop: '🪙 업그레이드', badges: '🏅 배지', team: '👥 팀 방', ctl: '🎮 조작법' };
+function hubSubs() {
+  $('hubShopSub').textContent = '보유 ' + wallet.coins + ' 코인';
+  $('hubBadgeSub').textContent = ach.earned.length + ' / ' + BADGES.length + ' 획득';
+  $('hubMapSub').textContent = runActive ? '작전 중 · ' + runCleared.size + '곳 클리어' : '관문을 골라 출동!';
+  $('hubTeamSub').textContent = team ? '방 ' + team.code + ' 접속 중' : '최대 5명';
+  const p = $('mpanel').dataset.p; if (p) $('mpTitle').textContent = PANEL_T[p] + (p === 'shop' ? ' · 보유 ' + wallet.coins + ' 코인' : p === 'badges' ? ' · ' + ach.earned.length + '/' + BADGES.length : '');
+}
+function openPanel(p) { const m = $('mpanel'); m.dataset.p = p; hubSubs(); m.classList.remove('hidden'); m.querySelector('.card').scrollTop = 0; }
+function closePanel() { $('mpanel').classList.add('hidden'); if (state === 'maps') hubSubs(); }
+$('hubTiles').addEventListener('click', e => { const b = e.target.closest('.hubtile[data-p]'); if (b) openPanel(b.dataset.p); });
+$('mpClose').onclick = closePanel;
+$('mpanel').addEventListener('click', e => { if (e.target === $('mpanel')) closePanel(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && !$('mpanel').classList.contains('hidden')) closePanel(); });
 $('btnResume').onclick = resumeGame; $('btnResumeTop').onclick = resumeGame;
 $('btnRestartMap').onclick = restartLevel;
 $('tbHelp').onclick = () => { if (state === 'play') showHowto(null); };
@@ -4754,7 +4799,6 @@ function dispName() { if (playerNick && !playerNick.includes('@')) return player
   if (pref('quest') === 'open') $('quest').classList.remove('mini'); if (pref('mm') === 'open') $('mmwrap').classList.remove('mini');
   $('quest').addEventListener('click', () => { const m = $('quest').classList.toggle('mini'); save('quest', m ? 'mini' : 'open'); });
   $('mmwrap').addEventListener('click', e => { if (e.target.closest('#info')) return; const m = $('mmwrap').classList.toggle('mini'); save('mm', m ? 'mini' : 'open'); }); }
-if (isMobile) { for (const id of ['badges', 'shop']) { $(id).classList.add('fold'); $(id).addEventListener('click', e => { if (e.target.closest('h2')) $(id).classList.toggle('fold'); }); } }
 // 개인정보 안내를 끝까지 읽어야 [필수] 동의에 체크할 수 있다 (이미 동의해 저장된 경우는 그대로)
 { const det = $('pvMore').closest('details'), body = $('pvBody'), boxes = [$('pread'), $('pcons'), $('age14')];
   body.style.maxHeight = '180px'; body.style.overflowY = 'auto'; body.style.paddingRight = '4px';
@@ -5768,7 +5812,7 @@ const I18N_EL = [
   [() => $('breeds').previousElementSibling, 'ls_breed'], [() => $('jobs').previousElementSibling, 'ls_hand'], [() => $('btnLogin'), 'ls_login'], [() => $('topTxt'), 'ls_top'],
   [() => { const n = $('login').querySelectorAll('.notice'); return n[n.length - 2]; }, 'ls_ad'], [() => { const n = $('login').querySelectorAll('.notice'); return n[n.length - 1]; }, 'ls_note'],
   [() => $('agreeTxt'), 'agree'], [() => $('ageTxt'), 'age'],
-  [() => $('maps').querySelector('h1'), 'mp_h1'], [() => $('maps').querySelector('p'), 'mp_p'], [() => $('btnRankOpen'), 'b_rank'], [() => $('btnLogout'), 'b_logout'], [() => $('btnResume'), 'b_resume'], [() => $('btnRestartMap'), 'b_restart'],
+  [() => $('maps').querySelector('h1'), 'mp_h1'], [() => $('mapsIntro'), 'mp_p'], [() => $('btnRankOpen'), 'b_rank'], [() => $('btnLogout'), 'b_logout'], [() => $('btnResume'), 'b_resume'], [() => $('btnRestartMap'), 'b_restart'],
   [() => $('howto').querySelector('.sub'), 'ht_sub'], [() => $('howto').querySelector('h1'), 'ht_h1'], [() => $('howto').querySelectorAll('p')[0], 'ht_p'], [() => $('howto').querySelectorAll('p')[1], 'ht_rules'], [() => $('btnHowtoOk'), 'ht_ok'],
   [() => $('btnNext'), 'cl_next'], [() => $('btnToMaps'), 'cl_maps'], [() => $('rank').querySelector('.sub'), 'rk_sub'], [() => $('rank').querySelector('h1'), 'rk_h1'], [() => $('btnRankClose'), 'rk_close'],
   [() => $('win').querySelector('.sub'), 'wn_sub'], [() => $('win').querySelector('h1'), 'wn_h1'], [() => $('btnHidden'), 'wn_hidden'], [() => $('btnWinMaps'), 'wn_maps'],
