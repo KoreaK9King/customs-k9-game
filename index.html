@@ -90,6 +90,12 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 #toast.show{opacity:1}
 #tut{position:fixed;z-index:30;top:calc(150px + var(--st));left:50%;transform:translateX(-50%);width:min(440px,calc(100vw - 32px));background:rgba(19,51,90,.94);border:2px solid #f4c542;border-radius:16px;padding:10px 14px 12px;color:#fff;font-family:Jua,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35);pointer-events:auto}
 #tut.hidden{display:none}
+html body #mmwrap.big{position:fixed!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translate(-50%,-50%)!important;z-index:40!important;padding:6px!important;max-width:none!important;background:rgba(12,28,44,.94)!important;border:2px solid #f4c542!important}
+html body #mmwrap.big #mm{display:block!important;width:min(92vw,calc(84vh * 340 / 248))!important;height:auto!important}
+html body #mmwrap.big #info,html body #mmwrap.big #mmToggle{display:none!important}
+#mmFold{display:none}html body #mmwrap.big #mmFold{display:block;position:absolute;top:10px;right:10px;z-index:2;border:0;border-radius:10px;background:#f4c542;color:#13335a;font-family:Jua,sans-serif;font-size:15px;padding:5px 12px}
+#buffs{position:fixed;z-index:6;top:calc(50px + var(--st));left:calc(8px + var(--sl));display:flex;flex-wrap:wrap;gap:3px;max-width:200px;pointer-events:none;font-family:Jua,sans-serif}
+#buffs span{background:rgba(19,51,90,.85);border:1.5px solid #f4c542;border-radius:10px;padding:1px 6px;font-size:13px;color:#fff}
 #tutStep{font-size:13px;color:#f4c542}
 #tutTxt{font-size:19px;line-height:1.35;margin:2px 0 8px;white-space:pre-line}
 #tutBar{height:6px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden}#tutBar i{display:block;height:100%;width:0;background:#f4c542;transition:width .2s}
@@ -464,8 +470,8 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 <div id="game"></div>
 
 <div id="quest" class="hud mini"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><div id="qsum"></div><p id="qdesc"></p><div id="qgoals"></div></div>
-<div id="mmwrap" class="hud mini"><button id="mmToggle" type="button">🗺 지도 보기</button><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
-<div id="wx" class="hud hidden"></div><div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><div id="bagBox"><button id="bagBtn" title="아이템 가방 (B)" aria-label="아이템 가방">🎒<span id="bagN">0</span></button><div id="bagPanel"><div class="bagHead">🎒 아이템 가방 <small>눌러서 사용 · B 키</small></div><div id="bagList"></div></div></div><div id="autoBox"><button id="tbAutoMenu" title="자동 사냥 (누르면 3가지)" aria-label="자동 사냥">🤖</button><div id="autoList"><button id="tbAuto" title="자동 플레이 (P)">🤖 자동 플레이</button><button id="tbCoin" title="코인 자동 사냥 (C)">💰 코인 사냥</button><button id="tbItem" title="아이템 자동 사냥 (I)">🎁 아이템 사냥</button></div></div><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
+<div id="mmwrap" class="hud mini"><button id="mmToggle" type="button">🗺 지도 보기</button><button id="mmFold" type="button">✕ 접기</button><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
+<div id="wx" class="hud hidden"></div><div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><div id="bagBox"><button id="bagBtn" title="아이템 가방 (B)" aria-label="아이템 가방">🎒<span id="bagN">0</span></button><div id="bagPanel"><div class="bagHead">🎒 아이템 가방 <small>눌러서 사용 · B 키</small></div><div id="bagList"></div></div></div><div id="autoBox"><button id="tbAutoMenu" title="자동 사냥 (누르면 3가지)" aria-label="자동 사냥">🤖</button><div id="autoList"><button id="tbAuto" title="자동 플레이 (P)">🤖 자동 플레이</button><button id="tbCoin" title="코인 자동 사냥 (C)">💰 코인 사냥</button><button id="tbItem" title="아이템 자동 사냥 (I)">🎁 아이템 사냥</button></div></div><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbLow" title="저사양 모드 (버벅일 때)" aria-label="저사양 모드">🐢</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div><div id="annBanner"></div>
 <div id="mission" class="hud hidden"></div>
@@ -623,7 +629,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 </div></div>
 
 <div id="intel" class="overlay hidden"><div class="ibox"><div class="isrc" id="intelSrc"></div><h2>🚨 마약·총기 첩보가 접수되었습니다!!</h2><p id="intelTxt"></p><div class="imotto" id="intelMotto"></div><button id="intelOk">🫡 확인! 다시 수색 시작</button></div></div>
-<div id="tut" class="hidden"><div id="tutStep"></div><div id="tutTxt"></div><div id="tutBar"><i></i></div><button id="tutSkip">건너뛰기</button></div>
+<div id="buffs"></div><div id="tut" class="hidden"><div id="tutStep"></div><div id="tutTxt"></div><div id="tutBar"><i></i></div><button id="tutSkip">건너뛰기</button></div>
 <div id="howto" class="overlay hidden"><div class="card">
  <div class="sub">출동 전 브리핑</div>
  <h1>🐕‍🦺 조작법 익히기</h1>
@@ -695,7 +701,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2333';
+const BUILD = '20261031-2356';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1003,9 +1009,11 @@ const mapName = i => t('m' + i);
 
 // ================= 렌더러 =================
 const isMobile = matchMedia('(pointer: coarse)').matches;
+let lowGfx = store.get('k9low', false) === true;
+const gfxPR = (mega = false) => lowGfx ? (isMobile ? .7 : 1) : Math.min(devicePixelRatio, isMobile ? 1 : (mega ? 1.25 : 2));
 if (isMobile) document.body.classList.add('touch');
 const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1 : 2));
+renderer.setPixelRatio(gfxPR());
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = !isMobile;
 renderer.shadowMap.type = isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
@@ -1718,6 +1726,7 @@ function arrivalsCurb(L) {
 function annBanner(txt) { const b = $('annBanner'); b.textContent = trK(txt); b.classList.add('show'); clearTimeout(annBanner.t); annBanner.t = setTimeout(() => b.classList.remove('show'), 6500); }
 function paxQueue(sx, sz, dx, dz, gap, cap, face, tSrv, onFront) { return { sx, sz, dx, dz, gap, cap, face, tSrv, onFront, list: [], slot(i) { return [sx + dx * gap * i, sz + dz * gap * i]; } }; }
 function paxSystem(cap) {
+  if (lowGfx) cap = Math.round(cap * .55);
   const all = []; let bub = 0;
   const S = { all, cap, get n() { return all.length; } };
   S.say = (p, txt) => { if (!txt || Math.hypot(p.x - dog.x, p.z - dog.z) > 24) return; if (p.bub) { disposeSprite(p.bub); bub--; p.bub = null; } if (bub >= 7) return; p.bub = textSprite(trK(txt), { h: .28, bg: 'rgba(255,255,255,.96)', color: '#1b2b3c' }); p.bub.position.y = 2.75; p.P.g.add(p.bub); p.bubT = 2.8; bub++; };
@@ -6540,7 +6549,7 @@ function loadLevel(i) {
   const spawn = { x: 0, z: def.d / 2 - 6 };
   level.spawn = spawn;
   camDist = CAM0.dist; pitch = CAM0.pitch;
-  renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1 : (def.mega ? 1.25 : 2)));
+  renderer.setPixelRatio(gfxPR(def.mega)); sun.castShadow = !lowGfx;
   level.avoid = [{ ...spawn, r: 5 }];
   setSeed((Math.random() * 1e9) | 0); // 시작할 때마다 배치·은닉 위치가 달라진다
   // 환경 / 조명
@@ -7032,7 +7041,15 @@ function dispName() { if (playerNick && !playerNick.includes('@')) return player
 { const pref = k => { try { return localStorage.getItem('k9ui:' + k); } catch { return null; } }, save = (k, v) => { try { localStorage.setItem('k9ui:' + k, v); } catch { } };
   if (pref('quest') === 'open') $('quest').classList.remove('mini'); if (pref('mm') === 'open') $('mmwrap').classList.remove('mini');
   $('quest').addEventListener('click', () => { const m = $('quest').classList.toggle('mini'); save('quest', m ? 'mini' : 'open'); });
-  $('mmwrap').addEventListener('click', e => { if (e.target.closest('#info')) return; const m = $('mmwrap').classList.toggle('mini'); save('mm', m ? 'mini' : 'open'); }); }
+  // 작은 지도를 누르면 큰 지도, 큰 지도를 누르면 다시 작게 (큰 지도는 해상도를 두 배로 다시 그린다)
+  const mmBig = on => { const w = $('mmwrap'); w.classList.toggle('big', on); const c = $('mm'); c.width = on ? 680 : 340; c.height = on ? 496 : 248; mmCache.level = null; if (level) drawMinimap(); };
+  $('mmFold').addEventListener('click', e => { e.stopPropagation(); mmBig(false); $('mmwrap').classList.add('mini'); save('mm', 'mini'); });
+  $('mmwrap').addEventListener('click', e => {
+    if (e.target.closest('#info') || e.target.closest('#mmFold')) return; const w = $('mmwrap');
+    if (w.classList.contains('big')) return mmBig(false);
+    if (w.classList.contains('mini')) { w.classList.remove('mini'); save('mm', 'open'); return; }
+    mmBig(true);
+  }); }
 // 개인정보 안내를 끝까지 읽어야 [필수] 동의에 체크할 수 있다 (이미 동의해 저장된 경우는 그대로)
 { const det = $('pvMore').closest('details'), body = $('pvBody'), boxes = [$('pread'), $('pcons'), $('age14')];
   body.style.maxHeight = '180px'; body.style.overflowY = 'auto'; body.style.paddingRight = '4px';
@@ -7091,16 +7108,40 @@ if (!isMobile) document.body.classList.add('pc');
 $('bars').appendChild($('info')); $('bars').prepend($('qsum'));
 // 메뉴를 펼치면 오른쪽 아래 조작 버튼(킁킁·왕왕·뼈다귀·점프)에 닿기 전까지만 세로로 놓고, 넘치면 왼쪽으로 줄을 바꾼다
 function fitMenu() { const tb = $('topbar'); if (!tb.classList.contains('open')) { tb.style.maxHeight = ''; return; } const top = tb.getBoundingClientRect().top; let lim = innerHeight; for (const id of ['bSniff', 'bBone', 'bBark', 'bJump']) { const el = $(id); if (el && el.getClientRects().length) lim = Math.min(lim, el.getBoundingClientRect().top); } tb.style.maxHeight = Math.max(80, lim - top - 10) + 'px'; }
+function setLowGfx(on) {
+  lowGfx = on; store.set('k9low', on); $('tbLow').classList.toggle('on', on);
+  renderer.setPixelRatio(gfxPR(level && level.mega)); renderer.setSize(innerWidth, innerHeight); sun.castShadow = !on;
+}
+$('tbLow').classList.toggle('on', lowGfx);
+$('tbLow').onclick = () => { setLowGfx(!lowGfx); toast(lowGfx ? '🐢 저사양 모드 켬 · 화질을 낮추고 그림자를 껐어요 (사람 수는 다음 맵부터 줄어요)' : '✨ 저사양 모드 끔 · 원래 화질로 돌아왔어요'); };
+// 플레이 중 계속 느리면 (초당 20프레임 미만이 두 번 연속) 저사양 모드를 한 번 권한다
+const fpsMon = { n: 0, t0: 0, slow: 0, told: false };
+const BUFFS = [['noseT', '👃'], ['autoSniffT', '👃✨'], ['boneT', '🦴'], ['giantT', '🌟'], ['staT', '🥤'], ['magT', '🧲'], ['boost', '⚡']];
+let buffT = 0, buffHtml = '';
+function buffTick(dt) {
+  if ((buffT -= dt) > 0) return; buffT = .25;
+  let h = '';
+  if (state === 'play' && level) { for (const [k, e] of BUFFS) if (dog[k] > .5) h += '<span>' + e + ' ' + Math.ceil(dog[k]) + '초</span>'; if (dog.shield > 0) h += '<span>🛡 ×' + dog.shield + '</span>'; }
+  if (h !== buffHtml) { buffHtml = h; $('buffs').innerHTML = h; }
+}
+function fpsTick() {
+  if (state !== 'play' || lowGfx || fpsMon.told || document.hidden) { fpsMon.n = 0; fpsMon.t0 = 0; return; }
+  const now = performance.now(); if (!fpsMon.t0) fpsMon.t0 = now; fpsMon.n++;
+  if (now - fpsMon.t0 < 8000) return;
+  const fps = fpsMon.n * 1000 / (now - fpsMon.t0); fpsMon.n = 0; fpsMon.t0 = now;
+  fpsMon.slow = fps < 20 ? fpsMon.slow + 1 : 0;
+  if (fpsMon.slow >= 2) { fpsMon.told = true; toast('🐢 화면이 버벅이나요? ☰ 메뉴의 🐢 저사양 모드를 눌러 보세요'); }
+}
 $('tbMenu').onclick = () => { $('topbar').classList.toggle('open'); fitMenu(); };
 addEventListener('resize', () => setTimeout(fitMenu, 60));
 for (const b of document.querySelectorAll('#topbar button:not(#tbMenu)')) b.addEventListener('click', () => $('topbar').classList.remove('open'));
 { let tapT = 0;
   // 터치 탭이 click으로 이어지지 않는 기기(전체화면 전환·화면 갱신 중 탭 유실)를 위해 손을 뗄 때 바로 누른다 — 상단바와 클리어·승리 화면 버튼
-  const TAP = '#topbar button, #mmToggle, #mmwrap, #clear button, #win button';
+  const TAP = '#topbar button, #mmFold, #mmToggle, #mmwrap, #clear button, #win button';
   let down = null;
   document.addEventListener('pointerdown', e => {
     // 메뉴·지도 버튼은 손가락이 닿는 순간 누른다: iOS가 터치를 취소(pointercancel)해도 놓치지 않게
-    const quick = e.pointerType === 'touch' && e.target.closest && !e.target.closest('#info') && e.target.closest('#topbar button, #mmToggle, #mmwrap');
+    const quick = e.pointerType === 'touch' && e.target.closest && !e.target.closest('#info') && e.target.closest('#topbar button, #mmFold, #mmToggle, #mmwrap');
     if (quick) { e.preventDefault(); e.stopPropagation(); down = null; tapT = performance.now(); quick.click(); return; }
     down = e.pointerType === 'touch' ? { x: e.clientX, y: e.clientY, b: e.target.closest && e.target.closest(TAP) } : null;
   }, true);
@@ -7251,10 +7292,18 @@ function renderBag() {
   $('bagList').innerHTML = ks.length ? ks.map(k => '<button type="button" data-k="' + k + '"><i>' + HELP_KINDS[k].emoji + '</i>' + HELP_KINDS[k].name + '<em>×' + bag[k] + '</em></button>').join('') : '<div class="bagEmpty">아직 비어 있어요. 맵에서 아이템을 주워 보세요!</div>';
 }
 function useHelp(kind) {
-  if (!bag[kind] || state !== 'play') return;
+  if (!bag[kind]) return;
+  if (state !== 'play') { toastNow('🎒 지금은 쓸 수 없어요. 열린 창을 닫고 다시 눌러 주세요'); return; }
+  const q0 = toastQ.length;
+  useHelp0(kind);
+  if (toastQ.length > q0) { const fresh = toastQ.splice(q0); toastQ.unshift(...fresh); toastT = 0; } // 아이템 안내를 맨 앞으로
+}
+function toastNow(msg) { toastQ.unshift(trK(msg)); toastT = 0; }
+function useHelp0(kind) {
   const hpMax = Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7);
   if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax) { toast('❤️ 하트가 꽉 찼어요! 하트가 줄었을 때 쓰세요'); return; }
-  bag[kind]--; renderBag(); saveBag(); SFX.found(); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(HELP_KINDS[kind].col), WHITE], 25, 3);
+  bag[kind]--; renderBag(); saveBag(); SFX.found(); $('bagBox').classList.remove('open');
+  floatText(HELP_KINDS[kind].emoji + ' ' + HELP_KINDS[kind].name + ' 사용!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#ffe08a' }); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(HELP_KINDS[kind].col), WHITE], 25, 3);
   if (kind === 'ball') { dog.hp = Math.min(hpMax, dog.hp + 1); dog.boost = 6; floatText('🎾 ❤️ +1', dog.x, dog.y + 2, dog.z, { h: .55, color: '#ff8a80' }); toast('🎾 하트 공! 하트 +1, 잠깐 빨라져요'); return; }
   applyHelp(kind);
 }
@@ -8240,7 +8289,7 @@ loadLevel(0); state = 'login';
 const tbEl = document.getElementById('topbar'), tbHidden = () => tbEl.classList.contains('hidden');
 function loop() {
   requestAnimationFrame(loop);
-  const dt = Math.min(clock.getDelta(), .05); time += dt;
+  const dt = Math.min(clock.getDelta(), .05); time += dt; fpsTick(); buffTick(dt);
   if (state === 'play' || state === 'dialog') { playTotal += dt; if (Math.floor(playTotal / 1800) > playNotes) { playNotes++; toast(t('ts_play30').replace('{m}', playNotes * 30)); } }
   if (state === 'play') {
     if (tbHidden()) tbEl.classList.remove('hidden'); // 어떤 화면을 거쳐 돌아와도 메뉴·🤖·🎒 버튼은 항상 보인다
@@ -8248,7 +8297,7 @@ function loop() {
     if (intel.pending && levelTime >= intel.at && !(mp && mp.ch)) showIntel();
     crowdTick(dt);
     if (handlerJob === 'rescue' && !level.relax) { rescueT = (rescueT || 0) + dt; if (rescueT >= 40) { rescueT = 0; if (dog.hp < 5) { dog.hp++; floatText('🚑 응급처치! ❤️+1', dog.x, dog.y + 1.8, dog.z, { h: .5, color: '#ff8a80' }); tone(660, .12, 'triangle', .07); tone(880, .15, 'triangle', .06, 0, .12); } } } mobileCull(); updateDog(dt); updateHandler(dt); updateBones(dt); updateShots(dt); updateLeak(dt); updateHelp(dt); updateAnimals(dt); updateDebris(dt); if (!level.relax) updateMp(dt); updateFun(dt); updateAgents(dt); for (const v of vehicles) v.update(dt);
-    if (level.mega || isMobile) { megaFrame++; people.forEach((p, k) => { const far = !p.dead && !p.arrested && Math.abs(p.x - dog.x) + Math.abs(p.z - dog.z) > (isMobile ? 70 : 95); if (!p.dead && !p.arrested) p.g.visible = !far; if (!far) { p.update(dt + (p.acc || 0)); p.acc = 0; } else { p.acc = (p.acc || 0) + dt; if ((megaFrame + k) % 6 === 0) { p.update(Math.min(p.acc, .25)); p.acc = 0; } } }); }
+    if (level.mega || isMobile || lowGfx) { megaFrame++; people.forEach((p, k) => { const far = !p.dead && !p.arrested && Math.abs(p.x - dog.x) + Math.abs(p.z - dog.z) > (isMobile ? 70 : 95); if (!p.dead && !p.arrested) p.g.visible = !far; if (!far) { p.update(dt + (p.acc || 0)); p.acc = 0; } else { p.acc = (p.acc || 0) + dt; if ((megaFrame + k) % 6 === 0) { p.update(Math.min(p.acc, .25)); p.acc = 0; } } }); }
     else for (const p of people) p.update(dt);
   } else if (state === 'intro') {
     updateIntro(dt); for (const p of people) p.update(dt);
