@@ -646,7 +646,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1851';
+const BUILD = '20261031-1900';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -3939,22 +3939,66 @@ const LANDMARK_LIST = [
         for (let x = -10; x <= 10; x += 5) mesh(BOX(2.4, .12, .4), glow(0xfff4d0, .9), x, H + .32, ZF + 1.6).castShadow = false;
       }
     } },
-  { name: '서울역', fill: 'city', icon: '🚉', w: 90, d: 64, floor: TILE('#c9c3b6', '#a9a294', .2), obj: luggage, sky: [0x5aa8ef, 0xe2f0fb], st: 3, veh: [{ type: 'taxi', road: 'asphalt', route: [[-42, 13], [42, 13], [42, 10.5], [-42, 10.5]] }, { type: 'bus', route: [[42, 10.5], [-42, 10.5], [-42, 13], [42, 13]], start: 1 }],
-    people: { civ: 6, tourist: 3, student: 2, smuggler: 3 }, items: [["coinLocker",3],["trashBin",2],["backpack",2],["golfBag",1]], who: '정기차 서울역장', short: '옛 서울역(붉은 벽돌·초록 돔), 유리 신역사, 하늘 정원 서울로7017, KTX 승강장을 순찰해요.',
-    intro: '서울역이야! 1925년에 지어진 붉은 벽돌과 초록 돔의 옛 역사(문화역서울284) 옆에 유리로 된 새 역사가 있어.\n광장 위로는 공중 정원 길 서울로7017이 지나가고, 뒤쪽엔 KTX 승강장이 있어!',
+  { name: '서울역', fill: 'city', icon: '🚉', sc: 1, w: 160, d: 110, floor: TILE('#c9c3b6', '#a9a294', .2), obj: luggage, sky: [0x5aa8ef, 0xe2f0fb], st: 3, veh: [{ type: 'taxi', road: 'asphalt', route: [[-78, 45.5], [78, 45.5], [78, 42.5], [-78, 42.5]] }, { type: 'bus', route: [[78, 42.5], [-78, 42.5], [-78, 45.5], [78, 45.5]], start: 1 }],
+    staff: [{ kind: 'police', route: [[-30, 10], [60, 10]], wait: 2 }, { kind: 'customs', route: [[-20, -8], [50, -8]], wait: 2.5 }, { kind: 'police', route: [[-60, 36], [60, 36]], wait: 2 }],
+    people: { civ: 6, tourist: 3, student: 2, smuggler: 3 }, items: [["coinLocker",3],["trashBin",2],["backpack",2],["golfBag",1]], who: '정기차 서울역장', short: '서울역(실제 1/2 축척)! 2층 맞이방의 승차권 발매창구·출발 안내 전광판·대합실, 타는 곳 계단과 KTX 승강장, 서울역광장·문화역서울284·서울로7017까지 순찰해요.',
+    intro: '서울역이야! 유리로 된 새 역사(선상역사) 2층이 기차 타는 사람들이 모이는 맞이방이야.\n광장 계단으로 올라가면 승차권 발매창구, 출발 안내 전광판, 대합실 의자, 고객센터·유실물센터·관광안내소가 있어.\n서쪽 타는 곳 계단으로 내려가면 KTX 승강장, 북쪽 끝은 공항철도·도심공항터미널, 남쪽 끝은 롯데마트·서부역 출구야.\n광장 옆 붉은 벽돌의 옛 역사 문화역서울284와 하늘 정원 서울로7017도 살펴봐!',
     build(L) {
-      bx(-24, 0, -12, 28, 8, 12, 0xa5473a); for (let k = 0; k < 9; k++) { mesh(BOX(1.6, 3.4, .1), LMC(0x2a3d52), -35 + k * 2.8, 3.6, -5.95); mesh(new THREE.CylinderGeometry(.8, .8, .1, 10, 1, false, 0, Math.PI), LMC(0xf1e6cf), -35 + k * 2.8, 5.3, -5.95).rotation.x = Math.PI / 2; }
-      mesh(BOX(28.2, .5, 12.2), LMC(0xf1e6cf), -24, 4, -12); mesh(BOX(28.2, .6, 12.2), LMC(0xf1e6cf), -24, 7.8, -12);
-      bx(-24, 8, -12, 9, 2, 9, 0xd9d0bd, false); mesh(new THREE.SphereGeometry(4.6, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x4f8a6e), -24, 10, -12); mesh(BOX(.3, 2, .3), LMC(0x3d6a56), -24, 15.4, -12);
-      for (const x of [-34, -14]) { bx(x, 8, -12, 3, 2.6, 3, 0xd9d0bd, false); mesh(new THREE.SphereGeometry(1.5, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x4f8a6e), x, 10.6, -12); }
-      mesh(new THREE.CylinderGeometry(1, 1, .2, 20), LMC(0xffffff), -24, 9, -7.4).rotation.x = Math.PI / 2; sign('문화역서울 284 (옛 서울역사)', -24, 17, -5.6, .75);
-      building(22, -14, 34, 12, 12, 0x9fb7c9, { glass: 0x5d8fb4, sign: '🚉 서울역 SEOUL STATION', sh: 1 }); mesh(BOX(34.2, .6, 3), LMC(0xd9dde2), 22, 12.3, -7.6);
-      for (let x = -44; x <= 44; x += 1) { const p = mesh(BOX(1.05, .5, 4), LMC(0xd9d4c8), x, 7, 4); p.castShadow = false; } for (let x = -40; x <= 40; x += 10) bx(x, 0, 4, 1, 6.8, 1, 0x9aa3ab); for (let x = -42; x <= 42; x += 4) { mesh(new THREE.CylinderGeometry(.7, .6, .8, 10), LMC(0xf4f4f2), x, 7.6, 4 + (x % 8 ? 1.2 : -1.2)); mesh(BOX(1, 1, 1), LMC(0x4f9a4a), x, 8.4, 4 + (x % 8 ? 1.2 : -1.2)); } mesh(BOX(90, .2, .2), glow(0x7fd3ff, 1), 0, 7.3, 6.1).castShadow = false; sign('🌳 서울로7017 (하늘 정원 보행길)', 22, 10, 4, .65);
-      statue(-36, 20, 0x5a5a5a, false, 3); sign('강우규 의사 동상', -36, 6.5, 22, .5);
-      for (const z of [-22, -28, -38]) { bx(0, 0, z, 84, .9, 2.4, 0xb3b0a8); for (const e of [-1.05, 1.05]) mesh(BOX(84, .02, .25), LMC(0xf1c40f), 0, .91, z + e).castShadow = false; }
-      stationTrains(L, [{ z: -25, dir: -1, off: 0 }, { z: -33.2, dir: 1, off: 2 }]);
-      for (let x = -40; x <= 40; x += 8) { bx(x, 0, -31, .3, 4, .3, 0x777777); bx(x, .9, -38.6, .3, 3.3, .3, 0x777777); } mesh(BOX(86, .3, 6), LMC(0x8a9099), 0, 4.2, -28.5); mesh(BOX(86, .3, 4), LMC(0x8a9099), 0, 4.2, -38); sign('3번 승강장 · 하행', -30, 5.6, -38, .55, 'rgba(30,80,160,.92)'); sign('KTX 승강장 PLATFORM', 0, 5.6, -22, .7, 'rgba(30,80,160,.92)');
-      for (let x = -40; x <= 40; x += 12) if (Math.abs(x) > 8) lamp(x, 18);
+      const F = 4.2, X0 = -36, X1 = 70, Z0 = -18, Z1 = 22, CX = (X0 + X1) / 2, CZ = (Z0 + Z1) / 2;
+      // ── 문화역서울284 (1925 옛 역사, 북쪽 광장 옆) ──
+      { const ox = -60, oz = 10; bx(ox, 0, oz, 28, 8, 12, 0xa5473a); for (let k = 0; k < 9; k++) { mesh(BOX(1.6, 3.4, .1), LMC(0x2a3d52), ox - 11 + k * 2.8, 3.6, oz + 6.05); mesh(new THREE.CylinderGeometry(.8, .8, .1, 10, 1, false, 0, Math.PI), LMC(0xf1e6cf), ox - 11 + k * 2.8, 5.3, oz + 6.05).rotation.x = Math.PI / 2; }
+        mesh(BOX(28.2, .5, 12.2), LMC(0xf1e6cf), ox, 4, oz); mesh(BOX(28.2, .6, 12.2), LMC(0xf1e6cf), ox, 7.8, oz);
+        bx(ox, 8, oz, 9, 2, 9, 0xd9d0bd, false); mesh(new THREE.SphereGeometry(4.6, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x4f8a6e), ox, 10, oz); mesh(BOX(.3, 2, .3), LMC(0x3d6a56), ox, 15.4, oz);
+        for (const x of [ox - 10, ox + 10]) { bx(x, 8, oz, 3, 2.6, 3, 0xd9d0bd, false); mesh(new THREE.SphereGeometry(1.5, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x4f8a6e), x, 10.6, oz); }
+        mesh(new THREE.CylinderGeometry(1, 1, .2, 20), LMC(0xffffff), ox, 9, oz + 4.6).rotation.x = Math.PI / 2; sign('문화역서울284 (옛 서울역사 · 1925)', ox, 17, oz + 6.4, .75); }
+      // ── 새 역사: 1층은 막힌 기단, 2층 윗면이 맞이방 ──
+      bx(CX, 0, CZ, X1 - X0, F, Z1 - Z0, 0x8f979e);
+      floorPlane(X1 - X0, Z1 - Z0, std(0xffffff, .3, 0, { map: TEX.tile('marble', '#ddd8cc', '#b9b2a4', 6, [(X1 - X0) / 6, (Z1 - Z0) / 6]) }), CX, CZ, F + .015);
+      // 유리 외벽(광장 쪽은 출입구, 서쪽은 타는 곳 출입구를 비운다)
+      const gw = (x0, x1, z) => { const w = x1 - x0; bx((x0 + x1) / 2, F, z, w, 7, .4, 0x9fc3d8); mesh(BOX(w, .5, .6), LMC(0xe9edf0), (x0 + x1) / 2, F + 7.2, z); };
+      gw(X0, -6, Z1); gw(6, 34, Z1); gw(46, X1, Z1);
+      gw(X0, -3, Z0); gw(3, 37, Z0); gw(43, X1, Z0);
+      for (const x of [X0, X1]) { bx(x, F, CZ - 12, .4, 7, Z1 - Z0 - 24, 0x9fc3d8); }
+      // 활 모양 지붕 테두리
+      for (let k = 0; k <= 20; k++) { const x = X0 + k * (X1 - X0) / 20, y = F + 8 + Math.sin(k / 20 * Math.PI) * 3; mesh(BOX(5.6, .5, 1), LMC(0xf4f4f2), x, y, Z1 + .4).castShadow = false; mesh(BOX(5.6, .5, 1), LMC(0xf4f4f2), x, y, Z0 - .4).castShadow = false; }
+      sign('🚉 서울역 SEOUL STATION · KORAIL', 20, F + 13, Z1 + 1, 1.2);
+      // 광장 → 2층 맞이방 큰 계단(1번 출구 쪽 정문)
+      for (const x of [0, 40]) { stepsUp(x, Z1 + 12 * .8 - .4, 10, 12, -1, .8, 0xcfc9bd, 0); for (const sx of [-5.3, 5.3]) { const r = mesh(BOX(.5, 1, 10), LMC(0x9aa3ab), x + sx, F / 2 + .5, Z1 + 4.8); r.rotation.x = .41; } }
+      sign('⬆ 2층 맞이방 · 승차권 · 타는 곳', 0, F + 4, Z1 + 6, .6); sign('🚪 1번 출구 · 서울역광장', 40, F + 4, Z1 + 6, .55);
+      // ── 2층 맞이방 내부 ──
+      // 승차권 발매창구 · 자동발매기 (동쪽 유리벽 안쪽)
+      for (let x = 8; x <= 30; x += 3.2) { bx(x, F, 18.5, 2.8, 1.1, 1.2, 0xf0ede6); mesh(BOX(2.8, .9, .1), MAT.glass(), x, F + 1.6, 18); }
+      sign('🎫 승차권 발매창구 TICKET', 19, F + 3.6, 18.5, .6);
+      for (let x = -28; x <= -12; x += 2) { bx(x, F, 19.5, 1.2, 1.8, .8, 0x2c6fb7); mesh(BOX(.8, .6, .05), glow(0x9fdcff, .6), x, F + 1.3, 19.08).castShadow = false; }
+      sign('🖥 승차권 자동발매기', -20, F + 3.2, 19.5, .5);
+      for (const [x, t, c] of [[54, '☎ 고객센터 (철도고객센터)', 0x1f4e8c], [62, '🧳 유실물센터', 0x6d4c8f], [-30, 'ℹ 관광안내소', 0x27ae60]]) { bx(x, F, 12, 6, 1.1, 2, 0xf4f4f2); mesh(BOX(6, .8, .3), LMC(c), x, F + 2.6, 13); sign(t, x, F + 3.6, 12, .5); }
+      // 출발 안내 전광판 + 대합실 의자
+      { const b = mesh(BOX(24, 3, .4), LMC(0x111418), 20, F + 6.5, 4); for (let k = 0; k < 6; k++) mesh(BOX(22, .3, .05), glow(k % 2 ? 0xffd36b : 0x7fd3ff, .9), 20, F + 7.6 - k * .45, 4.22).castShadow = false; sign('🕒 열차 출발 안내 DEPARTURES · KTX · ITX · 무궁화', 20, F + 8.8, 4.3, .55); for (const sx of [-10, 10]) mesh(BOX(.15, 3, .15), MAT.metal(0x777777), 20 + sx, F + 9.5, 4); }
+      for (let x = 2; x <= 40; x += 6) for (const z of [-2, 1.2, 8, 11.2]) { bx(x, F, z, 4.6, .5, .7, 0x3d6fa8); mesh(BOX(4.6, .5, .12), LMC(0x3d6fa8), x, F + .75, z + (z < 5 ? -.3 : .3)); }
+      sign('🪑 대합실 WAITING', 21, F + 2.4, 9.6, .45);
+      // 북쪽 끝: 공항철도·도심공항터미널 연결, 3층 식당가 에스컬레이터, 매장
+      sign('⬅ 공항철도 AREX · 도심공항터미널 · 1·4호선', X0 + 3, F + 5, 0, .6, 'rgba(40,90,170,.92)');
+      { const e = mesh(BOX(3, .4, 10), MAT.metal(0xb7bec3, .3), -24, F + 2.2, -6); e.rotation.x = .42; addCol(-24, -6, 3.4, 9, e, { topY: 99 }); sign('⬆ 3층 식당가 · 푸드코트', -24, F + 5.6, -6, .5); }
+      for (const [x, z, t, c] of [[-14, -14, '☕ 카페', 0x6d4c2f], [14, -14, '🍞 베이커리', 0xd9a066], [-32, -12, '🏪 편의점', 0x27ae60], [48, -14, '🍔 패스트푸드', 0xc0392b], [58, -14, '💊 약국', 0x2e86c1], [66, 2, '🍼 수유실', 0xf48fb1]]) { bx(x, F, z, 7, 2.6, 3.4, 0xf4f1ea); mesh(BOX(7, .7, .2), LMC(c), x, F + 2.4, z + 1.8); sign(t, x, F + 3.4, z + 1.8, .45); }
+      sign('➡ 롯데마트 · 서부역 출구', X1 - 3, F + 5, 0, .6, 'rgba(180,40,40,.9)');
+      // 서쪽: 타는 곳(계단으로 승강장에 내려간다)
+      for (const [x, t] of [[0, '🚆 타는 곳 1~8 (KTX · 경부선)'], [40, '🚆 타는 곳 9~16 (KTX · 경의선 · ITX)']]) { stepsUp(x, Z0 - 10 * .8 + .4, 5, 10, 1, .8, 0xcfc9bd, .7); sign(t, x, F + 4.2, Z0 + 1, .55, 'rgba(30,80,160,.92)'); }
+      // 승강장 2면 + 선로 3개 + 지붕
+      bx(17, 0, -24, 100, .9, 12, 0xb3b0a8); for (const e of [-29.75]) mesh(BOX(100, .02, .25), LMC(0xf1c40f), 17, .91, e).castShadow = false;
+      bx(17, 0, -40, 100, .9, 4, 0xb3b0a8); for (const e of [-41.7, -38.3]) mesh(BOX(100, .02, .25), LMC(0xf1c40f), 17, .91, e).castShadow = false;
+      stationTrains(L, [{ z: -34, dir: -1, off: 0 }, { z: -46, dir: 1, off: 2 }]);
+      for (let x = -28; x <= 62; x += 10) { bx(x, .9, -27, .3, 4.2, .3, 0x777777); bx(x, .9, -40, .3, 3.6, .3, 0x777777); }
+      mesh(BOX(100, .3, 8), LMC(0x8a9099), 17, 5.2, -25).castShadow = false; mesh(BOX(100, .3, 5), LMC(0x8a9099), 17, 4.6, -40).castShadow = false;
+      sign('KTX 승강장 PLATFORM 1·2', 0, 6.4, -28, .6, 'rgba(30,80,160,.92)'); sign('승강장 3·4', 40, 5.8, -40, .5, 'rgba(30,80,160,.92)');
+      // ── 서울역광장 · 버스환승센터 · 서울로7017 ──
+      floorPlaneW(160, 7, MAT.col(0x3a3d42, .95), 0, 44, .02); for (let x = -76; x <= 76; x += 8) mesh(BOX(4, .02, .2), MAT.col(0xffffff, .5), x, .04, 44);
+      sign('🚌 서울역버스환승센터', -20, 4, 39.5, .55);
+      for (let x = -78; x <= 78; x += 1.2) { const p = mesh(BOX(1.25, .5, 4), LMC(0xd9d4c8), x, 7, 51); p.castShadow = false; } for (let x = -70; x <= 70; x += 14) bx(x, 0, 51, 1, 6.8, 1, 0x9aa3ab);
+      for (let x = -76; x <= 76; x += 5) { mesh(new THREE.CylinderGeometry(.7, .6, .8, 10), LMC(0xf4f4f2), x, 7.6, 51 + (x % 10 ? 1.2 : -1.2)); mesh(BOX(1, 1, 1), LMC(0x4f9a4a), x, 8.4, 51 + (x % 10 ? 1.2 : -1.2)); }
+      sign('🌳 서울로7017 (하늘 정원 보행길)', 30, 10, 51, .65);
+      statue(-40, 30, 0x5a5a5a, false, 3); sign('강우규 의사 동상', -40, 6.5, 32, .5);
+      for (let x = -70; x <= 70; x += 14) if (Math.abs(x) > 8) lamp(x, 36);
+
     } },
   { name: 'KTX', icon: '🚄', out: false, w: 12, d: 182, bg: 0xdfe6ea, floor: TILE('#4b5560', '#3c444d', .5), obj: luggage, ns: 14, sky: [0x86b6e0, 0xe8f2fa], shape: TRAINSHAPE(7), shapeFloor: true, rail: { h: 3, col: 0xe8ecef, t: .3 }, st: 3,
     staff: [{ kind: 'pilot', route: [[0, -84.5], [.4, -84.5]], wait: 6 }, { kind: 'attendant', route: [[0, -60], [0, 80]], wait: 2 }, { kind: 'attendant', route: [[0, 40], [0, -38]], wait: 2.5 }, { kind: 'customs', route: [[0, 82], [0, -10]], wait: 3 }],
@@ -4617,15 +4661,54 @@ const LANDMARK_LIST = [
       { const t63 = new THREE.Group(); t63.position.set(200, 0, -160); world.add(t63); for (let k = 0; k < 12; k++) mesh(BOX(16 - k * .5, 10, 11 - k * .3), MAT.metal(0xe0b14a, .25), 0, 5 + k * 10, 0, t63); sign('63빌딩', 200, 128, -155, 2); }
 
     } },
-  { name: '감천문화마을', fill: 'village', npcJump: true, icon: '🎨', w: 84, d: 70, floor: FLOOR(() => TEX.concrete('gamcheon', '#a3a8ad', [.25, .25])), mmCol: 0x9aa3ab, obj: crate, sky: [0x4aa6ee, 0xdff2ff], st: 3,
-    people: { tourist: 6, student: 3, merchant: 2, smuggler: 3 }, items: [["meterBox",3],["flowerPot",2],["mailbox",2]], who: '알록달록 감천문화마을 관리소장', short: '산비탈 계단식 알록달록 마을! 좁은 골목, 계단, 물고기 길표지, 전망대에서 바다를 내려다봐요.',
-    intro: '부산 감천문화마을이야! 산비탈을 따라 파랑·분홍·노랑 집들이 계단처럼 층층이 쌓여 있어.\n좁은 골목과 계단을 오르내리며, 물고기 모양 길 안내판을 따라가 봐. 꼭대기 전망대에선 바다가 보여!',
+  { name: '감천문화마을', fill: 'village', npcJump: true, icon: '🎨', sc: 1, w: 180, d: 120, veh: [{ type: 'bus', route: [[-85, 47], [85, 47], [85, 51], [-85, 51]] }], floor: FLOOR(() => TEX.concrete('gamcheon', '#a3a8ad', [.25, .25])), mmCol: 0x9aa3ab, obj: crate, sky: [0x4aa6ee, 0xdff2ff], st: 3,
+    people: { tourist: 6, student: 3, merchant: 2, smuggler: 3 }, items: [["meterBox",3],["flowerPot",2],["mailbox",2]], who: '알록달록 감천문화마을 관리소장', short: '감천문화마을(실제 1/3 축척)! 감내2로의 마을안내센터·작은박물관·하늘마루, 어린왕자와 사막여우, 148계단(소망계단), 별 보러 가는 계단, 바다포토존까지 계단식 골목을 수색해요.',
+    intro: '부산 사하구 감천문화마을이야! 산비탈을 따라 알록달록한 집들이 계단처럼 층층이 쌓여 있어.\n아래 마을버스 길에서 출발해 148계단(소망계단)과 별 보러 가는 계단을 올라가 봐.\n꼭대기 감내2로에는 마을안내센터, 작은박물관, 하늘마루 전망대, 리틀프린스하우스가 있고,\n난간에 앉은 어린왕자와 사막여우가 감천항을 내려다보고 있어. 골목골목 꼼꼼히 킁킁!',
     build(L) {
-      seaNorth(-80, 0x3d8fc4); const cols = [0x4fc3f7, 0xf48fb1, 0xfff176, 0x81c784, 0xffb74d, 0xba68c8, 0x90caf9];
-      for (let r = 0; r < 4; r++) { const z = 10 - r * 11, h = 1.4 * (r + 1); bx(0, 0, z - 5, 84, h, 11, new THREE.Color(0xb8b0a2).multiplyScalar(1 - r * .05).getHex()); for (const sx of [-24, 6, 30]) stepsUp(sx + (r % 2) * 6, z + 2.7, 3, 4, -1, .55, 0xd9d2c4, r * 1.4); for (let k = 0; k < 7; k++) { const x = -38 + k * 11.4 + (r % 2) * 4; if ([-24, 6, 30].some(sx => [0, 6].some(o => Math.abs(x - (sx + o)) < 4.2))) continue; const w = rr(4, 6), hh = rr(2.4, 3.6); bx(x, h, z - 7, w, hh, 4, pick(cols), false); addCol(x, z - 7, w, 4, null, { topY: h + hh }); mesh(BOX(w + .4, .3, 4.4), LMC(pick([0xd84a3a, 0x2c6fb7, 0x27ae60, 0xf4f4f2])), x, h + hh + .15, z - 7); mesh(BOX(.8, 1, .05), LMC(0x2a3d52), x - 1, h + 1.4, z - 4.97); } }
-      for (let k = 0; k < 8; k++) { const m = mesh(BOX(1.2, .5, .1), LMC(pick(cols)), -30 + k * 8, 1.6 + (k % 4) * 1.4, 4.8 - (k % 4) * 11); m.castShadow = false; } sign('🐟 물고기 길 안내판을 따라가요', 0, 3.2, 14, .5);
-      bx(0, 5.6, -36, 10, .3, 4, 0x9a948a, false); for (let x = -5; x <= 5; x += .8) mesh(BOX(.08, 1, .08), MAT.metal(0x888888), x, 6.4, -34.1); statue(-2, -36.5, 0xe8d9b0, true, 1.4); sign('🔭 감천 전망대 (바다 조망)', 0, 9, -35, .55);
-      for (let k = 0; k < 4; k++) stall(-30 + k * 18, 20, pick([0xd63a2a, 0x2c6fb7, 0x27ae60]), ['기념품', '어묵', '엽서', '공예'][k]); sign('🎨 감천문화마을 (부산의 마추픽추)', 0, 7, 18, 1);
+      const cols = [0x4fc3f7, 0xf48fb1, 0xfff176, 0x81c784, 0xffb74d, 0xba68c8, 0x90caf9, 0xf4f4f2];
+      // 남쪽 아래로 감천항 바다
+      { const t = TEX.water(); t.repeat.set(60, 20); const m = new THREE.Mesh(new THREE.PlaneGeometry(800, 300), std(0xffffff, .25, 0, { map: t, color: 0x3d8fc4 })); m.rotation.x = -Math.PI / 2; m.position.set(0, -8, 300); world.add(m); waterMesh = m; }
+      mountainBack(-110, 0x4f7a4a, 6);
+      // 계단식 단(층) 4개 + 꼭대기 감내2로 단. 각 단 앞(남쪽)은 골목, 뒤(북쪽)는 집
+      const T = []; for (let r = 0; r < 4; r++) { const zS = 34 - 16 * r; T.push({ zS, zN: zS - 16, h: 1.4 * (r + 1) }); } T.push({ zS: -30, zN: -60, h: 7 });
+      const stairX = r => r === 4 ? [-40, 12, 62] : [-48 + (r % 2) * 8, 4 + (r % 2) * 8, 52 - (r % 2) * 6];
+      T.forEach((t, r) => {
+        bx(0, 0, (t.zS + t.zN) / 2, 180, t.h, t.zS - t.zN, new THREE.Color(0xb8b0a2).multiplyScalar(1 - r * .04).getHex());
+        // 옹벽 벽화
+        for (let x = -86; x < 86; x += 7) mesh(BOX(6, 1, .05), LMC(pick(cols)), x, t.h - .7, t.zS + .03).castShadow = false;
+        // 아래 단에서 이 단으로 오르는 계단 + 148계단(서쪽 끝, 모든 단을 잇는다)
+        for (const sx of [...stairX(r), -80]) stepsUp(sx, t.zS + 4 * .55 - .275, 3, 4, -1, .55, sx === -80 ? 0xf2c14e : 0xd9d2c4, r * 1.4);
+        if (r === 4) return;
+        // 이 단 뒤쪽 집들(위 단 계단과 148계단 자리는 비운다)
+        const skip = [...stairX(r + 1), -80];
+        for (let x = -84; x <= 84; x += 8.4) { if (skip.some(s => Math.abs(x - s) < 5)) continue; const w = rr(5, 6.6), hh = rr(2.4, 3.8); bx(x, t.h, t.zN + 3.5, w, hh, 5, pick(cols), false); addCol(x, t.zN + 3.5, w, 5, null, { topY: t.h + hh }); mesh(BOX(w + .4, .3, 5.4), LMC(pick([0xd84a3a, 0x2c6fb7, 0x27ae60, 0xf4f4f2])), x, t.h + hh + .15, t.zN + 3.5); mesh(BOX(.8, 1.1, .05), LMC(0x2a3d52), x - 1, t.h + .55, t.zN + 6.03); mesh(BOX(.9, .7, .05), glow(0xfff1c4, .3), x + 1.4, t.h + 1.8, t.zN + 6.03).castShadow = false; }
+        // 물고기 길 안내판
+        for (let x = -70; x <= 70; x += 35) { const m = mesh(BOX(1.4, .5, .1), LMC(0x2c6fb7), x + r * 4, t.h + 1.6, t.zN + 6.2); m.castShadow = false; }
+      });
+      sign('🪜 148계단 (소망계단)', -80, 6, 10, .6, 'rgba(160,110,20,.92)');
+      sign('✨ 별 보러 가는 계단', stairX(2)[0], 5.2, T[2].zS + 1, .5);
+      sign('🐟 물고기 길 안내판을 따라가요', 0, 4, T[0].zS + 4, .5);
+      // 꼭대기: 감내2로 + 시설
+      const top = 7; floorPlaneW(180, 8, MAT.col(0x3a3d42, .95), 0, -42, top + .02); for (let x = -86; x <= 86; x += 8) mesh(BOX(4, .02, .2), MAT.col(0xffffff, .5), x, top + .04, -42);
+      sign('감내2로', -60, top + 3, -42, .5);
+      const bld = (x, w, h, c, t) => { bx(x, top, -53, w, h, 8, c, false); addCol(x, -53, w, 8, null, { topY: top + h }); mesh(BOX(w * .7, 1, .05), glow(0xfff1c4, .35), x, top + 1.6, -48.97).castShadow = false; sign(t, x, top + h + 1.2, -49, .55); };
+      bld(34, 12, 4.5, 0xf4f4f2, 'ℹ 감천문화마을 안내센터 (감내2로 203)');
+      bld(52, 10, 3.6, 0xffb74d, '🏛 작은박물관');
+      bld(-6, 12, 6, 0x90caf9, '🔭 하늘마루 (전망대 · 스탬프 투어)'); mesh(BOX(12.4, .4, 8.4), LMC(0xf4f4f2), -6, top + 6.2, -53);
+      bld(-40, 10, 3.4, 0xf48fb1, '🦊 리틀프린스하우스 (소행성 B612)');
+      bld(16, 8, 3, 0x81c784, '☕ 마을 카페 · 기념품');
+      bld(-70, 10, 3.2, 0xfff176, '🎨 감천 아트숍');
+      // 감내2로 남쪽 난간 + 난간에 앉은 어린왕자와 사막여우(감천항을 내려다봄)
+      for (let x = -88; x <= 88; x += 2) { if (stairX(4).concat(-80).some(s => Math.abs(x - s) < 2.5)) continue; mesh(BOX(.1, 1, .1), MAT.metal(0x777777), x, top + .5, -30.6); } mesh(BOX(180, .1, .12), MAT.metal(0x888888), 0, top + 1, -30.6);
+      { const g = new THREE.Group(); g.position.set(24, top + 1, -30.6); world.add(g); mesh(BOX(1.6, .25, .6), LMC(0x6d6a63), 0, 0, 0, g); mesh(BOX(.7, .9, .5), LMC(0x2f6b3a), 0, .55, 0, g); mesh(BOX(.5, .5, .5), LMC(0xf2d3a8), 0, 1.25, 0, g); mesh(BOX(.56, .2, .56), LMC(0xf2c14e), 0, 1.55, 0, g); mesh(BOX(.4, .8, .1), LMC(0xd84a3a), 0, .7, .3, g); const fox = mesh(BOX(.4, .4, .7), LMC(0xe67e22), .9, .35, 0, g); fox.castShadow = false; mesh(BOX(.12, .25, .12), LMC(0xe67e22), .9, .65, .3, g); }
+      sign('👑 어린왕자와 사막여우', 24, top + 3.6, -30.6, .6);
+      sign('🌊 바다포토존 (감천항 조망)', 72, top + 2.6, -31, .55);
+      // 맨 아래: 마을버스 길과 정류장, 기념품 노점
+      floorPlaneW(180, 8, MAT.col(0x3a3d42, .95), 0, 49, .02);
+      bx(-30, 0, 43.5, 4, .2, 1.4, 0x2c6fb7); mesh(BOX(4, .2, 1.6), LMC(0x2c6fb7), -30, 2.6, 43.5); sign('🚌 감천문화마을 정류장 (사하 마을버스 1-1·2·2-2)', -30, 3.4, 43.5, .45);
+      for (let k = 0; k < 5; k++) stall(-70 + k * 30 + (k > 1 ? 12 : 0), 39, pick([0xd63a2a, 0x2c6fb7, 0x27ae60]), ['기념품', '어묵', '엽서', '공예', '아이스크림'][k]);
+      sign('🎨 감천문화마을 (부산의 마추픽추)', 10, 6, 40, 1);
+
     } },
   { name: '대전 한빛탑', fill: 'park', icon: '🗼', sc: 1, w: 200, d: 300, floor: TILE('#cfc9bd', '#b0a99b', .25), obj: luggage, sky: [0x5aa8ef, 0xeef4fb], st: 3,
     staff: [{ kind: 'police', route: [[-40, 70], [40, 70]], wait: 2 }, { kind: 'customs', route: [[-60, -80], [60, -80]], wait: 2 }, { kind: 'police', route: [[-50, 0], [-50, 60]], wait: 2 }],
