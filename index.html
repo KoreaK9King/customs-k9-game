@@ -682,7 +682,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2113';
+const BUILD = '20261031-2116';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -3088,7 +3088,11 @@ const LEVELS = [
       // 남쪽 도착 도로(버스·택시 승차장)와 교통센터
       floorPlaneW(300, 24, MAT.col(0x3a3d42, .95), 0, 56, .05); for (let x = -140; x <= 140; x += 8) mesh(BOX(4, .02, .25), MAT.col(0xffffff, .5), x, .07, 56);
       arrivalsCurb(L);
-      { const tc = new THREE.Group(); world.add(tc); mesh(BOX(120, 16, 50), MAT.glass(), 0, 8, 110, tc); mesh(new THREE.CylinderGeometry(60, 60, 4, 32, 1, false, 0, Math.PI), MAT.col(0xdfe4e8, .3), 0, 16, 110, tc).rotation.z = Math.PI / 2; sign('교통센터 · 공항철도 인천공항1터미널역', 0, 24, 90, 1.2); }
+      { const gnd = new THREE.Mesh(new THREE.PlaneGeometry(900, 700), MAT.col(0x6b7076, .95)); gnd.rotation.x = -Math.PI / 2; gnd.position.set(0, -.06, 0); gnd.receiveShadow = true; world.add(gnd); } // 맵 밖도 땅이 이어져 하얀 허공이 안 보이게
+      { // 교통센터: 낮은 건물 + 유리 창 줄 + 지붕 (멀리서 하얀 벽처럼 보이지 않게)
+        mesh(BOX(110, 7, 22), MAT.col(0xcfd6dc, .5), 0, 3.5, 92).castShadow = false; for (let k = 0; k < 2; k++) mesh(BOX(108, 1.6, .2), MAT.col(0x3f6f93, .15, .3), 0, 2 + k * 3, 80.9).castShadow = false;
+        for (let x = -50; x <= 50; x += 10) mesh(BOX(.5, 7, .4), MAT.col(0x9aa3ab, .5), x, 3.5, 80.8).castShadow = false; mesh(BOX(114, .8, 26), MAT.col(0x8e98a2, .5), 0, 7.4, 92).castShadow = false;
+        sign('🚉 교통센터 · 공항철도 인천공항1터미널역', 0, 10, 81, 1.1); }
       L.search = scatter(L, 15, luggage, 1, 1);
     },
   },
