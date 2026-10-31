@@ -600,7 +600,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1402';
+const BUILD = '20261031-1412';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -5733,7 +5733,7 @@ function updateGuide(dt) {
   if (idleSniffT > 20 && !level.relax) { idleSniffT = 0; toast(lang === 'ko' ? '👃 킁킁을 눌러 보세요! 숨긴 물건 쪽으로 냄새 알갱이가 날아가요' : '👃 Try sniffing! Scent particles fly toward hidden items'); }
   guideArrow.g.visible = false; // 탐지견 옆 화살표는 쓰지 않음 guideArrow.g.position.set(dog.x + Math.sin(ang) * 2, dog.y + .12 + Math.sin(time * 6) * .05, dog.z + Math.cos(ang) * 1.6); guideArrow.g.rotation.y = ang;
   const name = T.k === 'drug' ? ITEM.drug.emoji + ' ' + ITEM.drug.name : T.k === 'gun' ? ITEM.gun.emoji + ' ' + ITEM.gun.name : T.k === 'boss' ? '👑 ' + t('g_boss') : (level.crookEmoji || '🕶') + ' ' + (level.crook || '');
-  const txt = (lang === 'ko' ? '🎯 다음: ' : '🎯 ') + name + ' · ' + Math.round(d) + 'm'; if (el.textContent !== txt) el.textContent = txt; el.classList.toggle('hidden', !$('mission').classList.contains('hidden'));
+  const txt = (lang === 'ko' ? '🎯 다음: ' : '🎯 ') + name + ' · ' + Math.round(d) + 'm'; if (el.textContent !== txt) el.textContent = txt; el.classList.add('hidden'); // 화면 위 가운데 '다음:' 안내 창은 띄우지 않는다
   const lt = (lang === 'ko' ? '👃 냄새 방향 · ' : '👃 Scent · ') + name + ' ' + Math.round(d) + 'm';
   if (lt !== guideLabelTxt) { guideLabelTxt = lt; if (guideLabel) disposeSprite(guideLabel); guideLabel = textSprite(lt, { h: .38, bg: 'rgba(10,25,40,.85)' }); scene.add(guideLabel); }
   guideLabel.visible = false; guideLabel.position.set(guideArrow.g.position.x, dog.y + 1.1, guideArrow.g.position.z);
