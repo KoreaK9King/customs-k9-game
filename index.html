@@ -679,7 +679,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2043';
+const BUILD = '20261031-2044';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -3523,7 +3523,7 @@ function stationTrains(L, lines, { stopX = 0, span } = {}) {
   }
 }
 // ===== 맵 바깥 배경: 맵 성격에 맞는 먼 풍경 (충돌 없음 · 그림자 없음) =====
-const FAR_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'airport', '국제우편·특송센터': 'logistics', '국제 여객선': 'coast', '인천공항 T2 출국장': 'airport', '인천항 국제여객터미널': 'port', '부두 컨테이너 야적장': 'port', '보세창고 (보스전)': 'industrial', '노을 활주로': 'airport', '우체국': 'city', '교도소': 'rural', '서울역': 'city', '버스터미널': 'city', '명동': 'city', '경복궁': 'heritage', '홍대': 'city', '롯데월드타워': 'city', '동대문': 'city', '광안리 해변': 'city', '숭례문': 'city', '수원화성': 'heritage', '경주': 'tomb', 'N서울타워': 'mountain', '해운대': 'city', '제주 한라산': 'jeju', '포항 스페이스워크': 'city', '전주 한옥마을': 'heritage', '광화문광장': 'city', '청와대': 'heritage', '국회의사당': 'city', '감천문화마을': 'village', '대전 한빛탑': 'city' };
+const FAR_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'airport', '국제우편·특송센터': 'logistics', '국제 여객선': 'coast', '공항 출국장(T2)': 'airport', '인천항 국제여객터미널': 'port', '부두 컨테이너 야적장': 'port', '보세창고 (보스전)': 'industrial', '노을 활주로': 'airport', '우체국': 'city', '교도소': 'rural', '서울역': 'city', '버스터미널': 'city', '명동': 'city', '경복궁': 'heritage', '홍대': 'city', '롯데월드타워': 'city', '동대문': 'city', '광안리 해변': 'city', '숭례문': 'city', '수원화성': 'heritage', '경주': 'tomb', 'N서울타워': 'mountain', '해운대': 'city', '제주 한라산': 'jeju', '포항 스페이스워크': 'city', '전주 한옥마을': 'heritage', '광화문광장': 'city', '청와대': 'heritage', '국회의사당': 'city', '감천문화마을': 'village', '대전 한빛탑': 'city' };
 const NAMSAN = ['서울역', '명동', '숭례문', '동대문', '광화문광장', '경복궁', '청와대', '우체국', '홍대'];
 let winTex = null;
 function farWinTex() {
@@ -4937,7 +4937,7 @@ const LANDMARK_LIST = [
         fence(0, 74.6, 200, .4); fence(-99.6, 6, .4, 137); fence(99.6, 6, .4, 137); }
       L.search = colliders.filter(c => c.topY > .5 && c.topY < 1.6 && c.maxX - c.minX < 5 && c.maxZ - c.minZ < 5 && c.minZ > 40).slice(0, 12);
     } },
-  { name: '인천공항 T2 출국장', gate: true, icon: '🧳', sc: 1, w: 200, d: 180, floor: 0xcfd3d6, mmCol: 0xd6d0c4, obj: luggage, ns: 26, st: 3, music: 4, sky: [0x4f9be6, 0xdcecf8],
+  { name: '공항 출국장(T2)', gate: true, icon: '🧳', sc: 1, w: 200, d: 180, floor: 0xcfd3d6, mmCol: 0xd6d0c4, obj: luggage, ns: 26, st: 3, music: 4, sky: [0x4f9be6, 0xdcecf8],
     veh: [{ type: 'bus', route: [[-95, 69], [95, 69], [95, 73], [-95, 73]] }, { type: 'taxi', route: [[95, 73], [-95, 73], [-95, 69], [95, 69]] }],
     staff: [{ kind: 'attendant', route: [[-80, 30], [-10, 30]], wait: 2.5 }, { kind: 'attendant', route: [[10, 30], [80, 30]], wait: 2.5 }, { kind: 'customs', route: [[-60, -4], [-40, -4]], wait: 2 }, { kind: 'customs', route: [[40, -4], [60, -4]], wait: 2 }, { kind: 'customs', route: [[-50, -30], [50, -30]], wait: 3 }, { kind: 'police', route: [[-80, 52], [80, 52]], wait: 2 }, { kind: 'pilot', route: [[-60, -46], [60, -46]], wait: 3 }],
     people: { civ: 14, tourist: 10, kid: 3, smuggler: 4 }, hide: { drug: 5, gun: 3 }, need: { drug: 3, gun: 1, smuggler: 3 },
@@ -5372,7 +5372,7 @@ const CRIME = {
   '국제우편·특송센터': [['🌿', '합성 대마', 'Synthetic cannabis'], ['🔪', '불법 도검', 'Illegal blade'], ['📦', '국제 택배 밀수범', 'Parcel smuggler']],
   '국제 여객선': [['🚬', '밀수 담배', 'Smuggled cigarettes'], ['💊', '마약', 'Drugs'], ['🧳', '보따리 밀수상', 'Suitcase trader']],
   '인천항 국제여객터미널': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🧳', '보따리 밀수상', 'Suitcase trader']],
-  '인천공항 T2 출국장': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🧳', '출국 밀반출범', 'Outbound smuggler']],
+  '공항 출국장(T2)': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🧳', '출국 밀반출범', 'Outbound smuggler']],
   '부두 컨테이너 야적장': [['🎇', '불법 화약', 'Illegal gunpowder'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
   '보세창고 (보스전)': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
   '우체국': [['💵', '보이스피싱 현금', 'Phishing cash'], ['🌿', '마약 소포', 'Drug parcel'], ['📞', '보이스피싱 수거책', 'Phishing courier']],
@@ -5433,7 +5433,7 @@ const CROWD = {
   hiking: [.1, .1, .1, .1, .2, .5, 1, 1.3, 1.4, 1.3, 1.2, 1.1, 1, .9, .7, .5, .3, .2, .1, .1, .1, .1, .1, .1],
   works: [.7, .65, .6, .6, .65, .75, .9, 1, 1.05, 1.05, 1.05, 1, .95, 1, 1.05, 1.05, 1, .95, .9, .85, .8, .75, .75, .7],
 };
-const CROWD_OF = { '인천공항 T2 출국장': 'airport', '공항 입국장': 'airport', '공항 화물터미널': 'works', '국제우편·특송센터': 'works', '국제 여객선': 'airport', '인천항 국제여객터미널': 'airport', '부두 컨테이너 야적장': 'works', '보세창고 (보스전)': 'works',
+const CROWD_OF = { '공항 출국장(T2)': 'airport', '공항 입국장': 'airport', '공항 화물터미널': 'works', '국제우편·특송센터': 'works', '국제 여객선': 'airport', '인천항 국제여객터미널': 'airport', '부두 컨테이너 야적장': 'works', '보세창고 (보스전)': 'works',
   '우체국': 'office', '교도소': 'office', '서울역': 'commute', 'KTX': 'commute', '버스터미널': 'commute', '비행기': 'airport', '명동': 'nightlife', '경복궁': 'heritage', '홍대': 'nightlife', '롯데월드타워': 'view', '동대문': 'nightlife',
   '광안리 해변': 'beach', '숭례문': 'heritage', '수원화성': 'heritage', '경주': 'heritage', 'N서울타워': 'view', '해운대': 'beach', '제주 한라산': 'hiking', '포항 스페이스워크': 'view', '전주 한옥마을': 'heritage', '광화문광장': 'view', '청와대': 'office', '국회의사당': 'office', '감천문화마을': 'heritage', '대전 한빛탑': 'view' };
 const AGE_MIX = {
@@ -5608,7 +5608,7 @@ function skyDome(top, bot, ph) {
 }
 // ================= 실시간 날씨(Open-Meteo) + 해·달 위치(천문 계산) =================
 // 맵마다 실제 위치(위도, 경도, 지역명)
-const GEO = { '인천공항 T2 출국장': [37.4692, 126.4336, '인천공항 제2여객터미널'], '공항 입국장': [37.4602, 126.4407, '인천공항'], '공항 화물터미널': [37.4436, 126.4559, '인천공항 화물터미널'], '국제우편·특송센터': [37.4489, 126.4628, '인천 국제우편물류센터'], '국제 여객선': [37.3683, 126.6253, '인천항'], '인천항 국제여객터미널': [37.4241, 126.6055, '인천항 국제여객터미널'],
+const GEO = { '공항 출국장(T2)': [37.4692, 126.4336, '인천공항 제2여객터미널'], '공항 입국장': [37.4602, 126.4407, '인천공항'], '공항 화물터미널': [37.4436, 126.4559, '인천공항 화물터미널'], '국제우편·특송센터': [37.4489, 126.4628, '인천 국제우편물류센터'], '국제 여객선': [37.3683, 126.6253, '인천항'], '인천항 국제여객터미널': [37.4241, 126.6055, '인천항 국제여객터미널'],
   '부두 컨테이너 야적장': [35.0767, 128.8167, '부산신항'], '보세창고 (보스전)': [35.1028, 129.0403, '부산항'], '우체국': [37.5617, 126.9822, '서울중앙우체국'], '교도소': [37.3935, 126.9862, '경기 의왕'], '서울역': [37.5547, 126.9707, '서울역'],
   'KTX': [36.3326, 127.4342, '대전 부근'], '버스터미널': [37.5049, 127.0049, '서울 서초'], '명동': [37.5636, 126.985, '서울 명동'], '경복궁': [37.5796, 126.977, '서울 종로'], '홍대': [37.5563, 126.9236, '서울 마포'],
   '롯데월드타워': [37.5126, 127.1026, '서울 잠실'], '동대문': [37.5665, 127.0092, '서울 동대문'], '광안리 해변': [35.1532, 129.1186, '부산 광안리'], '숭례문': [37.56, 126.9753, '서울 중구'], '수원화성': [37.2871, 127.0118, '수원'],
@@ -6197,7 +6197,7 @@ function showMaps(paused = false) {
   $('mapsWho').textContent = t('who_fmt').replace('{nick}', dispName()).replace('{score}', runScore) + (runActive ? t('run_fmt').replace('{n}', runCleared.size) : '') + ' · 🗺 ' + LEVELS.filter((L, i) => prog.best[i] !== undefined).length + '/' + LEVELS.length;
   const isOp = i => LEVELS[i].gate || LEVELS[i].name === 'KTX';
   const lmGate = LEVELS.map((L, i) => i).filter(i => LEVELS[i].gate), opX = LEVELS.map((L, i) => i).filter(i => isOp(i) && !LEVELS[i].gate), lmRest = LEVELS.map((L, i) => i).filter(i => LEVELS[i].landmark && !isOp(i) && !LEVELS[i].mega), megaI = LEVELS.findIndex(L => L.mega);
-  const byName = n => LEVELS.findIndex(L => L.name === n), WORK = ['공항 입국장', '인천공항 T2 출국장', '공항 화물터미널', '국제우편·특송센터', '부두 컨테이너 야적장', '인천항 국제여객터미널', '국제 여객선', '비행기', '우체국', '버스터미널', 'KTX', '교도소'].map(byName).filter(i => i >= 0);
+  const byName = n => LEVELS.findIndex(L => L.name === n), WORK = ['공항 입국장', '공항 출국장(T2)', '공항 화물터미널', '국제우편·특송센터', '부두 컨테이너 야적장', '인천항 국제여객터미널', '국제 여객선', '비행기', '우체국', '버스터미널', 'KTX', '교도소'].map(byName).filter(i => i >= 0);
   // 관세청 업무량이 많은 곳부터: 여행자 휴대품 → 항공·특송·우편 화물 → 해상 화물 → 여객선 → 그 밖의 관문
   const ops = [...WORK, ...[0, 1, 2, 3, 4, ...lmGate, ...opX].filter(i => !WORK.includes(i)), 5, 6, megaI], order = [...ops, ...lmRest];
   const megaNeed = order.filter(i => i !== megaI && !LEVELS[i].relax), SEC = { [ops[0]]: ['🛃 관세 작전', ops.length + '곳 · 마지막 🏙 통합 도시는 모든 맵을 클리어하면 열려요 (팀 방 전용)'], [lmRest[0]]: ['🏯 대한민국 명소', lmRest.length + '곳 · 자유롭게 순찰'] };
