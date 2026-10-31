@@ -646,7 +646,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1908';
+const BUILD = '20261031-1912';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4818,12 +4818,12 @@ const LANDMARK_START = LEVELS.length;
 LANDMARK_LIST.forEach((o, n) => LEVELS.push(LMDEF({ ...o, n })));
 // 최종 히든: 명소 순찰을 모두 마치면 열리는 대한민국 통합 도시 (명소 12곳 + 바둑판 도로, 기존 명소 맵의 약 10배)
 const MEGA_PICKS = ['서울역', '명동', '경복궁', '홍대', '롯데월드타워', '동대문', '숭례문', '광화문광장', 'N서울타워', '국회의사당', '전주 한옥마을', '대전 한빛탑'];
-const MEGA_G = { CW: 100, CD: 80, ST: 15, COLS: 4, ROWS: 3 }; MEGA_G.W = MEGA_G.COLS * MEGA_G.CW + (MEGA_G.COLS + 1) * MEGA_G.ST; MEGA_G.D = MEGA_G.ROWS * MEGA_G.CD + (MEGA_G.ROWS + 1) * MEGA_G.ST;
+const MEGA_G = { CW: 100, CD: 80, ST: 2, COLS: 4, ROWS: 3 }; MEGA_G.W = MEGA_G.COLS * MEGA_G.CW + (MEGA_G.COLS + 1) * MEGA_G.ST; MEGA_G.D = MEGA_G.ROWS * MEGA_G.CD + (MEGA_G.ROWS + 1) * MEGA_G.ST;
 LEVELS.push((() => { const d = LMDEF({ mega: true, n: 6, name: '대한민국 통합 도시', icon: '🏙', w: MEGA_G.W, d: MEGA_G.D, floor: FLOOR(() => TEX.tile('megaside', '#b9b4aa', '#8d887e', 16, [.25, .25])), mmCol: 0x9a9fa3, floorW: 900, floorD: 900, obj: luggage, ns: 30, st: 5, sky: [0x4f8fd8, 0xffe0b8],
   people: { civ: 26, tourist: 14, student: 6, merchant: 6, busker: 2, smuggler: 20, boss: 1 }, hide: { drug: 14, gun: 10 }, need: { drug: 28, gun: 20, smuggler: 18, boss: 1 },
   items: [['coinLocker', 3], ['trashBin', 3], ['flowerPot', 3], ['meterBox', 3], ['dutyBag', 3], ['marketBox', 3], ['briefcase', 2], ['stoneLantern', 2], ['clothBundle', 2], ['backpack', 3]],
   staff: [{ kind: 'police', route: [[0, 140], [0, -140]], wait: 2 }, { kind: 'police', route: [[-230, 0], [230, 0]], wait: 2 }, { kind: 'customs', route: [[-115, 140], [115, 140]], wait: 2 }, { kind: 'customs', route: [[-115, -140], [115, -140]], wait: 2 }],
-  who: '대한민국 관세청장', short: '★7 최종 히든! 명소 12곳이 모인 거대 도시. 5명이 힘을 합쳐야만 국제 밀수 조직을 일망타진할 수 있어요.',
+  who: '대한민국 관세청장', short: '★7 최종 히든! 명소 12곳을 도로 없이 한데 모은 거대한 미로 도시. 담장 사이 문을 찾아 구역을 넘나들어요. 5명이 힘을 합쳐야만 국제 밀수 조직을 일망타진할 수 있어요.',
   intro: '드디어 마지막이야! 지금까지 순찰한 명소들이 하나의 거대한 도시로 모였어.\n국제 밀수 조직이 도시 전체에 물건을 숨기고 보스까지 숨어 있어.\n혼자서는 절대 못 해. 5명이 구역을 나눠서 수색하고, 마지막엔 모두 모여 보스를 잡자!',
   build(L) { megaCity(L); } }); d.diff = { stars: 7, speed: 1.5, flee: 1.5, hp: 4, bossHp: 12, sniff: 16, vehicle: 1.35 }; return d; })());
 // 실제 크기 명소를 통합 도시 구역에 넣을 때 보여 줄 핵심부 중심
@@ -4831,10 +4831,21 @@ const MEGA_FOCUS = { '경복궁': [0, 90], '청와대': [0, -15], '국회의사�
 function megaCity(L) {
   const { CW, CD, ST, COLS, ROWS, W, D } = MEGA_G;
   const xs = [...Array(COLS + 1)].map((_, k) => -W / 2 + ST / 2 + k * (CW + ST)), zs = [...Array(ROWS + 1)].map((_, k) => -D / 2 + ST / 2 + k * (CD + ST));
-  L.mmRoads = L.mmRoads || []; L.mmCross = [];
-  for (const x of xs) { mesh(BOX(10, .04, D), MAT.col(0x3a3d42, .95), x, .03, 0).receiveShadow = true; for (let z = -D / 2 + 3; z < D / 2 - 3; z += 5) mesh(BOX(.18, .02, 2.2), MAT.col(0xf4f4f2, .6), x, .06, z); L.mmRoads.push([x, -D / 2, x, D / 2, 10, false]); }
-  for (const z of zs) { mesh(BOX(W, .04, 10), MAT.col(0x3a3d42, .95), 0, .031, z).receiveShadow = true; for (let x = -W / 2 + 3; x < W / 2 - 3; x += 5) mesh(BOX(2.2, .02, .18), MAT.col(0xf4f4f2, .6), x, .061, z); L.mmRoads.push([-W / 2, z, W / 2, z, 10, false]); }
-  for (const x of xs) for (const z of zs) { L.mmCross.push([x, z]); for (let k = -3; k <= 3; k++) { mesh(BOX(.6, .02, 3), MAT.col(0xffffff, .5), x + k * 1.2, .065, z + 6.6); mesh(BOX(3, .02, .6), MAT.col(0xffffff, .5), x + 6.6, .065, z + k * 1.2); } }
+  // 도로 없이 명소 12곳을 맞붙여 놓고, 사이사이 담장으로 미로를 만든다 (구역마다 통로는 정해진 곳에만)
+  L.mmRoads = []; L.mmCross = [];
+  const cell = (c, r) => r * COLS + c, seen = new Set([0]), open = new Set(), st = [0];
+  while (st.length) { const cur = st[st.length - 1], c = cur % COLS, r = Math.floor(cur / COLS); const nb = [[c - 1, r], [c + 1, r], [c, r - 1], [c, r + 1]].filter(([x, y]) => x >= 0 && y >= 0 && x < COLS && y < ROWS && !seen.has(cell(x, y))); if (!nb.length) { st.pop(); continue; } const [x, y] = nb[Math.floor(rnd() * nb.length)], nx = cell(x, y); seen.add(nx); open.add(Math.min(cur, nx) + '-' + Math.max(cur, nx)); st.push(nx); }
+  open.add(cell(1, 1) + '-' + cell(2, 1)); open.add(cell(1, 2) + '-' + cell(1, 1)); // 막다른 길만 있지 않게 고리 2개
+  const hedge = MAT.col(0x4f7f3f, .9), cap = MAT.col(0x3f6a33, .9), WH = 3.2;
+  const wall = (x0, z0, x1, z1, keep = false) => { const w = Math.abs(x1 - x0) || 1.2, d = Math.abs(z1 - z0) || 1.2, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2; const m = mesh(BOX(w, WH, d), hedge, cx, WH / 2, cz); m.castShadow = false; mesh(BOX(w + .2, .3, d + .2), cap, 0, WH / 2 + .15, 0, m).castShadow = false; addCol(cx, cz, w, d, m, { topY: WH, keep }); };
+  // 바깥 담장
+  wall(-W / 2, -D / 2, W / 2, -D / 2, true); wall(-W / 2, D / 2, W / 2, D / 2, true); wall(-W / 2, -D / 2, -W / 2, D / 2, true); wall(W / 2, -D / 2, W / 2, D / 2, true);
+  // 구역 사이 담장: 통로로 이어진 곳은 문 하나(폭 7)를 낸다
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const id = cell(c, r);
+    if (c < COLS - 1) { const x = xs[c + 1], z0 = zs[r] - ST / 2, z1 = zs[r + 1] + ST / 2; if (open.has(id + '-' + cell(c + 1, r))) { const g = z0 + 8 + rnd() * (z1 - z0 - 23); wall(x, z0, x, g); wall(x, g + 7, x, z1); sign('🚪', x, 4.4, g + 3.5, .6); } else wall(x, z0, x, z1); }
+    if (r < ROWS - 1) { const z = zs[r + 1], x0 = xs[c] - ST / 2, x1 = xs[c + 1] + ST / 2; if (open.has(id + '-' + cell(c, r + 1))) { const g = x0 + 8 + rnd() * (x1 - x0 - 23); wall(x0, z, g, z); wall(g + 7, z, x1, z); sign('🚪', g + 3.5, 4.4, z, .6); } else wall(x0, z, x1, z); }
+  }
   MEGA_PICKS.forEach((name, n) => {
     const o = LANDMARK_LIST.find(q => q.name === name); if (!o) return;
     const c = n % COLS, r = Math.floor(n / COLS), ox = (xs[c] + xs[c + 1]) / 2, oz = (zs[r] + zs[r + 1]) / 2, hx = CW / 2 - 2, hz = CD / 2 - 2;
@@ -4852,17 +4863,13 @@ function megaCity(L) {
     for (let i = nG; i < mmSigns.length; i++) { mmSigns[i].x = (mmSigns[i].x - fx) * s + ox; mmSigns[i].z = (mmSigns[i].z - fz) * s + oz; }
     for (let i = nSt; i < stallSpots.length; i++) { stallSpots[i].x = (stallSpots[i].x - fx) * s + ox; stallSpots[i].z = (stallSpots[i].z - fz) * s + oz; }
     for (const cc of sub.search || []) if (colliders.includes(cc)) L.search.push(cc);
-    sign('🏙 ' + name + ' 구역', ox, 10, oz + CD / 2 - 3, 1.1, 'rgba(19,51,90,.92)');
+    sign('🏙 ' + name, ox, 12, oz, 1.1, 'rgba(19,51,90,.92)');
     grp.traverse(o => { if (o.isMesh) { o.castShadow = false; o.matrixAutoUpdate = o.matrixAutoUpdate; } });
     (L.megaGroups = L.megaGroups || []).push({ g: grp, x: ox, z: oz });
   });
   // 탐지견에서 먼 구역은 그리지 않는다 (휴대폰에서도 부드럽게)
   envAnim.push(() => { for (const q of L.megaGroups || []) { const far = Math.max(Math.abs(q.x - dog.x) - CW / 2, Math.abs(q.z - dog.z) - CD / 2); q.g.visible = far < (isMobile ? 70 : 110); } });
-  // 블록마다 도는 차 + 도시 외곽 순환 차량
-  const types = ['car', 'taxi', 'bus', 'moto', 'car', 'taxi']; L.ringVehicles = [];
-  for (let c = 0; c < COLS; c++) for (let r = 0; r < ROWS; r++) { const x0 = xs[c] + 2.6, x1 = xs[c + 1] - 2.6, z0 = zs[r] + 2.6, z1 = zs[r + 1] - 2.6; L.ringVehicles.push({ type: types[(c + r) % types.length], route: [[x0, z0], [x1, z0], [x1, z1], [x0, z1]], start: (c + r) % 4 }); }
-  const oL = [[xs[0] - 2.6, zs[0] - 2.6], [xs[COLS] + 2.6, zs[0] - 2.6], [xs[COLS] + 2.6, zs[ROWS] + 2.6], [xs[0] - 2.6, zs[ROWS] + 2.6]];
-  for (let k = 0; k < 4; k++) L.ringVehicles.push({ type: ['bus', 'car', 'taxi', 'moto'][k], route: oL, start: k });
+  L.ringVehicles = [];
 }
 
 
