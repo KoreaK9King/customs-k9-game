@@ -682,7 +682,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2157';
+const BUILD = '20261031-2214';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -2116,7 +2116,7 @@ class Vehicle {
       const d = makePerson('handler'); d.g.scale.setScalar(.85); d.g.position.set(0, .35, -.3); for (const l of d.legs) l.rotation.x = -1.4; g.add(d.g);
     } else if (type === 'bus') {
       this.len = 10; this.wid = 2.6; const c = pick([0x2c6fb7, 0x27ae60, 0xf4f4f2, 0xd63a2a]);
-      mesh(BOX(2.5, 2.6, 10), MAT.col(0xf4f4f2, .4), 0, 1.75, 0, g); mesh(BOX(2.52, .5, 10.02), MAT.col(c, .4), 0, 1, 0, g); mesh(BOX(2.54, .9, 9.4), MAT.col(0x1b2833, .1, .3), 0, 2.4, 0, g); mesh(BOX(2.3, 1, .05), MAT.col(0x1b2833, .1, .3), 0, 2.2, 5.01, g);
+      mesh(BOX(2.5, 2.6, 10), MAT.col(0xf4f4f2, .4), 0, 1.75, 0, g); mesh(BOX(2.58, .5, 10.08), MAT.col(c, .4), 0, 1, 0, g); mesh(BOX(2.54, .9, 9.4), MAT.col(0x1b2833, .1, .3), 0, 2.4, 0, g); mesh(BOX(2.3, 1, .05), MAT.col(0x1b2833, .1, .3), 0, 2.2, 5.01, g);
       for (const sz of [3.4, -3.4]) for (const sx of [-1.2, 1.2]) mesh(CYL(.5, .5, .35), MAT.col(0x111111, .8), sx, .5, sz, g).rotation.z = Math.PI / 2;
     } else if (type === 'car' || type === 'taxi') {
       this.len = 4.4; this.wid = 2; const c = type === 'taxi' ? 0xff8c1a : pick([0xf4f4f2, 0x222222, 0x9aa3ab, 0x2c6fb7, 0xc0392b]);
@@ -2570,7 +2570,7 @@ function bigPlane(livery) {
   mesh(BOX(28, 4, 4), white, 0, 3.6, 0, g);
   mesh(BOX(3, 3.2, 3.4), white, 15.4, 3.4, 0, g);
   mesh(BOX(1.4, .8, 3), dark, 15.6, 4.3, 0, g);
-  mesh(BOX(26, .6, 4.02), liv, 0, 2.6, 0, g);
+  mesh(BOX(26, .6, 4.08), liv, 0, 2.6, 0, g);
   for (const sd of [-1, 1]) mesh(BOX(24, .5, .05), dark, -1, 4.4, sd * 2.02, g);
   mesh(BOX(6, .45, 28), white, 1, 3, 0, g);
   for (const sd of [-1, 1]) { mesh(BOX(4, 1.6, 1.6), MAT.col(0xbfc5ca, .3, .4), 2.5, 2, sd * 6, g); mesh(BOX(.3, 1.2, 1.2), dark, 4.55, 2, sd * 6, g); }
@@ -2585,7 +2585,7 @@ let intro = null, vanAway = null;
 function k9Van() {
   const g = new THREE.Group(), w = MAT.col(0xf4f4f2, .35), n = MAT.col(0x13335a, .45), dk = MAT.col(0x1b2833, .1, .3);
   mesh(BOX(2.3, 2.1, 4.6), w, 0, 1.55, .2, g); mesh(BOX(2.3, 1.3, 1.2), w, 0, 1.15, -2.7, g);
-  mesh(BOX(2.32, .4, 5.8), n, 0, 1.2, -.4, g); mesh(BOX(2.1, .7, .05), dk, 0, 2.05, -2.15, g); mesh(BOX(2.1, .6, .05), dk, 0, 1.5, -3.31, g);
+  mesh(BOX(2.38, .4, 5.8), n, 0, 1.2, -.4, g); mesh(BOX(2.1, .7, .05), dk, 0, 2.05, -2.15, g); mesh(BOX(2.1, .6, .05), dk, 0, 1.5, -3.31, g);
   for (const sd of [-1, 1]) mesh(BOX(.05, .7, 1.2), dk, sd * 1.16, 2.05, -1.4, g);
   const door = mesh(BOX(.06, 1.6, 1.6), w, 1.17, 1.4, .6, g);
   const lr = mesh(BOX(.5, .22, .3), M('sirR', () => std(0xff2020, .3, 0, { emissive: 0xff0000, emissiveIntensity: 0 })), -.35, 2.72, -.6, g);
@@ -2627,7 +2627,7 @@ function k9Tank() {
 }
 function k9Plane() {
   const g = new THREE.Group(), w = MAT.col(0xf4f4f2, .35), n = MAT.col(0x13335a, .45), dk = MAT.col(0x1b2833, .1, .3);
-  mesh(BOX(2.4, 2.4, 9), w, 0, 1.6, 0, g); mesh(BOX(2.42, .5, 9.02), n, 0, 1.3, 0, g); mesh(BOX(1.8, 1.6, 1.4), w, 0, 1.5, -5.1, g); mesh(BOX(1.4, .5, .05), dk, 0, 2.1, -5.8, g);
+  mesh(BOX(2.4, 2.4, 9), w, 0, 1.6, 0, g); mesh(BOX(2.48, .5, 9.08), n, 0, 1.3, 0, g); mesh(BOX(1.8, 1.6, 1.4), w, 0, 1.5, -5.1, g); mesh(BOX(1.4, .5, .05), dk, 0, 2.1, -5.8, g);
   mesh(BOX(13, .25, 2.2), w, 0, 2.6, -.5, g); mesh(BOX(5, .2, 1.4), w, 0, 2.4, 4.1, g); mesh(BOX(.2, 2.6, 1.6), n, 0, 3.7, 4.1, g);
   for (const sd of [-1, 1]) { mesh(BOX(.8, .8, 1.6), MAT.metal(0x888888), sd * 3.6, 2.2, -.8, g); mesh(BOX(.3, .7, .3), MAT.col(0x111111, .8), sd * .9, .35, .6, g); }
   mesh(BOX(.3, .7, .3), MAT.col(0x111111, .8), 0, .35, -3.6, g);
@@ -2805,11 +2805,11 @@ function reachStacker(x, z, rot = 0) {
 }
 function cargoShip(x, z, len, dir = 0, speed = 0, range = 0) {
   const g = new THREE.Group(); g.position.set(x, -.6, z); g.rotation.y = dir; world.add(g);
-  mesh(BOX(len, 4, 11), MAT.col(0x1d2f4f, .55), 0, 1, 0, g); mesh(BOX(len + .02, 1.4, 11.02), MAT.col(0xa93226, .6), 0, -.4, 0, g);
+  mesh(BOX(len, 4, 11), MAT.col(0x1d2f4f, .55), 0, 1, 0, g); mesh(BOX(len + .08, 1.4, 11.08), MAT.col(0xa93226, .6), 0, -.4, 0, g);
   mesh(BOX(4, 1.2, 11), MAT.col(0x1d2f4f, .55), len / 2 + 1.5, 2.2, 0, g);
   const cc = [0xb03a2e, 0x2471a3, 0x1e8449, 0xca6f1e, 0x7d3c98, 0x117a65, 0xb7950b, 0xecf0f1];
   for (let cx = -len / 2 + 8; cx < len / 2 - 3; cx += 3.2) for (const cz of [-3.6, -1.2, 1.2, 3.6]) { const h = 1 + Math.floor(rnd() * 3); for (let k = 0; k < h; k++) mesh(BOX(3, 1.25, 2.3), MAT.col(pick(cc), .6), cx, 3.6 + k * 1.3, cz, g).castShadow = false; }
-  mesh(BOX(5, 7, 10), MAT.col(0xf4f4f2, .4), -len / 2 + 3.5, 6.5, 0, g); mesh(BOX(5.02, .9, 10.02), MAT.col(0x223344, .1, .2), -len / 2 + 3.5, 8.6, 0, g);
+  mesh(BOX(5, 7, 10), MAT.col(0xf4f4f2, .4), -len / 2 + 3.5, 6.5, 0, g); mesh(BOX(5.08, .9, 10.08), MAT.col(0x223344, .1, .2), -len / 2 + 3.5, 8.6, 0, g);
   mesh(BOX(1.6, 3, 1.6), MAT.col(0xc0392b, .5), -len / 2 + 3, 11.5, 0, g);
   const S = { x, z, t: rnd() * 10 };
   envAnim.push(dt => { S.t += dt; g.position.y = -.6 + Math.sin(S.t * .8) * .12; g.rotation.z = Math.sin(S.t * .6) * .015;
@@ -2818,7 +2818,7 @@ function cargoShip(x, z, len, dir = 0, speed = 0, range = 0) {
 }
 function tugBoat(x, z, r) {
   const g = new THREE.Group(); world.add(g);
-  mesh(BOX(2.6, 1.4, 5.5), MAT.col(0xf1c40f, .5), 0, .3, 0, g); mesh(BOX(2, 1.6, 2), MAT.col(0xf4f4f2, .4), 0, 1.8, .6, g); mesh(BOX(2.02, .5, 2.02), MAT.col(0x223344, .1, .2), 0, 2.1, .6, g);
+  mesh(BOX(2.6, 1.4, 5.5), MAT.col(0xf1c40f, .5), 0, .3, 0, g); mesh(BOX(2, 1.6, 2), MAT.col(0xf4f4f2, .4), 0, 1.8, .6, g); mesh(BOX(2.08, .5, 2.08), MAT.col(0x223344, .1, .2), 0, 2.1, .6, g);
   mesh(BOX(.6, 1.2, .6), MAT.col(0x222222, .6), 0, 3.2, 1, g);
   let a = rnd() * 6;
   envAnim.push(dt => { a += dt * .12; g.position.set(x + Math.cos(a) * r, -.5 + Math.sin(time * 2) * .1, z + Math.sin(a) * r * .4); g.rotation.y = -a; if (Math.random() < dt * 4) spawnP(g.position.x, .1, g.position.z, mr(-.5, .5), .4, mr(-.5, .5), WHITE, .9); });
@@ -2826,11 +2826,11 @@ function tugBoat(x, z, r) {
 function ship(x, z, len = 56) {
   const g = new THREE.Group(); g.position.set(x, 0, z); world.add(g);
   mesh(BOX(len, 6, 12), MAT.col(0xf2f2f0, .45), 0, .5, 0, g);
-  mesh(BOX(len + .02, 1.2, 12.02), MAT.col(0x1f4e8c, .45), 0, -1.6, 0, g);
+  mesh(BOX(len + .08, 1.2, 12.08), MAT.col(0x1f4e8c, .45), 0, -1.6, 0, g);
   mesh(BOX(len * .6, 3.4, 10), MAT.col(0xf7f7f5, .4), -4, 5.2, 0, g);
-  mesh(BOX(len * .6 + .02, .8, 10.02), MAT.col(0x223344, .1, .2), -4, 5.4, 0, g);
+  mesh(BOX(len * .6 + .08, .8, 10.08), MAT.col(0x223344, .1, .2), -4, 5.4, 0, g);
   mesh(BOX(len * .35, 2.8, 8), MAT.col(0xf7f7f5, .4), -4, 8.3, 0, g);
-  mesh(BOX(len * .35 + .02, .7, 8.02), MAT.col(0x223344, .1, .2), -4, 8.4, 0, g);
+  mesh(BOX(len * .35 + .08, .7, 8.08), MAT.col(0x223344, .1, .2), -4, 8.4, 0, g);
   mesh(CYL(1.2, 1.4, 4, 16), MAT.col(0xc0392b, .5), 10, 10.5, 0, g);
   const nm = textSprite('KOREA FERRY', { h: 1.2, bg: null, color: '#1f4e8c' }); nm.position.set(0, 2.4, 6.4); g.add(nm);
   return g;
@@ -2956,7 +2956,7 @@ function customsGate(x, z, red) {
   sign('관세청 세관 검사 CUSTOMS', x, 3.62, z + .2, .38, 'rgba(19,51,90,1)');
   sign(red ? '🔴 신고물품 있음 GOODS TO DECLARE' : '🟢 신고물품 없음 NOTHING TO DECLARE', x, 4.4, z, .48, red ? 'rgba(150,30,30,.95)' : 'rgba(25,110,55,.95)');
   const dx = x + (red ? 2.7 : -2.7);
-  solid(dx, z - 2.4, 1.2, 3, 1, white); mesh(BOX(1.22, .14, 3.02), navy, dx, .95, z - 2.4); mesh(BOX(.8, .5, .05), MAT.col(0x111111, .2), dx, 1.3, z - 2.9);
+  solid(dx, z - 2.4, 1.2, 3, 1, white); mesh(BOX(1.28, .14, 3.08), navy, dx, .95, z - 2.4); mesh(BOX(.8, .5, .05), MAT.col(0x111111, .2), dx, 1.3, z - 2.9);
   sign('세관 검사대', dx, 1.95, z - 2.4, .32, 'rgba(19,51,90,.95)');
   const officer = new Person('customs', dx + (red ? 1 : -1), z - 2.4); officer.route = [[officer.x, officer.z], [officer.x + .05, officer.z]]; officer.ri = 0; officer.waitAt = 4; officer.target = null;
   if (red) {
@@ -6065,6 +6065,36 @@ function applyShape(L, def) {
   if (o) { const m = new THREE.Mesh(shapeGeo(L.poly, true), o.tex ? std(0xffffff, .3, 0, { map: o.tex(), color: o.col }) : MAT.col(o.col, .9)); m.rotation.x = -Math.PI / 2; m.position.y = o.y ?? .03; m.receiveShadow = true; world.add(m); if (o.water) waterMesh = m; }
   if (def.rail) edgeWall(L, def.rail.h, def.rail.col, def.rail.t, def.rail.cren);
 }
+// 같은 높이·같은 벽면에 서로 다른 색 면이 딱 겹치면 카메라가 움직일 때 번갈아 깜빡인다(z-fighting).
+// 맵을 다 지은 뒤 겹친 면을 찾아, 면적이 작은 쪽(무늬·글씨판·윗층)을 바깥으로 조금씩 띄운다
+function deZFight() {
+  const skip = new Set([...people.map(p => p.g), ...vehicles.map(v => v.g)]);
+  const E = new THREE.Euler(), V = new THREE.Vector3(), ax = a => Math.abs(Math.sin(a * 2)) < .02;
+  for (let pass = 0; pass < 4; pass++) {
+    world.updateMatrixWorld(true); const items = [];
+    world.traverse(o => {
+      if (!o.isMesh || !o.geometry) return; for (let p = o; p; p = p.parent) if (skip.has(p)) return; const m = Array.isArray(o.material) ? o.material[0] : o.material;
+      if (!m || (m.transparent && m.opacity < .6) || m.side === THREE.BackSide) return;
+      E.setFromRotationMatrix(o.matrixWorld); if (!ax(E.x) || !ax(E.y) || !ax(E.z)) return;
+      if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+      const bb = o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld); if (bb.max.x - bb.min.x > 1500 || bb.max.z - bb.min.z > 1500) return; // 하늘·바다처럼 아주 큰 것만 뺀다
+      items.push({ o, bb, col: (m.color ? m.color.getHex() : 0) + ':' + (m.map ? m.map.uuid : '') });
+    });
+    let moved = 0; const done = new Set();
+    for (const [axis, u, v] of [['y', 'x', 'z'], ['x', 'y', 'z'], ['z', 'x', 'y']]) for (const side of axis === 'y' ? ['max'] : ['min', 'max']) {
+      const fs2 = items.map(it => ({ it, c: it.bb[side][axis] })).sort((a, b) => a.c - b.c);
+      for (let i = 0; i < fs2.length; i++) for (let j = i + 1; j < fs2.length && fs2[j].c - fs2[i].c < .012; j++) {
+        const a = fs2[i].it, b = fs2[j].it; if (a.col === b.col || done.has(a.o) || done.has(b.o)) continue;
+        const ou = Math.min(a.bb.max[u], b.bb.max[u]) - Math.max(a.bb.min[u], b.bb.min[u]), ov = Math.min(a.bb.max[v], b.bb.max[v]) - Math.max(a.bb.min[v], b.bb.min[v]);
+        if (ou <= .05 || ov <= .05) continue;
+        const area = t => (t.bb.max[u] - t.bb.min[u]) * (t.bb.max[v] - t.bb.min[v]), p = area(a) <= area(b) ? a : b; // 작은 면(얹힌 것)을 띄운다
+        const o = p.o; o.getWorldPosition(V); V[axis] += side === 'max' ? .022 : -.022;
+        if (o.parent) o.parent.worldToLocal(V); o.position.copy(V); o.updateMatrixWorld(true); done.add(o); moved++;
+      }
+    }
+    if (!moved) break;
+  }
+}
 function loadLevel(i) {
   clearWorld();
   levelIdx = i; const def = LEVELS[i];
@@ -6160,7 +6190,7 @@ function loadLevel(i) {
   balls = []; for (let k = 0; k < Math.round(3 + (level.sz - 1) * 8); k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: ballLabel(mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z)) }); }
   yaw = 0; camPos.set(spawn.x, 6, spawn.z + 9);
   levelTime = 0; levelScore = 0; keys = {};
-  renderQuest(); playMusic(def.music);
+  deZFight(); renderQuest(); playMusic(def.music);
 }
 
 const scaleNums = t => level && level.sz > 1.05 ? t.replace(/(\d+)(개|정|명)/g, (m, n, u) => Math.ceil(+n * (1 + (level.sz - 1) * .42)) + u) : t;
