@@ -646,7 +646,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1824';
+const BUILD = '20261031-1829';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -2952,38 +2952,54 @@ const ITEM = {
 };
 const LEVELS = [
   {
-    diff: { stars: 1, speed: .85, flee: .85, hp: 1, bossHp: 5, sniff: 30, vehicle: 1 }, extras: { gates: [[-14, 18.5, false], [14, 18.5, true]], decor: [['plant', 6], ['infoDesk', 1], ['dutyFree', 2]], items: [["shampoo",3],["shoeSole",3],["dutyBag",2],["golfBag",1]] }, name: '공항 입국장', icon: '✈', w: 56, d: 42, outdoor: false, bg: 0xdfe7ec, music: 1, shape: [[-1, 1], [-1, -.55], [-.8, -.75], [-.5, -.92], [0, -1], [.5, -.92], [.8, -.75], [1, -.55], [1, 1]], outside: { col: 0x5b6066, y: .03 }, rail: { h: 3.2, col: 0x9fc6dc, t: .25 },
+    diff: { stars: 1, speed: .85, flee: .85, hp: 1, bossHp: 5, sniff: 30, vehicle: 1 }, extras: { gates: [[-56, -3, false], [-44, -3, true], [-6, -3, false], [6, -3, true], [44, -3, false], [56, -3, true]], decor: [['plant', 6], ['infoDesk', 1], ['dutyFree', 2]], items: [["shampoo",3],["shoeSole",3],["dutyBag",2],["golfBag",1]] }, name: '공항 입국장', icon: '✈', sc: 1, w: 150, d: 80, outdoor: true, noWx: true, bg: 0xdfe7ec, music: 1, shape: [[-1, 1], [-1, -.55], [-.8, -.75], [-.5, -.92], [0, -1], [.5, -.92], [.8, -.75], [1, -.55], [1, 1]], outside: { col: 0x5b6066, y: .03 }, rail: { h: 3.2, col: 0x9fc6dc, t: .25 },
     staff: [
-      { kind: 'customs', route: [[-20, 3], [20, 3]], wait: 2.5 },
-      { kind: 'customs', route: [[-4, -3], [4, -3], [4, -13], [-4, -13]], wait: 1.5 },
-      { kind: 'pilot', route: [[24.5, -18], [24.5, 17], [4, 17], [24.5, 17]], wait: .3 },
-      { kind: 'attendant', route: [[25.5, -17], [25.5, 18], [5, 18], [25.5, 18]], wait: .3 },
-      { kind: 'attendant', route: [[-25, 18], [-25, -18], [-25, 18], [-5, 18]], wait: .3 },
+      { kind: 'customs', route: [[-66, -8], [66, -8]], wait: 2.5 },
+      { kind: 'customs', route: [[-24, -8], [-24, -28]], wait: 1.5 },
+      { kind: 'pilot', route: [[50, -26], [50, 20], [62, 20], [50, 20]], wait: .3 },
+      { kind: 'attendant', route: [[-50, -26], [-50, 20], [-62, 20], [-50, 20]], wait: .3 },
+      { kind: 'attendant', route: [[0, -30], [0, 20], [12, 20], [0, 20]], wait: .3 },
     ],
     people: { civ: 8, smuggler: 2 }, hide: { drug: 3, gun: 1 }, need: { drug: 2, smuggler: 1 },
-    who: '강민준 공항세관장', short: '여행가방 근처에서 냄새를 맡아 마약 2개를 찾고, 밀수범 1명을 체포하세요.',
+    who: '강민준 공항세관장', short: '인천공항 제1여객터미널 1층 입국장(실제 1/2 축척)! 수하물 수취대 근처에서 냄새를 맡아 마약 2개를 찾고, 밀수범 1명을 체포하세요.',
     intro: '관세청 탐지견, 첫 순찰이다!\n입국장 수하물에 마약이 섞여 들어왔다는 첩보가 있어.\n\n냄새를 맡으면 숨은 물건 쪽으로 냄새 입자가 흘러가.\n수상한 가방 바로 옆에서 짖으면 적발이야.\n여행객 틈에 숨은 밀수범도 1명 잡아줘!',
     build(L) {
+      // 인천공항 T1 1층 입국장 중앙 구간 (실제 약 300×160m → 1/2). 북쪽(-z) = 계류장(에어사이드), 남쪽(+z) = 도착 도로(랜드사이드)
       floorPlane(L.w, L.d, std(0xffffff, .25, 0, { map: TEX.tile('marble', '#cfc8bb', '#a9a193', 6, [L.w / 8, L.d / 8]) }));
-      walls(L, 'glass');
-      for (const cx of [-13, 13]) {
-        solid(cx, -8, 13, 3.4, .55, MAT.metal(0x6b7378, .4));
-        const belt = mesh(BOX(12.6, .06, 1.2), std(0xffffff, .7, 0, { map: canvasTex('belt', 128, () => { }, [8, 1]) }), cx, .58, -6.95); belts.push({ mesh: belt, speed: .3 });
-        mesh(BOX(12.6, .06, 1.2), belt.material, cx, .58, -9.05);
-        mesh(RBOX(12, .3, 1, .1), MAT.metal(0xb7bec3, .3), cx, .7, -8);
-        for (let i = 0; i < 5; i++) mesh(RBOX(.7, .45, .45, .06), MAT.shell(pick(bagColors)), cx - 5 + i * 2.4, .85, i % 2 ? -6.95 : -9.05);
-        sign('🧳 수하물 수취대 ' + (cx < 0 ? 'A' : 'B'), cx, 3.2, -8);
-      }
-      for (let x = -21; x <= 21; x += 7) {
-        solid(x, 8, 3, 1.4, 1.1, MAT.col(0xe8e4dc, .4));
-        mesh(BOX(3, .05, 1.5), MAT.col(0x5a4632, .5), x, 1.13, 8);
-        mesh(BOX(3, 1, .04), MAT.glass(), x, 1.65, 8.7);
-        mesh(BOX(2.4, .5, .1), MAT.col(0x1f3b5a, .5), x, 2.6, 8);
-      }
-      sign('입국 심사 IMMIGRATION', 0, 3.6, 8, .7);
-      for (const x of [-18, -6, 6, 18]) bench(x, -16);
-      for (const x of [-22, -9, 9, 22]) for (const z of [-1, 15]) pillar(x, z);
-      sign('✈ 국제공항 입국장 ARRIVALS', 0, 5.5, -L.d / 2 + 1.5, 1.1);
+      // 2층 입국심사에서 내려오는 에스컬레이터
+      for (const x of [-30, 0, 30]) { const e = mesh(BOX(3, .4, 9), MAT.metal(0xb7bec3, .3), x, 2.4, -32); e.rotation.x = -.42; addCol(x, -32, 3.4, 7, e, { topY: 99 }); for (const sx of [-1.6, 1.6]) { const r = mesh(BOX(.2, .9, 9.4), MAT.glass(), x + sx, 3, -32); r.rotation.x = -.42; } }
+      sign('⬆ 2층 법무부 입국심사 → 1층 수하물 찾는 곳', 0, 7.5, -33, .8);
+      // 수하물 수취대 6개 (남북으로 길게)
+      const belts0 = [11, 12, 13, 14, 15, 16];
+      [-60, -36, -12, 12, 36, 60].forEach((cx, n) => {
+        const Lz = Math.abs(cx) > 50 ? 10 : 14, cz = Math.abs(cx) > 50 ? -16 : -18;
+        solid(cx, cz, 3.4, Lz, .55, MAT.metal(0x6b7378, .4));
+        const belt = mesh(BOX(1.2, .06, Lz - .4), std(0xffffff, .7, 0, { map: canvasTex('belt', 128, () => { }, [1, 8]) }), cx - 1.05, .58, cz); belts.push({ mesh: belt, speed: .3 });
+        mesh(BOX(1.2, .06, Lz - .4), belt.material, cx + 1.05, .58, cz); mesh(RBOX(1, .3, Lz - 1, .1), MAT.metal(0xb7bec3, .3), cx, .7, cz);
+        for (let i = 0; i < Math.floor(Lz / 2.6); i++) mesh(RBOX(.45, .45, .7, .06), MAT.shell(pick(bagColors)), cx + (i % 2 ? 1.05 : -1.05), .85, cz - Lz / 2 + 1.4 + i * 2.6);
+        bx(cx, 0, cz - Lz / 2 - .8, 2, 3.4, .5, 0x2b3a4a); sign('🧳 수취대 ' + belts0[n], cx, 4.2, cz - Lz / 2 - .8, .6);
+      });
+      // 세관 검사구역 (녹색: 신고 없음 / 적색: 세관 신고) — 검사대는 extras.gates
+      floorPlane(150, 10, MAT.col(0xd8d2c6, .4), 0, -4, .012); sign('🛃 세관 검사 CUSTOMS · 녹색 = 신고 물품 없음 / 적색 = 세관 신고', 0, 6.2, -10, .7);
+      // 출구 C·D·E가 있는 칸막이벽
+      for (const [x0, x1] of [[-75, -57], [-43, -7], [7, 43], [57, 75]]) { const w = x1 - x0; bx((x0 + x1) / 2, 0, 2, w, 3.2, .4, 0xe9eef2); mesh(BOX(w, .5, .45), MAT.col(0x1f3b5a, .5), (x0 + x1) / 2, 3.2, 2); }
+      for (const [x, n] of [[-50, 'C'], [0, 'D'], [50, 'E']]) { mesh(BOX(14, 1.2, .5), MAT.col(0xf2c500, .6), x, 4, 2); sign('출구 ' + n + ' EXIT ' + n, x, 5.6, 2.6, .7); floorPlane(14, 1, MAT.col(0x666666, .4), x, 2, .02); }
+      // 환영홀: 마중 인파 펜스, 카운터, 벤치, 기둥
+      for (const x of [-50, 0, 50]) for (const sx of [-1, 1]) { mesh(BOX(.12, 1, .12), MAT.metal(0x999999), x + sx * 9, .5, 7); mesh(BOX(.12, 1, .12), MAT.metal(0x999999), x + sx * 9, .5, 11); mesh(BOX(.06, .1, 4), MAT.col(0x1f3b5a, .5), x + sx * 9, .9, 9); }
+      for (const [x, t, c] of [[-60, '💱 환전 EXCHANGE', 0x2c6fb7], [-35, '🚗 렌터카 RENT-A-CAR', 0x27ae60], [35, '📶 로밍·유심 ROAMING', 0x8e44ad], [60, '☕ 카페 · 편의점', 0xb5402f]]) { bx(x, 0, 32, 10, 1.1, 2, 0xf4f4f2); mesh(BOX(10, 1.2, .3), MAT.col(c, .5), x, 2.6, 33); sign(t, x, 4, 32, .55); }
+      for (const x of [-62, -37, -12, 12, 37, 62]) for (const z of [16, 26]) pillar(x, z);
+      for (const x of [-24, 24]) for (const z of [18, 24]) bench(x, z);
+      sign('✈ 인천국제공항 제1여객터미널 입국장 ARRIVALS', 0, 9, -38, 1.2);
+      // ── 유리벽 밖 ── 북쪽 계류장: 탑승교에 붙은 여객기, 멀리 탑승동·제2여객터미널
+      for (const [x, liv] of [[-55, 0x1f5fa8], [-5, 0x2c6fb7], [45, 0xc0392b]]) { const p = bigPlane(liv); p.scale.setScalar(1.3); p.rotation.y = -Math.PI / 2; p.position.set(x, 0, -82); const jb = mesh(BOX(2.6, 2.6, 26), MAT.col(0xd9dde2, .4), x + 6, 4.6, -56); jb.castShadow = false; mesh(BOX(1, 4.4, 1), MAT.metal(0x777777), x + 6, 2.2, -64); }
+      for (let x = -120; x <= 120; x += 6) mesh(BOX(3, .02, .25), MAT.col(0xf2c500, .5), x, .04, -104);
+      { const cg = new THREE.Group(); world.add(cg); mesh(BOX(330, 14, 30), MAT.col(0xd9dde2, .35), 0, 7, -250, cg); mesh(BOX(332, 2, 32), MAT.glass(), 0, 13, -250, cg); sign('탑승동 CONCOURSE (101~132번 게이트 · 셔틀트레인)', 0, 22, -236, 1.4); }
+      { const t2 = new THREE.Group(); t2.position.set(-150, 0, -420); world.add(t2); mesh(BOX(140, 22, 50), MAT.col(0xe4e8ec, .35), 0, 11, 0, t2); for (const sx of [-1, 1]) { const w = mesh(BOX(110, 12, 22), MAT.col(0xe4e8ec, .35), sx * 70, 6, 50, t2); w.rotation.y = sx * .6; } sign('제2여객터미널 T2 (약 2.7km 북서쪽)', -150, 34, -400, 1.6); }
+      // 남쪽 도착 도로(버스·택시 승차장)와 교통센터
+      floorPlaneW(300, 24, MAT.col(0x3a3d42, .95), 0, 56, .05); for (let x = -140; x <= 140; x += 8) mesh(BOX(4, .02, .25), MAT.col(0xffffff, .5), x, .07, 56);
+      for (const [x, z, c, l] of [[-40, 50, 0x2c6fb7, 12], [-10, 50, 0x27ae60, 12], [30, 62, 0xf2c500, 5], [50, 62, 0xf2c500, 5], [70, 62, 0x9a9fa3, 5]]) { mesh(BOX(l, 3, 2.6), MAT.col(c, .5), x, 1.6, z).castShadow = false; }
+      sign('🚌 버스 · 🚕 택시 승차장', 0, 5, 46, .8);
+      { const tc = new THREE.Group(); world.add(tc); mesh(BOX(120, 16, 50), MAT.glass(), 0, 8, 110, tc); mesh(new THREE.CylinderGeometry(60, 60, 4, 32, 1, false, 0, Math.PI), MAT.col(0xdfe4e8, .3), 0, 16, 110, tc).rotation.z = Math.PI / 2; sign('교통센터 · 공항철도 인천공항1터미널역', 0, 24, 90, 1.2); }
       L.search = scatter(L, 15, luggage, 1, 1);
     },
   },
@@ -5382,7 +5398,7 @@ function applyTimeOfDay(silent) {
   level.hemiNow = hemi.intensity;
   level.lightDir = out ? (A.sunAlt > -2 ? A.sunDir : A.moonAlt > 0 ? A.moonDir : null) : null;
   if (ph === 'night') { sun.color.set(0x9db4ff); hemi.color.set(0xb8c6ff); } else if (ph === 'dusk') { sun.color.set(0xffb27a); hemi.color.set(0xffe0c8); } else { sun.color.set(new THREE.Color(0xffd7a0).lerp(new THREE.Color(0xfff6e8), sstep(8, 35, A.sunAlt)).lerp(new THREE.Color(0xdfe6ee), cloud * .6)); hemi.color.set(0xffffff); }
-  if (out) weatherFx(K.k, w); else if (wxFx) { world.remove(wxFx.g); wxFx = null; }
+  if (out && !level.noWx) weatherFx(K.k, w); else if (wxFx) { world.remove(wxFx.g); wxFx = null; }
   { const el = $('wx'); if (el) { el.textContent = wxLabel(level.name, w, K) + ' · ' + (A.sunAlt > 0 ? (cloud > .6 ? '☁ 구름 뒤 해 고도 ' : '☀ 해 고도 ') + Math.round(A.sunAlt) + '°' : (A.moonAlt > 0 ? '🌙 ' + moonName(A.moonFrac, A.waxing) + ' ' + Math.round(A.moonFrac * 100) + '% · 고도 ' + Math.round(A.moonAlt) + '°' : '🌑 달 없음')); } }
   if (silent) return;
   // 밤에는 바깥 맵에 가로등 불빛
