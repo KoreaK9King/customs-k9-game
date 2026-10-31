@@ -294,8 +294,8 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 #mpanel .ctl{grid-template-columns:auto 1fr auto 1fr;gap:6px 10px;font-size:14px;margin:6px 0}#mpanel .ctl kbd{font-size:13px;padding:3px 10px;text-align:center}
 @media (orientation:landscape) and (max-height:540px){.igt{font-size:14px;margin-bottom:3px}.igg{grid-template-columns:repeat(4,1fr);gap:4px}.igc{padding:3px 6px;border-radius:9px;border-left-width:5px}.igc i{font-size:20px}.igc b{font-size:12.5px}.igc small{font-size:10.5px}#mpanel .ctl{font-size:12px;gap:4px 8px;padding:6px 8px}#mpanel .ctl kbd{font-size:11px;padding:2px 8px}}
 @media (max-width:560px){.igg{grid-template-columns:repeat(2,1fr)}#mpanel .ctl{grid-template-columns:auto 1fr}}
-#diffRow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:-4px 0 10px}#diffRow b{font-size:14px}#diffRow button{font:inherit;font-size:14px;font-weight:700;padding:5px 12px;border:2px solid #1b2b3c;border-radius:999px;background:#fff;color:var(--ink);cursor:pointer}#diffRow button.on{background:#ffd54f;box-shadow:0 2px 0 #1b2b3c}#diffRow small{flex-basis:100%;text-align:center;font-size:12px;opacity:.8}
-@media (orientation:landscape) and (max-height:540px){#diffRow{margin:-6px 0 6px;gap:4px}#diffRow button{font-size:12px;padding:3px 9px}#diffRow small{flex-basis:auto;font-size:11px}}
+#diffRow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:10px 0 12px;position:relative;z-index:1}#diffRow b{font-size:14px}#diffRow button{font:inherit;font-size:14px;font-weight:700;padding:5px 12px;border:2px solid #1b2b3c;border-radius:999px;background:#fff;color:var(--ink);cursor:pointer}#diffRow button.on{background:#ffd54f;box-shadow:0 2px 0 #1b2b3c}#diffRow small{flex-basis:100%;text-align:center;font-size:12px;line-height:1.35;opacity:.8;margin-top:2px}
+@media (orientation:landscape) and (max-height:540px){#diffRow{margin:8px 0 8px;gap:4px}#diffRow button{font-size:12px;padding:3px 9px}#diffRow small{flex-basis:auto;font-size:11px}}
 .hubtile{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px;border:3px solid #1b2b3c;border-radius:14px;background:#fff8e6;color:var(--ink);font-family:inherit;cursor:pointer;box-shadow:0 4px 0 #1b2b3c;transition:transform .08s}
 .hubtile:active{transform:translateY(3px);box-shadow:0 1px 0 #1b2b3c}
 .hubtile .hi{font-size:30px;line-height:1.1}.hubtile b{font-family:Jua,sans-serif;font-size:17px;color:var(--navy)}.hubtile small{font-size:11.5px;color:var(--muted);min-height:1.2em}
@@ -679,7 +679,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2029';
+const BUILD = '20261031-2043';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -2968,7 +2968,7 @@ function zones(L) {
     const cx = (r.minX + r.maxX) / 2, cz = (r.minZ + r.maxZ) / 2, area = (r.maxX - r.minX) * (r.maxZ - r.minZ);
     sign(`${'🅰🅱🅲🅳'.slice(i * 2, i * 2 + 2)} ${'ABCD'[i]}구역 · ${kit.names[i]}`, cx, 6.5, cz, 1.1, 'rgba(19,51,90,.92)');
     floorPlane(Math.min(14, r.maxX - r.minX), .5, MAT.col(0xf1c40f, .6), cx, cz, .02);
-    const ns = Math.round(area / 115), ni = Math.round(area / 70), ZD = [['plant', 'infoDesk', 'dutyFree', 'cafeSet'], ['weighScale', 'lightTower', 'guardBooth'], ['mailCart', 'sealedCage', 'plant'], ['cafeSet', 'lifeRing', 'plant'], ['lightTower', 'guardBooth', 'weighScale'], ['sealedCage', 'guardBooth', 'weighScale']][levelIdx] || [];
+    const ns = Math.round(area / 115), ni = Math.round(area / 70), ZD = [['infoDesk', 'dutyFree', 'cafeSet'], ['weighScale', 'lightTower', 'guardBooth'], ['mailCart', 'sealedCage'], ['cafeSet', 'lifeRing'], ['lightTower', 'guardBooth', 'weighScale'], ['sealedCage', 'guardBooth', 'weighScale']][levelIdx] || [];
     for (let k = 0, nd = Math.round(area / 220); k < nd; k++) { const D = DECOR[pick(ZD)]; if (!D) continue; const p = placeFree(r, D[0], D[1], 1.4, L.avoid); if (p) D[2](p.x, p.z); }
     { const D = DECOR.guardBooth; const p = D && placeFree(r, D[0], D[1], 1.4, L.avoid); if (p) D[2](p.x, p.z); }
     for (let k = 0; k < ns; k++) { const [w, d, mk] = pick(kit.struct), p = placeFree(r, w, d, 1.4, L.avoid); if (p) mk(p.x, p.z); }
@@ -2997,7 +2997,7 @@ const ITEM = {
 };
 const LEVELS = [
   {
-    diff: { stars: 1, speed: .85, flee: .85, hp: 1, bossHp: 5, sniff: 30, vehicle: 1 }, extras: { gates: [[-56, -3, false], [-44, -3, true], [-6, -3, false], [6, -3, true], [44, -3, false], [56, -3, true]], decor: [['plant', 6], ['infoDesk', 1], ['dutyFree', 2]], items: [["shampoo",3],["shoeSole",3],["dutyBag",2],["golfBag",1]] }, name: '공항 입국장', icon: '✈', sc: 1, w: 150, d: 80, outdoor: true, noWx: true, bg: 0xdfe7ec, music: 1, shape: [[-1, 1], [-1, -.55], [-.8, -.75], [-.5, -.92], [0, -1], [.5, -.92], [.8, -.75], [1, -.55], [1, 1]], outside: { col: 0x5b6066, y: .03 }, rail: { h: 3.2, col: 0x9fc6dc, t: .25 },
+    diff: { stars: 1, speed: .85, flee: .85, hp: 1, bossHp: 5, sniff: 30, vehicle: 1 }, extras: { gates: [[-56, -3, false], [-44, -3, true], [-6, -3, false], [6, -3, true], [44, -3, false], [56, -3, true]], decor: [['infoDesk', 1], ['dutyFree', 2]], items: [["shampoo",3],["shoeSole",3],["dutyBag",2],["golfBag",1]] }, name: '공항 입국장', icon: '✈', sc: 1, w: 150, d: 80, outdoor: true, noWx: true, bg: 0xdfe7ec, music: 1, shape: [[-1, 1], [-1, -.55], [-.8, -.75], [-.5, -.92], [0, -1], [.5, -.92], [.8, -.75], [1, -.55], [1, 1]], outside: { col: 0x5b6066, y: .03 }, rail: { h: 3.2, col: 0x9fc6dc, t: .25 },
     staff: [
       { kind: 'customs', route: [[-66, -8], [66, -8]], wait: 2.5 },
       { kind: 'customs', route: [[-24, -8], [-24, -28]], wait: 1.5 },
@@ -3097,7 +3097,7 @@ const LEVELS = [
     },
   },
   {
-    diff: { stars: 2, speed: 1.05, flee: 1, hp: 2, bossHp: 5, sniff: 25, vehicle: 1 }, extras: { decor: [['mailCart', 3], ['plant', 2]], items: [["teddy",3],["cosmetics",3],["vitamin",2],["shoeBox",2]] }, name: '국제우편·특송센터', icon: '✉', w: 54, d: 40, outdoor: false, bg: 0xd8dde0, music: 3,
+    diff: { stars: 2, speed: 1.05, flee: 1, hp: 2, bossHp: 5, sniff: 25, vehicle: 1 }, extras: { decor: [['mailCart', 5]], items: [["teddy",3],["cosmetics",3],["vitamin",2],["shoeBox",2]] }, name: '국제우편·특송센터', icon: '✉', w: 54, d: 40, outdoor: false, bg: 0xd8dde0, music: 3,
     staff: [
       { kind: 'postal', route: [[-20, -6.5], [8, -6.5]], wait: 1.2 },
       { kind: 'postal', route: [[8, 2.5], [-20, 2.5]], wait: 1.2 },
@@ -3434,6 +3434,22 @@ function gateTop(x, z, w, d, h, o = {}) {
   if (o.tier) { bx(x, h + H + 1.7, z, W2 * .7, H * .8, D2 * .7, o.wall ?? 0xeadfca, false); hroof(x, h + H * 1.8 + 1.7, z, W2 * .7, D2 * .7); }
 }
 function tree(x, z, s = 1, c = 0x3f8f3a) { bx(x, 0, z, .45 * s, 1.6 * s, .45 * s, 0x6d4c2f); mesh(BOX(2.2 * s, 1.8 * s, 2.2 * s), LMC(c), x, 2.4 * s, z).castShadow = true; mesh(BOX(1.4 * s, 1 * s, 1.4 * s), LMC(c), x, 3.6 * s, z); }
+// 여러 나무 모양: 벚나무(분홍) · 은행나무(노랑) · 버드나무(늘어진 가지) · 느티나무(넓은 고목) · 목련(흰 꽃)
+function cherry(x, z, s = 1) { bx(x, 0, z, .4 * s, 1.8 * s, .4 * s, 0x5a3a2a); mesh(BOX(2.8 * s, 1.5 * s, 2.8 * s), LMC(0xf4b6cd), x, 2.5 * s, z).castShadow = true; mesh(BOX(1.8 * s, .9 * s, 1.8 * s), LMC(0xf9d3e2), x + .2 * s, 3.5 * s, z - .2 * s); }
+function ginkgo(x, z, s = 1) { bx(x, 0, z, .4 * s, 2 * s, .4 * s, 0x6d4c2f); mesh(BOX(2 * s, 1.5 * s, 2 * s), LMC(0xf2c53d), x, 2.6 * s, z).castShadow = true; mesh(BOX(1.4 * s, 1.3 * s, 1.4 * s), LMC(0xf6d55c), x, 3.9 * s, z); mesh(BOX(.8 * s, 1 * s, .8 * s), LMC(0xf2c53d), x, 5 * s, z); }
+function willow(x, z, s = 1) { bx(x, 0, z, .45 * s, 2.4 * s, .45 * s, 0x5d4a35); mesh(BOX(2.8 * s, 1 * s, 2.8 * s), LMC(0x9cc85a), x, 3 * s, z).castShadow = true; for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2; mesh(BOX(.18 * s, 1.9 * s, .18 * s), LMC(0x8fbf4a), x + Math.cos(a) * 1.25 * s, 1.75 * s, z + Math.sin(a) * 1.25 * s).castShadow = false; } }
+function zelkova(x, z, s = 1) { bx(x, 0, z, .75 * s, 2.3 * s, .75 * s, 0x5b4632); mesh(BOX(4.2 * s, 1.7 * s, 4.2 * s), LMC(0x4f7f34), x, 3.1 * s, z).castShadow = true; mesh(BOX(2.8 * s, 1.1 * s, 2.8 * s), LMC(0x5a8c3a), x - .3 * s, 4.4 * s, z + .2 * s); }
+function magnolia(x, z, s = 1) { bx(x, 0, z, .35 * s, 1.6 * s, .35 * s, 0x6a5a4a); mesh(BOX(2.2 * s, 1.7 * s, 2.2 * s), LMC(0xf7f3ea), x, 2.5 * s, z).castShadow = true; for (let k = 0; k < 5; k++) mesh(BOX(.35 * s, .35 * s, .35 * s), LMC(0xf3c6d6), x + rr(-1, 1) * s, 2.5 * s + rr(-.8, .9) * s, z + 1.12 * s).castShadow = false; }
+function bamboo(x, z, s = 1) { for (let k = 0; k < 6; k++) { const ox = rr(-.8, .8) * s, oz = rr(-.8, .8) * s, h = rr(4, 6) * s; mesh(BOX(.14 * s, h, .14 * s), LMC(0x6f9a3a), x + ox, h / 2, z + oz).castShadow = false; mesh(BOX(.9 * s, .5 * s, .9 * s), LMC(0x7fb24a), x + ox, h, z + oz).castShadow = false; } addCol(x, z, 1.2 * s, 1.2 * s, null, { topY: 99 }); }
+function persimmon(x, z, s = 1) { bx(x, 0, z, .35 * s, 1.5 * s, .35 * s, 0x5b4632); mesh(BOX(2.4 * s, 1.5 * s, 2.4 * s), LMC(0x4f8a3a), x, 2.3 * s, z).castShadow = true; for (let k = 0; k < 7; k++) mesh(BOX(.3 * s, .3 * s, .3 * s), LMC(0xff8a1f), x + rr(-1.2, 1.2) * s, 2.3 * s + rr(-.7, .7) * s, z + pick([-1.22, 1.22]) * s).castShadow = false; }
+// 조경 도우미: 비워 둘 사각형(AV: [x, z, 반폭, 반깊이])·길·충돌체를 피해 숲(grove)·가로수 줄(row)을 심는다
+function scape(L, AV = []) {
+  const b = L.bounds, free = (x, z) => (!b || (x > b.minX + 2 && x < b.maxX - 2 && z > b.minZ + 2 && z < b.maxZ - 2)) && (!L.inside || L.inside(x, z)) && !AV.some(([ax, az, hw, hd]) => Math.abs(x - ax) < hw && Math.abs(z - az) < hd) && !onRoad(L, x, z, 1, 1, .6) && !colliders.some(c => !c.disabled && x > c.minX - 1.8 && x < c.maxX + 1.8 && z > c.minZ - 1.8 && z < c.maxZ + 1.8) && Math.hypot(x - L.spawn.x, z - L.spawn.z) > 6;
+  const grove = (x0, x1, z0, z1, n, fn) => { for (let k = 0, c = 0; k < n * 8 && c < n; k++) { const x = rr(x0, x1), z = rr(z0, z1); if (free(x, z)) { fn(x, z); c++; } } };
+  const row = (ax, az, bx2, bz, gap, fn) => { const len = Math.hypot(bx2 - ax, bz - az); for (let u = 0; u <= len; u += gap) { const x = ax + (bx2 - ax) * u / len, z = az + (bz - az) * u / len; if (free(x, z)) fn(x, z); } };
+  const mix = (...fs) => (x, z) => pick(fs)(x, z, rr(.85, 1.2));
+  return { free, grove, row, mix };
+}
 function pine(x, z, s = 1) { bx(x, 0, z, .4 * s, 2 * s, .4 * s, 0x7a4a2a); for (let k = 0; k < 3; k++) mesh(BOX((2.4 - k * .6) * s, .8 * s, (2.4 - k * .6) * s), LMC(0x2f6b3a), x + (k % 2 ? .3 : -.2) * s, (2.2 + k * .8) * s, z); }
 function building(x, z, w, d, h, c, o = {}) {
   bx(x, 0, z, w, h, d, c); const gl = o.lit ? glow(0xffe7a0, .7) : LMC(o.glass ?? 0x2c4a63);
@@ -3784,6 +3800,7 @@ function polyRoad(L, kind) {
     for (let u = 0; u <= len; u += 3) L.avoid.push({ x: ax + (bx2 - ax) * u / len, z: az + (bz - az) * u / len, r: W / 2 + 1.6 });
   }
   if (trail) return;
+  streetTrees(L, P.map((p, i) => [p[0], p[1], P[(i + 1) % P.length][0], P[(i + 1) % P.length][1]]), W);
   const per = P.reduce((a, p, i) => a + Math.hypot(P[(i + 1) % P.length][0] - p[0], P[(i + 1) % P.length][1] - p[1]), 0), types = ROAD_TYPES[kind] || ['car', 'moto'];
   const lane = o => P.map(([x, z]) => { const r = Math.hypot(x, z) || 1; return [x + x / r * o, z + z / r * o]; });
   const nV = Math.max(3, Math.min(8, Math.round(per / 45)));
@@ -3822,6 +3839,14 @@ function clearRoadProps(L) {
   }
 }
 const _rb = new THREE.Box3();
+// 차도 양옆 보도에 가로수를 일정 간격으로 심는다 (건물·횡단보도·다른 도로와 겹치는 자리는 건너뜀)
+function streetTrees(L, segs, W) {
+  const off = W / 2 + 1.8, blocked = (x, z) => colliders.some(c => !c.disabled && x > c.minX - 1.4 && x < c.maxX + 1.4 && z > c.minZ - 1.4 && z < c.maxZ + 1.4);
+  for (const [ax, az, bx2, bz] of segs) { const len = Math.hypot(bx2 - ax, bz - az); if (len < 12) continue; const ux = (bx2 - ax) / len, uz = (bz - az) / len;
+    for (let u = 6; u < len - 6; u += 11) for (const sd of [-1, 1]) { const x = ax + ux * u - uz * off * sd, z = az + uz * u + ux * off * sd;
+      if ((L.inside && !L.inside(x, z)) || (L.bounds && (x < L.bounds.minX + 1 || x > L.bounds.maxX - 1 || z < L.bounds.minZ + 1 || z > L.bounds.maxZ - 1)) || onRoad(L, x, z, 1, 1, .6) || (L.mmCross || []).some(([cx, cz]) => Math.hypot(cx - x, cz - z) < 6) || blocked(x, z) || (slopes.length && slopeH(x, z) > .05)) continue;
+      tree(x, z, .8, 0x3f8f3a); addCol(x, z, .5, .5, null, { topY: 1.3 }); } }
+}
 function ringRoad(L, kind) {
   const band = Math.min(L.w - L.w0, L.d - L.d0) / 2; let rx = (L.w0 / 2 + L.w / 2) / 2, rz = (L.d0 / 2 + L.d / 2) / 2;
   { let best = 1e9; for (const t of [.5, .4, .6, .3, .7, .22, .78]) { const cx = L.w0 / 2 + t * (L.w - L.w0) / 2, cz = L.d0 / 2 + t * (L.d - L.d0) / 2, segs = [[-cx, -cz, cx, -cz, 7], [cx, -cz, cx, cz, 7], [cx, cz, -cx, cz, 7], [-cx, cz, -cx, -cz, 7]], T = { mmRoads: segs };
@@ -3833,6 +3858,7 @@ function ringRoad(L, kind) {
   const trail = kind === 'mountain', W = trail ? 3 : 7, col = trail ? 0x8a6f4a : 0x3a3d42;
   L.mmRoads = (L.mmRoads || []).concat([[-rx, -rz, rx, -rz, W], [rx, -rz, rx, rz, W], [rx, rz, -rx, rz, W], [-rx, rz, -rx, -rz, W]].map(r => [...r, trail]));
   L.mmCross = trail ? [] : [[0, -rz], [0, rz], [-rx, 0], [rx, 0]];
+  if (!trail) streetTrees(L, [[-rx, -rz, rx, -rz], [rx, -rz, rx, rz], [rx, rz, -rx, rz], [-rx, rz, -rx, -rz]], W);
   for (const [x, z, w, d] of [[0, -rz, rx * 2 + W, W], [0, rz, rx * 2 + W, W], [-rx, 0, W, rz * 2 - W], [rx, 0, W, rz * 2 - W]]) {
     mesh(BOX(w, .04, d), MAT.col(col, .95), x, .03, z).receiveShadow = true;
     if (!trail) { const horiz = w > d, len = horiz ? w : d; for (let u = -len / 2 + 3; u < len / 2 - 3; u += 4) mesh(BOX(horiz ? 2 : .18, .02, horiz ? .18 : 2), MAT.col(0xf4f4f2, .6), horiz ? x + u : x, .06, horiz ? z : z + u); }
@@ -3941,11 +3967,30 @@ const LANDMARK_LIST = [
       for (let z = -16; z <= 24; z += 6.5) mesh(BOX(32, .15, .6), glow(0xfff8e0, .8), 31.5, 6.2, z).castShadow = false;
       for (let z = -16; z <= 24; z += 8) mesh(BOX(62, .15, .6), glow(0xfff8e0, .8), -16, 5.4, z).castShadow = false;
     } },
-  { name: '교도소', gate: true, icon: '🔒', w: 76, d: 58, floor: FLOOR(() => TEX.concrete('prison', '#9a968d', [.25, .25])), mmCol: 0x9a968d, obj: crate, sky: [0x6d7a88, 0xd0d6dc], st: 4, shape: [[-1, 1], [-1, -1], [1, -1], [1, 1]], rail: { h: 6, col: 0x8f8b84, t: .8 },
-    staff: [{ kind: 'police', route: [[-30, -12], [30, -12]], wait: 2 }, { kind: 'police', route: [[-30, 14], [30, 14]], wait: 2 }, { kind: 'police', route: [[-32, -24], [-32, 24]], wait: 2 }, { kind: 'police', route: [[-11, -16.8], [11, -16.8]], wait: 3 }], veh: [{ type: 'bus', road: true, route: [[-24, 22], [24, 22], [24, 20.5], [-24, 20.5]] }], people: { inmate: 6, civ: 3, smuggler: 3 },
-    items: [["book",3],["laundry",3],["lunchbox",2]], who: '최철문 교도소장', short: '높은 담장과 감시탑, 수용동, 운동장, 면회실을 순찰하며 몰래 반입되는 물품을 막아요.',
+  { name: '교도소', gate: true, icon: '🔒', sc: 2.6, w: 76, d: 58, floor: FLOOR(() => TEX.concrete('prison', '#9a968d', [.25, .25])), mmCol: 0x9a968d, obj: crate, sky: [0x6d7a88, 0xd0d6dc], st: 4, shape: [[-1, 1], [-1, -1], [1, -1], [1, 1]], rail: { h: 6, col: 0x8f8b84, t: .8 },
+    staff: [{ kind: 'police', route: [[-30, -12], [30, -12]], wait: 2 }, { kind: 'police', route: [[-30, 14], [30, 14]], wait: 2 }, { kind: 'police', route: [[-32, -24], [-32, 24]], wait: 2 }, { kind: 'police', route: [[-11, -16.8], [11, -16.8]], wait: 3 }, { kind: 'police', route: [[-44, -60], [-44, 60]], wait: 2 }, { kind: 'police', route: [[44, -60], [44, 60]], wait: 2 }, { kind: 'police', route: [[-40, -68], [40, -68]], wait: 3 }], veh: [{ type: 'bus', road: true, route: [[-24, 22], [24, 22], [24, 20.5], [-24, 20.5]] }], people: { inmate: 6, civ: 3, smuggler: 3 },
+    items: [["book",3],["laundry",3],["lunchbox",2]], who: '최철문 교도소장', short: '📏 국내에서 가장 큰 교도소(대전교도소)만큼 넓어요! 높은 담장과 감시탑, 수용동 1~6동, 교도작업장, 직업훈련원, 교도소 농장, 면회실을 순찰하며 몰래 반입되는 물품을 막아요.',
     intro: '교도소 면회일이야. 영치품과 세탁물 상자에 마약과 무기를 숨겨 들여보내려는 사람들이 있대.\n감시탑 아래 높은 담장 안, 수용동·운동장·면회실을 꼼꼼히 순찰하자!\n북쪽 쇠창살 감방 7칸에선 수감자들이 꺼내 달라고 소리쳐. 속지 말고 임무에 집중!',
     build(L) {
+      if (L.w > L.w0 + 20) { // 바깥 구역: 국내 최대 규모 교도소처럼 수용동·작업장·농장·정문까지
+        const HX = L.w / 2, HZ = L.d / 2;
+        for (const [x, z] of [[-HX + 5, -HZ + 5], [HX - 5, -HZ + 5], [-HX + 5, HZ - 5], [HX - 5, HZ - 5], [-HX + 5, 0], [HX - 5, 0], [0, -HZ + 5]]) { bx(x, 0, z, 3, 10, 3, 0x7d7a73); mesh(BOX(4.4, 2.4, 4.4), LMC(0x5b5a55), x, 11.2, z); mesh(BOX(4.6, .3, 4.6), LMC(0x3d3c38), x, 12.5, z); const sl = mesh(BOX(.6, .4, .6), glow(0xffee88, 1.6), x, 11.4, z); envAnim.push(() => { sl.position.x = x + Math.sin(time * .8 + z) * 1.6; }); }
+        sign('🗼 감시탑', -HX + 5, 14, -HZ + 5, .5);
+        // 서쪽: 수용동 3~6동, 의료동, 접견동
+        [[-78, -48, '3수용동'], [-54, -48, '4수용동'], [-78, -20, '5수용동'], [-54, -20, '6수용동']].forEach(([x, z, n]) => { building(x, z, 16, 9, 9, 0x8a8f94, { glass: 0x2a2f36 }); for (let k = -7; k <= 7; k++) for (const y of [2.8, 5.6]) mesh(BOX(.1, 2.2, .1), MAT.metal(0x333333), x + k, y, z + 4.6); sign(n, x, 10.4, z + 4.7, .6); });
+        building(-66, 14, 22, 10, 6, 0xdfe3e6, { sign: '🏥 의료동' }); building(-66, 44, 22, 10, 5, 0xb7b2a8, { sign: '🪟 접견동 (가족 면회)' });
+        // 동쪽: 교도작업장, 직업훈련원, 강당, 취사장
+        building(62, -48, 24, 12, 7, 0x9aa3ab, { sign: '🏭 교도작업장 1공장 (가구)' }); building(62, -18, 24, 12, 7, 0x9aa3ab, { sign: '🏭 교도작업장 2공장 (봉제)' });
+        building(88, -33, 9, 26, 6, 0xc9c3b6, { sign: '🔧 직업훈련원' });
+        building(66, 16, 20, 10, 8, 0xe8e2d8, { sign: '⛪ 강당 · 종교관' }); building(66, 46, 16, 10, 5, 0xd4dbe2, { sign: '🍚 취사장' }); for (let k = 0; k < 4; k++) mesh(BOX(1, 1, 1), MAT.cardboard(), 58 + k * 2.6, .5, 52.6);
+        // 북쪽: 교도소 농장(밭·비닐하우스)
+        floorPlane(60, 22, MAT.col(0x7a5a3a, .95), 0, -56, .014); for (let k = 0; k < 9; k++) { const m = mesh(BOX(56, .3, .9), LMC(0x5f8f3a), 0, .15, -65 + k * 2.3); m.castShadow = false; }
+        for (const x of [-36, 36]) { building(x, -58, 10, 16, 3.2, 0xe6f0e6, { glass: 0xcfe8d0 }); } sign('🥬 교도소 농장 · 비닐하우스', 0, 4, -44, .6, 'rgba(60,110,40,.92)');
+        // 남쪽: 정문 · 민원실 · 주차장
+        building(-30, 62, 26, 9, 6, 0xb7b2a8, { sign: '🏛 정문 민원실 · 영치품 사전 접수' }); building(30, 62, 20, 9, 5, 0xc0cad4, { sign: '👮 보안과 · 교도관 사무실' });
+        for (let k = 0; k < 6; k++) parkedCar(-24 + k * 9.6, 46);
+        sign('🔒 국내 최대 규모 교도소 · 반입 금지 물품 단속 중', 0, 8, HZ - 3, .9);
+      }
       for (const [x, z] of [[-35, -26], [35, -26], [-35, 26], [35, 26], [0, -26]]) { bx(x, 0, z, 3, 9, 3, 0x7d7a73); mesh(BOX(4.2, 2.2, 4.2), LMC(0x5b5a55), x, 10.1, z); mesh(BOX(4.4, .3, 4.4), LMC(0x3d3c38), x, 11.3, z); const sl = mesh(BOX(.6, .4, .6), glow(0xffee88, 1.6), x, 10.4, z + 2.1); envAnim.push(() => { sl.position.x = x + Math.sin(time + z) * 1.4; }); }
       for (let x = -37; x <= 37; x += 1.2) for (const z of [-28.6, 28.6]) mesh(new THREE.TorusGeometry(.35, .06, 4, 8), MAT.metal(0x888888), x, 6.4, z).castShadow = false;
       for (const x of [-22, 22]) { building(x, -18, 16, 8, 8, 0x8a8f94, { glass: 0x2a2f36 }); for (let k = -7; k <= 7; k++) mesh(BOX(.1, 2.4, .1), MAT.metal(0x333333), x + k, 2.8, -13.9); for (let k = -7; k <= 7; k++) mesh(BOX(.1, 2.4, .1), MAT.metal(0x333333), x + k, 5.4, -13.9); sign(x < 0 ? '1수용동' : '2수용동', x, 9.4, -13.8, .6); }
@@ -4468,11 +4513,23 @@ const LANDMARK_LIST = [
       floorPlane(36, 30, MAT.col(0xe58fb0, .95), 62, 22, .013); flowers(62, 22, 34, 28, [0xf2a7c3, 0xe57fa8, 0xffc6dc], 90); sign('🌸 핑크뮬리 꽃단지', 62, 3.4, 22, .55);
       floorPlane(30, 24, MAT.col(0xe7d36a, .95), -10, 30, .013); flowers(-10, 30, 28, 22, [0xffe066, 0xffffff], 60);
       // 계림 숲
-      for (let i = 0; i < 5; i++) for (let j = 0; j < 4; j++) tree(-10 + i * 7, 62 + j * 8, 1.1, 0x4f8a3a); sign('계림 鷄林 (신라 김씨 시조 탄생 숲)', 4, 7, 58, .6);
+      for (let i = 0; i < 5; i++) for (let j = 0; j < 4; j++) { const x = -10 + i * 7 + rr(-1, 1), z = 62 + j * 8 + rr(-1, 1); [(a, b) => zelkova(a, b, rr(.9, 1.15)), (a, b) => willow(a, b, 1.1), (a, b) => tree(a, b, 1.1, 0x4f8a3a)][(i + j) % 3](x, z); } sign('계림 鷄林 (느티나무·왕버들 고목 숲) (신라 김씨 시조 탄생 숲)', 4, 7, 58, .6);
       // 월성 (반달 모양 왕궁터 토성)
       for (const sx of [-1, 1]) { const m = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x7fa65a)); m.scale.set(35, 3, 5); m.position.set(sx * 70, 0, 112); world.add(m); addCol(sx * 70, 112, 70, 8, null, { topY: 99 }); } sign('월성 月城 (반달 모양 신라 왕궁터)', -70, 7, 112, .7);
       // 동궁과 월지 (연못 + 서쪽 물가 누각 3채 + 야간 조명)
       pond(95, 60, 40, 30, 0x3f7fa8); for (const z of [48, 60, 72]) { bx(72, 0, z, 6, .6, 5, 0xbfb6a4); pavilion(72, z, 1, .6); } for (let k = 0; k < 20; k++) mesh(BOX(.3, .3, .3), glow(0xffd27a, 1.2), 76 + k * 2, .5, 44.5).castShadow = false; sign('동궁과 월지 (안압지)', 90, 7, 44, .7);
+      { // 장소별 조경 — 대릉원 소나무숲·목련 / 계림 고목 / 월성·첨성로 벚꽃길 / 월지 버드나무 / 은행나무길
+        const AV = [[62, 22, 20, 17], [-10, 30, 17, 14], [95, 60, 23, 18], [25, 15, 6, 6]], free = (x, z) => !AV.some(([ax, az, hw, hd]) => Math.abs(x - ax) < hw && Math.abs(z - az) < hd) && !onRoad(L, x, z, 1, 1, .6) && !colliders.some(c => !c.disabled && x > c.minX - 1.8 && x < c.maxX + 1.8 && z > c.minZ - 1.8 && z < c.maxZ + 1.8);
+        const grove = (x0, x1, z0, z1, n, fn) => { for (let k = 0, c = 0; k < n * 8 && c < n; k++) { const x = rr(x0, x1), z = rr(z0, z1); if (free(x, z)) { fn(x, z); c++; } } };
+        const row = (ax, az, bx2, bz, gap, fn) => { const len = Math.hypot(bx2 - ax, bz - az); for (let u = 0; u <= len; u += gap) { const x = ax + (bx2 - ax) * u / len, z = az + (bz - az) * u / len; if (free(x, z)) fn(x, z); } };
+        grove(-112, -10, -112, -10, 70, (x, z) => pine(x, z, rr(.9, 1.5))); grove(-42, -26, -66, -36, 4, (x, z) => magnolia(x, z, 1.1)); sign('🌲 대릉원 소나무숲 · 🤍 목련 포토존', -34, 5, -30, .5);
+        row(-60, 91, 60, 91, 8, (x, z) => cherry(x, z, 1.1)); row(-60, 99, 60, 99, 8, (x, z) => cherry(x, z, 1.1)); sign('🌸 첨성로 벚꽃길', -46, 5, 95, .55);
+        row(-100, 104, 100, 104, 9, (x, z) => cherry(x, z, rr(.9, 1.2)));
+        row(73, 40, 117, 40, 7, (x, z) => willow(x, z)); row(119, 44, 119, 78, 7, (x, z) => willow(x, z)); row(73, 80, 117, 80, 7, (x, z) => willow(x, z)); sign('🌿 월지 물가 버드나무', 119, 5, 40, .5);
+        row(36, -44, 36, 40, 10, (x, z) => ginkgo(x, z)); row(44, -44, 44, 40, 10, (x, z) => ginkgo(x, z)); sign('💛 은행나무길', 40, 7, -48, .55);
+        grove(-4, 50, -2, 50, 5, (x, z) => zelkova(x, z, rr(.9, 1.2)));
+        grove(52, 125, -120, 4, 34, (x, z) => [pine, zelkova, ginkgo, cherry, (a, b, c) => tree(a, b, c)][Math.floor(Math.random() * 5)](x, z, rr(.8, 1.2)));
+        grove(-125, 125, 118, 128, 16, (x, z) => pine(x, z, rr(.9, 1.3))); }
       mountainBack(-150, 0x587a4a, 6); sign('남산 · 토함산 방향 → 불국사·석굴암 (약 16km)', 110, 8, -110, .6);
 
     } },
@@ -4557,6 +4614,16 @@ const LANDMARK_LIST = [
         const crater = new THREE.Mesh(new THREE.CircleGeometry(R1, 28), LMC(0x7fa65a)); crater.rotation.x = -Math.PI / 2; crater.position.set(SX, SH + .02, SZ); world.add(crater);
         for (let k = 0; k < 30; k++) { const an = k / 30 * Math.PI * 2, hh = rr(.4, 1); mesh(BOX(1.4, hh, 1.4), LMC(0x6d6a4a), SX + Math.cos(an) * (R1 + .5), SH - .2 + hh / 2, SZ + Math.sin(an) * (R1 + .5)).castShadow = false; }
         sign('🌅 성산일출봉 (세계자연유산 · 분화구 지름 600m)', SX, SH + 7, SZ, 1); sign('🥾 일출봉 탐방로 계단', SX - R0 - 1, 4, SZ + 2, .5); }
+      { // 한라산 숲: 산비탈엔 구상나무·소나무, 들판엔 활엽수 (탐방로·돌담·목장·꽃밭은 비워 둔다)
+        const free = (x, z) => !colliders.some(c => !c.disabled && x > c.minX - 1.6 && x < c.maxX + 1.6 && z > c.minZ - 1.6 && z < c.maxZ + 1.6),
+          keep = [[0, 30, 7], [36, 32, 8], [34, -46, 9], [-53, 0, 9], [66, -36, 22], [-44, -40, 6], [50, 8, 5], [0, -6, 7]],
+          path = (x, z) => [[[0, 30], [10, 14]], [[10, 14], [6, 2]], [[-14, 26], [-12, 10]], [[-12, 10], [-4, 0]], [[20, 20], [12, 6]], [[12, 6], [2, -3]], [[-30, 30], [30, 30]]].some(([[ax, az], [bx2, bz]]) => { const dx = bx2 - ax, dz = bz - az, t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz))); return Math.hypot(ax + dx * t - x, az + dz * t - z) < 3.2; });
+        let n = 0; for (let k = 0; k < 900 && n < 260; k++) { const x = rr(-80, 80), z = rr(-70, 70), rc = Math.hypot(x, z + 6);
+          if ((L.inside && !L.inside(x, z)) || rc < 9 || keep.some(([kx, kz, kr]) => Math.hypot(kx - x, kz - z) < kr) || path(x, z) || !free(x, z)) continue;
+          const y = rc < 38 ? 18 * (38 - rc) / 35.2 : 0, s = rr(.7, 1.15);
+          if (y > 0) { const g0 = world.children.length; (rc < 22 || Math.random() < .6 ? pine : (a, b, c) => tree(a, b, c, 0x2f6b2f))(x, z, s); for (let j = g0; j < world.children.length; j++) world.children[j].position.y += y - .1; }
+          else { (Math.random() < .3 ? pine : (a, b, c) => tree(a, b, c, pick([0x3f8f3a, 0x4f9a3a, 0x2f7d3a])))(x, z, s); addCol(x, z, .5, .5, null, { topY: 1.3 }); }
+          n++; } }
     } },
   { name: '포항 스페이스워크', fill: 'park', icon: '🎢', w: 88, d: 60, floor: FLOOR(() => TEX.grass('hwanho', '#7eae62', [.25, .25])), mmCol: 0x86b46a, obj: crate, sky: [0x4aa6ee, 0xe0f2ff], st: 3,
     people: { tourist: 5, student: 3, civ: 3, smuggler: 3 }, items: [["fishBox",3],["cooler",2],["trashBin",2]], who: '철강 환호공원 관리소장', short: '📏 실물 크기(가로 60m·세로 57m·높이 25m, 트랙 333m·계단 717개)! 롤러코스터 같은 333m 철제 산책로 스페이스워크, 영일만, 영일대 누각, 호미곶 상생의 손, 제철소 야경.',
@@ -4599,7 +4666,7 @@ const LANDMARK_LIST = [
       bx(-80, 0, -70, 50, 2, .8, 0xb9a988); bx(-105, 0, -36.5, .8, 2, 67, 0xb9a988); bx(-55, 0, -36.5, .8, 2, 67, 0xb9a988); bx(-95, 0, -3, 30, 2, .8, 0xb9a988); bx(-62.5, 0, -3, 15, 2, .8, 0xb9a988);
       for (const x of [-81.6, -78.4]) bx(x, 0, -1.2, .4, 6, .4, 0xb5402f); for (let k = 0; k < 9; k++) mesh(BOX(.12, 1.6, .12), LMC(0xb5402f), -81.2 + k * .35, 5.2, -1.2); mesh(BOX(3.6, .3, .3), LMC(0xb5402f), -80, 6, -1.2); sign('홍살문 · 경기전 慶基殿 (태조 어진)', -80, 8.5, 0, .6);
       hanok(-80, -48, 16, 8, 4, { tier: true }); sign('경기전 정전 (보물)', -80, 12, -43.5, .55); building(-66, -22, 14, 10, 6, 0xe6dccb, { sign: '어진박물관', sh: .5 }); hroof(-66, 6, -22, 14, 10);
-      for (let i = 0; i < 3; i++) for (let j = 0; j < 5; j++) tree(-101 + i * 4, -60 + j * 5, .8, 0x6fa84a); sign('경기전 대숲', -94, 5, -36, .5);
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 6; j++) bamboo(-101 + i * 4, -62 + j * 5); sign('🎋 경기전 대숲', -94, 7, -32, .5);
       // 전동성당 (1914, 붉은 벽돌 · 회색 돔 첨탑 3개) — 경기전 맞은편
       bx(-80, 0, 17, 13, 9, 20, 0x9c4a35); bx(-80, 0, 5.6, 4, 15, 2.8, 0x9c4a35); mesh(new THREE.SphereGeometry(1.8, 12, 8), LMC(0x6d7a72), -80, 16.2, 5.6); for (const sx of [-1, 1]) { bx(-80 + sx * 4.6, 0, 6, 2.2, 11, 2.2, 0x9c4a35); mesh(new THREE.SphereGeometry(1.2, 10, 6), LMC(0x6d7a72), -80 + sx * 4.6, 11.8, 6); }
       mesh(new THREE.CylinderGeometry(1.4, 1.4, .2, 14), glow(0xffd27a, .7), -80, 9, 4.1).rotation.x = Math.PI / 2; sign('⛪ 전동성당 (1914 · 사적)', -80, 20, 6, .7);
@@ -4613,7 +4680,7 @@ const LANDMARK_LIST = [
       const SN = ['전주비빔밥', '한복대여', '한지공예', '초코파이', '길거리 문꼬치', '수제 부채'], SC = [0xd63a2a, 0xf39c12, 0x27ae60, 0x8e44ad, 0x2c6fb7, 0xb5402f];
       for (let k = 0; k < 6; k++) stall(-33 + k * 14, 6, SC[k], SN[k]);
       // 전주향교 (은행나무)
-      hanok(20, 64, 14, 8, 3); sign('전주향교 (은행나무)', 20, 8, 69, .55); for (const x of [8, 32]) tree(x, 64, 1.3, 0xf2c53a);
+      hanok(20, 64, 14, 8, 3); sign('전주향교 (400년 은행나무)', 20, 8, 69, .55); for (const x of [8, 32]) ginkgo(x, 64, 1.5);
       // 동쪽 언덕 오목대 (계단으로 오른다)
       bx(92, 0, -30, 20, 2.1, 20, 0x8a9a6a); stepsUp(92, -15.6, 5, 6, -1, .8, 0xb9a988);
       bx(92, 2.1, -34, 7, 2.2, 6, 0xeadfca, false); addCol(92, -34, 7, 6, null, { topY: 99 }); hroof(92, 4.3, -34, 8, 7); sign('오목대 梧木臺 (동쪽 언덕)', 92, 9, -30, .6);
@@ -4621,6 +4688,15 @@ const LANDMARK_LIST = [
       // 남쪽 전주천 + 남천교 청연루
       pond(-62, 74, 116, 6, 0x6fb5d8); pond(62, 74, 116, 6, 0x6fb5d8); bx(0, 0, 74, 8, .35, 6, 0x9a8f7a, false);
       for (const sx of [-3, 3]) for (const sz of [-2.4, 2.4]) bx(sx, .35, 74 + sz, .3, 2.6, .3, 0x8b2e22, false); hroof(0, 2.9, 74, 7.6, 6.2); sign('전주천 남천교 · 청연루', 0, 7, 76, .6);
+      { // 조경: 경기전 뜰(느티나무·매화·벚나무), 전동성당 앞 느티나무, 한옥 마당 감나무, 은행로 은행나무, 전주천 버드나무 둑, 오목대 솔숲
+        const { grove, row, mix } = scape(L, [[-20, 0, 100, 4.5], [-62, 74, 59, 4], [62, 74, 59, 4], [-80, -36, 3, 3]]);
+        grove(-102, -58, -66, -8, 9, mix(zelkova, cherry, magnolia)); for (const x of [-90, -70]) zelkova(x, 31, 1.2); sign('🌳 전동성당 느티나무', -70, 6, 36, .45);
+        for (const z of [-14, -28, -42, -56, 14, 28, 42]) for (let x = -40; x <= 60; x += 28) { const zz = z + (z < 0 ? -5.6 : 5.6); grove(x - 6, x + 6, zz - .8, zz + .8, 1, (a, b) => persimmon(a, b, .8)); }
+        row(-38, -21, 66, -21, 9, (x, z) => ginkgo(x, z, .9)); sign('💛 은행로 은행나무', 66, 6, -21, .45);
+        row(-118, 69, 118, 69, 7, (x, z) => willow(x, z)); row(-118, 80, 118, 80, 8, (x, z) => willow(x, z, .9)); sign('🌿 전주천 버드나무 둑', -40, 5, 69, .5);
+        grove(76, 110, -48, -14, 12, (x, z) => pine(x, z, rr(.9, 1.3)));
+        grove(70, 118, 8, 62, 16, mix(zelkova, persimmon, cherry, ginkgo, tree)); grove(-118, -60, 44, 64, 10, mix(cherry, zelkova, tree));
+        grove(-118, 118, -88, -66, 26, mix(pine, zelkova, persimmon, tree)); }
 
     } },
   { name: '광화문광장', fill: 'city', icon: '🦁', sc: 1, w: 170, d: 560, floor: TILE('#cfc8b8', '#b3ab9a', .2), obj: luggage, sky: [0x5aa8ef, 0xeaf2fb], st: 3,
@@ -4906,7 +4982,7 @@ const LANDMARK_LIST = [
       sign('🛍 면세구역 DUTY FREE', 0, H - 1.5, -12.6, .9, 'rgba(120,70,20,.92)');
       const SHOP = [[-82, -22, '신라면세점 · 화장품 향수', 0xc89b3c], [-60, -22, '신세계면세점 · 패션', 0x2b2b2b], [-82, -38, '현대면세점 · 주류 담배', 0x6b2a2a], [-60, -38, '명품 부티크', 0x1d1d1d], [60, -22, '한국 기념품 · K-뷰티', 0xd84a6a], [82, -22, '전자제품 · 시계', 0x2c6fb7], [60, -38, '식품 · 김 · 홍삼', 0x8a5a2b], [82, -38, '장난감 · 캐릭터 숍', 0xf2a03d]];
       for (const [x, z, t, c] of SHOP) { bx(x, 0, z, 16, 3.2, 10, 0xf4efe6); mesh(BOX(16.1, .7, 10.1), LMC(c), x, 3.55, z); mesh(BOX(12, .6, .1), glow(0xffe7a8, .7), x, 2.4, z + 5.06).castShadow = false; sign('🛍 ' + t, x, 4.9, z + 5.2, .48); }
-      bx(0, 0, -30, 22, .6, 14, 0x7fa86a); for (let k = 0; k < 6; k++) tree(-8 + (k % 3) * 8, -26 - Math.floor(k / 3) * 8, 1.1); sign('🌿 실내 정원', 0, 5, -22.6, .55, 'rgba(40,110,60,.92)');
+      bx(0, 0, -30, 22, .6, 14, 0x7fa86a); flowers(0, -30, 18, 10, [0xf48fb1, 0xffeb3b, 0xffffff, 0xba68c8], 70); sign('🌸 실내 꽃 화단', 0, 5, -22.6, .55, 'rgba(40,110,60,.92)');
       bx(-26, 0, -42, 12, 3, 8, 0xe9dcc3); sign('🏯 한국전통문화센터', -26, 4.4, -37.8, .5); bx(26, 0, -42, 12, 3, 8, 0x13335a); sign('🛋 항공사 라운지', 26, 4.4, -37.8, .5);
       for (const x of [-40, 40]) { bx(x, 0, -20, 6, 1, 3, 0xf4f4f2); sign(x < 0 ? '🍜 푸드코트' : '☕ 카페', x, 2.6, -20, .45); }
       // ── 탑승구·탑승교·비행기(북쪽) ──
@@ -5836,7 +5912,15 @@ function loadLevel(i) {
     for (let k = 0; k < pts.length; k++) { const [ax, az] = pts[k], [bx, bz] = pts[(k + 1) % pts.length], L2 = Math.hypot(bx - ax, bz - az); for (let t = 0; t <= L2; t += 1.5) level.avoid.push({ x: ax + (bx - ax) * t / (L2 || 1), z: az + (bz - az) * t / (L2 || 1), r: rad }); }
   }
   level.wxApplied = wxReady; applyTimeOfDay();
-  smallRoads(level); def.build(level); clearRoadProps(level);
+  smallRoads(level); def.build(level); clearRoadProps(level); for (const o of level.vehicles || []) if (o.road === 'asphalt') streetTrees(level, o.route.map((p, i, R) => [p[0], p[1], R[(i + 1) % R.length][0], R[(i + 1) % R.length][1]]), 4.6); // 차도 양옆 가로수
+  // 명소 맵 가장자리 빈 땅 조경: 맵 성격에 맞는 나무를 섞어 심는다 (손으로 조경한 경주·전주·제주, 바다·산비탈 맵은 제외)
+  if (def.landmark && def.fill && !def.mega && !['경주', '전주 한옥마을', '제주 한라산', 'N서울타워'].includes(def.name) && !String(def.build).includes('seaNorth')) {
+    const SP = { city: [ginkgo, zelkova, cherry, tree], heritage: [pine, pine, zelkova, cherry, magnolia], park: [cherry, zelkova, ginkgo, tree, willow, magnolia], village: [persimmon, zelkova, tree, pine], mountain: [pine, pine, zelkova] }[def.fill] || [tree];
+    const W = level.w, D = level.d, { free, grove } = scape(level), band = (x, z) => Math.abs(x) > W * .36 || Math.abs(z) > D * .36;
+    let n = Math.min(90, Math.round(W * D * .48 / 600));
+    for (let k = 0; k < n * 10 && n > 0; k++) { const x = rr(-W / 2, W / 2), z = rr(-D / 2, D / 2); if (!band(x, z) || !free(x, z) || (slopes.length && slopeH(x, z) > .05)) continue;
+      const f = pick(SP), c = 1 + Math.floor(Math.random() * 3); for (let j = 0; j < c && n > 0; j++) { const px = x + rr(-4, 4), pz = z + rr(-4, 4); if (j && (!free(px, pz) || !band(px, pz))) continue; f(j ? px : x, j ? pz : z, rr(.85, 1.2)); n--; }
+      if ((def.fill === 'park' || def.fill === 'heritage') && Math.random() < .25) { const fx = x + rr(-6, 6), fz = z + rr(-6, 6); if (free(fx, fz)) flowers(fx, fz, 4, 3, [0xf48fb1, 0xffeb3b, 0xffffff, 0xba68c8], 14); } } }
   applyExtras(level);
   applyShape(level, def);
   boundaryLine(level);
@@ -6113,7 +6197,9 @@ function showMaps(paused = false) {
   $('mapsWho').textContent = t('who_fmt').replace('{nick}', dispName()).replace('{score}', runScore) + (runActive ? t('run_fmt').replace('{n}', runCleared.size) : '') + ' · 🗺 ' + LEVELS.filter((L, i) => prog.best[i] !== undefined).length + '/' + LEVELS.length;
   const isOp = i => LEVELS[i].gate || LEVELS[i].name === 'KTX';
   const lmGate = LEVELS.map((L, i) => i).filter(i => LEVELS[i].gate), opX = LEVELS.map((L, i) => i).filter(i => isOp(i) && !LEVELS[i].gate), lmRest = LEVELS.map((L, i) => i).filter(i => LEVELS[i].landmark && !isOp(i) && !LEVELS[i].mega), megaI = LEVELS.findIndex(L => L.mega);
-  const ops = [0, 1, 2, 3, 4, ...lmGate, ...opX, 5, 6, megaI], order = [...ops, ...lmRest];
+  const byName = n => LEVELS.findIndex(L => L.name === n), WORK = ['공항 입국장', '인천공항 T2 출국장', '공항 화물터미널', '국제우편·특송센터', '부두 컨테이너 야적장', '인천항 국제여객터미널', '국제 여객선', '비행기', '우체국', '버스터미널', 'KTX', '교도소'].map(byName).filter(i => i >= 0);
+  // 관세청 업무량이 많은 곳부터: 여행자 휴대품 → 항공·특송·우편 화물 → 해상 화물 → 여객선 → 그 밖의 관문
+  const ops = [...WORK, ...[0, 1, 2, 3, 4, ...lmGate, ...opX].filter(i => !WORK.includes(i)), 5, 6, megaI], order = [...ops, ...lmRest];
   const megaNeed = order.filter(i => i !== megaI && !LEVELS[i].relax), SEC = { [ops[0]]: ['🛃 관세 작전', ops.length + '곳 · 마지막 🏙 통합 도시는 모든 맵을 클리어하면 열려요 (팀 방 전용)'], [lmRest[0]]: ['🏯 대한민국 명소', lmRest.length + '곳 · 자유롭게 순찰'] };
   const card = ([L, i]) => {
     const done = megaNeed.filter(k => prog.best[k] !== undefined).length;
