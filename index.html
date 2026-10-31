@@ -685,7 +685,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2308';
+const BUILD = '20261031-2314';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1977,6 +1977,78 @@ function departuresCrowd(L) {
       if (Math.abs(dog.x - b.x) < 5.9 && Math.abs(dog.z - LANE) < 1.6) dog.z = LANE + (dog.z < LANE ? -1.65 : 1.65);
       b.g.position.set(b.x, 0, LANE); }
     S.update(dt);
+  });
+}
+// ── 명소 장면 ── 멤버: SC(종류, [dx, dz], 동작, 대사들, 이름표). 동작: wave·speech·clap·photo·dance·march·walk·carry·paint·look·love·listen
+const SC = (k, o, act, lines, tag) => ({ k, o, act, lines, tag });
+const VIP = ['와, 대통령이다!', '사진 찍어야지 📸', '손 흔들어 주셨어!', '대통령님 안녕하세요!'];
+const LM_SCENES = {
+  '청와대': { at: [0, -24], route: [[-16, -24], [16, -24]], spd: 1, m: [SC('official', [0, 0], 'wave', ['청와대에 오신 걸 환영합니다!', '탐지견 대원 여러분, 늘 고맙습니다', '마약 없는 안전한 대한민국!', '관세청 탐지견 화이팅! 🐕'], '🇰🇷 대통령'),
+    ...[[-1.7, -1.3], [1.7, -1.3], [-1.7, 1.5], [1.7, 1.5]].map(o => SC('official', o, 'walk', ['대통령님 이동하십니다', '안전거리 유지해 주세요', '이상 없음!'], '경호원')), SC('soldier', [-3.5, 3], 'march', ['충성!'], '의장대'), SC('soldier', [3.5, 3], 'march', ['충성!'], '의장대')],
+    crowd: [['tourist', 'photo', VIP], ['civ', 'clap', VIP], ['student', 'wave', VIP]], cz: 7 },
+  '국회의사당': { at: [0, 22], m: [SC('official', [0, 0], 'speech', ['마약 예방 법안을 꼭 통과시킵시다!', '관세청 탐지견 예산을 늘려야 합니다!', '청소년을 마약에서 지킵시다!', '국민 안전이 먼저입니다!'], '국회의원 (발언 중)'),
+    ...[[-4, 3], [-2, 4], [0, 4.6], [2, 4], [4, 3], [-5.5, 1], [5.5, 1]].map((o, i) => SC('official', o, i % 3 ? 'clap' : 'speech', ['옳소!', '동의합니다!', '이의 있습니다!', '표결합시다!', '좋은 의견입니다'], '국회의원')),
+    SC('civ', [-6, -3], 'photo', ['의원님, 한 말씀만 부탁드립니다!', '📸 찰칵!'], '기자'), SC('civ', [6, -3], 'photo', ['오늘 법안 통과될까요?', '📸 찰칵!'], '기자')] },
+  '경복궁': { at: [0, 30], route: [[-10, 30], [10, 30]], spd: .9, m: [[-1.2, 0], [1.2, 0], [-1.2, 1.6], [1.2, 1.6], [-1.2, 3.2], [1.2, 3.2]].map((o, i) => SC('royalguard', o, 'march', i ? ['둥! 둥! 둥!'] : ['수문장 교대식을 시작하라!', '엄고수, 북을 울려라!'], i ? '수문군' : '수문장')),
+    crowd: [['hanbok', 'photo', ['한복 입고 오면 무료 입장이래!', '교대식 멋지다!', '📸 인생샷!']], ['tourist', 'clap', ['Wow, amazing! · 멋져요!', '与卫兵合影! · 수문장이랑 사진!']]], cz: -6 },
+  '광화문광장': { at: [0, 10], m: [SC('official', [0, 0], 'speech', ['세종대왕께서 한글을 만드셨어요', '이순신 장군 동상은 저쪽이에요'], '문화해설사')], crowd: [['student', 'listen', ['우와 신기하다!', '한글날이 10월 9일이죠?']], ['tourist', 'photo', ['세종대왕 동상이다!', '📸']], ['hanbok', 'wave', ['광화문 멋지다!']]], cz: 4 },
+  '숭례문': { at: [0, 18], m: [SC('official', [0, 0], 'speech', ['숭례문은 서울의 남쪽 대문이에요', '국보 제1호였던 문이랍니다', '2008년 화재 뒤 다시 지었어요'], '문화해설사')], crowd: [['tourist', 'listen', ['국보였구나!', '불이 났었다니…']], ['civ', 'photo', ['📸 남대문!']]], cz: 4 },
+  '수원화성': { at: [0, 16], m: [SC('royalguard', [-2, 0], 'dance', ['얍! 무예24기 시범!', '하압!'], '무예 시범단'), SC('royalguard', [2, 0], 'dance', ['칼 받아라!', '이얍!'], '무예 시범단')], crowd: [['student', 'clap', ['와 멋있다!', '정조대왕이 쌓은 성이래']], ['tourist', 'photo', ['📸 무예 시범!']]], cz: 4 },
+  '경주': { at: [0, 16], route: [[-12, 16], [12, 16]], spd: 1.1, m: [SC('official', [0, 0], 'walk', ['수학여행 여기 모여라!', '첨성대는 별을 보던 곳이에요', '줄 맞춰서 따라오세요~'], '🚩 선생님'), ...[[-1, 1.5], [1, 1.5], [-1, 3], [1, 3], [-1, 4.5], [1, 4.5]].map(o => SC('student', o, 'walk', ['선생님 배고파요!', '불국사도 가요?', '첨성대 작다!', '기념품 사도 돼요?'], null))] },
+  'N서울타워': { at: [0, 12], m: [SC('civ', [-.6, 0], 'love', ['우리 사랑 영원히 🔒', '자물쇠 여기 걸자!'], null), SC('civ', [.6, 0], 'love', ['열쇠는 던지면 안 돼!', '💕'], null), SC('tourist', [-4, 1], 'love', ['Love lock! · 사랑의 자물쇠!'], null), SC('tourist', [-3, 1], 'love', ['💕'], null)], crowd: [['tourist', 'photo', ['서울 야경 최고!', '📸']]], cz: 5 },
+  '롯데월드타워': { at: [0, 30], m: [], crowd: [['tourist', 'look', ['와 555m래!', '꼭대기가 안 보여!', 'So tall! · 엄청 높다!']], ['civ', 'photo', ['📸 타워 다 나오게!', '전망대 올라가자']], ['student', 'look', ['우와아아!']]], cz: 3, n: 9 },
+  '명동': { at: [0, 8], m: [SC('merchant', [-3, 0], 'speech', ['떡볶이 맛보고 가세요!', '회오리감자 하나 3천 원!'], '노점 사장님'), SC('merchant', [3, 0], 'speech', ['마스크팩 1+1!', 'Welcome! 어서 오세요!'], '화장품 가게')], crowd: [['tourist', 'photo', ['명동 쇼핑 최고!', 'Tteokbokki! · 떡볶이!']], ['civ', 'listen', ['하나 사 볼까?']]], cz: 3 },
+  '홍대': { at: [0, 8], m: [SC('busker', [-1.6, 0], 'dance', ['K-POP 커버댄스 갑니다!', '🎵 다 같이 박수!'], '버스킹 크루'), SC('busker', [0, -.6], 'dance', ['🎶'], '버스킹 크루'), SC('busker', [1.6, 0], 'dance', ['감사합니다! 또 보러 오세요~'], '버스킹 크루')], crowd: [['student', 'clap', ['와 춤 잘 춘다!', '앵콜! 앵콜!']], ['civ', 'photo', ['📹 찍어야지']], ['tourist', 'clap', ['Amazing! · 최고!']]], cz: 5 },
+  '동대문': { at: [0, 10], route: [[-12, 10], [12, 10]], spd: 1.6, m: [SC('merchant', [0, 0], 'carry', ['원단 지나갑니다!', '비켜 주세요~ 짐 들어가요'], '도매상'), SC('merchant', [-2, 1.4], 'carry', ['새벽시장 물건 왔어요!'], '도매상')], crowd: [['civ', 'listen', ['이 원단 얼마예요?', '동대문은 밤에 더 바빠!']], ['tourist', 'photo', ['DDP 멋지다!']]], cz: 4 },
+  '광안리 해변': { at: [0, 0], m: [], crowd: [['beachgoer', 'look', ['드론쇼 언제 해요?', '광안대교 불빛 예쁘다!', '🎆 와아아!']], ['civ', 'clap', ['드론쇼 최고!', '부산 바다 최고!']]], cz: 3, n: 10 },
+  '해운대': { at: [0, 0], m: [SC('rescue', [0, -2], 'speech', ['🚨 부표 밖으로 나가면 안 돼요!', '삐익! 수영 구역 안에서만!'], '해양 구조대')], crowd: [['beachgoer', 'wave', ['물 시원하다!', '모래성 쌓자!']], ['civ', 'photo', ['해운대 바다 📸']]], cz: 3 },
+  '제주 한라산': { at: [0, 20], route: [[-10, 20], [10, 20]], spd: 1, m: [SC('hiker', [0, 0], 'walk', ['백록담까지 힘내요!', '물 자주 마셔요'], '⛰ 산악회 대장'), ...[[-.9, 1.6], [.9, 1.6], [0, 3.2], [-.9, 4.8], [.9, 4.8]].map(o => SC('hiker', o, 'walk', ['헉헉 힘들다', '경치 좋다!', '정상까지 얼마나 남았어요?'], null))], crowd: [['haenyeo', 'wave', ['숨비소리~ 호오이!', '전복 따 왔수다']]], cz: -6 },
+  '포항 스페이스워크': { at: [0, 12], m: [], crowd: [['tourist', 'look', ['롤러코스터 같은 산책로다!', '흔들려서 무서워!']], ['civ', 'photo', ['포항 바다 📸', '해 뜨는 거 보러 오자']]], cz: 3, n: 8 },
+  '전주 한옥마을': { at: [0, 10], m: [SC('merchant', [0, 0], 'speech', ['전주 비빔밥 드시고 가세요!', '수제 초코파이 있어요~'], '가게 사장님')], crowd: [['hanbok', 'photo', ['한복 예쁘다!', '한옥 골목 📸']], ['tourist', 'listen', ['비빔밥 먹자!']]], cz: 4 },
+  '감천문화마을': { at: [0, 8], m: [SC('student', [-1.5, 0], 'paint', ['벽화 그리는 중이에요 🎨', '색칠 거의 다 했다!'], '벽화 작가'), SC('student', [1.5, 0], 'paint', ['파란 지붕이 포인트!'], '벽화 작가')], crowd: [['tourist', 'photo', ['어린 왕자 동상 어디야?', '알록달록 예쁘다!']]], cz: 4 },
+  '대전 한빛탑': { at: [0, 14], m: [SC('official', [0, 0], 'speech', ['과학은 질문에서 시작돼요!', '한빛탑은 1993 대전엑스포 상징이에요'], '과학 해설사')], crowd: [['student', 'clap', ['로봇 보고 싶어요!', '우와 과학 신기해!']], ['civ', 'listen', ['엑스포 때 와 봤었는데']]], cz: 4 },
+};
+function sceneSpot(L, x, z) {
+  const free = (x, z) => (!L.inside || L.inside(x, z)) && !colliders.some(c => !c.disabled && c.topY > .3 && x > c.minX - 1.2 && x < c.maxX + 1.2 && z > c.minZ - 1.2 && z < c.maxZ + 1.2) && !(slopes.length && slopeH(x, z) > .15);
+  for (let rad = 0; rad < 60; rad += 2) for (let a = 0; a < 6.28; a += rad ? 1.2 / rad : 7) { const px = x + Math.cos(a) * rad, pz = z + Math.sin(a) * rad; if (free(px, pz) && free(px - 4, pz) && free(px + 4, pz) && free(px, pz + 4) && free(px, pz - 3)) return [px, pz]; }
+  const p = placeFree(L.bounds, 6, 6, 1, L.avoid); return p ? [p.x, p.z] : [x, z];
+}
+function landmarkScene(L, sc) {
+  const [ax, az] = sceneSpot(L, sc.at[0], sc.at[1]), dx0 = ax - sc.at[0], dz0 = az - sc.at[1];
+  const route = sc.route && sc.route.map(([x, z]) => [x + dx0, z + dz0]), A = [], lead = { x: ax, z: az, wi: 0, dir: 0, mv: 0 };
+  const mk = (k, x, z, act, lines, tag) => { const P = makePerson(k); world.add(P.g); P.g.position.set(x, 0, z);
+    if (tag) { const t = textSprite(tag, { h: .3, bg: tag.includes('대통령') ? 'rgba(19,51,90,.95)' : 'rgba(40,40,46,.85)' }); t.position.y = 2.45; P.g.add(t); }
+    const o = { P, x, z, act, lines, tag, sayT: rr(1, 8), ph: rr(0, 6), dir: 0 }; A.push(o); return o; };
+  for (const m of sc.m) mk(m.k, ax + m.o[0], az + m.o[1], m.act, m.lines, m.tag).off = m.o;
+  const n = sc.crowd ? (sc.n || 6) : 0, side = sc.cz || 5;
+  for (let i = 0; i < n; i++) { const [k, act, lines] = sc.crowd[i % sc.crowd.length], t = n > 1 ? i / (n - 1) - .5 : 0, cx = ax + t * 12, cz = az + side + (i % 2) * Math.sign(side) * 1.4;
+    const ok = (!L.inside || L.inside(cx, cz)) && !colliders.some(c => c.topY > .3 && cx > c.minX - .4 && cx < c.maxX + .4 && cz > c.minZ - .4 && cz < c.maxZ + .4);
+    mk(k, ok ? cx : ax + rr(-4, 4), ok ? cz : az + rr(2, 5), act, lines, null).watch = true; }
+  const say = (o, txt) => { if (Math.hypot(o.x - dog.x, o.z - dog.z) < 22) floatText(txt, o.x, 2.9, o.z, { h: .3 }); };
+  envAnim.push(dt => {
+    if (route) { const w = route[lead.wi % route.length], dx = w[0] - lead.x, dz = w[1] - lead.z, d = Math.hypot(dx, dz), stop = Math.hypot(dog.x - lead.x, dog.z - lead.z) < 2.5;
+      lead.mv = 0; if (d < .3) { lead.wi++; lead.pause = 2.5; } else if ((lead.pause = (lead.pause || 0) - dt) <= 0 && !stop) { const sp = sc.spd || 1; lead.x += dx / d * sp * dt; lead.z += dz / d * sp * dt; lead.dir = Math.atan2(dx, dz); lead.mv = sp; } }
+    for (const o of A) { const P = o.P; o.ph += dt;
+      if (o.off && route) { o.x += (lead.x + o.off[0] - o.x) * Math.min(1, dt * 4); o.z += (lead.z + o.off[1] - o.z) * Math.min(1, dt * 4); o.dir = lead.dir; }
+      else if (o.watch) o.dir = Math.atan2(lead.x - o.x, lead.z - o.z);
+      else if (o.off) o.dir = o.act === 'paint' ? Math.PI : Math.sign(side) > 0 ? 0 : Math.PI;
+      const s = Math.sin(o.ph * 7) * .6 * (o.off && route && lead.mv ? 1 : 0), a = o.act;
+      P.legs[0].rotation.x = s; P.legs[1].rotation.x = -s; P.body.position.y = 0; P.arms[0].rotation.z = P.arms[1].rotation.z = 0;
+      let a0 = -s * .8, a1 = s * .8, ry = o.dir;
+      if (a === 'wave') { a1 = -2.6; P.arms[1].rotation.z = -.3 + Math.sin(o.ph * 6) * .35; }
+      else if (a === 'speech') { a1 = -1.4 - Math.abs(Math.sin(o.ph * 2.2)); a0 = -.2; }
+      else if (a === 'clap') { a0 = a1 = -1.3; const c = Math.abs(Math.sin(o.ph * 9)) * .45; P.arms[0].rotation.z = c; P.arms[1].rotation.z = -c; }
+      else if (a === 'photo') { a0 = a1 = -1.45; }
+      else if (a === 'dance') { a0 = -2.6 + Math.sin(o.ph * 8) * .8; a1 = -2.6 - Math.sin(o.ph * 8) * .8; P.body.position.y = Math.abs(Math.sin(o.ph * 8)) * .15; ry = o.dir + Math.sin(o.ph * 2) * .8; }
+      else if (a === 'march') { a0 = -s * 1.4; a1 = s * 1.4; }
+      else if (a === 'carry') { a0 = a1 = -2.9; }
+      else if (a === 'paint') { a1 = -1.6 - Math.sin(o.ph * 3) * .9; }
+      else if (a === 'love') { a0 = a1 = -.9; }
+      else if (a === 'listen') { a0 = a1 = -.4; }
+      else if (a === 'look') { a0 = a1 = 0; }
+      P.arms[0].rotation.x = a0; P.arms[1].rotation.x = a1; P.g.position.set(o.x, 0, o.z); P.g.rotation.y = ry;
+      o.sayT -= dt; if (o.sayT <= 0) { o.sayT = rr(6, 14); if (o.lines && (o.off || Math.random() < .4)) say(o, pick(o.lines)); }
+      if (!(o.dogT > time) && Math.hypot(o.x - dog.x, o.z - dog.z) < 2.6) { o.dogT = time + 12; say(o, pick(o.watch ? ['탐지견이다! 귀여워 🐶', '수고 많아요, 멍멍아!'] : ['탐지견 대원, 수고합니다!', '🐕 반가워!'])); } }
   });
 }
 function makePerson(kind, opt = {}) {
@@ -6484,6 +6556,7 @@ function loadLevel(i) {
   balls = []; for (let k = 0; k < Math.round((3 + (level.sz - 1) * 8) * DQ().balls); k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: ballLabel(mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z)) }); }
   yaw = 0; camPos.set(spawn.x, 6, spawn.z + 9);
   levelTime = 0; levelScore = 0; keys = {};
+  if (LM_SCENES[def.name]) try { landmarkScene(level, LM_SCENES[def.name]); } catch (e) { console.error(e); }
   deZFight(); renderQuest(); playMusic(def.music);
 }
 
