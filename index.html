@@ -80,6 +80,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 .bar i{display:block;height:100%;width:100%;border-radius:6px}
 #stam i{background:linear-gradient(90deg,#4fc3f7,#7dffa1)}#scent i{background:linear-gradient(90deg,#ffe082,#ff7043);width:0}
 .lbl{font-size:12px;opacity:.85;white-space:nowrap}
+.howShort{display:none}
 #toast{top:calc(96px + var(--st));left:50%;transform:translateX(-50%);font-family:Jua,sans-serif;font-size:22px;background:rgba(0,0,0,.6);padding:8px 18px;border-radius:24px;opacity:0;transition:opacity .25s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1}
 #coverTitle{position:fixed;z-index:40;left:0;right:0;top:7%;text-align:center;font-family:Jua,sans-serif;pointer-events:none}
@@ -272,6 +273,8 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 #loadingScreen.hidden{display:none}
 /* 맵 선택 허브: 타일을 누르면 창(#mpanel)으로 연다 */
 #hubTiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0}
+#diffRow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:-4px 0 10px}#diffRow b{font-size:14px}#diffRow button{font:inherit;font-size:14px;font-weight:700;padding:5px 12px;border:2px solid #1b2b3c;border-radius:999px;background:#fff;color:var(--ink);cursor:pointer}#diffRow button.on{background:#ffd54f;box-shadow:0 2px 0 #1b2b3c}#diffRow small{flex-basis:100%;text-align:center;font-size:12px;opacity:.8}
+@media (orientation:landscape) and (max-height:540px){#diffRow{margin:-6px 0 6px;gap:4px}#diffRow button{font-size:12px;padding:3px 9px}#diffRow small{flex-basis:auto;font-size:11px}}
 .hubtile{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px;border:3px solid #1b2b3c;border-radius:14px;background:#fff8e6;color:var(--ink);font-family:inherit;cursor:pointer;box-shadow:0 4px 0 #1b2b3c;transition:transform .08s}
 .hubtile:active{transform:translateY(3px);box-shadow:0 1px 0 #1b2b3c}
 .hubtile .hi{font-size:30px;line-height:1.1}.hubtile b{font-family:Jua,sans-serif;font-size:17px;color:var(--navy)}.hubtile small{font-size:11.5px;color:var(--muted);min-height:1.2em}
@@ -309,6 +312,8 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
  #dlg .card,#howto .card,#clear .card,#win .card,#pvModal .card{max-width:min(660px,78vw)!important}
  #dlg .txt{font-size:14.5px!important;line-height:1.55}#dlg .card{padding:12px 18px!important}
  #howto .card p{font-size:13.5px!important}#howto .ctl{font-size:12.5px!important}
+ #howto .card{max-width:min(820px,90vw)!important;max-height:calc(100dvh - 16px)!important;padding:8px 14px!important}#howto .sub,#howto .card>p{display:none!important}#howto .card>p.howShort{display:block!important;font-size:12.5px!important;margin:4px 0!important}
+ #howto .ctl.touchonly{grid-template-columns:repeat(4,auto 1fr)!important;gap:4px 8px!important;padding:6px!important;margin:4px 0!important}#howto .card h1{margin:0 0 2px!important}
  #clear .card p,#clear .stats{font-size:14px!important}
  #win #wgrade{font-size:40px!important;line-height:1!important}#win .rankwrap{max-height:28vh}#win .card h1{margin:0!important}
  #mpanel .mpsec>.row:last-child{position:sticky;bottom:-10px;background:var(--card);margin:6px 0 0;padding:6px 0}
@@ -371,7 +376,11 @@ body.pc #keys{display:none}
 :is(body.touch,body.pc) #sniffLegend{display:none!important}
 :is(body.touch,body.pc) #bars #qsum{display:block;font-family:Jua,sans-serif;font-size:13px;color:#ffe08a;white-space:nowrap;margin-right:4px}
 :is(body.touch,body.pc) #mission{top:calc(6px + var(--st))!important;font-size:13px!important;padding:3px 12px!important}
-:is(body.touch,body.pc) #combo{top:calc(40px + var(--st))!important;font-size:16px!important}
+:is(body.touch,body.pc) #combo{font-size:16px!important}
+/* 휴대폰: 가운데 위 알림들은 한 줄씩 차례로 쌓고(stackTopHud), 반투명하게, 터치는 게임으로 통과 */
+body.touch :is(#mission,#mpCount,#goalBig,#toast,#combo){pointer-events:none}
+body.touch #mission{background:rgba(170,30,30,.6)}body.touch #mpCount{background:rgba(120,40,160,.55)}body.touch #goalBig{background:rgba(10,25,40,.55);border-color:rgba(244,197,66,.7)}body.touch #toast{background:rgba(0,0,0,.4)}body.touch #autoBadge{background:rgba(244,197,66,.72)}
+body.touch :is(#mission,#mpCount,#goalBig,#toast,#autoBadge){text-shadow:0 1px 2px #000a;transition:top .15s}
 body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}body.touch #bars{gap:6px!important}
 /* 조작 버튼을 양쪽 끝으로 */
 @media (pointer:coarse) and (orientation:landscape){
@@ -514,6 +523,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
   <button class="hubtile" data-p="ctl"><span class="hi">🎮</span><b>조작법</b><small>키·버튼 안내</small></button>
   <button class="hubtile" id="btnRankOpen"><span class="hi">🏆</span><b>랭킹</b><small>전체 순위</small></button>
  </div>
+ <div id="diffRow"><b>난이도</b><button type="button" data-d="easy">🐣 쉬움</button><button type="button" data-d="normal">🐕 보통</button><button type="button" data-d="hard">🔥 어려움</button><small id="diffNote"></small></div>
  <div class="row hidden"><button class="big alt" id="btnMode">👤 1인 모드 (눌러서 2인 협동 모드로)</button></div>
  <div class="row"><button class="big alt" id="btnHomeStart">🏠 홈</button><button class="big alt" id="btnLogout">아이디 변경</button></div>
 </div></div>
@@ -565,6 +575,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
   <kbd>화면 드래그</kbd><span>카메라 회전</span>
  </div>
  <p style="font-size:14px;margin:6px 0">❤️ 하트 3개로 시작해 최대 7개까지 모아요(🎾 공·돌발 미션) · 깨끗한 물건을 적발하거나, 시민을 맞히거나, 차량에 부딪히면 하트가 줄어요. 🎾 공을 주우면 회복! 밀수범 체력이 0이 되면 체포됩니다.<br>🛡 방탄조끼(공격 1번 막기) · 👃 슈퍼 코 간식(냄새 범위 1.5배) · 🦴 뼈다귀 가방(2배 빨리 던지기) · 📡 X-RAY도 주워요!</p>
+ <p class="howShort">❤️ 하트가 다 닳으면 다시 시작 · 🎾 공을 주우면 회복 · 깨끗한 짐을 적발하거나 시민·차에 부딪히면 하트가 줄어요</p>
  <div class="row"><button class="big" id="btnHowtoOk">알겠어요! 출동!</button></div>
 </div></div>
 <div id="dlg" class="overlay hidden"><div class="card">
@@ -619,7 +630,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1436';
+const BUILD = '20261031-1523';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1075,7 +1086,7 @@ const invisible = (x, z, w, d) => addCol(x, z, w, d, null);
 const center = c => ({ x: (c.minX + c.maxX) / 2, z: (c.minZ + c.maxZ) / 2 });
 const aabbHits = (a, b) => a.minX < b.maxX && a.maxX > b.minX && a.minZ < b.maxZ && a.maxZ > b.minZ;
 function distToBox(x, z, c) { const cx = clamp(x, c.minX, c.maxX), cz = clamp(z, c.minZ, c.maxZ); return Math.hypot(x - cx, z - cz); }
-const STEP = .35;
+const STEP = .4; // 계단 한 칸(0.35m)에 여유를 둬서, 칸 위에 선 채로 다음 칸을 오를 수 있게
 function tryPush(c, dx, dz) {
   const t = { minX: c.minX + dx, maxX: c.maxX + dx, minZ: c.minZ + dz, maxZ: c.maxZ + dz };
   for (const o of colliders) { if (o === c || o.disabled) continue; if (aabbHits(t, o)) return false; }
@@ -1375,11 +1386,12 @@ const UP0 = { spd: 0, nose: 0, sta: 0, bark: 0, jump: 0, heart: 0, armor: 0, mag
 let wallet = { coins: 0, up: { ...UP0 } };
 const ST = () => { const b = BREEDS[dogBreed].stat, u = wallet.up, k = .5; return { spd: b.spd + u.spd * k, nose: b.nose + u.nose * k, sta: b.sta + u.sta * k, bark: b.bark + u.bark * k, jump: b.jump + u.jump * k }; };
 // [키, 이름, 설명, 최대 레벨, 레벨별 가격]
+const P10 = [40, 70, 110, 160, 220, 290, 370, 460, 560, 680];
 const UPG = [
-  ['spd', '🏃 속도', '이동·달리기 속도 +3%', 5, [40, 70, 110, 160, 220]], ['nose', '👃 후각', '냄새 맡는 거리 +4%', 5, [40, 70, 110, 160, 220]], ['sta', '💪 지구력', '기력 소모 감소·회복 증가', 5, [40, 70, 110, 160, 220]],
-  ['bark', '📢 짖기', '왕왕 공격 범위 +10% · 물건 찾는 거리 +6%', 5, [40, 70, 110, 160, 220]], ['jump', '🦘 점프', '점프 높이 +2.5%', 5, [30, 50, 80, 120, 170]],
-  ['heart', '❤️ 시작 하트', '작전 시작 하트 +1', 2, [150, 300]], ['armor', '🦺 방탄 조끼', '총알·부딪힘 막을 확률 +6%', 5, [50, 90, 140, 200, 270]],
-  ['magnet', '🧲 코인 자석', '코인 줍는 거리 +1m', 3, [30, 60, 100]], ['bone', '🦴 뼈다귀 연사', '한 번에 뼈다귀 +1개 · 던지는 간격 -6%', 5, [50, 90, 140, 200, 270]], ['leak', '⏳ 반출 지연', '밀수품이 빠져나가는 시간 +8%', 3, [60, 110, 170]],
+  ['spd', '🏃 속도', '이동·달리기 속도 +3%', 10, P10], ['nose', '👃 후각', '냄새 맡는 거리 +4%', 10, P10], ['sta', '💪 지구력', '기력 소모 감소·회복 증가', 10, P10],
+  ['bark', '📢 짖기', '왕왕 공격 범위 +10% · 물건 찾는 거리 +6%', 10, P10], ['jump', '🦘 점프', '점프 높이 +2.5%', 10, [30, 50, 80, 120, 170, 230, 300, 380, 470, 580]],
+  ['heart', '❤️ 시작 하트', '2레벨마다 시작 하트 +1 · 맞은 뒤 무적 시간 +5%', 10, [150, 250, 350, 450, 550, 650, 750, 850, 950, 1050]], ['armor', '🦺 방탄 조끼', '총알·부딪힘 막을 확률 +5%', 10, [50, 90, 140, 200, 270, 350, 440, 540, 650, 780]],
+  ['magnet', '🧲 코인 자석', '코인 줍는 거리 +1m', 10, [30, 60, 100, 150, 210, 280, 360, 450, 550, 660]], ['bone', '🦴 뼈다귀 연사', 'Lv5까지 한 번에 뼈다귀 +1개 · 던지는 간격 -5%', 10, [50, 90, 140, 200, 270, 350, 440, 540, 650, 780]], ['leak', '⏳ 반출 지연', '밀수품이 빠져나가는 시간 +8%', 10, [60, 110, 170, 240, 320, 410, 510, 620, 740, 870]],
 ];
 function setDog(breed, name) {
   dogBreed = BREEDS[breed] ? breed : 'labrador'; dogName = name;
@@ -1505,9 +1517,9 @@ function makeBone() {
 function throwBone() {
   if (handler.boneCd > 0) return;
   const lv = wallet.up.bone || 0;
-  handler.boneCd = (1.0 / 1.07) * (1 - .06 * lv) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1); handler.throwT = .3;
-  // 탐지견이 바라보는 방향으로 던진다 (자동 조준 없음). 연사 레벨만큼 뼈다귀가 늘어 부채꼴로 퍼진다
-  const src = twoP ? handler : dog, n = 1 + lv, spread = .2;
+  handler.boneCd = (1.0 / 1.07) * (1 - .05 * lv) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1); handler.throwT = .3;
+  // 탐지견이 바라보는 방향으로 던진다 (자동 조준 없음). 연사 레벨만큼(최대 Lv5) 뼈다귀가 늘어 부채꼴로 퍼진다
+  const src = twoP ? handler : dog, n = 1 + Math.min(5, lv), spread = .2;
   for (let i = 0; i < n; i++) {
     const a = src.dir + (i - (n - 1) / 2) * spread, fx = Math.sin(a), fz = Math.cos(a);
     bones.push({ m: makeBone(), x: src.x + fx * .6, z: src.z + fz * .6, fx, fz, t: 0, range: 6 + (handlerJob === 'police' ? 2 : 0), speed: 14.4 });
@@ -1536,6 +1548,8 @@ function updateBones(dt) {
     const u = Math.min(1, b.t * b.speed / b.range), y = 1.5 + Math.sin(Math.PI * u) * .6 - u * .9;
     b.m.position.set(b.x, y, b.z); b.m.rotation.y += dt * 14; b.m.rotation.z += dt * 9;
     let hit = null;
+    const car = y < 2.8 && vehicles.find(v => !v.broken && v.distTo(b.x, b.z) < .3);
+    if (car) { scene.remove(b.m); bones.splice(i, 1); car.hit('🦴'); continue; }
     for (const p of people) { if (p.dead || p.arrested || p.vip) continue; if (Math.hypot(p.x - b.x, p.z - b.z) < 1.17) { hit = p; break; } }
     const wall = colliders.some(c => !c.disabled && c.topY > y && distToBox(b.x, b.z, c) < .15);
     const box = !hit && colliders.find(c => c.search && !c.disabled && !c.revealed && !c.boned && distToBox(b.x, b.z, c) < .35);
@@ -1569,6 +1583,7 @@ function groundSlam(gy) {
     if (p.villain) { hit++; hitVillain(p, '💥 쿵!'); if (!p.dead && !p.arrested) p.stun = Math.max(p.stun, 2.2); }
     else p.stun = Math.max(p.stun, .6);
   }
+  for (const v of [...vehicles]) if (!v.broken && v.distTo(dog.x, dog.z) < R * .7) v.hit('💥 쿵!');
   if (hit > 1) floatText('🔥 ' + hit + '명 동시 타격!', dog.x, gy + 3, dog.z, { h: .5, color: '#ffd54f' });
 }
 function hitVillain(p, label) {
@@ -1939,9 +1954,31 @@ class Vehicle {
       for (const sz of [3, -1, -3.6]) for (const sx of [-1.15, 1.15]) mesh(CYL(.45, .45, .35), MAT.col(0x111111, .8), sx, .45, sz, g).rotation.z = Math.PI / 2;
     }
     g.traverse(o => { if (o.isMesh) o.castShadow = true; });
+    // 계속 때리면 부서진다: 작을수록 빨리
+    this.hpMax = this.hp = { moto: 3, forklift: 4, car: 5, taxi: 5, dragon: 6 }[type] || 7;
     vehicles.push(this);
   }
+  // 이 점에서 차체까지의 거리 (차 안이면 0)
+  distTo(x, z) { const fx = Math.sin(this.dir), fz = Math.cos(this.dir), rx = x - this.x, rz = z - this.z, a = Math.abs(rx * fx + rz * fz) - this.len / 2, sd = Math.abs(rx * fz - rz * fx) - this.wid / 2; return Math.hypot(Math.max(0, a), Math.max(0, sd)); }
+  hit(label) {
+    if (this.broken) return;
+    this.hp--; this.wobble = .3; shake = Math.max(shake, .15); SFX.hit();
+    burst(this.x, 1.4, this.z, [new THREE.Color(0xffd54f), new THREE.Color(0x999999)], 14, 3);
+    if (this.hp > 0) { floatText(`${label} 💢 ${'■'.repeat(this.hp)}${'□'.repeat(this.hpMax - this.hp)}`, this.x, 3.4, this.z, { h: .42, color: '#ffd54f' }); return; }
+    // 부서짐: 멈춰서 연기를 뿜고, 운전자는 안전하게 내린다. 잠시 뒤 새 차가 들어온다
+    this.broken = true; this.cur = 0; this.smoke = 6; shake = .4; tone(90, .4, 'sawtooth', .12, 40); noise(.35, .08, 500);
+    burst(this.x, 1.2, this.z, [new THREE.Color(0xff7043), new THREE.Color(0x555555), WHITE], 50, 6);
+    floatText('💥 부서졌다! 운전자는 안전하게 대피했어요', this.x, 3.6, this.z, { h: .5, color: '#ff7043' });
+    this.g.traverse(o => { if (o.isMesh && o.material && o.material.color) { o.material = o.material.clone(); o.material.color.multiplyScalar(.35); } });
+    this.g.rotation.z = .12; this.g.position.y = -.15;
+    const lv = level, type = this.type, route = this.route;
+    setTimeout(() => { if (level !== lv) return; world.remove(this.g); const i = vehicles.indexOf(this); if (i >= 0) vehicles.splice(i, 1); }, 6000);
+    setTimeout(() => { if (level !== lv || state === 'login') return; new Vehicle(type, route, 0); }, 25000);
+  }
   update(dt) {
+    if (this.broken) { this.smoke -= dt; if (Math.random() < .3) spawnP(this.x + mr(-.5, .5), 2, this.z + mr(-.5, .5), mr(-.3, .3), mr(1, 2), mr(-.3, .3), new THREE.Color(0x444444), 1.2); return; }
+    if (this.wobble > 0) { this.wobble -= dt; this.g.rotation.z = Math.sin(this.wobble * 40) * .04; } else this.g.rotation.z = 0;
+    if (this.hp <= this.hpMax / 2 && Math.random() < .08) spawnP(this.x, 2.2, this.z, mr(-.2, .2), 1.2, mr(-.2, .2), new THREE.Color(0x777777), .9);
     const n = this.route.length, [tx, tz] = this.route[(this.ri + 1) % n];
     let dx = tx - this.x, dz = tz - this.z; const d = Math.hypot(dx, dz);
     if (d < Math.max(.5, (this.len || 4) * .3)) { this.ri = (this.ri + 1) % n; return; }
@@ -2062,7 +2099,7 @@ function playground(ox) {
     (x, z) => { st(x, z, 2, 2, 1.3, 0xc0392b); const rf = mesh(BOX(2.4, .2, 1.4), C(0x7f8c8d), x, 1.65, z - .5); rf.rotation.x = -.6; const rf2 = mesh(BOX(2.4, .2, 1.4), C(0x7f8c8d), x, 1.65, z + .5); rf2.rotation.x = .6; mesh(BOX(.8, .8, .05), C(0x2c1a10), x, .45, z + 1.01); lab('🏠 개집', x, z, 2.8); },
     (x, z) => { st(x, z, 1.4, 1.4, .6, 0x95a5a6); mesh(BOX(3, .6, .6), C(0xf5efe0), x, 1.3, z); for (const sx of [-1.5, 1.5]) for (const sz of [-.35, .35]) mesh(BOX(.7, .7, .55), C(0xf5efe0), x + sx, 1.3, z + sz); lab('🦴 왕뼈다귀 조형물', x, z, 2.6); },
     (x, z) => { st(x, z, .6, .6, .9, 0xe74c3c); mesh(BOX(.8, .2, .2), C(0xe74c3c), x, .6, z); mesh(BOX(.4, .2, .4), C(0xf1c40f), x, 1, z); const blue = new THREE.Color(0x7fd3f7); pgAnim.push(() => { if (Math.hypot(dog.x - x, dog.z - z) < 3 && Math.random() < .8) spawnP(x + .5, .6, z, mr(1, 3), mr(1, 2.5), mr(-.6, .6), blue, .8); }); lab('🚒 소화전 (가까이 가면 물!)', x, z, 1.8); },
-    (x, z) => { [.3, .6, .9, 1.2, 1.5, 1.8].forEach((h, k) => st(x - 2.5 + k * .6, z, .6, 1.4, h, 0x8e44ad)); st(x + 1.6, z, 2.4, 2.4, 2.1, 0x9b59b6); for (const [dx, dz] of [[1.6, -1.15], [1.6, 1.15]]) mesh(BOX(2.4, .6, .08), MAT.metal(0xdddddd), x + dx, 2.4, z + dz); lab('🔭 전망대', x, z, 3.4); },
+    (x, z) => { [.3, .6, .9, 1.2, 1.5, 1.8].forEach((h, k) => st(x - 2.5 + k * .6, z, .6, 1.4, h, 0x8e44ad)); st(x + 2, z, 2.4, 2.4, 2.1, 0x9b59b6); for (const [dx, dz] of [[2, -1.15], [2, 1.15]]) mesh(BOX(2.4, .6, .08), MAT.metal(0xdddddd), x + dx, 2.4, z + dz); lab('🔭 전망대', x, z, 3.4); },
     (x, z) => { st(x, z, 2.4, 1, .8, 0x8d6e63); for (const sd of [-1, 1]) st(x, z + sd * 1, 2.4, .4, .45, 0x6d4c41); mesh(BOX(.08, 2.4, .08), MAT.metal(0xdddddd), x, 2, z); mesh(BOX(2.4, .1, 2.4), C(0xe74c3c), x, 3.2, z); lab('☂ 휴식 테이블', x, z, 3.8); },
     (x, z) => { mesh(BOX(.25, 2.4, .25), C(0x795548), x, 1.2, z); addCol(x, z, .3, .3, null, { topY: 2.4 }); const pv = new THREE.Group(); pv.position.set(x, 2.3, z); world.add(pv); mesh(BOX(.05, 1.2, .05), C(0xd63031), 0, -.6, 0, pv); mesh(BOX(.25, .12, .4), C(0xf1c40f), 0, -1.25, 0, pv); pgAnim.push(() => { pv.rotation.x = Math.sin(time * 4) * .6; pv.rotation.z = Math.cos(time * 3) * .4; }); lab('🪢 터그 기둥', x, z, 3.2); },
     (x, z) => { st(x, z, 1, 1, 1, 0x5dade2); mesh(BOX(.4, .2, .4), C(0xffffff), x, 1.1, z); const bub = new THREE.Color(0xe8f8ff); pgAnim.push(() => { if (Math.random() < .5) spawnP(x, 1.3, z, mr(-.8, .8), mr(.8, 1.5), mr(-.8, .8), bub, 2); }); lab('🫧 비눗방울 기계', x, z, 2.2); },
@@ -4535,9 +4572,11 @@ function loadLevel(i) {
   level = { ...def, w: W, d: D, w0: def.w, d0: def.d, scaled: SC > 1, bounds: { minX: -W / 2 + 1, maxX: W / 2 - 1 + (def.extraEast || 0), minZ: -D / 2 + 1 - (def.extraZ || 0), maxZ: D / 2 - 1 + (def.extraZ || 0) } };
   if (def.shape) { level.poly = def.shape.map(([u, v]) => [u * W / 2, v * D / 2]); level.inside = (x, z) => pip(level.poly, x, z); level.swimSea = !!(def.outside && def.outside.water); }
   level.fav = ({ 1: .35, 2: .30, 3: .25, 4: .20, 5: .15 })[def.diff.stars] || 0; level.diff = { ...def.diff, speed: def.diff.speed / (1 + level.fav) / 1.15, flee: def.diff.flee / (1 + level.fav) / 1.15 };
+  { const Q = DIFFS[diffMode]; level.dm = diffMode; level.diff.speed *= Q.spd; level.diff.flee *= Q.spd; level.diff.bossHp = Math.max(2, Math.round(level.diff.bossHp * Q.boss)); level.diff.sniff *= Q.sniff; level.diff.vehicle = (level.diff.vehicle || 1) * Q.veh; level.fav = (1 + level.fav) * Q.gun - 1; }
   level.sz = clamp(Math.sqrt((W * D) / 2640), 1, 3.2); const SZ = level.sz;
   if (SZ > 1.05 && !def.mega) level.need = Object.fromEntries(Object.entries(def.need).map(([k, n]) => [k, k === 'boss' ? n : Math.ceil(n * (1 + (SZ - 1) * .42))]));
   if (!def.relax && !def.mega) for (const k in level.need) if (k !== 'boss') level.need[k] = Math.max(1, Math.round(level.need[k] * .7));
+  if (!def.relax) for (const k in level.need) if (k !== 'boss') level.need[k] = Math.max(1, Math.round(level.need[k] * DIFFS[diffMode].need));
   const spawn = { x: 0, z: def.d / 2 - 6 };
   level.spawn = spawn;
   camDist = CAM0.dist; pitch = CAM0.pitch;
@@ -4601,7 +4640,7 @@ function loadLevel(i) {
   for (const [type, n0] of Object.entries(def.hide)) for (let k = 0, n = Math.max((level.need[type] || 0) + 1, Math.ceil(n0 * (1 + (level.sz - 1) * .55))); k < n && pool.length; k++) { const c = spreadPick(); c.hidden = type; hidden.push(c); }
   // 초기화
   lvStats = { drug: 0, gun: 0, smuggler: 0, boss: 0 };
-  Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: Math.min(7, Math.max(3, dog.hp || 0)), boost: 0, hurt: 0, fetch: null, idleT: 0, jumps: 0, prop: null, prevIdle: null });
+  Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: Math.min(DIFFS[diffMode].hpMax, Math.max(DIFFS[diffMode].hp + Math.ceil((wallet.up.heart || 0) / 2), dog.hp || 0)), boost: 0, hurt: 0, fetch: null, idleT: 0, jumps: 0, prop: null, prevIdle: null });
   Object.assign(handler, { x: spawn.x, z: spawn.z + 1.9, y: 0, vy: 0, dir: Math.PI, boneCd: 0 });
   for (const b of bones) scene.remove(b.m); bones.length = 0;
   balls = []; for (let k = 0; k < Math.round(3 + (level.sz - 1) * 8); k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
@@ -4626,7 +4665,7 @@ function startLevel(i) {
   }
   if (LEVELS[i].mega && !hiddenVip && !(team && team.size >= 5)) { toast('🏙 통합 도시는 5명 팀 방에서만 도전할 수 있어요! 팀 방에서 5명 방을 만들거나 참가하세요'); showMaps(); openPanel('team'); return; }
   if (LEVELS[i].landmark) { /* 명소 순찰: 작전 점수와 따로 */ }
-  else if (!runActive || runCleared.has(i) || LEVELS[i].relax) { runScore = 0; runTime = 0; runStage = 0; runCleared = new Set(); totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = LEVELS[i].relax ? null : startServerRun(i); dog.hp = 3 + (wallet.up.heart || 0); }
+  else if (!runActive || runCleared.has(i) || LEVELS[i].relax) { runScore = 0; runTime = 0; runStage = 0; runCleared = new Set(); totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = LEVELS[i].relax ? null : startServerRun(i); dog.hp = Math.min(DIFFS[diffMode].hpMax, DIFFS[diffMode].hp + Math.ceil((wallet.up.heart || 0) / 2)); }
   if (!LEVELS[i].landmark) runActive = !LEVELS[i].relax;
   if (i === 5 && runCleared.size < 5) setTimeout(() => toast(t('ts_boss_rank')), 4500);
   hideAll(); loadLevel(i);
@@ -4653,15 +4692,36 @@ function renderQuest() {
   $('qsum').textContent = Object.entries(level.need).map(([k, n]) => (k === 'drug' ? ITEM.drug.emoji : k === 'gun' ? ITEM.gun.emoji : k === 'boss' ? '👑' : (level.crookEmoji || '🕶')) + Math.min(lvStats[k] || 0, n) + '/' + n).join(' ');
   $('qgoals').innerHTML = Object.entries(level.need).map(([k, n]) => { const v = Math.min(lvStats[k] || 0, n); return `<div class="goal ${v >= n ? 'done' : ''}"><span>${t('g_' + k)}</span><b>${v}/${n}</b></div>`; }).join('');
 }
+// 난이도: 쉬움은 범인이 느리고 찾을 물건이 적다. 어려움은 빠르고 많지만 점수를 더 준다
+const DIFFS = {
+  easy: { spd: .8, gun: 1.6, boss: .6, need: .75, sniff: 1.3, veh: .8, hp: 5, hpMax: 7, score: .8, note: '체력 5 · 범인이 느리고 공격이 뜸해요 · 찾을 물건 적게 · 점수 ×0.8' },
+  normal: { spd: 1, gun: 1, boss: 1, need: 1, sniff: 1, veh: 1, hp: 3, hpMax: 7, score: 1, note: '기본 난이도 · 체력 3 · 점수 ×1' },
+  hard: { spd: 1.15, gun: .7, boss: 1.4, need: 1.3, sniff: .8, veh: 1.15, hp: 2, hpMax: 5, score: 1.2, note: '체력 2 · 범인이 빠르고 자주 공격해요 · 찾을 물건 많이 · 점수 ×1.2' }
+};
+let diffMode = DIFFS[store.get('k9diff', 'normal')] ? store.get('k9diff', 'normal') : 'normal';
+function setDiff(d, save = true) { diffMode = d; if (save) store.set('k9diff', d); for (const b of document.querySelectorAll('#diffRow button')) b.classList.toggle('on', b.dataset.d === d); $('diffNote').textContent = DIFFS[d].note; }
+for (const b of document.querySelectorAll('#diffRow button')) b.addEventListener('click', () => { setDiff(b.dataset.d); SFX.click && SFX.click(); });
+setDiff(diffMode, false);
+// 휴대폰에서 가운데 위 알림이 겹치지 않게 보이는 것만 위에서부터 차례로 쌓는다
+const TOP_HUD = ['mission', 'autoBadge', 'mpCount', 'goalBig', 'toast', 'combo'];
+function stackTopHud() {
+  if (!document.body.classList.contains('touch')) return;
+  let y = 6 + (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--st')) || 0);
+  for (const id of TOP_HUD) {
+    const e = $(id); if (!e || e.classList.contains('hidden') || !e.textContent.trim()) continue;
+    const cs = getComputedStyle(e); if (cs.display === 'none' || +cs.opacity < .05) continue;
+    e.style.top = y + 'px'; y += e.offsetHeight + 4;
+  }
+}
 function addScore(n) { levelScore = Math.max(-500, levelScore + n); }
 function damage() {
   if (dog.hurt > 0 || state !== 'play') return;
   if (dog.giantT > 0) { dog.hurt = .6; floatText('🌟 무적!', dog.x, dog.y + 2.2, dog.z, { h: .45, color: '#ffd23f' }); return; }
   if (hiddenVip) { dog.hurt = .8; floatText('🛡 관리자 무적', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#ffd54f' }); return; }
   if (dog.shield > 0) { dog.shield--; dog.hurt = .8; floatText(t('ts_blocked'), dog.x, dog.y + 1.8, dog.z, { h: .5, color: '#7fd3ff' }); burst(dog.x, dog.y + .8, dog.z, [new THREE.Color(0x7fd3ff)], 20, 3); return; }
-  if (Math.random() < .06 * (wallet.up.armor || 0)) { dog.hurt = .6; floatText('🦺 방탄 조끼가 막았다!', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#9fe870' }); return; }
+  if (Math.random() < .05 * (wallet.up.armor || 0)) { dog.hurt = .6; floatText('🦺 방탄 조끼가 막았다!', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#9fe870' }); return; }
   if (handlerJob === 'soldier' && Math.random() < .3) { dog.hurt = .6; floatText('🛡 막아냈다!', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#9fe870' }); return; }
-  dog.hp--; dog.hurt = 1; lastHurt = time; shake = .4; burst(dog.x, dog.y + .8, dog.z, [RED], 25, 3);
+  dog.hp--; dog.hurt = 1 + .05 * (wallet.up.heart || 0); lastHurt = time; shake = .4; burst(dog.x, dog.y + .8, dog.z, [RED], 25, 3);
   if (dog.hp > 0) return;
   // 순직: 같은 맵을 처음부터 다시 하지만, 흐른 시간은 계속 이어져 시간 보너스가 줄어든다
   state = 'dead'; const carry = levelTime;
@@ -4681,7 +4741,7 @@ function checkQuest() {
 function levelClear() {
   state = 'clear'; SFX.quest(); syncProfile();
   const timeBonus = Math.max(0, Math.round(((240 + (level.sz - 1) * 325) - levelTime) * 2));
-  levelScore += 300 + timeBonus;
+  levelScore += 300 + timeBonus; levelScore = Math.round(levelScore * DIFFS[level.dm || 'normal'].score);
   const coinsGot = Math.max(10, Math.round(levelScore / 30 * (level.sz || 1))); wallet.coins += coinsGot; store.set(walletKey(), wallet); try { cloudSave(); } catch { }
   if (level.landmark) { const p0 = getProg(); if (!p0.best[levelIdx] || levelTime < p0.best[levelIdx]) p0.best[levelIdx] = Math.round(levelTime); store.set(progKey(), p0); checkBadges(); $('clrSub').textContent = level.gate ? t('qz_gate') : t('clr_lm_sub'); $('clrTitle').textContent = level.icon + ' ' + mapName(levelIdx) + ' ' + t('clr_lm_title'); $('clrStats').innerHTML = '⏱ <b>' + fmtTime(levelTime) + '</b><br>⭐ ' + t('clr_score') + ' <b>' + levelScore + '</b><br>🦴 ' + t('clr_snack') + ' +' + coinsGot + '<br><small>' + t('clr_lm_note') + '</small>'; $('clear').classList.remove('hidden'); return; }
   runScore += levelScore; runTime += levelTime;
@@ -4983,9 +5043,14 @@ addEventListener('resize', () => setTimeout(fitMenu, 60));
 for (const b of document.querySelectorAll('#topbar button:not(#tbMenu)')) b.addEventListener('click', () => $('topbar').classList.remove('open'));
 { let tapT = 0;
   // 터치 탭이 click으로 이어지지 않는 기기(전체화면 전환·화면 갱신 중 탭 유실)를 위해 손을 뗄 때 바로 누른다 — 상단바와 클리어·승리 화면 버튼
-  const TAP = '#topbar button, #mmToggle, #clear button, #win button';
+  const TAP = '#topbar button, #mmToggle, #mmwrap, #clear button, #win button';
   let down = null;
-  document.addEventListener('pointerdown', e => { down = e.pointerType === 'touch' ? { x: e.clientX, y: e.clientY, b: e.target.closest && e.target.closest(TAP) } : null; }, true);
+  document.addEventListener('pointerdown', e => {
+    // 메뉴·지도 버튼은 손가락이 닿는 순간 누른다: iOS가 터치를 취소(pointercancel)해도 놓치지 않게
+    const quick = e.pointerType === 'touch' && e.target.closest && !e.target.closest('#info') && e.target.closest('#topbar button, #mmToggle, #mmwrap');
+    if (quick) { e.preventDefault(); e.stopPropagation(); down = null; tapT = performance.now(); quick.click(); return; }
+    down = e.pointerType === 'touch' ? { x: e.clientX, y: e.clientY, b: e.target.closest && e.target.closest(TAP) } : null;
+  }, true);
   document.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') return; const b = e.target.closest && e.target.closest(TAP); if (!b || b.disabled || !down || down.b !== b || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 14) return; e.preventDefault(); tapT = performance.now(); b.click(); }, true);
   document.addEventListener('click', e => { if (e.isTrusted && performance.now() - tapT < 600 && e.target.closest && e.target.closest(TAP)) { e.stopPropagation(); e.preventDefault(); } }, true); }
 // 랭킹은 늘 최신으로: 화면에 보이는 랭킹을 15초마다·새 사람이 들어올 때 새로 받아온다
@@ -5211,6 +5276,7 @@ function bark() {
     if (p.villain && d < 4.5 * BR) { if (d < 4 * BR && !(p.barkHit > time)) { p.barkHit = time + 1.0 * AS; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
     else if (!p.villain && d < 3) p.stun = Math.max(p.stun, .3);
   }
+  for (const v of vehicles) if (!v.broken && dog.y < 2.5 && v.distTo(hx, hz) < 1.6 * BR && !(v.barkHit > time)) { v.barkHit = time + .5 * AS; v.hit('🐕 왕왕!'); }
   let best = null, bd = 1.8 * (1 + .06 * (wallet.up.bark || 0));
   for (const c of hidden) { if (c.revealed) continue; const d = distToBox(dog.x, dog.z, c); if (d < bd) { bd = d; best = c; } }
   if (best) return reveal(best);
@@ -5288,10 +5354,10 @@ const auto = { on: false, mode: 'play', mx: 0, mz: 0, sniff: false, run: false, 
 const needLeft = k => level.need && level.need[k] && (lvStats[k] || 0) < level.need[k];
 function autoSafeBark() {
   // 깨끗한 물건 바로 옆에서 짖으면 오탐(부상)이므로, 숨긴 물건이 가깝지 않으면 깨끗한 물건 옆에서는 짖지 않는다
-  if (dog.barkCd > 0) return;
-  if (hidden.some(c => !c.revealed && distToBox(dog.x, dog.z, c) < 1.8)) { barkQ = true; return; }
-  if (colliders.some(c => c.search && !c.checked && !c.revealed && distToBox(dog.x, dog.z, c) < 1.25)) return;
-  barkQ = true;
+  if (dog.barkCd > 0) return true;
+  if (hidden.some(c => !c.revealed && distToBox(dog.x, dog.z, c) < 1.8)) { barkQ = true; return true; }
+  if (colliders.some(c => c.search && !c.checked && !c.revealed && distToBox(dog.x, dog.z, c) < 1.25)) return false;
+  barkQ = true; return true;
 }
 function autoBoneClear(p) {
   // 뼈다귀가 날아갈 길에 시민이 있으면 던지지 않는다
@@ -5360,7 +5426,15 @@ function autoPlay(dt) {
     const d = Math.hypot(p.x - dog.x, p.z - dog.z);
     // 주먹이 닿지 않는 거리(약 3m)에서 짖고, 너무 붙으면 물러난다
     if (d < 2.4) { auto.mx = (dog.x - p.x) / d; auto.mz = (dog.z - p.z) / d; return; }
-    if (d < 3.7) { autoSafeBark(); dog.dir += angDiff(dog.dir, Math.atan2(p.x - dog.x, p.z - dog.z)) * Math.min(1, dt * 8); return; }
+    if (d < 3.7) {
+      dog.dir += angDiff(dog.dir, Math.atan2(p.x - dog.x, p.z - dog.z)) * Math.min(1, dt * 8);
+      if (autoSafeBark()) return;
+      // 깨끗한 짐 옆이라 짖으면 오탐: 뼈다귀를 던지거나, 짐에서 떨어져 범인 옆으로 돌아간다
+      if (auto.boneCd <= 0 && Math.abs(angDiff(dog.dir, Math.atan2(p.x - dog.x, p.z - dog.z))) < .35 && autoBoneClear(p)) { throwBone(); auto.boneCd = mr(.8, 1.4); return; }
+      const c = colliders.find(c => c.search && !c.checked && !c.revealed && distToBox(dog.x, dog.z, c) < 1.25);
+      if (c) { const q = center(c), ax = dog.x - q.x, az = dog.z - q.z, l = Math.hypot(ax, az) || 1, tx2 = p.x - dog.x, tz2 = p.z - dog.z; auto.mx = ax / l + tx2 / d * .5; auto.mz = az / l + tz2 / d * .5; }
+      return;
+    }
     if (d < 7 && auto.boneCd <= 0 && Math.abs(angDiff(dog.dir, Math.atan2(p.x - dog.x, p.z - dog.z))) < .3 && autoBoneClear(p)) { throwBone(); auto.boneCd = mr(.8, 1.6); }
     tx = p.x; tz = p.z; stop = 3.2; if (d > 12 && dog.stamina > 45) auto.run = true;
   } else if (g.t === 'item') {
@@ -5372,11 +5446,90 @@ function autoPlay(dt) {
   if (d < stop) { if (g.t === 'roam') { auto.goal = null; auto.sniffCd = 0; } return; }
   // 사람처럼 약간 비틀거리며 걷기
   const a = Math.atan2(dx, dz) + (g.t === 'item' ? 0 : auto.noise); dx = Math.sin(a); dz = Math.cos(a);
-  // 막히면 점프하고 옆으로 돌아간다
+  // 다른 층이면 계단으로 돌아가고, 앞을 미리 보고 낮은 턱은 점프·높은 벽은 비켜 간다
+  ({ dx, dz } = autoRoute(tx, tz, dx, dz, dt));
+  if (!(auto.via && auto.via.length)) ({ dx, dz } = autoDetour(tx, tz, dx, dz, dt, g.c));
+  ({ dx, dz } = autoAhead(dx, dz, dt, g.c));
+  // 그래도 막히면 점프하고 옆으로 돌아간다
   auto.stuckT += dt;
   if (auto.stuckT > 1) { const moved = Math.hypot(dog.x - auto.lx, dog.z - auto.lz); auto.stuckT = 0; auto.lx = dog.x; auto.lz = dog.z; if (moved < .6 && auto.detourT <= 0) { const s = Math.random() < .5 ? 1 : -1; auto.dvx = -dz * s + dx * .3; auto.dvz = dx * s + dz * .3; auto.detourT = mr(.8, 1.5); jumpQ = true; } }
   if (auto.detourT > 0) { auto.detourT -= dt; dx = auto.dvx; dz = auto.dvz; }
   auto.mx = dx; auto.mz = dz;
+}
+// 그 자리에 앞을 막는 장애물이 있으면 그 높이, 없으면 -1 (맵 밖은 99)
+function autoBlockAt(x, z, skip) {
+  if (level.inside && !level.inside(x, z) && !inSea(x, z)) return 99;
+  let top = -1;
+  for (const c of colliders) { if (c === skip || c.disabled || c.topY <= dog.y + STEP || (c.bottomY !== undefined && dog.y + 1.7 < c.bottomY)) continue; if (distToBox(x, z, c) < .55) top = Math.max(top, c.topY); }
+  return top;
+}
+function autoAhead(dx, dz, dt, skip) {
+  const free = (ax, az) => autoBlockAt(dog.x + ax * 1.4, dog.z + az * 1.4, skip) < 0 && autoBlockAt(dog.x + ax * 2.6, dog.z + az * 2.6, skip) < 0;
+  // 비켜 가는 중이면 잠깐 그 방향을 유지한다 (좌우로 흔들리지 않게)
+  if (auto.sideT > 0) { auto.sideT -= dt; const a = Math.atan2(dx, dz) + auto.side; if (free(Math.sin(a), Math.cos(a))) return { dx: Math.sin(a), dz: Math.cos(a) }; }
+  const top = autoBlockAt(dog.x + dx * 1.3, dog.z + dz * 1.3, skip);
+  if (top < 0) return { dx, dz };
+  // 1.1m 이하 상자·턱·난간은 폴짝 뛰어넘는다
+  if (top - dog.y <= 1.1) { if (dog.grounded) jumpQ = true; return { dx, dz }; }
+  // 높은 벽: 목표 쪽에 가까운 빈 방향으로 비켜 간다 (지난번에 돈 쪽을 먼저)
+  const s0 = auto.lastSide || (Math.random() < .5 ? 1 : -1), a0 = Math.atan2(dx, dz);
+  for (const ang of [.5, .95, 1.4, 1.85]) for (const s of [s0, -s0]) {
+    const a = a0 + ang * s;
+    if (free(Math.sin(a), Math.cos(a))) { auto.side = ang * s; auto.sideT = .7; auto.lastSide = s; return { dx: Math.sin(a), dz: Math.cos(a) }; }
+  }
+  return { dx, dz };
+}
+// 곧장 가는 길이 높은 벽으로 막혀 있는지 (0.8m 간격으로 확인)
+function autoLineBlocked(tx, tz, skip) {
+  const L = Math.hypot(tx - dog.x, tz - dog.z), n = Math.ceil(L / .8);
+  for (let k = 1; k < n; k++) { const u = k / n, h = autoBlockAt(dog.x + (tx - dog.x) * u, dog.z + (tz - dog.z) * u, skip); if (h > dog.y + 1.1) return true; }
+  return false;
+}
+// 1m 격자로 벽을 돌아가는 길을 찾는다 (탐지견 주변 45m 안)
+function autoPath(tx, tz, skip) {
+  const R = 45, N = R * 2, x0 = Math.floor(dog.x) - R, z0 = Math.floor(dog.z) - R, lim = dog.y + 1.1, blk = new Uint8Array(N * N);
+  for (const c of colliders) {
+    if (c === skip || c.disabled || c.topY <= lim || (c.bottomY !== undefined && dog.y + 1.7 < c.bottomY)) continue;
+    const i0 = Math.max(0, Math.floor(c.minX - .5 - x0)), i1 = Math.min(N - 1, Math.floor(c.maxX + .5 - x0)), j0 = Math.max(0, Math.floor(c.minZ - .5 - z0)), j1 = Math.min(N - 1, Math.floor(c.maxZ + .5 - z0));
+    for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) blk[i * N + j] = 1;
+  }
+  if (level.inside) for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) if (!blk[i * N + j] && !level.inside(x0 + i + .5, z0 + j + .5)) blk[i * N + j] = 1;
+  const si = Math.floor(dog.x) - x0, sj = Math.floor(dog.z) - z0, ti = clamp(Math.floor(tx) - x0, 0, N - 1), tj = clamp(Math.floor(tz) - z0, 0, N - 1);
+  const prev = new Int32Array(N * N).fill(-1), q = new Int32Array(N * N), S = si * N + sj, T = ti * N + tj; blk[S] = 0; blk[T] = 0; prev[S] = S; q[0] = S; let qh = 0, qt = 1;
+  while (qh < qt) {
+    const cur = q[qh++]; if (cur === T) break; const ci = Math.floor(cur / N), cj = cur % N;
+    for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+      const ni = ci + di, nj = cj + dj; if (ni < 0 || nj < 0 || ni >= N || nj >= N) continue; const nk = ni * N + nj;
+      if (blk[nk] || prev[nk] >= 0 || (di && dj && (blk[ci * N + nj] || blk[ni * N + cj]))) continue;
+      prev[nk] = cur; q[qt++] = nk;
+    }
+  }
+  if (prev[T] < 0) return null;
+  const pts = []; for (let k = T; k !== S; k = prev[k]) pts.push({ x: x0 + Math.floor(k / N) + .5, z: z0 + k % N + .5 });
+  pts.reverse(); return pts.filter((_, k) => k % 3 === 2 || k === pts.length - 1);
+}
+// 막힌 길이면 격자 길찾기로 만든 경유지를 따라간다 (1.5초마다 다시 확인)
+function autoDetour(tx, tz, dx, dz, dt, skip) {
+  const key = Math.round(tx) + ',' + Math.round(tz);
+  if (auto.pathKey !== key) { auto.pathKey = key; auto.path = null; auto.pathT = 0; }
+  auto.pathT = (auto.pathT || 0) - dt;
+  if (auto.pathT <= 0) { auto.pathT = 1.5; auto.path = autoLineBlocked(tx, tz, skip) ? autoPath(tx, tz, skip) : null; }
+  const P = auto.path; if (!P) return { dx, dz };
+  while (P.length && Math.hypot(P[0].x - dog.x, P[0].z - dog.z) < 1) P.shift();
+  if (!P.length) return { dx, dz };
+  const d = Math.hypot(P[0].x - dog.x, P[0].z - dog.z) || 1;
+  return { dx: (P[0].x - dog.x) / d, dz: (P[0].z - dog.z) / d };
+}
+// 목표가 다른 층(계단 위·아래)이면 계단 입구를 거쳐 간다
+function autoRoute(tx, tz, dx, dz, dt) {
+  if (!slopes.some(o => o.t === 'ramp')) return { dx, dz };
+  const key = Math.round(tx / 3) + ',' + Math.round(tz / 3);
+  auto.viaT = (auto.viaT || 0) - dt;
+  if (auto.viaKey !== key || auto.viaT <= 0) { auto.viaKey = key; auto.viaT = 4; auto.via = levelVia(dog, { x: tx, z: tz }) || []; }
+  while (auto.via.length && Math.hypot(auto.via[0].x - dog.x, auto.via[0].z - dog.z) < 1.1) auto.via.shift();
+  if (!auto.via.length) return { dx, dz };
+  const v = auto.via[0], d = Math.hypot(v.x - dog.x, v.z - dog.z) || 1;
+  return { dx: (v.x - dog.x) / d, dz: (v.z - dog.z) / d };
 }
 // 코인 자동 사냥 (최고 등급 플레이어처럼): 값과 거리로 다음 두 개까지 내다보고 최단 경로로, 기력 관리하며 전력 질주
 function coinScore(c, fx, fz) { const d = Math.hypot(c.x - fx, c.z - fz); return c.v / (d + 1.5); }
@@ -5400,6 +5553,7 @@ function coinHunt(dt) {
   // 기력: 먼 거리는 달리고, 바닥나기 전에 걸으며 회복 (25 아래면 60까지 걷기)
   if (dog.stamina < 25) auto.rest = true; else if (dog.stamina > 60) auto.rest = false;
   auto.run = !auto.rest && d > 3;
+  ({ dx, dz } = autoAhead(dx, dz, dt));
   // 막히면 바로 점프하고 옆으로 돌아간다 (고수는 반응이 빠르다)
   auto.stuckT += dt;
   if (auto.stuckT > .5) { const moved = Math.hypot(dog.x - auto.lx, dog.z - auto.lz); auto.stuckT = 0; auto.lx = dog.x; auto.lz = dog.z; if (moved < .5 && auto.detourT <= 0) { const s = (dx * (dog.z - tz) - dz * (dog.x - tx)) > 0 ? 1 : -1; auto.dvx = -dz * s + dx * .4; auto.dvz = dx * s + dz * .4; auto.detourT = .6; jumpQ = true; } }
@@ -5459,8 +5613,9 @@ function updateDog(dt) {
     handler.vy = air ? 6 : 6.5;
   }
   jumpQ = false;
-  dog.vy -= 22 * dt; dog.y += dog.vy * dt;
-  const gnd = groundAt(dog.x, dog.z, .5, Math.max(dog.y, 0));
+  // 바닥 판정은 중력을 받기 전 높이로: 계단 칸 위에 서 있다가 미세하게 내려앉아 다음 칸이 '벽'이 되지 않게
+  const y0 = dog.y; dog.vy -= 22 * dt; dog.y += dog.vy * dt;
+  const gnd = groundAt(dog.x, dog.z, .5, Math.max(dog.y, y0, 0));
   if (dog.y <= gnd.h) {
     if (!dog.grounded && dog.vy < -5) { SFX.land(); for (let i = 0; i < 8; i++) spawnP(dog.x, gnd.h + .1, dog.z, mr(-2, 2), .5, mr(-2, 2), DUST, .5); }
     if (!dog.grounded && dog.jumps >= 3) groundSlam(gnd.h);
@@ -5940,7 +6095,7 @@ function loop() {
   updateEffects(dt); updateParticles(dt); updateCamera(dt); updateToast(dt);
   hudTick -= dt;
   if (hudTick <= 0) {
-    hudTick = 1 / 30; drawMinimap();
+    hudTick = 1 / 30; drawMinimap(); stackTopHud();
     $('stam').firstChild.style.width = dog.stamina + '%'; $('hp').textContent = '❤️'.repeat(Math.max(0, dog.hp)) + '🤍'.repeat(Math.max(0, 7 - dog.hp));
     $('scent').firstChild.style.width = (scentShown * 100).toFixed(0) + '%';
     $('score').textContent = '⭐ ' + (runScore + levelScore);
