@@ -645,7 +645,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1713';
+const BUILD = '20261031-1738';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -2002,6 +2002,8 @@ class Vehicle {
     setTimeout(() => { if (level !== lv || state === 'login') return; new Vehicle(type, route, 0); }, 25000);
   }
   update(dt) {
+    if (this.stopT > 0) { this.stopT -= dt; this.cur = 0; if (this.stopT <= 0 && this.seizeTag) { this.g.remove(this.seizeTag); this.seizeTag = null; } return; }
+    if (this.carry && !this.sus && dog.y < 2.5) { const dd = this.distTo(dog.x, dog.z); if (dd < 1.6 || (dog.sniffing && dd < 5.5)) markCarrier(this); }
     if (this.broken) { this.smoke -= dt; if (Math.random() < .3) spawnP(this.x + mr(-.5, .5), 2, this.z + mr(-.5, .5), mr(-.3, .3), mr(1, 2), mr(-.3, .3), new THREE.Color(0x444444), 1.2); return; }
     if (this.wobble > 0) { this.wobble -= dt; this.g.rotation.z = Math.sin(this.wobble * 40) * .04; } else this.g.rotation.z = 0;
     if (this.hp <= this.hpMax / 2 && Math.random() < .08) spawnP(this.x, 2.2, this.z, mr(-.2, .2), 1.2, mr(-.2, .2), new THREE.Color(0x777777), .9);
@@ -2025,6 +2027,31 @@ class Vehicle {
       if (dog.hurt <= 0 && this.cur > .5) { toast({ truck: '🚚 트럭에 부딪혔어요! 차량을 조심하세요', forklift: '🚜 지게차에 부딪혔어요! 조심!', bus: '🚌 버스에 부딪혔어요! 도로 조심!', yt: '🚛 야드 트랙터에 부딪혔어요! 안벽 조심!', moto: '🛵 오토바이에 부딪혔어요! 조심!', dragon: '🐉 화성어차에 부딪혔어요! 조심!' }[this.type] || '🚗 차에 부딪혔어요! 횡단보도로 건너요'); damage(); }
     }
   }
+}
+
+// ================= 차량 밀수: 트럭·승용차·지게차·오토바이 등에 마약·총기를 싣고 다닌다 =================
+const VNAME = { truck: '트럭', car: '승용차', taxi: '택시', bus: '버스', moto: '오토바이', forklift: '지게차', yt: '야드 트랙터', dragon: '관광 열차' };
+function loadCarriers() {
+  const cand = vehicles.filter(v => v.type !== 'dragon').sort(() => Math.random() - .5);
+  if (!cand.length || level.relax) return;
+  const n = Math.min(3, Math.max(1, Math.round(cand.length / 4)));
+  for (const v of cand.slice(0, n)) v.carry = level.need.gun && Math.random() < .3 ? 'gun' : 'drug';
+  setTimeout(() => { if (state === 'play' || state === 'dialog') toast('🚚 차량·지게차·오토바이에도 밀수품이 실려 있대요! 가까이서 킁킁 냄새를 맡고 왕왕 짖어 세우세요'); }, 9000);
+}
+function markCarrier(v) {
+  v.sus = true; v.cur *= .5;
+  const t = textSprite('👃❗ 수상한 냄새', { h: .42, bg: 'rgba(200,40,30,.92)' }); t.position.y = (v.len > 6 ? 4.6 : 3.2); v.g.add(t); v.susTag = t;
+  floatText('👃 ' + (VNAME[v.type] || '차량') + '에서 수상한 냄새! 왕왕 짖어 세우자', v.x, 3.6, v.z, { h: .45, color: '#ff8a80' }); tone(740, .1, 'triangle', .06); tone(988, .12, 'triangle', .06, 0, .12);
+}
+function seizeVehicle(v) {
+  const type = v.carry, info = ITEM[type]; v.carry = null; v.stopT = 8; v.cur = 0;
+  if (v.susTag) { v.g.remove(v.susTag); v.susTag = null; }
+  const tag = textSprite('🚨 검문 · ' + info.emoji + ' 압수', { h: .45, bg: 'rgba(19,51,90,.92)' }); tag.position.y = (v.len > 6 ? 4.6 : 3.2); v.g.add(tag); v.seizeTag = tag;
+  const pts = info.pts * comboHit(); addScore(pts); totals.items++; lvStats[type] = (lvStats[type] || 0) + 1; ach[type]++; checkBadges(); mpStat(type);
+  burst(v.x, 1.6, v.z, [info.color, WHITE], 30, 4); tone(523, .15, 'square', .08); tone(784, .2, 'square', .08, 0, .16);
+  floatText('🚨 ' + (VNAME[v.type] || '차량') + ' 적발! ' + info.emoji + ' ' + info.name + ' 압수 +' + pts, v.x, 4, v.z, { color: '#ffd54f' });
+  toast('🚨 ' + (VNAME[v.type] || '차량') + '에 숨긴 ' + info.name + '을(를) 찾았어요! 운전자는 세관 조사를 받아요');
+  checkQuest();
 }
 
 // ================= 세관 단속반 (수갑 연행·증거물 회수) =================
@@ -3787,8 +3814,11 @@ function lanternLine(x0, x1, z, y, cols = [0xff6f61, 0xffd54f, 0x4fc3f7]) { for 
 function horse(x, z, col = 0x8d5a3b) { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rr(0, 6); world.add(g); const m = LMC(col); mesh(BOX(.8, .8, 1.8), m, 0, 1.2, 0, g); mesh(BOX(.5, .9, .5), m, 0, 1.8, .9, g); mesh(BOX(.4, .4, .7), m, 0, 2.1, 1.3, g); for (const sx of [-.3, .3]) for (const sz of [-.7, .7]) mesh(BOX(.22, .9, .22), m, sx, .45, sz, g); addCol(x, z, 1.4, 1.4, g, { topY: 1.6 }); }
 function rockWall(x0, z0, x1, z1, col = 0x3a3a3a) { const len = Math.hypot(x1 - x0, z1 - z0), n = Math.ceil(len / .9); for (let k = 0; k < n; k++) { const t = k / n, m = mesh(BOX(rr(.7, 1), rr(.7, 1.1), rr(.6, .9)), LMC(col), x0 + (x1 - x0) * t, .4, z0 + (z1 - z0) * t); m.castShadow = false; } addCol((x0 + x1) / 2, (z0 + z1) / 2, Math.abs(x1 - x0) + .8, Math.abs(z1 - z0) + .8, null, { topY: 1 }); }
 function partition(z, hw = 6, aisle = 1.1, col = 0xdfe6ea) { for (const sd of [-1, 1]) bx(sd * (aisle + (hw - aisle) / 2), 0, z, hw - aisle, 2.8, .25, col); mesh(BOX(aisle * 2, .5, .25), LMC(col), 0, 2.55, z); }
+const SRING = [[-40, 50], [40, 50], [64, 36], [72, 0], [64, -36], [40, -50], [-40, -50], [-64, -36], [-72, 0], [-64, 36]];
+const GWRD = [[30, 268], [30, -252], [48, -252], [48, 268]];
+const JSRD = [[-165, -8], [165, -8], [165, 4], [-165, 4]];
 const LMDEF = (o) => ({
-  landmark: true, mega: o.mega, gate: o.gate, npcJump: o.npcJump, mmFloor: typeof o.floor === "number" ? o.floor : o.mmCol ?? null, sc: o.gate || o.mega || ['해운대', '광안리 해변', 'KTX'].includes(o.name) ? 1 : 1.732, fill: o.fill, diff: { stars: o.st ?? 2, speed: .95 + (o.st ?? 2) * .06, flee: 1, hp: o.st > 3 ? 3 : 2, bossHp: 5, sniff: 27 - (o.st ?? 2) * 1.5, vehicle: 1 },
+  landmark: true, mega: o.mega, gate: o.gate, npcJump: o.npcJump, mmFloor: typeof o.floor === "number" ? o.floor : o.mmCol ?? null, sc: o.sc ?? (o.gate || o.mega || ['해운대', '광안리 해변', 'KTX'].includes(o.name) ? 1 : 1.732), fill: o.fill, diff: { stars: o.st ?? 2, speed: .95 + (o.st ?? 2) * .06, flee: 1, hp: o.st > 3 ? 3 : 2, bossHp: 5, sniff: 27 - (o.st ?? 2) * 1.5, vehicle: 1 },
   extras: { decor: o.decor || [], items: o.items || [['backpack', 3], ['dutyBag', 2]] }, name: o.name, icon: o.icon, w: o.w ?? 80, d: o.d ?? 60, outdoor: o.out !== false, bg: o.bg ?? 0xcfe3ef, music: o.music ?? 1 + (o.n % 7), sky: o.sky, shape: o.shape, outside: o.outside, rail: o.rail,
   staff: o.staff || [{ kind: 'police', route: [[-(o.w ?? 80) / 2 + 6, (o.d ?? 60) / 2 - 4], [(o.w ?? 80) / 2 - 6, (o.d ?? 60) / 2 - 4]], wait: 2 }, { kind: 'customs', route: [[-12, 8], [12, 8]], wait: 2 }],
   vehicles: o.veh || [], people: o.people || { civ: 9, smuggler: 3 }, hide: o.hide || { drug: 4, gun: 3 }, need: o.need || { drug: 3, gun: 2, smuggler: 2 },
@@ -4058,17 +4088,46 @@ const LANDMARK_LIST = [
       for (let k = 0; k < 8; k++) { const m = mesh(BOX(4, 3, .4), LMC([0xff4fa3, 0x4fd3ff, 0xffd54f, 0x7dff6a, 0xb388ff][k % 5]), -20 + (k % 4) * 4.2, 1.5, k < 4 ? 4 : -10); m.castShadow = false; } bx(-14, 0, 4, 17, 3, .3, 0x777777); sign('🎨 그래피티 골목', -14, 4, 4.4, .5);
       sign('🎸 HONGDAE 걷고싶은거리', 0, 6, 8, 1);
     } },
-  { name: '롯데월드타워', fill: 'park', icon: '🏙', w: 86, d: 64, floor: TILE('#d3d0c8', '#b6b2a8', .25), obj: luggage, sky: [0x4f9fe8, 0xe6f2fc], st: 4,
-    people: { tourist: 6, civ: 4, student: 2, smuggler: 3 }, items: [["dutyBag",3],["wine",2],["trashBin",2]], who: '서높이 롯데월드타워 운영총괄', short: '123층 555m 초고층 타워, 석촌호수 벚꽃길, 쇼핑몰, 아쿠아리움 앞 광장을 순찰해요.',
-    intro: '잠실의 123층, 555m 초고층 타워 앞이야! 붓끝처럼 뾰족하게 솟아 있고, 꼭대기엔 전망대 서울스카이가 있어.\n타워 옆엔 쇼핑몰과 아쿠아리움, 동쪽엔 벚꽃이 예쁜 석촌호수가 있어.',
+  { name: '롯데월드타워', fill: 'park', icon: '🏙', sc: 1, w: 340, d: 270, veh: [{ type: 'taxi', road: 'asphalt', route: JSRD }, { type: 'bus', road: 'asphalt', route: JSRD, start: 1 }, { type: 'car', route: JSRD, start: 2 }, { type: 'car', route: JSRD, start: 3 }, { type: 'moto', route: JSRD, start: 1 }], floor: TILE('#d3d0c8', '#b6b2a8', .25), obj: luggage, sky: [0x4f9fe8, 0xe6f2fc], st: 4,
+    people: { tourist: 10, civ: 8, student: 6, smuggler: 4 }, staff: [{ kind: 'police', route: [[-150, -2], [150, -2]], wait: 2 }, { kind: 'customs', route: [[60, -20], [150, -20]], wait: 2 }, { kind: 'attendant', route: [[-110, 40], [-60, 40]], wait: 3 }], items: [["dutyBag",3],["wine",2],["trashBin",2]], who: '서높이 롯데월드타워 운영총괄', short: '📏 실제 1/2 축척! 북쪽 롯데월드타워(555m·123층)·에비뉴엘·몰, 서쪽 롯데월드 어드벤처(실내), 남쪽 석촌호수 서호의 매직아일랜드 놀이공원과 동호 벚꽃 산책로.',
+    intro: '잠실의 123층, 555m 초고층 롯데월드타워 단지야! 꼭대기엔 전망대 서울스카이가 있어.\n남쪽 길 건너엔 둘레 2.5km 석촌호수가 있고, 서호 가운데 섬엔 롯데월드 놀이공원 매직아일랜드의 하얀 성과 자이로드롭이 있어.\n관광객이 붐비는 곳이니 놀이기구 줄과 기념품 가게도 꼼꼼히 살피자!',
     build(L) {
-      const gl = MAT.col(0x9cc0da, .25, .3), fin = LMC(0xeef3f7);
-      for (let k = 0; k < 24; k++) { const w = 9 - Math.pow(k / 24, 1.6) * 7.2, y = k * 1.8; bx(0, y, -18, w, 1.8, w, gl, k === 0); for (const sx of [-1, 1]) for (const sz of [-1, 1]) mesh(BOX(.3, 1.8, .3), fin, sx * w / 2, y + .9, -18 + sz * w / 2); }
-      mesh(BOX(2.8, .5, 2.8), glow(0x9fe0ff, 1.2), 0, 43.4, -18).castShadow = false; for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2, b = mesh(BOX(.25, 7, .25), fin, Math.cos(a) * .9, 47, -18 + Math.sin(a) * .9); b.rotation.z = Math.cos(a) * .1; b.rotation.x = Math.sin(a) * .1; } mesh(BOX(.45, .45, .45), glow(0xff4040, 2), 0, 50.8, -18); sign('서울스카이 SEOUL SKY 전망대', 0, 44.5, -12, .9);
-      for (const sx of [-1, 1]) { building(sx * 24, -14, 18, 16, 9, 0xdcd6cc, { glass: 0x6a9ab8, sign: sx < 0 ? '🛍 롯데월드몰' : '🐠 아쿠아리움', sh: .6 }); mesh(BOX(18.4, .6, 16.4), LMC(0xc9b48a), sx * 24, 9.3, -14); }
-      fountain(0, 2, 3.4); sign('🏙 LOTTE WORLD TOWER 555m (123층)', 0, 8, -6, 1);
-      pond(-38, 14, 22, 26, 0x5a9ec8); const boat = mesh(BOX(1.6, .8, 3), LMC(0xffffff), -38, .5, 14); envAnim.push(() => { boat.position.set(-38 + Math.sin(time * .2) * 6, .4, 14 + Math.cos(time * .2) * 8); boat.rotation.y = time * .2; }); sign('석촌호수', -38, 3, 2, .6);
-      for (let k = 0; k < 12; k++) tree(-24 + (k % 2) * -3, -2 + k * 2.6, .8, 0xf2a7c3); for (let k = 0; k < 6; k++) tree(rr(16, 40), rr(6, 24), .8, 0xf2a7c3); flowers(28, 14, 16, 10, [0xf48fb1, 0xffffff, 0xffeb3b], 40);
+      // 잠실로(동서 도로): 단지와 석촌호수 사이
+      floorPlane(340, 22, std(0xffffff, .9, 0, { map: TEX.asphalt([60, 4]) }), 0, -2, .01); for (let x = -160; x <= 160; x += 8) mesh(BOX(4, .02, .25), LMC(0xffffff), x, .02, -2).castShadow = false;
+      for (const x of [-40, 60]) for (let k = 0; k < 9; k++) mesh(BOX(1.2, .02, 8), LMC(0xffffff), x - 9.6 + k * 2.4, .02, -2).castShadow = false;
+      // 롯데월드타워: 기단 35×35(실제 70m), 높이 277(실제 555m의 1/2), 위로 갈수록 가늘어짐 + 랜턴 꼭대기
+      { const TX = 110, TZ = -70, gl = MAT.col(0x9cc0da, .25, .3), fin = LMC(0xeef3f7), N = 30, H = 250;
+        for (let k = 0; k < N; k++) { const t = k / N, w = 35 * (1 - Math.pow(t, 1.5) * .78), y = t * H; bx(TX, y, TZ, w, H / N, w, gl, k === 0); for (const sx of [-1, 1]) for (const sz of [-1, 1]) mesh(BOX(.8, H / N, .8), fin, TX + sx * w / 2, y + H / N / 2, TZ + sz * w / 2); }
+        for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2 + Math.PI / 4, b = mesh(BOX(1, 27, 1), fin, TX + Math.cos(a) * 3, H + 13.5, TZ + Math.sin(a) * 3); b.rotation.z = Math.cos(a) * .08; b.rotation.x = Math.sin(a) * .08; }
+        mesh(BOX(6, 3, 6), glow(0x9fe0ff, 1.2), TX, H - 6, TZ).castShadow = false; mesh(BOX(1.2, 1.2, 1.2), glow(0xff4040, 2), TX, H + 28, TZ);
+        sign('🏙 LOTTE WORLD TOWER 555m (123층) · 서울스카이 전망대', TX, 24, TZ + 19, 1.2); }
+      // 에비뉴엘(타워 북쪽) · 쇼핑몰동 · 엔터테인먼트동(시네마·아쿠아리움) — 곡선 유리 저층 매스
+      building(110, -116, 50, 24, 20, 0xdcd6cc, { glass: 0x6a9ab8, sign: '💎 에비뉴엘', sh: .6 });
+      building(40, -80, 60, 50, 22, 0xdcd6cc, { glass: 0x6a9ab8, sign: '🛍 롯데월드몰', sh: .6 }); mesh(BOX(61, 1, 51), LMC(0xc9b48a), 40, 22.5, -80);
+      building(-25, -80, 50, 50, 18, 0xe2ddd2, { glass: 0x6a9ab8, sign: '🎬 시네마 · 🐠 아쿠아리움', sh: .6 });
+      floorPlane(70, 26, MAT.col(0x86b06a, .9), 110, -32, .016); sign('월드파크 잔디마당', 110, 4, -32, .6); fountain(70, -30, 5);
+      for (let k = 0; k < 6; k++) building(-100 + k * 30, -128, 22, 12, rr(20, 40), [0xd4dbe2, 0xc0cad4][k % 2], { lit: true });
+      // 서쪽: 롯데월드 어드벤처(실내 테마파크, 유리 돔 지붕) + 매직아일랜드로 가는 다리
+      building(-130, -70, 64, 60, 16, 0xf4e6c8, { sign: '🎠 롯데월드 어드벤처 (실내)', sh: .7 }); { const dome = new THREE.Mesh(new THREE.SphereGeometry(30, 20, 8, 0, Math.PI * 2, 0, Math.PI / 2), MAT.glass()); dome.scale.y = .35; dome.position.set(-130, 16, -70); world.add(dome); }
+      bx(-90, 7, 4, 6, .6, 28, 0xd9d4c8, false); for (const z of [-8, 16]) bx(-90, 0, z, 1, 7, 1, 0x9aa3ab); sign('🌉 매직아일랜드 연결 다리', -90, 10, 4, .5);
+      // 석촌호수: 서호(서쪽) · 동호(동쪽), 가운데 송파대로가 갈라놓는다
+      pond(-90, 66, 140, 96, 0x4f8fc0); pond(90, 66, 140, 96, 0x4f8fc0);
+      floorPlane(26, 110, std(0xffffff, .9, 0, { map: TEX.asphalt([4, 20]) }), 0, 66, .01); sign('송파대로 (서호 ↔ 동호)', 0, 4, 66, .55);
+      // 매직아일랜드(서호 안 섬): 매직캐슬 · 자이로드롭 · 회전그네 · 아틀란티스 트랙
+      { const IX = -100, IZ = 60; const isl = new THREE.Mesh(new THREE.CylinderGeometry(30, 32, 1.2, 28), MAT.col(0x8fae6a, .9)); isl.position.set(IX, .6, IZ); world.add(isl); addCol(IX, IZ, 40, 40, null, { topY: 99 });
+        bx(IX, 1.2, IZ, 14, 10, 14, 0xf6f1f4, false); for (const [dx, dz, h] of [[-6, -6, 18], [6, -6, 18], [-6, 6, 16], [6, 6, 16], [0, 0, 26]]) { mesh(new THREE.CylinderGeometry(1.6, 1.8, h, 10), LMC(0xf6f1f4), IX + dx, 1.2 + h / 2, IZ + dz); mesh(new THREE.ConeGeometry(2.4, 5, 10), LMC(0xe57fb0), IX + dx, 1.2 + h + 2.5, IZ + dz); }
+        sign('🏰 매직캐슬 (롯데월드 매직아일랜드)', IX, 36, IZ + 8, .9);
+        const gx = IX + 20, gz = IZ - 14; mesh(new THREE.CylinderGeometry(1.4, 1.6, 60, 10), LMC(0xd84a3a), gx, 30, gz); const ring = mesh(new THREE.CylinderGeometry(4, 4, 2, 16), LMC(0xffd54f), gx, 10, gz); let gp = 0; envAnim.push(dt => { gp += dt; const u = gp % 14; ring.position.y = u < 8 ? 4 + u / 8 * 52 : u < 9.5 ? 56 : u < 10.6 ? 56 - (u - 9.5) / 1.1 * 52 : 4; ring.rotation.y += dt * .4; }); sign('자이로드롭', gx, 64, gz, .6);
+        const sw = new THREE.Group(); sw.position.set(IX - 18, 1.2, IZ + 12); world.add(sw); mesh(BOX(1, 12, 1), LMC(0x2c6fb7), 0, 6, 0, sw); for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2, seat = mesh(BOX(.8, .6, .8), LMC([0xff5a8a, 0xffd54f, 0x4fc3f7][k % 3]), Math.cos(a) * 6, 6, Math.sin(a) * 6, sw); seat.castShadow = false; } envAnim.push(dt => { sw.rotation.y += dt * 1.6; }); sign('회전그네', IX - 18, 16, IZ + 12, .5);
+        const tr = new THREE.Group(); tr.position.set(IX + 6, 1.2, IZ + 22); world.add(tr); for (let k = 0; k < 40; k++) { const a = k / 40 * Math.PI * 2, x = Math.cos(a) * 16, z = Math.sin(a) * 6, y = 4 + Math.sin(a * 2) * 3; mesh(BOX(1.4, .3, 2.6), LMC(0xd84a3a), x, y, z, tr).rotation.y = -a; if (k % 5 === 0) mesh(BOX(.3, y, .3), LMC(0x9aa3ab), x, y / 2, z, tr); } sign('🎢 아틀란티스', IX + 6, 12, IZ + 22, .5);
+      }
+      // 동호: 벚꽃 산책로 · 오리배 · 호수 둘레길
+      const boat = mesh(BOX(2.4, 1.6, 3.4), LMC(0xffffff), 90, .8, 66); mesh(BOX(1.2, 1.2, 1.2), LMC(0xffd54f), 0, 1.2, 1.4, boat); envAnim.push(() => { boat.position.set(90 + Math.sin(time * .15) * 40, .8, 66 + Math.cos(time * .15) * 28); boat.rotation.y = time * .15 + Math.PI / 2; });
+      sign('석촌호수 동호 · 벚꽃길', 90, 4, 12, .7); sign('석촌호수 서호', -40, 4, 12, .7);
+      for (let x = -158; x <= 158; x += 9) { if (Math.abs(x) < 16) continue; tree(x, 12, .9, 0xf2a7c3); tree(x, 122, .9, 0xf2a7c3); }
+      for (let z = 22; z <= 112; z += 10) { tree(-164, z, .9, 0xf2a7c3); tree(164, z, .9, 0xf2a7c3); tree(-14, z, .8, 0xf2a7c3); tree(14, z, .8, 0xf2a7c3); }
+      flowers(110, 125, 40, 6, [0xf48fb1, 0xffffff, 0xffeb3b], 60);
+
     } },
   { name: '동대문', fill: 'city', icon: '🧵', w: 86, d: 62, floor: TILE('#c7c2b9', '#a8a399', .3), obj: palletBox, sky: [0x5aa0e8, 0xeef4fb], st: 3,
     people: { merchant: 4, tourist: 4, civ: 3, smuggler: 3 }, items: [["clothBundle",3],["shoeBox",2],["tvBox",2]], who: '권패션 DDP 관장', short: '은빛 곡선 건물 DDP와 LED 장미정원, 옹성으로 둘러싸인 흥인지문, 청계천, 패션 시장을 순찰해요.',
@@ -4108,16 +4167,35 @@ const LANDMARK_LIST = [
       for (let x = -210; x <= 210; x += 14) if (Math.abs(x) > 8) lamp(x, 22);
       sign('🌉 광안리 해수욕장 · 광안대교 GWANGALLI', 0, 7, 20, 1.1);
     } },
-  { name: '숭례문', fill: 'city', icon: '⛩', w: 84, d: 62, floor: () => std(0xffffff, .9, 0, { map: TEX.asphalt([20, 20]) }), obj: luggage, sky: [0x5fa8ec, 0xeaf3fb], veh: [{ type: 'taxi', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]] }, { type: 'bus', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 2 }, { type: 'car', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 1 }, { type: 'car', route: [[-30, 14], [30, 14], [30, -20], [-30, -20]], start: 3 }],
-    staff: [{ kind: 'royalguard', route: [[-4, 3], [4, 3]], wait: 3 }, { kind: 'police', route: [[-36, 24], [36, 24]], wait: 2 }], people: { merchant: 4, tourist: 4, civ: 3, smuggler: 3 },
-    items: [["marketBox",3],["vase",2],["trashBin",2]], who: '남대문 숭례문 관리소장', short: '차들이 도는 광장 가운데 국보 숭례문! 남은 성곽, 남대문시장 골목을 순찰해요. 차 조심!',
+  { name: '숭례문', fill: 'city', icon: '⛩', sc: 1, w: 190, d: 140, floor: () => std(0xffffff, .9, 0, { map: TEX.asphalt([20, 20]) }), obj: luggage, sky: [0x5fa8ec, 0xeaf3fb], veh: [{ type: 'taxi', route: SRING }, { type: 'bus', route: SRING, start: 2 }, { type: 'car', route: SRING, start: 4 }, { type: 'car', route: SRING, start: 6 }, { type: 'taxi', route: SRING, start: 3 }, { type: 'bus', route: SRING, start: 7 }],
+    staff: [{ kind: 'royalguard', route: [[-7, 9.5], [7, 9.5]], wait: 3 }, { kind: 'police', route: [[-40, 58], [40, 58]], wait: 2 }, { kind: 'police', route: [[-40, -58], [40, -58]], wait: 2 }, { kind: 'merchant', route: [[82, -40], [82, 40]], wait: 3 }], people: { merchant: 4, tourist: 4, civ: 3, smuggler: 3 },
+    items: [["marketBox",3],["vase",2],["trashBin",2]], who: '남대문 숭례문 관리소장', short: '📏 실제 크기(1:1)! 약 120×80m 교통섬 한가운데 숭례문(폭 30m·높이 12m), 동·서 성곽, 동쪽 남대문시장, 북쪽 대한상공회의소. 섬을 도는 차 조심!',
     intro: '서울의 남쪽 대문, 국보 숭례문이야! 두 층 지붕의 웅장한 문루와 양옆으로 남은 성곽이 있어.\n문 둘레로 차들이 빙빙 돌고, 서쪽엔 갈치조림·안경·그릇 가게가 가득한 남대문시장이 있어. 차 조심!',
     build(L) {
-      floorPlane(48, 26, MAT.col(0xd8cfb8, .9), 0, -3, .01); for (let k = 0; k < 5; k++) mesh(BOX(1.2, .1, 4), LMC(0xffffff), -6 + k * 3, .02, 18).castShadow = false;
-      gateTop(0, -6, 18, 7, 5, { tier: true }); sign('숭례문 崇禮門 (국보 제1호)', 0, 17, -2, .9); for (const sx of [-1, 1]) { bx(sx * 15, 0, -6, 10, 4, 4, 0xa9a497); for (let k = 0; k < 6; k++) mesh(BOX(.8, .6, 4.1), LMC(0xa9a497), sx * (11 + k * 1.6), 4.3, -6); }
-      for (let k = 0; k < 6; k++) building(-36 + k * 14, -30, 12, 6, rr(9, 15), [0xd4dbe2, 0xe8e2d8, 0xc0cad4][k % 3], { lit: true }); sign('대한상공회의소', 22, 17, -27, .6);
-      for (let k = 0; k < 6; k++) stall(-38, -14 + k * 5, [0xd63a2a, 0x2c6fb7][k % 2], ['갈치조림', '안경', '그릇', '인삼', '모자', '김'][k]); sign('남대문시장', -38, 6, 4, .7); lanternLine(-40, -36, 2, 5.5);
-      for (const [x, z] of [[-16, 6], [16, 6], [-16, -16], [16, -16]]) tree(x, z, .9); flowers(0, 6, 30, 3, [0xf44336, 0xffeb3b, 0xffffff], 40);
+      // 교통섬(타원 120×80m) — 잔디·박석, 둘레를 차가 돈다
+      { const isl = new THREE.Mesh(new THREE.CircleGeometry(1, 48), MAT.col(0x8fae6a, .9)); isl.rotation.x = -Math.PI / 2; isl.scale.set(60, 40, 1); isl.position.y = .012; world.add(isl); const st = new THREE.Mesh(new THREE.CircleGeometry(1, 48), MAT.col(0xd8cfb8, .9)); st.rotation.x = -Math.PI / 2; st.scale.set(38, 18, 1); st.position.set(0, .016, 4); world.add(st);
+        const curb = new THREE.Mesh(new THREE.RingGeometry(.985, 1, 64), MAT.col(0xe8e4dc, .8)); curb.rotation.x = -Math.PI / 2; curb.scale.set(60, 40, 1); curb.position.y = .02; world.add(curb); }
+      // 숭례문: 석축 폭 30m·깊이 12.6m·높이 6.5m, 홍예문 1개, 2층 문루(전체 약 12.3m), 정면이 남쪽
+      gateTop(0, 0, 30, 12.6, 6.5, { tier: true, gap: 4.4 }); sign('숭례문 崇禮門 (국보) · 폭 30m · 높이 12.3m', 0, 16, 7.4, .9);
+      mesh(BOX(1.2, 3, .2), LMC(0x2a2a2a), 0, 10.6, 4.6); sign('崇禮門', 0, 10.6, 4.8, .5, 'rgba(20,20,20,.92)');
+      // 복원 성곽: 동쪽 약 40m(섬 끝까지), 서쪽 16m
+      for (const [x0, x1] of [[15, 54], [-31, -15]]) { const w = x1 - x0, cx = (x0 + x1) / 2; bx(cx, 0, 0, w, 5, 6, 0xa9a497); for (let x = x0 + .8; x < x1; x += 1.6) mesh(BOX(1, .7, 6.1), LMC(0x9a958a), x, 5.35, 0); }
+      sign('복원 성곽 (동쪽)', 36, 7.4, 3.2, .5); sign('복원 성곽 (서쪽)', -23, 7.4, 3.2, .5);
+      for (const [x, z] of [[-30, 20], [30, 20], [-40, -18], [40, -18], [-14, 28], [14, 28], [0, -30]]) tree(x, z, 1.1); flowers(0, 24, 40, 6, [0xf44336, 0xffeb3b, 0xffffff], 70);
+      // 섬 둘레 도로 표시 + 남쪽 횡단보도(서울역 방향) · 북쪽 횡단보도(시청 방향)
+      for (const z of [52, -52]) for (let k = 0; k < 8; k++) mesh(BOX(1.2, .02, 6), LMC(0xffffff), -8.4 + k * 2.4, .02, z).castShadow = false;
+      for (let k = 0; k < 24; k++) { const a = k / 24 * Math.PI * 2; mesh(BOX(3, .02, .25), LMC(0xffffff), Math.cos(a) * 72, .02, Math.sin(a) * 50).rotation.y = -a; }
+      sign('⬇ 서울역 방향 (세종대로)', 0, 4, 64, .55); sign('⬆ 시청 방향', 0, 4, -64, .55);
+      // 북쪽 빌딩(대한상공회의소 등) · 남쪽 빌딩 · 서쪽 빌딩
+      for (let k = 0; k < 7; k++) { const x = -84 + k * 28; if (Math.abs(x) < 10) continue; building(x, -63, 20, 10, rr(18, 34), [0xd4dbe2, 0xe8e2d8, 0xc0cad4][k % 3], { lit: true }); } sign('대한상공회의소', 32, 22, -57, .6);
+      for (let k = 0; k < 7; k++) { const x = -84 + k * 28; if (Math.abs(x) < 16) continue; building(x, 63, 20, 10, rr(14, 28), [0xe8e2d8, 0xc0cad4, 0xd4dbe2][k % 3], { lit: true }); }
+      for (let k = 0; k < 3; k++) building(-88, -30 + k * 30, 10, 22, rr(16, 26), 0xcfd6dc, { lit: true });
+      // 동쪽: 남대문시장 입구와 노점 골목
+      floorPlane(14, 100, MAT.col(0xb9ae98, .9), 87, 0, .014); bx(82, 0, -50, 1, 6, 1, 0x8a2a20); bx(92, 0, -50, 1, 6, 1, 0x8a2a20); mesh(BOX(11, 1.2, 1), LMC(0x8a2a20), 87, 6.2, -50); sign('남대문시장 南大門市場', 87, 8.2, -49.4, .6, 'rgba(160,30,30,.92)');
+      const GOODS = ['갈치조림', '안경', '그릇', '인삼', '모자', '김', '아동복', '호떡', '카메라', '수입상가'];
+      for (let k = 0; k < 10; k++) stall(k % 2 ? 91.5 : 84, -40 + k * 9, [0xd63a2a, 0x2c6fb7, 0x27ae60][k % 3], GOODS[k]);
+      lanternLine(80, 94, -30, 5.5); lanternLine(80, 94, 10, 5.5);
+
     } },
   { name: '수원화성', fill: 'heritage', icon: '🏰', w: 96, d: 74, floor: FLOOR(() => TEX.grass('hwaseong', '#a9be78', [.25, .25])), mmCol: 0xc9d6a0, obj: crate, sky: [0x5fb0ff, 0xf2f6e6], st: 4, shape: [[-.95, .7], [-1, .1], [-.85, -.5], [-.55, -.9], [0, -1], [.5, -.88], [.9, -.55], [1, 0], [.85, .65], [.4, .92], [-.3, .95], [-.7, .88]], rail: { h: 4.2, col: 0xb7ae98, t: .9, cren: true }, outside: { col: 0x7fa65a, y: .02 },
     staff: [{ kind: 'royalguard', route: [[-20, 18], [20, 18]], wait: 3 }, { kind: 'police', route: [[-30, -6], [30, -6]], wait: 2 }], veh: [{ type: 'dragon', route: [[-30, 12], [30, 12], [30, -8], [-30, -8]] }], people: { hanbok: 4, tourist: 4, student: 2, smuggler: 3 },
@@ -4141,23 +4219,45 @@ const LANDMARK_LIST = [
     build(L) {
       for (let k = 0; k < 27; k++) { const r = 2.6 - Math.sin(k / 27 * Math.PI) * .6 + (k < 4 ? .4 : 0); mesh(new THREE.CylinderGeometry(r * .97, r, .5, 16), LMC(0xd2c39e), 0, .25 + k * .5, -4); } addCol(0, -4, 5, 5, null, { topY: 99 }); bx(0, 13.5, -4, 3.4, .6, 3.4, 0xc4b48e, false); mesh(BOX(1, 1, .1), LMC(0x222222), 0, 7, -1.4); sign('첨성대 瞻星臺 (국보)', 0, 17, -2, .7); flowers(0, 6, 22, 6, [0xf48fb1, 0xffeb3b, 0xff7043, 0xba68c8], 70);
       for (const [x, z, r] of [[-30, 4, 9], [-14, 10, 6], [-40, -8, 6]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x6f9f4a)); m.scale.y = .55; m.position.set(x, 0, z); world.add(m); addCol(x, z, r * 1.5, r * 1.5, null, { topY: 99 }); } sign('대릉원 고분 (천마총)', -26, 8, 8, .6);
-      bx(-24, 0, -29.5, 30, 2.8, 8, 0xbfb6a4); stepsUp(-30, -22.3, 4, 8, -1, .4, 0xd2c8b4); stepsUp(-18, -22.3, 4, 8, -1, .4, 0xd2c8b4); sign('청운교 · 백운교', -24, 4.6, -22, .5); hanok(-24, -31.5, 14, 3, 2.6, { tier: true, base: 0xbfb6a4 }); sign('불국사 佛國寺 · 자하문 · 대웅전', -24, 12, -28, .7); pavilion(-36, -28, .8, 2.8); sign('범영루', -36, 8, -26, .4);
+      bx(-24, 0, -29.5, 30, 2.8, 8, 0xbfb6a4); stepsUp(-30, -19.5, 4, 8, -1, .8, 0xd2c8b4); stepsUp(-18, -19.5, 4, 8, -1, .8, 0xd2c8b4); sign('청운교 · 백운교', -24, 4.6, -22, .5); hanok(-24, -31.5, 14, 3, 2.6, { tier: true, base: 0xbfb6a4 }); sign('불국사 佛國寺 · 자하문 · 대웅전', -24, 12, -28, .7); pavilion(-36, -28, .8, 2.8); sign('범영루', -36, 8, -26, .4);
       for (const [x, sga] of [[-34, 0], [-14, 1]]) { for (let k = 0; k < 3; k++) bx(x, k * 2.4, -16, 3.6 - k * .7, 1.6, 3.6 - k * .7, 0xbfb6a4, k === 0); for (let k = 0; k < 3; k++) mesh(BOX(5 - k * 1.1, .4, 5 - k * 1.1), LMC(0xa89e8c), x, 1.8 + k * 2.4, -16); mesh(BOX(.5, 2.4, .5), LMC(0xa89e8c), x, 8.8, -16); sign(sga ? '석가탑' : '다보탑', x, 11.5, -13.5, .55); }
       const cave = new THREE.Mesh(new THREE.SphereGeometry(8, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x9a948a)); cave.position.set(30, 0, -26); world.add(cave); addCol(30, -26, 12, 12, null, { topY: 99 }); bx(30, 0, -18.5, 4, 4, 2, 0x6d675e, false); statue(30, -19.4, 0xd9c9a0, true, 3.4); sign('석굴암 石窟庵 (국보)', 30, 10, -18, .65);
       pond(30, 8, 20, 12, 0x3f7fa8); for (const [x, z] of [[24, 2.4], [36, 2.4]]) { bx(x, 0, z, 6, .6, 3, 0xbfb6a4); pavilion(x, z, 1, .6); } for (let k = 0; k < 14; k++) mesh(BOX(.3, .3, .3), glow(0xffd27a, 1.2), 20 + k * 1.5, .5, 14.2).castShadow = false; sign('동궁과 월지 (안압지)', 30, 6, 2, .6);
       for (let k = 0; k < 4; k++) hanok(-38 + k * 8.5, 22, 6, 5, 2.4); sign('☕ 황리단길', -26, 7, 25, .6); for (let k = 0; k < 8; k++) tree(rr(14, 44), rr(20, 30), .9, 0x5f9a3e);
     } },
-  { name: 'N서울타워', fill: 'mountain', icon: '🗼', w: 80, d: 66, floor: FLOOR(() => TEX.grass('namsan', '#5f8b45', [.25, .25])), mmCol: 0x6f9a52, obj: luggage, sky: [0x5aa8ef, 0xf6e8d8], st: 3, shape: ELL(1, 1, 28), outside: { col: 0x3f6b3a, y: .02 }, rail: { h: 1.1, col: 0x8a6a4a, t: .2 },
-    people: { tourist: 6, student: 3, civ: 3, smuggler: 3 }, items: [["trashBin",2],["teddy",2],["souvenir",2],["backpack",1]], who: '남산 N서울타워 총지배인', short: '남산 꼭대기! N서울타워, 사랑의 자물쇠, 남산 봉수대, 팔각정, 케이블카, 서울 전망을 둘러봐요.',
+  { name: 'N서울타워', fill: 'mountain', icon: '🗼', sc: 1, w: 200, d: 150, floor: FLOOR(() => TEX.grass('namsan', '#5f8b45', [.25, .25])), mmCol: 0x6f9a52, obj: luggage, sky: [0x5aa8ef, 0xf6e8d8], st: 3, shape: ELL(1, 1, 28), outside: { col: 0x3f6b3a, y: .02 }, rail: { h: 1.1, col: 0x8a6a4a, t: .2 },
+    people: { tourist: 6, student: 3, civ: 3, smuggler: 3 }, items: [["trashBin",2],["teddy",2],["souvenir",2],["backpack",1]], who: '남산 N서울타워 총지배인', short: '📏 실제 크기(1:1)! 남산 정상 약 200×150m. 높이 236.7m N서울타워(기단 지름 40m), 북쪽 팔각정·봉수대, 남서쪽 사랑의 자물쇠, 서쪽 케이블카, 남쪽 한양도성 성곽길.',
     intro: '남산 꼭대기의 N서울타워야! 동그란 산 정상에서 서울이 한눈에 보여.\n사랑의 자물쇠 울타리, 옛날 연기로 신호를 보내던 남산 봉수대, 팔각정, 산 아래로 내려가는 케이블카도 있어!',
     build(L) {
-      for (let k = 0; k < 16; k++) { const a = k / 16 * Math.PI * 2, r = rr(70, 110); building(Math.cos(a) * r, Math.sin(a) * r, rr(6, 12), rr(6, 12), rr(8, 20), pick([0xd4dbe2, 0xe8e2d8, 0xc0cad4]), { lit: true }); } mountainBack(-120, 0x587a4a, 6);
-      bx(0, 0, -8, 5, 3, 5, 0xe9e6df); for (let k = 0; k < 10; k++) mesh(new THREE.CylinderGeometry(1.2 - k * .05, 1.4 - k * .05, 2.1, 12), LMC(0xf0f0f0), 0, 3 + k * 2.1 + 1.05, -8); mesh(new THREE.CylinderGeometry(3.3, 2.6, 3.3, 16), LMC(0xdfe4e8), 0, 25.6, -8); mesh(new THREE.CylinderGeometry(3.4, 3.4, .7, 16), glow(0x9fd3ff, .6), 0, 25.2, -8); mesh(new THREE.CylinderGeometry(.3, .45, 9, 8), LMC(0xd84a3a), 0, 31.7, -8); const tl = mesh(BOX(.5, .5, .5), glow(0xff4040, 2), 0, 36.4, -8); envAnim.push(() => { tl.material.emissiveIntensity = 1 + Math.sin(time * 3); }); sign('🗼 N SEOUL TOWER', 0, 39.5, -8, 1);
-      for (let k = 0; k < 12; k++) { const a = Math.PI * .1 + k * .16, x = Math.cos(a) * 24, z = Math.sin(a) * 20; bx(x, 0, z, 3, 1.2, .2, 0x888888); for (let j = 0; j < 9; j++) mesh(BOX(.22, .22, .1), LMC([0xff5a8a, 0xffd54f, 0x4fc3f7, 0xb388ff][j % 4]), x - 1.2 + j * .3, rr(.3, 1.1), z + .15).castShadow = false; } sign('💕 사랑의 자물쇠', 14, 3, 18, .5); for (let k = 0; k < 20; k++) mesh(BOX(.3, .3, .3), LMC([0xff5a8a, 0xffd54f, 0x4fc3f7][k % 3]), 18 + rr(-1, 1), 1 + k * .15, 6 + rr(-1, 1)); bx(18, 0, 6, .6, 3.4, .6, 0x6d4c2f); sign('자물쇠 나무', 18, 4.6, 6, .4);
-      for (let k = 0; k < 5; k++) { bx(-22 + k * 3, 0, -14, 2.4, 1.6, 2.4, 0x9a948a); mesh(new THREE.CylinderGeometry(.6, .9, 1.6, 8), LMC(0x9a948a), -22 + k * 3, 2.4, -14); } sign('남산 봉수대 (봉화 신호)', -16, 4.6, -11.5, .55);
-      hanok(-22, 8, 6, 6, 2.6, { door: false }); sign('팔각정', -22, 8, 12, .55);
-      for (let k = 0; k <= 40; k++) { const t = k / 40; mesh(BOX(1.6, .08, .08), LMC(0x333333), 30 + t * 50, 10 - t * 18, 14 + t * 30).rotation.y = -.5; } const cab = mesh(BOX(2, 1.6, 2.4), LMC(0xd84a3a), 0, 0, 0); envAnim.push(() => { const t = (Math.sin(time * .15) + 1) / 2; cab.position.set(30 + t * 50, 8.6 - t * 18, 14 + t * 30); }); bx(28, 0, 12, 6, 4, 6, 0xd9d4c8); sign('🚡 남산 케이블카', 28, 6, 12, .55);
-      for (const [x, z] of [[-10, 18], [10, -22], [-28, -4]]) { bx(x, 0, z, .4, 1.4, .4, 0x555555); mesh(BOX(.9, .4, .5), LMC(0x333333), x, 1.6, z); } for (let k = 0; k < 10; k++) pine(rr(-30, 30), rr(-28, -20));
+      for (let k = 0; k < 20; k++) { const a = k / 20 * Math.PI * 2, r = rr(170, 230); building(Math.cos(a) * r, Math.sin(a) * r, rr(10, 20), rr(10, 20), rr(10, 30), pick([0xd4dbe2, 0xe8e2d8, 0xc0cad4]), { lit: true }); } mountainBack(-170, 0x587a4a, 6);
+      // 타워: 기단 타워플라자(지름 40m·4층) → 흰 원통 샤프트(지름 10m) → 전망대(지름 25m, 135~150m) → 빨강·흰 안테나(236.7m)
+      mesh(new THREE.CylinderGeometry(20, 21, 14, 32), LMC(0xe9e6df), 0, 7, 0); for (let y = 2.5; y < 14; y += 3.5) mesh(new THREE.CylinderGeometry(20.1, 20.1, 1.2, 32), MAT.glass(), 0, y, 0).castShadow = false;
+      addCol(0, 0, 36, 36, null, { topY: 14 });
+      mesh(new THREE.CylinderGeometry(5, 5.4, 121, 20), LMC(0xf2f2f0), 0, 74.5, 0);
+      mesh(new THREE.CylinderGeometry(12.5, 10, 15, 28), LMC(0xdfe4e8), 0, 142.5, 0); mesh(new THREE.CylinderGeometry(12.7, 12.7, 3, 28), glow(0x9fd3ff, .6), 0, 140, 0);
+      for (let k = 0; k < 8; k++) mesh(new THREE.CylinderGeometry(1.6 - k * .15, 1.75 - k * .15, 10.8, 10), LMC(k % 2 ? 0xffffff : 0xd84a3a), 0, 150 + k * 10.8 + 5.4, 0);
+      const tl = mesh(BOX(1.4, 1.4, 1.4), glow(0xff4040, 2), 0, 237, 0); envAnim.push(() => { tl.material.emissiveIntensity = 1 + Math.sin(time * 3); });
+      sign('🗼 N SEOUL TOWER · 높이 236.7m (해발 479.7m)', 0, 18, 21, 1.1); sign('타워플라자 입구', 0, 5, 21.2, .55);
+      // 남서쪽: 사랑의 자물쇠 펜스(루프테라스)·자물쇠 나무
+      for (let k = 0; k < 18; k++) { const a = Math.PI * .55 + k * .05, x = Math.cos(a) * 52, z = Math.sin(a) * 42; bx(x, 0, z, 3, 1.2, .2, 0x888888).rotation.y = -a; for (let j = 0; j < 9; j++) mesh(BOX(.22, .22, .1), LMC([0xff5a8a, 0xffd54f, 0x4fc3f7, 0xb388ff][j % 4]), x - 1.2 + j * .3, rr(.3, 1.1), z + .15).castShadow = false; }
+      for (const [x, z] of [[-40, 26], [-30, 34]]) { bx(x, 0, z, .6, 3.4, .6, 0x6d4c2f); for (let k = 0; k < 24; k++) mesh(BOX(.3, .3, .3), LMC([0xff5a8a, 0xffd54f, 0x4fc3f7][k % 3]), x + rr(-1, 1), 1 + k * .12, z + rr(-1, 1)); } sign('💕 사랑의 자물쇠 (루프테라스)', -36, 5, 30, .6);
+      // 북쪽: 팔각정 · 목멱산 봉수대 5기
+      hanok(0, -52, 9, 9, 3, { door: false }); sign('남산 팔각정', 0, 9, -46, .6);
+      for (let k = 0; k < 5; k++) { bx(-40 + k * 5, 0, -48, 3, 1.8, 3, 0x9a948a); mesh(new THREE.CylinderGeometry(.8, 1.1, 2.2, 8), LMC(0x9a948a), -40 + k * 5, 2.9, -48); } sign('목멱산 봉수대 (봉화 5기)', -30, 6, -45, .6);
+      // 서쪽: 남산 케이블카 상부 승강장 (타워에서 약 90m)
+      bx(-86, 0, 0, 14, 6, 12, 0xd9d4c8); sign('🚡 남산 케이블카 상부 승강장', -86, 8, 6.2, .6);
+      for (let k = 0; k <= 30; k++) { const t = k / 30; mesh(BOX(.12, .12, 2), LMC(0x333333), -93 - t * 60, 6 - t * 30, 0).castShadow = false; } const cab = mesh(BOX(2.4, 2, 3), LMC(0xd84a3a), 0, 0, 0); envAnim.push(() => { const t = (Math.sin(time * .15) + 1) / 2; cab.position.set(-93 - t * 60, 4.4 - t * 30, 0); });
+      // 동쪽 전망: 약 10km 너머 잠실(롯데월드타워 · 롯데월드 매직캐슬 · 석촌호수)
+      { const EX = 330, EZ = -40; for (let k = 0; k < 14; k++) { const t = 6 + k * 2.4; mesh(BOX(4.2 - k * .2, 4, 4.2 - k * .2), LMC(0x9cc0da), EX, 2 + k * 4, EZ).castShadow = false; } mesh(BOX(.6, 14, .6), LMC(0xeef3f7), EX, 63, EZ).castShadow = false;
+        for (const [dx, h] of [[-18, 10], [-14, 14], [-10, 10]]) { mesh(new THREE.CylinderGeometry(.9, 1, h, 8), LMC(0xf6f1f4), EX + dx, h / 2, EZ + 30).castShadow = false; mesh(new THREE.ConeGeometry(1.4, 3, 8), LMC(0xe57fb0), EX + dx, h + 1.5, EZ + 30).castShadow = false; }
+        const lk = new THREE.Mesh(new THREE.PlaneGeometry(40, 12), MAT.col(0x4f8fc0, .3)); lk.rotation.x = -Math.PI / 2; lk.position.set(EX - 6, .2, EZ + 40); world.add(lk); for (let k = 0; k < 10; k++) building(EX + rr(-40, 40), EZ + rr(-60, -10), rr(6, 12), rr(6, 12), rr(10, 30), 0xc0cad4, { lit: true }); }
+      bx(92, 0, -10, 10, 1.2, 4, 0x8a7d6a); for (let k = 0; k < 3; k++) { bx(88 + k * 4, 0, -7.4, .3, 1.6, .3, 0x555555); mesh(BOX(.8, .4, .5), LMC(0x333333), 88 + k * 4, 1.8, -7.4); }
+      sign('🔭 동쪽 전망대 → 잠실 롯데월드타워 · 롯데월드 놀이공원 · 석촌호수 (약 10km)', 90, 5, -6, .6);
+      // 남쪽: 한양도성 성곽 산책로
+      for (let x = -70; x <= 70; x += 3) { const z = 64 + Math.sin(x / 30) * 3; bx(x, 0, z, 3.1, 2.4, 2, 0xb7ae98); if ((x / 3) % 2 === 0) mesh(BOX(1.4, .6, 2), LMC(0xa8a090), x, 2.7, z); } sign('한양도성 성곽 산책로', 0, 4.6, 61, .6);
+      for (const [x, z] of [[40, -30], [-60, -20], [55, 25], [30, 45], [-15, 50], [60, -45], [-70, 40]]) { bx(x, 0, z, .4, 1.4, .4, 0x555555); mesh(BOX(.9, .4, .5), LMC(0x333333), x, 1.6, z); }
+      for (let k = 0; k < 40; k++) { const a = mr(0, Math.PI * 2), r = mr(.82, .95); pine(Math.cos(a) * 100 * r, Math.sin(a) * 75 * r, 1.2); }
+
     } },
   { name: '해운대', icon: '🏖', w: 500, d: 56, floor: FLOOR(() => TEX.sand([.3, .3])), mmCol: 0xcdb98c, obj: ITEMS.sandMound[2], ns: 36, sky: [0x2f9ef0, 0xd2efff], st: 3, shape: [[-1, 1], [-1, -.35], [-.7, -.6], [-.3, -.74], [.1, -.78], [.5, -.72], [.8, -.58], [1, -.3], [1, 1]], outside: { col: 0x3d8fc4, y: .03, tex: () => { const t = TEX.water(); t.repeat.set(.05, .05); return t; }, water: true },
     staff: [{ kind: 'rescue119', route: [[-200, -8], [200, -8]], wait: 3 }, { kind: 'rescue119', route: [[180, -6], [-180, -6]], wait: 3 }, { kind: 'police', route: [[-230, 20], [230, 20]], wait: 2 }, { kind: 'customs', route: [[-30, 10], [30, 10]], wait: 2 }],
@@ -4249,18 +4349,38 @@ const LANDMARK_LIST = [
       stall(10, 14, 0xd63a2a, '전주비빔밥'); stall(18, 14, 0xf39c12, '한복대여'); stall(26, 14, 0x27ae60, '한지공예'); stall(34, 14, 0x8e44ad, '초코파이');
       for (const z of [-14, 0]) lanternLine(-4, 38, z, 4.2, [0xff9a4a, 0xffd27a]); sign('🏡 전주 한옥마을 (태조로)', 16, 6, 8, 1);
     } },
-  { name: '광화문광장', fill: 'city', icon: '🦁', w: 48, d: 100, floor: TILE('#cfc8b8', '#b3ab9a', .2), obj: luggage, sky: [0x5aa8ef, 0xeaf2fb], st: 3, shape: [[-.75, 1], [-.75, -.62], [-1, -.75], [-1, -1], [1, -1], [1, -.75], [.75, -.62], [.75, 1]], outside: { col: 0x4a4c50, y: .03 },
-    staff: [{ kind: 'police', route: [[-12, 40], [-12, -30]], wait: 2 }, { kind: 'royalguard', route: [[-4, -40], [4, -40]], wait: 3 }], veh: [{ type: 'taxi', road: 'asphalt', route: [[-19.5, 80], [-19.5, -48], [-23.5, -48], [-23.5, 80]], start: 0 }, { type: 'bus', road: 'asphalt', route: [[19.5, -48], [19.5, 80], [23.5, 80], [23.5, -48]], start: 0 }, { type: 'car', route: [[-19.5, 80], [-19.5, -48], [-23.5, -48], [-23.5, 80]], start: 1 }, { type: 'car', route: [[19.5, -48], [19.5, 80], [23.5, 80], [23.5, -48]], start: 1 }, { type: 'moto', route: [[-19.5, 80], [-19.5, -48], [-23.5, -48], [-23.5, 80]], start: 2 }, { type: 'taxi', route: [[19.5, -48], [19.5, 80], [23.5, 80], [23.5, -48]], start: 2 }, { type: 'bus', route: [[-19.5, 80], [-19.5, -48], [-23.5, -48], [-23.5, 80]], start: 3 }, { type: 'car', route: [[19.5, -48], [19.5, 80], [23.5, 80], [23.5, -48]], start: 3 }], people: { tourist: 6, civ: 5, student: 3, smuggler: 3 },
-    items: [["flowerPot",3],["trashBin",2],["backpack",2]], who: '세종 광화문광장 관리소장', short: '세종대왕·이순신 동상, 명량분수, 해치마당, 세종문화회관, 청계천 스프링, 북쪽 끝 광화문까지!',
+  { name: '광화문광장', fill: 'city', icon: '🦁', sc: 1, w: 170, d: 560, floor: TILE('#cfc8b8', '#b3ab9a', .2), obj: luggage, sky: [0x5aa8ef, 0xeaf2fb], st: 3,
+    staff: [{ kind: 'police', route: [[-14, 200], [-14, -200]], wait: 2 }, { kind: 'police', route: [[-34, -120], [-34, 120]], wait: 2 }, { kind: 'royalguard', route: [[-6, -238], [6, -238]], wait: 3 }],
+    veh: [{ type: 'taxi', road: 'asphalt', route: GWRD }, { type: 'bus', road: 'asphalt', route: GWRD, start: 2 }, { type: 'car', route: GWRD, start: 1 }, { type: 'car', route: GWRD, start: 3 }, { type: 'bus', route: GWRD, start: 0 }, { type: 'taxi', route: GWRD, start: 1 }],
+    items: [["flowerPot",3],["trashBin",2],["backpack",2]], who: '세종 광화문광장 관리소장', short: '📏 실제 크기(1:1)! 폭 60m·길이 약 550m. 북쪽 광화문·월대·해치 → 세종대왕 동상·한글분수 → 이순신 동상·명량분수 → 남쪽 청계광장. 서쪽 세종문화회관, 동쪽 세종대로 차로.',
     intro: '서울 한가운데 광화문광장이야! 남쪽엔 이순신 장군 동상과 명량분수, 가운데엔 황금빛 세종대왕 동상,\n북쪽 끝엔 경복궁 정문 광화문과 북악산이 보여. 옆에는 세종문화회관, 남쪽 끝엔 청계천의 소라 모양 조형물 스프링이 있어!',
     build(L) {
-      gateTop(0, -44, 18, 6, 5, { tier: true }); sign('광화문 光化門', 0, 16, -40, .9); mountainBack(-110, 0x5a7a52, 5); for (const x of [-10, 10]) { bx(x, 0, -36, 1.6, 1.4, 2.6, 0xb9b2a5); mesh(BOX(1.2, 1.6, 2), LMC(0xc9c2b2), x, 2.2, -36); } sign('해치', 10, 4, -36, .45);
-      statue(0, -8, 0xd4a537, true, 4.2); sign('세종대왕 동상', 0, 8, -5, .6); for (let k = 0; k < 4; k++) mesh(BOX(1.2, 1, .8), LMC(0x7a6a4a), -3 + k * 2, .5, -3.8);
-      statue(0, 22, 0x4a6b5a, false, 4); sign('충무공 이순신 장군 동상', 0, 9, 25, .6); for (const sx of [-1, 1]) { const tb = mesh(BOX(1.6, .8, 2.6), LMC(0x3a4a3a), sx * 3.6, .4, 22); tb.castShadow = false; } sign('거북선', 3.6, 1.6, 22, .4);
-      for (let z = 28; z < 38; z += 2) for (const x of [-6, -3, 3, 6]) { mesh(BOX(.3, .1, .3), glow(0x9fdcff, 1), x, .06, z).castShadow = false; } const c = new THREE.Color(0xbfe8ff); envAnim.push(() => { if (Math.random() < .8) spawnP(pick2([-6, -3, 3, 6]), .2, rr(28, 38), 0, mr(4, 7), 0, c, 1); }); sign('명량분수', 0, 3, 33, .5);
-      for (let z = -28; z <= 14; z += 7) for (const x of [-15, 15]) tree(x, z, .8); flowers(0, 6, 8, 6, [0xf44336, 0xffeb3b, 0xffffff, 0x2196f3], 40);
-      building(-34, -12, 14, 30, 14, 0xd9d2c4); columns(-26.8, -12, 7, 4, 10, 0xf2efe8, 'z', 1); sign('세종문화회관', -27, 16, -12, .7); building(-34, -36, 14, 12, 15, 0xb7c4cf, { lit: true, sign: '정부서울청사', sh: .55 }); building(34, -18, 14, 20, 14, 0xc5ccd3, { lit: true, sign: 'KT 광화문빌딩', sh: .55 }); building(34, 12, 14, 14, 20, 0xcfd6dc, { lit: true });
-      const sp = new THREE.Mesh(new THREE.TorusKnotGeometry(2.2, .5, 80, 8, 2, 3), LMC(0xff5a8a)); sp.position.set(14, 6, 44); sp.scale.set(1, 2, 1); world.add(sp); bx(14, 0, 44, 3, 1.4, 3, 0x8a8a80); sign('🐚 청계천 스프링', 14, 11.5, 44, .55);
+      const PX = -15; // 광장 중심선 (폭 60m: x -45 ~ 15)
+      floorPlane(60, 520, std(0xffffff, .9, 0, { map: TEX.tile('gwhPlaza', '#d4ccbb', '#bcb3a1', 6, [12, 104]) }), PX, 6, .012);
+      floorPlane(40, 540, std(0xffffff, .9, 0, { map: TEX.asphalt([10, 120]) }), 39, 4, .01);
+      for (let z = -250; z < 268; z += 8) mesh(BOX(.25, .02, 4), LMC(0xffffff), 39, .02, z).castShadow = false; for (const x of [19.5, 58.5]) floorPlane(.3, 520, MAT.col(0xf1c40f, .6), x, 6, .014);
+      // 북: 광화문(폭 약 30m) + 월대 + 해치, 뒤로 북악산
+      gateTop(PX, -268, 34, 12, 6.5, { tier: true, gap: 4.4 }); sign('광화문 光化門', PX, 16, -261, .9); mountainBack(-330, 0x5a7a52, 5);
+      bx(PX, 0, -250, 30, .9, 22, 0xc9c2b2); sign('광화문 월대 (2023 복원)', PX, 3, -240, .6); for (const x of [PX - 18, PX + 18]) { bx(x, 0, -244, 2, 1.6, 3.2, 0xb9b2a5); mesh(BOX(1.4, 1.8, 2.4), LMC(0xc9c2b2), x, 2.5, -244); } sign('해치', PX + 18, 5, -244, .45);
+      sign('육조마당', PX, 3, -215, .55); floorPlane(50, 30, MAT.col(0x86b06a, .9), PX, -205, .016);
+      // 중간: 세종대왕 동상(좌상 6.2m, 기단 포함 9.5m) + 한글분수 + 세종이야기 입구
+      statue(PX, -60, 0xd4a537, true, 7.5); sign('세종대왕 동상 (기단 포함 약 9.5m)', PX, 14, -55, .7); for (let k = 0; k < 10; k++) mesh(BOX(1.2, .1, 1.2), glow(0x9fdcff, 1), PX - 9 + k * 2, .06, -44).castShadow = false; sign('한글분수', PX, 3, -44, .5);
+      bx(PX + 20, 0, -80, 8, 2.4, 6, 0x8e8a80); sign('세종이야기 · 충무공이야기 (지하)', PX + 20, 4, -76.8, .5);
+      // 남: 이순신 동상(기단 포함 약 17m) + 명량분수 + 거북선
+      bx(PX, 0, 120, 6, 9, 6, 0x8e8a80); statue(PX, 120, 0x4a6b5a, false, 8); const ys = world.children[world.children.length - 1]; ys.position.y = 11; sign('충무공 이순신 장군 동상 (기단 포함 약 17m)', PX, 22, 125, .7);
+      for (const sx of [-1, 1]) mesh(BOX(3, 1.2, 6), LMC(0x3a4a3a), PX + sx * 9, .6, 120).castShadow = false; sign('거북선', PX + 9, 2.4, 120, .45);
+      for (let z = 132; z < 152; z += 2.5) for (const x of [-12, -6, 6, 12]) mesh(BOX(.3, .1, .3), glow(0x9fdcff, 1), PX + x, .06, z).castShadow = false; { const c = new THREE.Color(0xbfe8ff); envAnim.push(() => { if (Math.random() < .8) spawnP(PX + pick2([-12, -6, 6, 12]), .2, rr(132, 152), 0, mr(4, 7), 0, c, 1); }); } sign('명량분수', PX, 3, 142, .55);
+      // 서쪽 가장자리: 역사물길(212m) · 터널분수(40m) · 나무와 화단
+      floorPlane(1.4, 212, glow(0x7fd3ff, .5), -43, -44, .02); sign('역사물길 212m', -40, 3, -100, .5); for (let z = 20; z < 60; z += 4) { const a = mesh(BOX(.25, 5, .25), LMC(0x9aa3ab), -40, 2.5, z); a.castShadow = false; } sign('터널분수 40m', -40, 6, 40, .5);
+      for (let z = -190; z <= 230; z += 14) for (const x of [-38, 8]) tree(x, z, 1.1); flowers(PX, -150, 40, 20, [0xf44336, 0xffeb3b, 0xffffff, 0x2196f3], 80); flowers(PX, 60, 40, 20, [0xf48fb1, 0xffeb3b, 0xffffff], 80);
+      // 서측: 세종문화회관(기둥) · 정부서울청사 / 동측: KT·교보빌딩·미국대사관
+      building(-62, -40, 26, 90, 16, 0xd9d2c4); columns(-47.6, -40, 12, 6, 12, 0xf2efe8, 'z', 1.2); sign('세종문화회관', -50, 19, -40, .9);
+      building(-62, -170, 26, 50, 30, 0xb7c4cf, { lit: true, sign: '정부서울청사', sh: .55 }); building(-62, 80, 26, 60, 20, 0xcfd6dc, { lit: true }); building(-62, 190, 26, 60, 24, 0xd4dbe2, { lit: true });
+      building(72, -170, 20, 50, 22, 0xc5ccd3, { lit: true, sign: '미국대사관', sh: .55 }); building(72, -90, 20, 60, 24, 0xc5ccd3, { lit: true, sign: 'KT 광화문빌딩', sh: .55 }); building(72, 0, 20, 60, 22, 0x8a6a4a, { lit: true, sign: '교보빌딩', sh: .55 }); building(72, 110, 20, 70, 28, 0xcfd6dc, { lit: true }); building(72, 220, 20, 60, 26, 0xd4dbe2, { lit: true });
+      // 남쪽 끝: 청계광장 · 스프링
+      floorPlane(60, 18, MAT.col(0xbfb6a6, .9), PX + 10, 262, .015); const sp = new THREE.Mesh(new THREE.TorusKnotGeometry(3.4, .8, 90, 8, 2, 3), LMC(0xff5a8a)); sp.position.set(PX + 22, 9, 262); sp.scale.set(1, 2, 1); world.add(sp); bx(PX + 22, 0, 262, 4, 1.6, 4, 0x8a8a80); sign('🐚 청계광장 · 스프링', PX + 22, 17, 262, .7);
+      for (const z of [-232, 258]) for (let k = 0; k < 9; k++) mesh(BOX(1.2, .02, 8), LMC(0xffffff), 21 + k * 2.4, .02, z).castShadow = false;
+
     } },
   { name: '청와대', fill: 'park', icon: '🏛', w: 92, d: 70, floor: FLOOR(() => TEX.grass('bluehouse', '#79ad55', [.25, .25])), mmCol: 0x7fb05a, obj: crate, sky: [0x5fb0ff, 0xf0f6ff], st: 5,
     staff: [{ kind: 'soldier', route: [[-14, 26], [14, 26]], wait: 3 }, { kind: 'police', route: [[-36, 0], [36, 0]], wait: 2 }, { kind: 'soldier', route: [[-30, -22], [30, -22]], wait: 3 }], people: { tourist: 6, student: 3, civ: 2, smuggler: 3 },
@@ -5090,7 +5210,8 @@ function loadLevel(i) {
   const ol = textSprite('🎖 ' + def.who, { h: .38 }); ol.position.set(0, 2.5, 0); off.g.add(ol);
   const crowd = def.relax ? 1 : crowdNow(def); level.crowd = crowd; level.ageQ = buildAgeQueue(def);
   level.crowdKey = localDow() * 24 + Math.floor(localHour()) % 24; level.ambBase = Object.entries(def.people).filter(([k]) => k !== 'smuggler' && k !== 'boss').reduce((a, [, n0]) => a + n0 * (1 + (level.sz - 1) * .85), 0);
-  for (const [kind, n0] of Object.entries(def.people)) for (let k = 0, n = Math.max(kind === 'smuggler' || kind === 'boss' ? 0 : 1, Math.round((kind !== 'boss' && !def.mega ? n0 * (1 + (level.sz - 1) * .85) : n0) * (kind === 'smuggler' || kind === 'boss' ? 1 : crowd))); k < n; k++) {
+  { const dens0 = level.ambBase / (level.w * level.d) * 1000; level.npcBoost = def.relax || def.mega ? 1 : dens0 < 2.5 ? Math.max(1.4, Math.min(3, 1.2 / dens0)) : 1; level.ambBase *= level.npcBoost; } // 맵 넓이에 비해 시민이 적으면 40% 이상 늘린다
+  for (const [kind, n0] of Object.entries(def.people)) for (let k = 0, n = Math.max(kind === 'smuggler' || kind === 'boss' ? 0 : 1, Math.round((kind !== 'boss' && !def.mega ? n0 * (1 + (level.sz - 1) * .85) : n0) * (kind === 'smuggler' || kind === 'boss' ? 1 : crowd * level.npcBoost))); k < n; k++) {
     const far = kind === 'boss' ? [{ ...spawn, r: 22 }] : level.avoid;
     const p = placeFree(level.bounds, 1, 1, .5, far); if (p) {
       const look = kind === 'smuggler' && def.diff.stars >= 3 && rnd() < .5 ? pick((def.staff || []).map(o => o.kind).concat(['worker'])) : null;
@@ -5101,6 +5222,7 @@ function loadLevel(i) {
   const freePt = ([x, z]) => { const inB = (px, pz) => colliders.some(c => !c.disabled && !c.pushable && c.topY > .6 && px > c.minX - .45 && px < c.maxX + .45 && pz > c.minZ - .45 && pz < c.maxZ + .45); if (!inB(x, z)) return [x, z]; for (let r = .8; r < 8; r += .6) for (let a = 0; a < 6.28; a += .5) { const px = x + Math.cos(a) * r, pz = z + Math.sin(a) * r; if (!inB(px, pz) && (!level.inside || level.inside(px, pz))) return [px, pz]; } return [x, z]; };
   for (const o0 of def.staff || []) { const o = { ...o0, route: o0.route.map(freePt) }; const p = new Person(o.kind, o.route[0][0], o.route[0][1]); p.route = o.route; p.ri = 0; p.waitAt = o.wait ?? .4; p.target = null; p.wait = mr(0, 1.5); }
   for (const o of [...(def.vehicles || []), ...(level.ringVehicles || [])]) new Vehicle(o.type, o.route, o.start || 0, o);
+  loadCarriers();
   for (const v of vehicles) for (let tries = 0; tries < v.route.length * 2 && vehicles.some(u => u !== v && u.id < v.id && Math.hypot(u.x - v.x, u.z - v.z) < (u.len + v.len) / 2 + 1.5); tries++) { const n = v.route.length; v.ri = (v.ri + 1) % n; const [a, b] = v.route[v.ri], [c, d] = v.route[(v.ri + 1) % n]; v.x = (a + c) / 2 * (tries % 2) + a * (1 - tries % 2); v.z = (b + d) / 2 * (tries % 2) + b * (1 - tries % 2); v.dir = Math.atan2(c - v.x, d - v.z); v.g.position.set(v.x, 0, v.z); v.g.rotation.y = v.dir; }
   if (level.seatSpots) { const spots = [...level.seatSpots].sort(() => rnd() - .5).slice(0, Math.round(level.seatSpots.length * .32 * Math.max(.5, level.crowd))); for (const [x, z, cls] of spots) { const p = new Person(cls === 'biz' ? 'civ' : pick(['civ', 'tourist', 'civ']), x, z); p.seated = true; p.dir = Math.PI; p.y = .2; p.g.position.set(x, .2, z); p.g.rotation.y = Math.PI; for (const l of p.legs) l.rotation.x = -1.45; p.body.position.z = .15; if (p.ageGrp === 'baby') p.g.children.filter(c => c.isGroup && c.position.z > .7).forEach(c => p.g.remove(c)); } }
   for (const st of stallSpots) { const p = new Person('merchant', st.x, st.z - 1.25); p.seller = st.txt; p.dir = 0; p.g.rotation.y = 0; p.homeX = st.x; p.homeZ = st.z - 1.25; }
@@ -5789,7 +5911,7 @@ function bark() {
     if (p.villain && d < 4.5 * BR) { if (d < 4 * BR && !(p.barkHit > time)) { p.barkHit = time + 1.0 * AS; hitVillain(p, '🐕 왕왕!'); } else { p.stun = Math.max(p.stun, p.kind === 'boss' ? .9 : 1.8 * (1.24 - .08 * (p.lv || 3))); p.glow = 4; floatText('깜짝!', p.x, 2.7, p.z, { h: .5, color: '#ffd54f' }); } }
     else if (!p.villain && d < 3) p.stun = Math.max(p.stun, .3);
   }
-  for (const v of vehicles) if (!v.broken && dog.y < 2.5 && v.distTo(hx, hz) < 1.6 * BR && !(v.barkHit > time)) { v.barkHit = time + .5 * AS; v.hit('🐕 왕왕!'); }
+  for (const v of vehicles) if (!v.broken && dog.y < 2.5 && v.distTo(hx, hz) < 1.6 * BR && !(v.barkHit > time)) { v.barkHit = time + .5 * AS; if (v.carry) seizeVehicle(v); else if (!(v.stopT > 0)) v.hit('🐕 왕왕!'); }
   let best = null, bd = 1.8 * (1 + .06 * (wallet.up.bark || 0));
   for (const c of hidden) { if (c.revealed) continue; const d = distToBox(dog.x, dog.z, c); if (d < bd) { bd = d; best = c; } }
   if (best) return reveal(best);
