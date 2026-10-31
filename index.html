@@ -646,7 +646,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1812';
+const BUILD = '20261031-1813';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -5333,13 +5333,12 @@ function applyTimeOfDay(silent) {
   level.lightDir = out ? (A.sunAlt > -2 ? A.sunDir : A.moonAlt > 0 ? A.moonDir : null) : null;
   if (ph === 'night') { sun.color.set(0x9db4ff); hemi.color.set(0xb8c6ff); } else if (ph === 'dusk') { sun.color.set(0xffb27a); hemi.color.set(0xffe0c8); } else { sun.color.set(new THREE.Color(0xffd7a0).lerp(new THREE.Color(0xfff6e8), sstep(8, 35, A.sunAlt)).lerp(new THREE.Color(0xdfe6ee), cloud * .6)); hemi.color.set(0xffffff); }
   if (out) weatherFx(K.k, w); else if (wxFx) { world.remove(wxFx.g); wxFx = null; }
-  { const el = $('wx'); if (el) { el.textContent = wxLabel(level.name, w, K) + ' · ' + (A.sunAlt > 0 ? (cloud > .6 ? '☁ 구름 뒤 해 고도 ' : '☀ 해 고도 ') + Math.round(A.sunAlt) + '°' : (A.moonAlt > 0 ? '🌙 ' + moonName(A.moonFrac, A.waxing) + ' ' + Math.round(A.moonFrac * 100) + '% · 고도 ' + Math.round(A.moonAlt) + '°' : '🌑 달 없음')); el.classList.remove('hidden'); } }
+  { const el = $('wx'); if (el) { el.textContent = wxLabel(level.name, w, K) + ' · ' + (A.sunAlt > 0 ? (cloud > .6 ? '☁ 구름 뒤 해 고도 ' : '☀ 해 고도 ') + Math.round(A.sunAlt) + '°' : (A.moonAlt > 0 ? '🌙 ' + moonName(A.moonFrac, A.waxing) + ' ' + Math.round(A.moonFrac * 100) + '% · 고도 ' + Math.round(A.moonAlt) + '°' : '🌑 달 없음')); } }
   if (silent) return;
   // 밤에는 바깥 맵에 가로등 불빛
   if (ph === 'night' && out) for (let k = 0; k < 8; k++) { const b = level.bounds, x = mr(b.minX + 6, b.maxX - 6), z = mr(b.minZ + 6, b.maxZ - 6), l = new THREE.PointLight(0xffd59a, 12, 18, 1.8); l.position.set(x, 6, z); world.add(l); }
   const city = geoOf(level.name)[2], kst = new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(nowDate());
   setTimeout(() => toast(t('tod_' + ph).replace('{city}', city).replace('{time}', kst)), 2600);
-  if (w) setTimeout(() => toast(K.ic + ' 지금 ' + city + '은(는) ' + K.ko + ' · ' + windName(w.wind_direction_10m) + ' ' + (w.wind_speed_10m || 0).toFixed(1) + 'm/s(' + windFeel(w.wind_speed_10m || 0) + ') · ' + Math.round(w.temperature_2m) + '°C' + (out ? '' : ' (실내 맵이라 바깥 날씨만 알려 줘요)')), 6200);
   if (level && !level.relax) { const c = crowdNow(level); setTimeout(() => toast(t('crowd_' + (c < .45 ? 0 : c < .9 ? 1 : c < 1.2 ? 2 : 3)) + (lang === 'ko' ? ' (' + '일월화수목금토'[localDow()] + '요일 ' + Math.floor(h) + '시 유동인구 기준)' : '')), 4400); }
 }
 function distToPoly(P, x, z) { let best = 1e9; for (let i = 0; i < P.length; i++) { const [ax, az] = P[i], [bx2, bz] = P[(i + 1) % P.length], vx = bx2 - ax, vz = bz - az, L2 = vx * vx + vz * vz || 1, u = clamp(((x - ax) * vx + (z - az) * vz) / L2, 0, 1); best = Math.min(best, Math.hypot(x - ax - vx * u, z - az - vz * u)); } return best; }
@@ -5563,7 +5562,7 @@ function loadLevel(i) {
 const scaleNums = t => level && level.sz > 1.05 ? t.replace(/(\d+)(개|정|명)/g, (m, n, u) => Math.ceil(+n * (1 + (level.sz - 1) * .42)) + u) : t;
 const LOAD_TIPS = ['💥 점프를 3번 하면 공중 덤블링! 착지하면 쿵! 주변 범인을 공격해요', '👃 [E]·[킁킁]을 누르고 있으면 숨긴 물건 냄새가 길을 알려 줘요', '🪙 맵 곳곳의 코인을 모아 업그레이드 상점에서 탐지견을 키워요', '👥 팀 방을 만들면 친구 5명까지 같은 맵을 함께 수색해요', '🦴 뼈다귀를 던지면 도망가는 범인을 멈출 수 있어요', '❤️ 하트 공을 먹으면 체력이 회복돼요', '📞 실제로 수상한 밀수품을 보면 ☎ 125 (관세청 밀수신고센터)', '🏊 바다가 있는 맵에서는 탐지견과 핸들러가 함께 수영할 수 있어요', '🛃 해외여행에서 산 물건이 면세 한도를 넘으면 세관에 자진신고해요', '🐕 진짜 관세청 탐지견은 마약·총기 냄새를 찾도록 훈련받아요'];
 fetchWeather().then(() => { if (level && !level.wxApplied && !level.sunset) { level.wxApplied = true; applyTimeOfDay(true); } });
-setInterval(() => { const el = $('wx'); if (el) el.classList.toggle('hidden', !level || level.sunset || !['play', 'dialog'].includes(state)); }, 700);
+setInterval(() => { const el = $('wx'); if (el) el.classList.add('hidden'); }, 700);
 setInterval(() => { if (level && !level.sunset && state === 'play') { const A = level.astro = astroNow(level.name); if (level.outdoor) level.lightDir = A.sunAlt > -2 ? A.sunDir : A.moonAlt > 0 ? A.moonDir : null; } }, 60e3);
 function startLevel(i) {
   if (!startLevel.go && LEVELS[i]) {
