@@ -505,7 +505,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
  <img id="logo" src="logo.png" alt="관세청" style="display:block;max-height:56px;max-width:60%;margin:0 auto 10px" onerror="this.remove()">
  <div class="sub">관세청 일일 특강 교육 게임</div>
  <h1>🐕 탐지견 킁킁 게임</h1>
- <p id="lsIntro">나만의 <b>탐지견</b>을 만들어 공항부터 보세창고까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
+ <p id="lsIntro">나만의 <b>탐지견</b>을 만들어 공항부터 마약 제조공장까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
  <div id="creds"><div class="cred"><label for="pid" id="lbId" style="font-weight:700;color:var(--navy)">🔑 아이디 <small style="font-weight:500;color:var(--muted)">(이메일 주소 · 랭킹에 공개되지 않아요)</small></label>
  <input id="pid" dir="ltr" type="email" inputmode="email" maxlength="60" placeholder="예: dkslek123@google.com" autocomplete="username" name="username" list="idList"><datalist id="idList"></datalist></div><div class="cred">
  <label for="ppw" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">비밀번호</label>
@@ -679,7 +679,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2044';
+const BUILD = '20261031-2057';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -716,7 +716,7 @@ const DICT = {
     ht_ok: 'Got it! Let\'s go!', dk_ok: 'Got it! Woof!', cl_next: 'Next map ▶', cl_maps: 'Map select', rk_sub: 'Player ranking', rk_h1: '🏆 Hall of Fame', rk_close: 'Close',
     wn_sub: 'All missions complete', wn_h1: '🏅 Mission success!', wn_hidden: '🌅 Play in the hidden map', wn_maps: 'Back to maps',
     hud_keys: '<b>WASD</b> Move · <b>Shift</b> Run · <b>Space</b> Jump · <b>E</b> Sniff · <b>F</b> Bark · <b>Q</b> Bone<br>Mouse drag / <b>←→</b> rotate · Wheel zoom', hud_stam: 'Energy', hud_scent: 'Scent',
-    m: ['Airport Arrivals', 'Air Cargo Terminal', 'International Mail Center', 'International Ferry', 'Container Yard', 'Bonded Warehouse (Boss)', 'Sunset Runway'],
+    m: ['Airport Arrivals', 'Air Cargo Terminal', 'International Mail Center', 'International Ferry', 'Container Yard', 'Drug Factory (Boss)', 'Sunset Runway'],
     s: ['Sniff luggage to find drugs and catch a smuggler.', 'Search pallets and air containers for drugs and guns. Watch the forklifts!', 'Search parcels and mail sacks and catch smugglers. Jump onto the conveyors!', 'Find drugs and guns on the rocking deck and catch smugglers.', 'Search containers and crates and catch a smuggler. Trucks are fast!', 'Catch the gang and the boss in the dark warehouse. Dodge the 💣 bombs!', 'Walk with friends at sunset and play in the dog park. Wait 1.5s at a ride to play!'],
     g: ['💊 Drugs found', '🔫 Guns found', '🕶 Smugglers caught', '👑 Boss caught'],
     st_open: 'Ready', st_lock: '🔒 Clear the previous map', st_lockB: '🔒 Clear maps 1–5 first', st_run: '✅ Cleared this run', st_lockH: '🔒 Clear all 6 maps', st_best: '✅ Best', st_cur: '▶ In progress · tap to return', st_diff: 'Difficulty', st_relax: '🌅 Relax map', st_hidden: '??? Hidden map',
@@ -2890,11 +2890,11 @@ const ADS = [
   ['수출입 안내', '관세 납부는', '성실하게', '공정한 무역의 첫걸음이에요'],
   ['세관 탐지견', '컨테이너도', '킁킁 완료', '탐지견이 항만을 지켜요 🚢'],
 
-  ['보세구역 안내', '보세창고 물품', '무단 반출 금지', '세관 허가 없이 가져갈 수 없어요'],
+  ['관세청 공익광고', '마약 원료 물질', '수입 감시 중', '마약을 만드는 화학물질도 세관이 지켜봐요'],
   ['관세청 공익광고', '밀수 조직', '끝까지 소탕', '관세청이 국민을 지킵니다'],
   ['보세구역 안내', '보세구역 출입', '허가자만', '출입할 때는 신분을 확인해요'],
   ['관세청 공익광고', '압수된 마약은', '안전하게 처리', '법에 따라 폐기돼요'],
-  ['보세구역 안내', 'CCTV', '24시간 감시', '보세창고는 항상 지켜보고 있어요'],
+  ['관세청 공익광고', '마약 제조 공장', '끝까지 추적', '국경을 넘은 원료까지 거꾸로 추적해요'],
   ['관세청 공익광고', '마약은', '한 번도 안 돼요', '호기심으로도 절대 금지!'],
   ['관세청 공익광고', '밀수 신고자', '비밀 보장', '안심하고 ☎ 125로 신고하세요'],
   ['세관 탐지견', '최고의 파트너', '탐지견 & 핸들러', '오늘도 국경 이상 무! 🐕'],
@@ -3303,21 +3303,61 @@ const LEVELS = [
     },
   },
   {
-    diff: { stars: 5, speed: 1.3, flee: 1.3, hp: 3, bossHp: 7, sniff: 19, vehicle: 1.2 }, extras: { decor: [['sealedCage', 1], ['weighScale', 1]], items: [["statue",2],["wine",3],["vase",2],["machine",2]] }, name: '보세창고 (보스전)', icon: '🏭', w: 56, d: 42, outdoor: false, bg: 0x7b8086, dim: true, music: 6,
-    staff: [{ kind: 'handler', route: [[-24, -2], [24, -2]], wait: 1.5 }],
-    vehicles: [{ type: 'forklift', route: [[-8, 1], [8, 1], [8, -10], [-8, -10]] }],
+    diff: { stars: 5, speed: 1.3, flee: 1.3, hp: 3, bossHp: 7, sniff: 19, vehicle: 1.2 }, extras: { decor: [['sealedCage', 1], ['weighScale', 1]], items: [["statue",2],["wine",3],["vase",2],["machine",2]] }, name: '마약 제조공장 (보스전)', icon: '🏭', w: 60, d: 44, outdoor: true, bg: 0x5c5f66, dim: true, music: 6,
+    staff: [{ kind: 'handler', route: [[-30, 12], [30, 12]], wait: 1.5 }, { kind: 'handler', route: [[-28, 30], [28, 30]], wait: 2 }],
+    vehicles: [{ type: 'forklift', route: [[40, 2], [58, 2], [58, 30], [40, 30]] }],
     people: { worker: 1, smuggler: 4, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 3, boss: 1 },
-    who: '한지호 보세구역세관장', short: '어두운 창고에서 부하 3명과 보스(체력 7)를 체포하세요! 💣 빨간 원이 뜨면 폭탄이 떨어져요, 피하세요!',
-    intro: '🚨 마지막 작전이다!\n밀수 조직 보스가 보세창고에 숨어 있다는 첩보가 들어왔어.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n왕왕 짖어 멈추게 하고, 뼈다귀를 여러 번 맞혀!\n조심해! 보스가 숨겨 둔 💣 폭탄이 여기저기서 터진다.\n바닥에 빨간 원이 보이면 재빨리 피해!\n부하 3명도 함께 체포하면 작전 끝이다!',
+    who: '한지호 보세구역세관장', short: '포항 제철소처럼 거대한 조직의 마약 제조공장! 용광로·굴뚝·제조 라인 사이에서 부하 3명과 보스(체력 7)를 체포하세요! 💣 빨간 원이 뜨면 폭탄이 떨어져요, 피하세요!',
+    intro: '🚨 마지막 작전이다!\n바닷가에 숨어 있는 밀수 조직의 거대한 마약 제조공장을 찾아냈어! (포항 제철소처럼 생긴 가상의 공장이야)\n굴뚝마다 시커먼 연기가 솟고, 용광로 옆 제조 라인에선 몰래 들여온 원료 화학물질로 마약을 만들고 있대.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n왕왕 짖어 멈추게 하고, 뼈다귀를 여러 번 맞혀!\n조심해! 보스가 숨겨 둔 💣 폭탄이 여기저기서 터진다.\n바닥에 빨간 원이 보이면 재빨리 피해!\n부하 3명도 함께 체포하면 작전 끝이다!',
     build(L) {
-      floorPlane(L.w, L.d, std(0xffffff, .8, 0, { map: TEX.concrete('wh', '#8d8f8c', [L.w / 6, L.d / 6]) }));
+      floorPlane(L.w, L.d, std(0xffffff, .9, 0, { map: TEX.concrete('mill', '#6f706c', [L.w / 6, L.d / 6]) }));
       walls(L, 'solid');
-      for (const x of [-16, 0, 16]) { rack(x, -14, 10); rack(x, -6, 10); }
-      for (const x of [-20, 20]) for (const z of [6, 12]) rack(x, z, 8);
-      for (let x = -20; x <= 20; x += 10) { const l = mesh(BOX(3, .15, .4), M('lamp', () => std(0xffffff, .3, 0, { emissive: 0xfff2cc, emissiveIntensity: 1.5 })), x, 6, 0); l.castShadow = false; }
-      for (const x of [-14, 14]) { mesh(BOX(6, 4.4, .1), MAT.ribs(0x8a9096), x, 2.2, L.d / 2 - .25); }
-      sign('🏭 보세창고 BONDED WAREHOUSE', 0, 5.2, -L.d / 2 + 1.5, 1.1);
-      L.search = scatter(L, 9, crate, 1.3, 1.3).concat(scatter(L, 6, palletBox, 1.3, 1.3));
+      const HX = L.w / 2, HZ = L.d / 2, steel = MAT.metal(0x6d737a, .5), rust = LMC(0x8a4b2a), hot = glow(0xff7a1a, 2);
+      const cyl = (x, y, z, rt, rb, h, m, seg = 20) => { const c = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), m); c.position.set(x, y + h / 2, z); c.castShadow = true; c.receiveShadow = true; world.add(c); return c; };
+      // 담장 + 철조망
+      for (const [x, z, w, d] of [[0, -HZ, L.w, .4], [0, HZ, L.w, .4], [-HX, 0, .4, L.d], [HX, 0, .4, L.d]]) { mesh(BOX(w, 3.6, d), MAT.col(0x55585c, .9), x, 1.8, z).castShadow = false; mesh(BOX(w, .3, d + .3), MAT.metal(0x999999), x, 3.9, z).castShadow = false; }
+      // 연기 덩어리: 굴뚝 꼭대기에서 솟아올라 커지며 바람에 흩어진다
+      const smoke = (x, y, z, n = 12, col = 0x4a4a4c, big = 1) => { const P = []; for (let k = 0; k < n; k++) { const m = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 0), new THREE.MeshLambertMaterial({ color: col, transparent: true, opacity: .6, depthWrite: false })); m.castShadow = false; world.add(m); P.push([m, k / n, rr(-1, 1)]); }
+        envAnim.push(() => { for (const [m, ph, j] of P) { const t = (time * .09 + ph) % 1; m.position.set(x + t * 16 * big + j * t * 3, y + t * 24 * big, z - t * 5 * big + j); const sc = (1.4 + t * 7) * big; m.scale.set(sc, sc * .8, sc); m.rotation.y = ph * 6 + t; m.material.opacity = .62 * (1 - t) * Math.min(1, t * 6); } }); };
+      // 붉은·흰 띠 대형 굴뚝 (연기 많이)
+      const stack = (x, z, h, rad) => { for (let k = 0; k < 8; k++) cyl(x, k * h / 8, z, rad * (1 - (k + 1) * .03), rad * (1 - k * .03), h / 8, LMC(k % 2 ? 0xf2f2ee : 0xc0392b)); addCol(x, z, rad * 2.2, rad * 2.2, null, { topY: 99 }); mesh(BOX(.25, .25, .25), glow(0xff3030, 3), x, h + .3, z).castShadow = false; smoke(x, h, z, 14, pick([0x3d3d40, 0x55555a, 0x6a6a6e]), 1.1); };
+      for (const [x, z, h] of [[24, -44, 34], [34, -44, 30], [44, -44, 36], [54, -44, 28], [-60, -40, 30], [-60, 4, 26]]) stack(x, z, h, 1.8);
+      sign('🏭 굴뚝마다 시커먼 연기 — 몰래 마약을 만드는 증거!', 40, 9, -38, .7, 'rgba(120,30,20,.92)');
+      // 고로 2기 + 열풍로 (북서쪽)
+      for (const [x, n] of [[-40, '1'], [-16, '2']]) { const z = -36;
+        cyl(x, 0, z, 5, 6, 4, steel); cyl(x, 4, z, 6, 5, 14, rust); cyl(x, 18, z, 3, 6, 4, steel); cyl(x, 22, z, 2.2, 3, 5, steel); addCol(x, z, 12.5, 12.5, null, { topY: 99 });
+        for (const a of [0, 2.1, 4.2]) mesh(BOX(.4, 26, .4), steel, x + Math.cos(a) * 6.6, 13, z + Math.sin(a) * 6.6);
+        mesh(BOX(1.4, 1, .3), hot, x, 1.5, z + 6.1).castShadow = false; for (let k = 0; k < 4; k++) mesh(BOX(.8, .15, 2), hot, x, .1, z + 7.5 + k * 1.2).castShadow = false;
+        envAnim.push(dt => { if (Math.random() < dt * 14) spawnP(x + rr(-.6, .6), 1.6, z + 6.4, rr(-1, 1), rr(2, 4), rr(1, 2.5), new THREE.Color(0xffb02a), .8); });
+        smoke(x, 27, z, 10, 0xb9b9bc, .8); sign('🔥 ' + n + '번 용광로 (마약 원료 가열로)', x, 30, z + 4, .8);
+        for (let k = 0; k < 3; k++) { const hx = x - 3 + k * 4, hz = z - 10; cyl(hx, 0, hz, 1.6, 1.6, 16, MAT.metal(0x8b9097, .4)); const d = new THREE.Mesh(new THREE.SphereGeometry(1.6, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2), MAT.metal(0x8b9097, .4)); d.position.set(hx, 16, hz); world.add(d); addCol(hx, hz, 3.4, 3.4, null, { topY: 99 }); } }
+      sign('열풍로', -28, 19, -46, .55);
+      // 코크스 공장 (북동쪽)
+      bx(40, 0, -30, 34, 7, 6, 0x4a3b35); for (let k = 0; k < 16; k++) mesh(BOX(.6, 6.6, .1), MAT.col(0x2a2220, .9), 24.5 + k * 2, 3.4, -26.95).castShadow = false; for (let k = 0; k < 5; k++) { const cx = 26 + k * 7; mesh(BOX(.8, 2, .8), steel, cx, 8, -30); smoke(cx, 9, -30, 5, 0xd8d8dc, .5); } sign('원료 건조로', 40, 9.5, -26.6, .6);
+      // 머리 위 배관 다리
+      for (let x = -50; x <= 50; x += 4) mesh(BOX(4.1, .7, .7), MAT.metal(0x9aa0a6, .4), x, 9, -20).castShadow = false; for (const x of [-48, -24, 0, 24, 48]) bx(x, 0, -20, .6, 9, .6, 0x707680);
+      for (let x = -50; x <= 50; x += 4) mesh(BOX(4.1, .5, .5), MAT.col(0x2f8f5a, .5), x, 8.2, -20.6).castShadow = false;
+      // 가운데: 지붕만 있는 거대한 제조 라인 (마약 제조실)
+      { const X = 0, Z = -4, W = 44, D = 16, Hh = 11; for (let x = -W / 2; x <= W / 2; x += 11) for (const sz of [-1, 1]) bx(X + x, 0, Z + sz * D / 2, .8, Hh, .8, 0x5d636a);
+        mesh(BOX(W + 2, .5, D + 2), MAT.metal(0x4f555c, .6), X, Hh, Z).castShadow = false; for (let x = -W / 2 + 2; x < W / 2; x += 4) mesh(BOX(2.6, .12, .5), glow(0x9effa0, .9), X + x, Hh - .4, Z).castShadow = false;
+        sign('⚠ 불법 마약 제조 라인 (원료 → 반응 → 건조 → 포장)', X, Hh + 1.5, Z + D / 2, .9, 'rgba(150,20,20,.94)');
+        bx(X, 0, Z - 2, 36, .9, 1.8, 0x2f3338); const bags = []; for (let k = 0; k < 10; k++) bags.push(mesh(BOX(.8, .4, .6), LMC(0xf4f4f0), X - 17 + k * 3.6, 1.1, Z - 2)); envAnim.push(dt => { for (const b of bags) { b.position.x += dt * 1.4; if (b.position.x > X + 17.5) b.position.x = X - 17.5; } });
+        for (const x of [-16, -6, 6, 16]) { bx(X + x, 0, Z + 3.5, 5, .95, 1.6, 0xd7dde2); for (let k = 0; k < 4; k++) { const f = mesh(BOX(.3, .55, .3), glow(pick([0x6cff6c, 0x4fc3ff, 0xff6cf0, 0xfff35a]), 1.4), X + x - 1.6 + k * 1.05, 1.25, Z + 3.5); f.castShadow = false; } }
+        for (const x of [-19, 19]) { cyl(X + x, 0, Z - 5.5, 1.5, 1.5, 4.2, MAT.metal(0xc9ced4, .25)); addCol(X + x, Z - 5.5, 3.2, 3.2, null, { topY: 99 }); mesh(BOX(1.2, .5, .1), LMC(0xf1c40f), X + x, 2.4, Z - 3.95).castShadow = false; }
+        sign('반응 탱크', X - 19, 5.2, Z - 5.5, .45); sign('건조실 · 포장대', X, 3, Z + 5, .45); }
+      // 서쪽: 원료 화학물질 탱크 야드
+      for (let i = 0; i < 2; i++) for (let j = 0; j < 4; j++) { const x = -52 + i * 10, z = -6 + j * 10; cyl(x, 0, z, 2.4, 2.4, 5, MAT.col(pick([0x2e8b57, 0xd4ac0d, 0x1f6fb2]), .5, .2)); addCol(x, z, 5, 5, null, { topY: 99 }); mesh(BOX(1.4, 1, .1), LMC(0xf1c40f), x, 2.6, z + 2.42).castShadow = false; }
+      sign('☣ 몰래 들여온 원료 화학물질 탱크', -47, 7.5, 34, .6, 'rgba(160,110,0,.92)');
+      // 동쪽: 포장·출하장 (컨테이너·팔레트)
+      for (const [x, z, c] of [[62, -8, 0xc0392b], [62, 6, 0x2c6fb7], [62, 20, 0x27ae60], [62, 34, 0xe67e22]]) { bx(x, 0, z, 3, 3, 7, c); bx(x, 3, z, 3, 2.9, 7, 0x7f8c8d, false); }
+      rack(49, 16, 8); sign('📦 포장·출하장 (밀수 컨테이너)', 50, 7, 40, .6);
+      // 쇳물 운반차 (토페도카) 레일 — 남쪽
+      for (let x = -HX + 2; x < HX - 2; x += 1.2) mesh(BOX(.3, .1, 2.4), MAT.wood(), x, .05, 42).castShadow = false; for (const sz of [-.8, .8]) mesh(BOX(L.w - 4, .12, .12), MAT.metal(0x777777), 0, .12, 42 + sz).castShadow = false;
+      { const tc = new THREE.Group(); world.add(tc); mesh(BOX(10, 2.4, 2.6), rust, 0, 1.6, 0, tc); mesh(BOX(3, .4, 1.4), hot, 0, 2.85, 0, tc); envAnim.push(dt => { tc.position.set(Math.sin(time * .12) * (HX - 10), 0, 42); }); sign('🚃 쇳물 운반차 레일 (가까이 가지 마세요)', -40, 4, 45, .5); }
+      // 정문
+      bx(-12, 0, HZ - 1.5, 2, 6, 2, 0x55585c); bx(12, 0, HZ - 1.5, 2, 6, 2, 0x55585c); mesh(BOX(26, 1.4, 1), LMC(0x2f3338), 0, 6.5, HZ - 1.5); sign('🚫 출입금지 · 마약 제조공장', 0, 8.6, HZ - 1.5, .8);
+      for (let x = -40; x <= 40; x += 16) { bx(x, 0, 24, .3, 8, .3, 0x444444, false); mesh(BOX(1, .3, .6), glow(0xffb347, 1.6), x, 8, 24).castShadow = false; }
+      L.search = scatter(L, 12, crate, 1.3, 1.3).concat(scatter(L, 9, palletBox, 1.3, 1.3));
     },
   },
   {
@@ -3523,7 +3563,7 @@ function stationTrains(L, lines, { stopX = 0, span } = {}) {
   }
 }
 // ===== 맵 바깥 배경: 맵 성격에 맞는 먼 풍경 (충돌 없음 · 그림자 없음) =====
-const FAR_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'airport', '국제우편·특송센터': 'logistics', '국제 여객선': 'coast', '공항 출국장(T2)': 'airport', '인천항 국제여객터미널': 'port', '부두 컨테이너 야적장': 'port', '보세창고 (보스전)': 'industrial', '노을 활주로': 'airport', '우체국': 'city', '교도소': 'rural', '서울역': 'city', '버스터미널': 'city', '명동': 'city', '경복궁': 'heritage', '홍대': 'city', '롯데월드타워': 'city', '동대문': 'city', '광안리 해변': 'city', '숭례문': 'city', '수원화성': 'heritage', '경주': 'tomb', 'N서울타워': 'mountain', '해운대': 'city', '제주 한라산': 'jeju', '포항 스페이스워크': 'city', '전주 한옥마을': 'heritage', '광화문광장': 'city', '청와대': 'heritage', '국회의사당': 'city', '감천문화마을': 'village', '대전 한빛탑': 'city' };
+const FAR_OF = { '공항 입국장': 'airport', '공항 화물터미널': 'airport', '국제우편·특송센터': 'logistics', '국제 여객선': 'coast', '공항 출국장(T2)': 'airport', '인천항 국제여객터미널': 'port', '부두 컨테이너 야적장': 'port', '마약 제조공장 (보스전)': 'industrial', '노을 활주로': 'airport', '우체국': 'city', '교도소': 'rural', '서울역': 'city', '버스터미널': 'city', '명동': 'city', '경복궁': 'heritage', '홍대': 'city', '롯데월드타워': 'city', '동대문': 'city', '광안리 해변': 'city', '숭례문': 'city', '수원화성': 'heritage', '경주': 'tomb', 'N서울타워': 'mountain', '해운대': 'city', '제주 한라산': 'jeju', '포항 스페이스워크': 'city', '전주 한옥마을': 'heritage', '광화문광장': 'city', '청와대': 'heritage', '국회의사당': 'city', '감천문화마을': 'village', '대전 한빛탑': 'city' };
 const NAMSAN = ['서울역', '명동', '숭례문', '동대문', '광화문광장', '경복궁', '청와대', '우체국', '홍대'];
 let winTex = null;
 function farWinTex() {
@@ -5374,7 +5414,7 @@ const CRIME = {
   '인천항 국제여객터미널': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🧳', '보따리 밀수상', 'Suitcase trader']],
   '공항 출국장(T2)': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🧳', '출국 밀반출범', 'Outbound smuggler']],
   '부두 컨테이너 야적장': [['🎇', '불법 화약', 'Illegal gunpowder'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
-  '보세창고 (보스전)': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
+  '마약 제조공장 (보스전)': [['💊', '마약', 'Drugs'], ['🔫', '불법 총기', 'Illegal gun'], ['🕶', '밀수 조직원', 'Smuggling gang']],
   '우체국': [['💵', '보이스피싱 현금', 'Phishing cash'], ['🌿', '마약 소포', 'Drug parcel'], ['📞', '보이스피싱 수거책', 'Phishing courier']],
   '교도소': [['📱', '반입 금지 휴대폰', 'Contraband phone'], ['💊', '반입 금지 약물', 'Banned medicine'], ['⛓', '반입 공범', 'Accomplice']],
   '서울역': [['👛', '훔친 지갑', 'Stolen wallet'], ['⚠', '위험 물품', 'Dangerous item'], ['🖐', '소매치기', 'Pickpocket']],
@@ -5433,7 +5473,7 @@ const CROWD = {
   hiking: [.1, .1, .1, .1, .2, .5, 1, 1.3, 1.4, 1.3, 1.2, 1.1, 1, .9, .7, .5, .3, .2, .1, .1, .1, .1, .1, .1],
   works: [.7, .65, .6, .6, .65, .75, .9, 1, 1.05, 1.05, 1.05, 1, .95, 1, 1.05, 1.05, 1, .95, .9, .85, .8, .75, .75, .7],
 };
-const CROWD_OF = { '공항 출국장(T2)': 'airport', '공항 입국장': 'airport', '공항 화물터미널': 'works', '국제우편·특송센터': 'works', '국제 여객선': 'airport', '인천항 국제여객터미널': 'airport', '부두 컨테이너 야적장': 'works', '보세창고 (보스전)': 'works',
+const CROWD_OF = { '공항 출국장(T2)': 'airport', '공항 입국장': 'airport', '공항 화물터미널': 'works', '국제우편·특송센터': 'works', '국제 여객선': 'airport', '인천항 국제여객터미널': 'airport', '부두 컨테이너 야적장': 'works', '마약 제조공장 (보스전)': 'works',
   '우체국': 'office', '교도소': 'office', '서울역': 'commute', 'KTX': 'commute', '버스터미널': 'commute', '비행기': 'airport', '명동': 'nightlife', '경복궁': 'heritage', '홍대': 'nightlife', '롯데월드타워': 'view', '동대문': 'nightlife',
   '광안리 해변': 'beach', '숭례문': 'heritage', '수원화성': 'heritage', '경주': 'heritage', 'N서울타워': 'view', '해운대': 'beach', '제주 한라산': 'hiking', '포항 스페이스워크': 'view', '전주 한옥마을': 'heritage', '광화문광장': 'view', '청와대': 'office', '국회의사당': 'office', '감천문화마을': 'heritage', '대전 한빛탑': 'view' };
 const AGE_MIX = {
@@ -5459,7 +5499,7 @@ function applyAge(p) {
   else p.age = 20 + Math.floor(rnd() * 45);
 }
 const ANIMALS_OF = {
-  '공항 입국장': [['qdog', 1]], '공항 화물터미널': [['pigeon', 4]], '국제우편·특송센터': [['qdog', 1]], '국제 여객선': [['seagull', 6]], '인천항 국제여객터미널': [['seagull', 8]], '부두 컨테이너 야적장': [['seagull', 6], ['cat', 2]], '보세창고 (보스전)': [['cat', 1]], '노을 활주로': [['magpie', 3]],
+  '공항 입국장': [['qdog', 1]], '공항 화물터미널': [['pigeon', 4]], '국제우편·특송센터': [['qdog', 1]], '국제 여객선': [['seagull', 6]], '인천항 국제여객터미널': [['seagull', 8]], '부두 컨테이너 야적장': [['seagull', 6], ['cat', 2]], '마약 제조공장 (보스전)': [['cat', 1]], '노을 활주로': [['magpie', 3]],
   '우체국': [['guideDog', 1]], '교도소': [['magpie', 3], ['cat', 1]], '서울역': [['pigeon', 8]], 'KTX': [['guideDog', 1]], '버스터미널': [['pigeon', 4]], '비행기': [['guideDog', 1]],
   '명동': [['petDog', 2], ['pigeon', 3]], '경복궁': [['magpie', 4], ['duck', 3]], '홍대': [['petDog', 3], ['cat', 2]], '롯데월드타워': [['duck', 5], ['petDog', 2]], '동대문': [['pigeon', 4], ['cat', 1]],
   '광안리 해변': [['seagull', 8], ['petDog', 2]], '숭례문': [['pigeon', 6]], '수원화성': [['magpie', 3], ['petDog', 2]], '경주': [['magpie', 3], ['cat', 2], ['horse', 2]], 'N서울타워': [['magpie', 3], ['petDog', 2]],
@@ -5609,7 +5649,7 @@ function skyDome(top, bot, ph) {
 // ================= 실시간 날씨(Open-Meteo) + 해·달 위치(천문 계산) =================
 // 맵마다 실제 위치(위도, 경도, 지역명)
 const GEO = { '공항 출국장(T2)': [37.4692, 126.4336, '인천공항 제2여객터미널'], '공항 입국장': [37.4602, 126.4407, '인천공항'], '공항 화물터미널': [37.4436, 126.4559, '인천공항 화물터미널'], '국제우편·특송센터': [37.4489, 126.4628, '인천 국제우편물류센터'], '국제 여객선': [37.3683, 126.6253, '인천항'], '인천항 국제여객터미널': [37.4241, 126.6055, '인천항 국제여객터미널'],
-  '부두 컨테이너 야적장': [35.0767, 128.8167, '부산신항'], '보세창고 (보스전)': [35.1028, 129.0403, '부산항'], '우체국': [37.5617, 126.9822, '서울중앙우체국'], '교도소': [37.3935, 126.9862, '경기 의왕'], '서울역': [37.5547, 126.9707, '서울역'],
+  '부두 컨테이너 야적장': [35.0767, 128.8167, '부산신항'], '마약 제조공장 (보스전)': [36.0190, 129.3435, '포항'], '우체국': [37.5617, 126.9822, '서울중앙우체국'], '교도소': [37.3935, 126.9862, '경기 의왕'], '서울역': [37.5547, 126.9707, '서울역'],
   'KTX': [36.3326, 127.4342, '대전 부근'], '버스터미널': [37.5049, 127.0049, '서울 서초'], '명동': [37.5636, 126.985, '서울 명동'], '경복궁': [37.5796, 126.977, '서울 종로'], '홍대': [37.5563, 126.9236, '서울 마포'],
   '롯데월드타워': [37.5126, 127.1026, '서울 잠실'], '동대문': [37.5665, 127.0092, '서울 동대문'], '광안리 해변': [35.1532, 129.1186, '부산 광안리'], '숭례문': [37.56, 126.9753, '서울 중구'], '수원화성': [37.2871, 127.0118, '수원'],
   '경주': [35.8347, 129.219, '경주'], 'N서울타워': [37.5512, 126.9882, '서울 남산'], '해운대': [35.1587, 129.1604, '부산 해운대'], '제주 한라산': [33.3617, 126.5292, '제주 한라산'], '포항 스페이스워크': [36.0625, 129.3897, '포항'],
