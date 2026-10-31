@@ -682,7 +682,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2107';
+const BUILD = '20261031-2110';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -937,7 +937,7 @@ const HELPT = { ko: ['🛡 탐지견 방탄조끼! 다음 공격을 한 번 막�
   hi: ['🛡 K9 जैकेट! अगला वार रोकेगी', '👃 सुपर नाक ट्रीट! 20 सेकंड तक सूंघने की दूरी 1.5×', '🦴 हड्डी थैला! 20 सेकंड तक 2× तेज़ फेंकें', '🛡 जैकेट ने बचा लिया!'], ar: ['🛡 سترة الكلب! تصد الضربة التالية', '👃 حلوى الأنف الخارق! مدى الشم ×1.5 لمدة 20 ثانية', '🦴 حقيبة العظام! رمي أسرع ×2 لمدة 20 ثانية', '🛡 صدّتها السترة!'],
   vi: ['🛡 Áo giáp chó K9! Chặn đòn tiếp theo', '👃 Bánh mũi siêu thính! Tầm đánh hơi ×1.5 trong 20 giây', '🦴 Túi xương! Ném nhanh ×2 trong 20 giây', '🛡 Áo giáp đã chặn!'], ja: ['🛡 探知犬の防弾ベスト！次の攻撃を1回防ぐ', '👃 スーパー鼻おやつ！20秒間においの範囲1.5倍', '🦴 骨バッグ！20秒間2倍速で投げられる', '🛡 ベストが防いだ！'],
   ru: ['🛡 Жилет K9! Блокирует следующий удар', '👃 Лакомство «супернюх»! Радиус нюха ×1.5 на 20 с', '🦴 Сумка с костями! Броски ×2 быстрее 20 с', '🛡 Жилет защитил!'] };
-Object.assign(KO, { ts_giant: '🌟 슈퍼 간식! 10초 동안 탐지견과 핸들러가 30% 커지고 다치지 않아요' }); Object.assign(DICT.en || {}, { ts_giant: '🌟 Super snack! Dog and handler grow 30% and are invincible for 10 s' });
+Object.assign(KO, { ts_giant: '🌟 슈퍼 간식! 10초 동안 탐지견과 핸들러가 5배로 커지고 다치지 않아요' }); Object.assign(DICT.en || {}, { ts_giant: '🌟 Super snack! Dog and handler grow 5x bigger and are invincible for 10 s' });
 Object.assign(KO, { ts_autosniff: '👃✨ 킁킁킁! 10초 동안 저절로 냄새를 맡아요' }); Object.assign(DICT.en || {}, { ts_autosniff: '👃✨ Super sniff! Auto-sniffing for 10 s' }); Object.assign(DICT.zh || {}, { ts_autosniff: '👃✨ 超级嗅探！10秒自动嗅闻' }); Object.assign(DICT.ja || {}, { ts_autosniff: '👃✨ クンクンクン！10秒間自動で嗅ぐよ' }); Object.assign(DICT.vi || {}, { ts_autosniff: '👃✨ Đánh hơi tự động 10 giây!' }); Object.assign(DICT.ru || {}, { ts_autosniff: '👃✨ Супернюх! Авто-поиск 10 сек' }); Object.assign(DICT.hi || {}, { ts_autosniff: '👃✨ सुपर सूँघना! 10 सेकंड अपने आप' }); Object.assign(DICT.ar || {}, { ts_autosniff: '👃✨ شمّ تلقائي لمدة 10 ثوانٍ!' });
 for (const [l, [a, b, c, d]] of Object.entries(HELPT)) { const D = l === 'ko' ? KO : DICT[l]; if (D) Object.assign(D, { ts_shield: a, ts_nose: b, ts_bonebag: c, ts_blocked: d }); }
 const CROWDT = { ko: ['👥 지금은 유동인구가 적어요 (한산한 시간)', '👥 유동인구 보통', '👥 유동인구가 많아요', '👥 지금이 유동인구 최고조예요!'], en: ['👥 Few people around now (quiet hours)', '👥 Normal crowd', '👥 Busy crowd', '👥 Peak crowd right now!'], zh: ['👥 现在人流很少（清闲时段）', '👥 人流一般', '👥 人流较多', '👥 现在是人流高峰！'], hi: ['👥 अभी भीड़ कम है', '👥 सामान्य भीड़', '👥 भीड़ ज़्यादा है', '👥 अभी सबसे ज़्यादा भीड़!'], ar: ['👥 الزحام قليل الآن', '👥 زحام عادي', '👥 زحام كبير', '👥 ذروة الزحام الآن!'], vi: ['👥 Lúc này vắng người', '👥 Lượng người bình thường', '👥 Đông người', '👥 Đang là giờ cao điểm!'], ja: ['👥 今は人が少ない時間です', '👥 人出はふつう', '👥 人出が多い', '👥 今が人出のピーク！'], ru: ['👥 Сейчас людей мало', '👥 Обычный поток людей', '👥 Много людей', '👥 Сейчас пик толпы!'] };
@@ -6624,13 +6624,13 @@ function applyHelp(kind) {
       toast(HELP_KINDS[h.kind].msg || t(HELP_KINDS[h.kind].label));
   }
 }
-// 슈퍼 간식: 탐지견·핸들러가 30% 커지고(부드럽게) 무적·조금 빨라짐, 끝나기 2초 전부터 깜빡여 알려 준다
+// 슈퍼 간식: 탐지견·핸들러가 5배로 커지고(부드럽게) 무적·조금 빨라짐, 끝나기 2초 전부터 깜빡여 알려 준다
 let giantS = 1;
 function updateGiant(dt) {
   const was = dog.giantT > 0; dog.giantT = Math.max(0, (dog.giantT || 0) - dt);
   if (was && dog.giantT === 0) floatText('🌟 원래 크기로!', dog.x, dog.y + 2, dog.z, { h: .45 });
   const blink = dog.giantT > 0 && dog.giantT < 2 && Math.sin(time * 30) > 0;
-  giantS += ((dog.giantT > 0 && !blink ? 1.3 : 1) - giantS) * Math.min(1, dt * 8);
+  giantS += ((dog.giantT > 0 ? (blink ? 4.2 : 5) : 1) - giantS) * Math.min(1, dt * 4);
   dogM.g.scale.setScalar((BREEDS[dogBreed]?.scale || 1) * giantS); handlerM.g.scale.setScalar(giantS);
   if (dog.giantT > 0 && Math.random() < .6) spawnP(dog.x + mr(-.6, .6), dog.y + mr(.2, 1.4), dog.z + mr(-.6, .6), 0, 1.2, 0, new THREE.Color().setHSL((time * .8 + Math.random() * .3) % 1, 1, .6), .6);
 }
@@ -7454,13 +7454,14 @@ function mobileCull() {
 const camPos = new THREE.Vector3(0, 6, 9);
 function updateCamera(dt) {
   const tx = twoP ? (dog.x + handler.x) / 2 : dog.x, ty = dog.y * .6 + 1, tz = twoP ? (dog.z + handler.z) / 2 : dog.z;
-  const want = new THREE.Vector3(tx + Math.sin(yaw) * Math.cos(pitch) * camDist, ty + Math.sin(pitch) * camDist, tz + Math.cos(yaw) * Math.cos(pitch) * camDist);
+  const cd = camDist * (1 + (giantS - 1) * .45), ty2 = ty + (giantS - 1) * .9; // 슈퍼 간식으로 커지면 카메라도 뒤로 물러난다
+  const want = new THREE.Vector3(tx + Math.sin(yaw) * Math.cos(pitch) * cd, ty2 + Math.sin(pitch) * cd, tz + Math.cos(yaw) * Math.cos(pitch) * cd);
   if (state === 'intro' && intro) { const vp = intro.v.g.position; want.set(level.spawn.x + 7, 4.2, level.spawn.z - 5); camPos.lerp(want, 1 - Math.exp(-dt * 4)); camera.position.copy(camPos); camera.lookAt(vp.x, 1.2, vp.z); return; }
   if (state === 'photo') { const mx = (dog.x + handler.x) / 2, mz = (dog.z + handler.z) / 2, fx = Math.sin(photoDir), fz = Math.cos(photoDir); want.set(mx + fx * 4.2 + fz * 1.4, dog.y + 1.6, mz + fz * 4.2 - fx * 1.4); }
   camPos.lerp(want, 1 - Math.exp(-dt * 8));
   camera.position.copy(camPos);
   if (shake > 0) { shake -= dt; camera.position.x += mr(-1, 1) * shake * .5; camera.position.y += mr(-1, 1) * shake * .5; }
-  camera.lookAt(tx, ty, tz);
+  camera.lookAt(tx, ty2, tz);
   if (state === 'photo') camera.lookAt((dog.x + handler.x) / 2, dog.y + .9, (dog.z + handler.z) / 2);
   updateOcclusion(dt);
   if (window.__view) { const v = window.__view; camera.position.set(v[0], v[1], v[2]); camera.lookAt(v[3], v[4], v[5]); }
