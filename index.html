@@ -685,7 +685,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2314';
+const BUILD = '20261031-2324';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -2050,6 +2050,58 @@ function landmarkScene(L, sc) {
       o.sayT -= dt; if (o.sayT <= 0) { o.sayT = rr(6, 14); if (o.lines && (o.off || Math.random() < .4)) say(o, pick(o.lines)); }
       if (!(o.dogT > time) && Math.hypot(o.x - dog.x, o.z - dog.z) < 2.6) { o.dogT = time + 12; say(o, pick(o.watch ? ['탐지견이다! 귀여워 🐶', '수고 많아요, 멍멍아!'] : ['탐지견 대원, 수고합니다!', '🐕 반가워!'])); } }
   });
+}
+// 청와대 경내 시설: 관람 동선·국기게양대·헬기장·대통령 차량·침류각·오운정·미남불·칠궁·무궁화동산·연풍문·사랑채·초소·안내소·꽃밭·숲
+function bluehouseMore(L) {
+  const stone = MAT.col(0xd8d0c0, .9), Y = .035;
+  // 관람 동선: 정문 → 본관 큰길, 영빈관·녹지원·춘추관 갈림길, 관저·침류각 뒷길
+  floorPlaneW(7, 118, stone, 0, 24, Y); floorPlaneW(60, 4, stone, -30, 50, Y); floorPlaneW(4, 20, stone, -58, 40, Y);
+  floorPlaneW(58, 4, stone, 29, 50, Y); floorPlaneW(4, 40, stone, 56, 30, Y); floorPlaneW(4, 12, stone, 80, 50, Y);
+  floorPlaneW(4, 34, stone, 42, -50, Y); floorPlaneW(54, 4, stone, 20, -86, Y);
+  for (let z = 30; z <= 78; z += 8) for (const x of [-5, 5]) lamp(x, z);
+  for (const [x, z] of [[-9, 40], [9, 40], [-9, 64], [9, 64], [-30, 54], [30, 54], [52, 20], [52, 0]]) bench(x, z);
+  // 국기게양대 (태극기·봉황기) — 본관 앞
+  const flags = [];
+  for (const [x, emb] of [[-22, 'tg'], [22, 'ph']]) { bx(x, 0, -34, .3, 13, .3, 0xe6e6e6); mesh(BOX(1.4, .6, 1.4), LMC(0xb9b2a5), x, .3, -34);
+    const f = new THREE.Group(); f.position.set(x + 1.6, 11.6, -34); world.add(f); mesh(BOX(3, 2, .06), LMC(0xffffff), 0, 0, 0, f);
+    if (emb === 'tg') { mesh(BOX(.9, .45, .08), LMC(0xcd2e3a), 0, .22, 0, f); mesh(BOX(.9, .45, .08), LMC(0x0047a0), 0, -.22, 0, f); for (const [dx, dy] of [[-1, .6], [1, .6], [-1, -.6], [1, -.6]]) mesh(BOX(.45, .3, .08), LMC(0x111111), dx, dy, 0, f); }
+    else { mesh(BOX(3, 2, .07), LMC(0x2f6fb7), 0, 0, 0, f); mesh(BOX(1, .9, .09), LMC(0xf2c94c), 0, 0, 0, f); }
+    flags.push(f); }
+  envAnim.push(() => { for (const f of flags) f.rotation.y = Math.sin(time * 1.6 + f.position.x) * .25; });
+  sign('🇰🇷 태극기 · 봉황기 게양대', 0, 3.2, -33, .45);
+  // 헬기장 (서쪽 잔디)
+  { const pad = new THREE.Mesh(new THREE.CircleGeometry(6, 32), MAT.col(0x5a6066, .9)); pad.rotation.x = -Math.PI / 2; pad.position.set(-32, Y + .01, 6); world.add(pad);
+    const ring = new THREE.Mesh(new THREE.RingGeometry(5.2, 5.6, 32), MAT.col(0xf2c94c, .6)); ring.rotation.x = -Math.PI / 2; ring.position.set(-32, Y + .02, 6); world.add(ring);
+    for (const dx of [-1.4, 1.4]) mesh(BOX(.5, .02, 4), LMC(0xffffff), -32 + dx, Y + .03, 6); mesh(BOX(2.4, .02, .5), LMC(0xffffff), -32, Y + .03, 6); sign('🚁 헬기장 HELIPAD', -32, 3, 13, .45); }
+  // 대통령 전용 차량 3대 (본관 서쪽 차로)
+  for (let k = 0; k < 3; k++) { const z = -30 + k * 4.2, g = new THREE.Group(); g.position.set(-36, 0, z); world.add(g);
+    mesh(BOX(4.8, .9, 1.9), MAT.col(0x111214, .25, .4), 0, .75, 0, g); mesh(BOX(2.6, .7, 1.7), MAT.col(0x1b2833, .1, .3), -.2, 1.5, 0, g);
+    for (const sx of [-1.6, 1.6]) for (const sz of [-.95, .95]) mesh(BOX(.7, .7, .3), MAT.col(0x0a0a0a, .8), sx, .35, sz, g);
+    for (const sz of [-.7, .7]) { mesh(BOX(.04, .5, .04), LMC(0xcccccc), 2.3, 1.45, sz, g); mesh(BOX(.04, .25, .4), LMC(sz < 0 ? 0xffffff : 0x2f6fb7), 2.3, 1.6, sz + (sz < 0 ? -.2 : .2), g); }
+    addCol(-36, z, 4.8, 1.9, null, { topY: 1.8 }); }
+  sign('🚘 의전 차량 대기 구역', -36, 3.4, -18, .45);
+  // 뒷산 쪽: 침류각 · 오운정 · 미남불
+  hanok(30, -84, 9, 6, 3); sign('침류각 (계곡 옆 정자 건물)', 30, 7.4, -80, .5);
+  { const x = 8, z = -90; for (const [dx, dz] of [[-1.6, -1.6], [1.6, -1.6], [-1.6, 1.6], [1.6, 1.6]]) bx(x + dx, 0, z + dz, .3, 2.6, .3, 0x8b2e22); mesh(BOX(4.6, .3, 4.6), LMC(0x3b3f45), x, 2.8, z); mesh(BOX(3, .5, 3), LMC(0x3b3f45), x, 3.2, z); bx(x, 0, z, 3.6, .5, 3.6, 0xb9b2a5); sign('오운정 (정자)', x, 4.6, z + 2.4, .45); }
+  statue(-10, -90, 0x8a8578, true, 2.4); sign('미남불 (통일신라 석조여래좌상 · 보물)', -10, 6.4, -87, .45);
+  // 칠궁 (서쪽, 왕을 낳은 후궁 일곱 분의 사당)
+  hanok(-84, 58, 12, 7, 3, { roof: 0x3b3f45 }); hanok(-84, 70, 10, 6, 3, { roof: 0x3b3f45 });
+  for (const [x, z, w, d] of [[-84, 50.5, 22, .5], [-73.3, 62, .5, 23], [-94.7, 62, .5, 23]]) bx(x, 0, z, w, 1.8, d, 0xc9b9a0);
+  sign('칠궁 (조선 왕실 사당)', -84, 7, 52, .5);
+  // 무궁화동산
+  for (let i = 0; i < 5; i++) for (let j = 0; j < 3; j++) tree(-40 + i * 5, 62 + j * 5, .7, (i + j) % 2 ? 0xe58fb5 : 0xf3b8cf);
+  floorPlane(28, 16, MAT.col(0x7fb85a, .9), -30, 67, .02); sign('🌸 무궁화동산', -30, 4, 58, .5);
+  // 연풍문 (동쪽 출입 건물) · 청와대 사랑채 · 초소 · 관람 안내소
+  building(93, 30, 10, 12, 6, 0xe9e4d8, { sign: '연풍문 (동쪽 출입)' });
+  building(-76, 94, 20, 9, 6, 0xe9e4d8, { sign: '청와대 사랑채 (전시관)' });
+  for (const x of [-16, 16]) { bx(x, 0, 88, 1.6, 2.6, 1.6, 0xf4f1ea); mesh(BOX(1.9, .3, 1.9), LMC(0x2f6fb7), x, 2.75, 88); sign('경비 초소', x, 3.6, 89, .35); }
+  bx(24, 0, 76, 6, 1.1, 2, 0xf4f4f2); mesh(BOX(7, .2, 3.6), LMC(0x2f6fb7), 24, 3, 76); for (const [dx, dz] of [[-3.2, -1.6], [3.2, -1.6], [-3.2, 1.6], [3.2, 1.6]]) bx(24 + dx, 0, 76 + dz, .15, 3, .15, 0xdddddd);
+  sign('ℹ 관람 안내소 · 해설 예약', 24, 4, 77, .45);
+  // 꽃밭·화분·소나무 숲
+  for (const [x, z] of [[-14, 30], [14, 30], [-14, 72], [14, 72]]) { bx(x, 0, z, 6, .5, 3, 0x8a6a4a); for (let k = 0; k < 5; k++) mesh(BOX(.8, .5, .8), LMC([0xe74c3c, 0xf1c40f, 0xe58fb5, 0xffffff, 0x9b59b6][k]), x - 2.4 + k * 1.2, .75, z); }
+  for (let k = 0; k < 10; k++) { pine(-95 + rr(0, 12), -95 + k * 9, rr(.9, 1.3)); pine(85 + rr(0, 10), -95 + k * 9, rr(.9, 1.3)); }
+  for (let x = -40; x <= 40; x += 8) if (Math.abs(x) > 6) pine(x, 36, .9);
+  sign('🏛 청와대 관람 순서: 정문 → 본관 → 영빈관 → 녹지원·상춘재 → 관저 → 침류각·오운정·미남불 → 춘추관', 0, 5, 82, .45, 'rgba(19,51,90,.92)');
 }
 function makePerson(kind, opt = {}) {
   const g = new THREE.Group(), body = new THREE.Group(); g.add(body);
@@ -5260,7 +5312,7 @@ const LANDMARK_LIST = [
 
     } },
   { name: '청와대', fill: 'park', icon: '🏛', sc: 1, w: 200, d: 200, floor: FLOOR(() => TEX.grass('bluehouse', '#79ad55', [.25, .25])), mmCol: 0x7fb05a, obj: crate, sky: [0x5fb0ff, 0xf0f6ff], st: 5,
-    staff: [{ kind: 'soldier', route: [[-14, 78], [14, 78]], wait: 3 }, { kind: 'police', route: [[-40, -10], [40, -10]], wait: 2 }, { kind: 'soldier', route: [[-30, -32], [30, -32]], wait: 3 }, { kind: 'police', route: [[-80, 60], [-80, -20]], wait: 2 }], people: { tourist: 6, student: 3, civ: 2, smuggler: 3 },
+    staff: [{ kind: 'soldier', route: [[-14, 78], [14, 78]], wait: 3 }, { kind: 'police', route: [[-40, -10], [40, -10]], wait: 2 }, { kind: 'soldier', route: [[-30, -32], [30, -32]], wait: 3 }, { kind: 'police', route: [[-80, 60], [-80, -20]], wait: 2 }], people: { tourist: 12, student: 8, civ: 6, hanbok: 4, smuggler: 3 },
     items: [["vase",2],["flowerPot",2],["souvenir",2]], who: '파란기와 청와대 관람 총책임자', short: '📏 실제 0.4 축척(경내 약 500×500m)! 정문→대정원→청기와 본관(정면 80m), 서남쪽 영빈관(돌기둥 18개), 동쪽 녹지원 반송·상춘재·춘추관, 북동쪽 옛 관저, 뒤로 북악산.',
     intro: '푸른 기와 지붕으로 유명한 청와대야. 지금은 모두에게 열린 관람 공간이 되었지!\n본관 앞 넓은 잔디마당, 손님을 맞던 영빈관, 기자들이 모이던 춘추관, 큰 소나무가 있는 녹지원, 한옥 상춘재까지 둘러보자.',
     build(L) {
@@ -5286,6 +5338,7 @@ const LANDMARK_LIST = [
       // 정문 담장 + 분수대광장
       for (const sx of [-1, 1]) { bx(sx * 56, 0, 84, 88, 2.6, 1, 0xc9c2b2); bx(sx * 11, 0, 84, 2, 4, 2, 0xb9b2a5); } sign('🏛 청와대 정문 (관람 입구)', 0, 6, 85, .7);
       fountain(-40, 93, 3); sign('분수대광장', -40, 4, 93, .5);
+      bluehouseMore(L);
 
     } },
   { name: '국회의사당', fill: 'park', icon: '🏛', sc: 1, w: 220, d: 240, floor: FLOOR(() => TEX.grass('assembly', '#79ad55', [.25, .25])), mmCol: 0x7fb05a, obj: crate, sky: [0x5aa8ef, 0xeef4fb], st: 5,
@@ -6566,6 +6619,7 @@ fetchWeather().then(() => { if (level && !level.wxApplied && !level.sunset) { le
 setInterval(() => { const el = $('wx'); if (el) el.classList.add('hidden'); }, 700);
 setInterval(() => { if (level && !level.sunset && state === 'play') { const A = level.astro = astroNow(level.name); if (level.outdoor) level.lightDir = A.sunAlt > -2 ? A.sunDir : A.moonAlt > 0 ? A.moonDir : null; } }, 60e3);
 function startLevel(i) {
+  $('intel').classList.add('hidden');
   if (!startLevel.go && LEVELS[i]) {
     if (startLevel.busy) return; // 연타로 같은 맵을 두 번 불러오지 않게
     startLevel.busy = true; setTimeout(() => startLevel.busy = false, 400);
@@ -6766,7 +6820,7 @@ function showIntel() {
   state = 'intel'; keys = {}; $('intel').classList.remove('hidden');
   tone(880, .14, 'square', .05); setTimeout(() => tone(660, .14, 'square', .05), 170); setTimeout(() => tone(880, .2, 'square', .05), 340);
 }
-function closeIntel() { if (state !== 'intel') return; $('intel').classList.add('hidden'); state = 'play'; keys = {}; }
+function closeIntel() { $('intel').classList.add('hidden'); if (state !== 'intel') return; state = 'play'; keys = {}; }
 $('intel').addEventListener('pointerdown', e => { e.preventDefault(); closeIntel(); });
 addEventListener('keydown', e => { if (state === 'intel' && (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape')) { e.preventDefault(); closeIntel(); } });
 function showHowto(cb) { state = 'howto'; howtoCb = cb; $('howto').classList.remove('hidden'); keys = {}; }
@@ -7016,7 +7070,11 @@ let rankKick = null; const kickRanks = () => { clearTimeout(rankKick); rankKick 
 // 게임하는 동안 휴대폰 화면이 꺼지지 않게 (화면 켜짐 유지)
 let wakeLock = null;
 async function keepAwake() { try { if (!('wakeLock' in navigator) || document.hidden) return; if (wakeLock && !wakeLock.released) return; wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener?.('release', () => { wakeLock = null; }); } catch { } }
-document.addEventListener('visibilitychange', () => { if (!document.hidden) keepAwake(); });
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) { keepAwake(); return; }
+  // 혼자 하는 중에 전화·앱 전환으로 화면을 벗어나면 일시정지 (팀 플레이는 계속)
+  if (state === 'play' && level && !team && !window.__noAutoPause) { showMaps(true); toast('⏸ 잠시 멈췄어요. [▶ 게임으로 돌아가기]로 계속하세요'); }
+});
 addEventListener('pointerdown', () => { if (!wakeLock) keepAwake(); }, { passive: true });
 // 휴대폰 메모리가 부족해 3D 화면(WebGL)을 잃으면 자동으로 다시 불러온다 (진행 상황은 이미 저장됨)
 renderer.domElement.addEventListener('webglcontextlost', e => { e.preventDefault(); try { store.set(progKey(), getProg()); store.set(walletKey(), wallet); } catch { } const d = document.createElement('div'); d.style.cssText = 'position:fixed;inset:0;z-index:300;background:#0b1f33;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Jua,sans-serif;font-size:22px;text-align:center;padding:20px'; d.textContent = '🔄 화면을 다시 불러오는 중… (진행 상황은 저장됐어요)'; document.body.appendChild(d); setTimeout(() => location.reload(), 1200); });
