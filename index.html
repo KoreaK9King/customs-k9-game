@@ -417,7 +417,7 @@ body.touch #topbar>#tbAuto,body.touch #topbar>#tbCoin{position:fixed;top:calc(6p
 #bagPanel{display:none;margin-top:4px;background:rgba(255,253,246,.97);border:3px solid #1b2b3c;border-radius:14px;padding:6px;width:min(330px,64vw);max-height:calc(100dvh - 70px);overflow:auto;box-shadow:0 4px 0 rgba(0,0,0,.25)}#bagBox.open #bagPanel{display:block}
 .bagHead{font-family:Jua,sans-serif;font-size:15px;color:var(--navy);margin:0 2px 5px}.bagHead small{font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--muted);margin-left:4px}
 #bagList{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}#bagList button{position:relative;display:flex!important;flex-direction:column;align-items:center;gap:1px;padding:4px 2px;border:2px solid #1b2b3c;border-radius:10px;background:#fff;font:inherit;font-size:11px;line-height:1.15;color:var(--ink);cursor:pointer;width:auto!important;height:auto!important}
-#bagList button i{font-style:normal;font-size:18px}#bagList button.full{opacity:.5;background:#eee}#bagList button small{font-size:9px;color:#c0392b;line-height:1}#bagList button.nope{animation:bagNope .35s}@keyframes bagNope{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}#bagList button{font-size:10.5px!important;word-break:keep-all}#bagList button em{position:absolute;right:3px;top:2px;font-style:normal;font-weight:800;font-size:11px;color:#c0392b}#bagList .bagEmpty{grid-column:1/-1;font-size:12px;color:var(--muted);text-align:center;padding:6px}
+#bagList button i{font-style:normal;font-size:18px}#bagList button{font-size:10.5px!important;word-break:keep-all}#bagList button em{position:absolute;right:3px;top:2px;font-style:normal;font-weight:800;font-size:11px;color:#c0392b}#bagList .bagEmpty{grid-column:1/-1;font-size:12px;color:var(--muted);text-align:center;padding:6px}
 #autoList{display:none;flex-direction:column;gap:4px}#autoBox.open #autoList{display:flex}
 #topbar #autoList button{width:auto!important;height:auto!important;padding:7px 14px!important;font-size:14px!important;text-align:left;white-space:nowrap;font-family:Jua,sans-serif}
 :is(#tbAuto,#tbCoin,#tbItem,#tbAutoMenu).on{background:#f4c542!important;box-shadow:0 0 0 2px #fff,0 0 12px #ffd23f}
@@ -704,7 +704,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-0039';
+const BUILD = '20261101-0045';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -5638,67 +5638,138 @@ LEVELS.push({
   name: '카우존', icon: '🐄', w: 240, d: 240, outdoor: true, bg: 0x6b6355, music: 6,
   people: {}, hide: {}, need: {}, staff: [],
   who: '카우존 경보 방송', short: '끝없는 전투! 땅에서 솟아나는 창 든 젖소와 젖소 대장 무리를 막아요. 클리어 없음 · 오래 버티기',
-  intro: '🐄 경고! 포성이 끊이지 않는 옛 전쟁터에 창을 든 젖소 군단이 나타났어요.\n\n· 젖소는 땅에서 계속 솟아나요 (탐지견보다 3배 강함: 체력 3배, 창 한 방에 하트 3개)\n· 👑 젖소 대장 무리가 주기적으로 몰려와요\n· 💣 폭탄이 계속 떨어지고, 🔥 불붙은 기름 웅덩이와 포탄 구덩이(느려짐)·철조망·참호가 길을 막아요\n· 젖소를 물리치면 경험치! 레벨업마다 카우존 전용 스킬을 Lv20까지 올려요\n\n클리어는 없어요. 얼마나 오래 버티는지 도전!',
+  intro: '🐄 경고! 폭격 맞은 옛 도시 거리에 창을 든 젖소 군단이 나타났어요.\n\n· 젖소는 땅에서 계속 솟아나요 (탐지견보다 3배 강함: 체력 3배, 창 한 방에 하트 3개)\n· 👑 젖소 대장 무리가 주기적으로 몰려와요\n· 💣 폭탄이 계속 떨어지고, 🔥 불붙은 기름 웅덩이와 포탄 구덩이(느려짐)·바리케이드·철조망·무너진 집이 길을 막아요\n· 젖소를 물리치면 경험치! 레벨업마다 카우존 전용 스킬을 Lv20까지 올려요\n\n클리어는 없어요. 얼마나 오래 버티는지 도전!',
   build(L) { cowField(L); } });
-// 카우존 지형: 2차 대전 풍 전쟁터 (참호·모래주머니·철조망·포탄 구덩이·무너진 마을·부서진 전차·대전차 장애물·벙커·불·연기)
+// 카우존 지형: 2차 대전 영국풍 시가지 전쟁터 (거리·연립주택·폭격 맞은 집·성당·공장·공원 대공포 진지·버스 잔해·바리케이드)
 function cowField(L) {
-  const HX = L.w / 2, HZ = L.d / 2, sp = { x: 0, z: HZ - 6 }, near = (x, z, m) => Math.hypot(x - sp.x, z - sp.z) < m; L.search = [];
-  const spot = (m, pad = 6) => { for (let t = 0; t < 20; t++) { const x = rr(-HX + pad, HX - pad), z = rr(-HZ + pad, HZ - pad); if (!near(x, z, m)) return [x, z]; } return [rr(-HX + pad, HX - pad), rr(-HZ + pad, -20)]; };
-  floorPlaneW(L.w, L.d, MAT.col(0x5a5040, .97), 0, 0, .03);
-  for (let k = 0; k < 70; k++) floorPlaneW(rr(6, 20), rr(6, 20), MAT.col(pick([0x4e4636, 0x625a46, 0x3f3a2e, 0x6b6450]), .97), rr(-HX + 8, HX - 8), rr(-HZ + 8, HZ - 8), .034 + k * .0003);
-  const sand = LMC(0x9c8a62), dark = LMC(0x2b2b28), olive = LMC(0x4a5236), rust = LMC(0x5a3b28), brick = 0x8a5a44, conc = 0x8c8a82;
-  // 참호: 가로로 길게 판 도랑(어두운 바닥) + 양쪽 모래주머니 둑 (중간중간 끊겨 건너갈 수 있다)
-  for (const z0 of [-80, -40, 10, 55]) {
-    for (let x = -HX + 10; x < HX - 10; x += 16) {
-      if (Math.random() < .25 || near(x, z0, 18)) continue;
-      const len = rr(9, 13), zz = z0 + rr(-4, 4);
-      floorPlaneW(len, 3, MAT.col(0x2e2a22, .98), x, zz, .062);
-      for (const sd of [-1, 1]) { bx(x, 0, zz + sd * 2, len, .9, 1, 0x9c8a62); for (let k = 0; k < len; k += 1.1) mesh(BOX(.9, .35, .9), sand, x - len / 2 + .5 + k, 1.05, zz + sd * 2).castShadow = false; }
+  const HX = L.w / 2, HZ = L.d / 2, sp = { x: 0, z: HZ - 6 }; L.search = []; L.mud = []; L.vents = []; L.fires = [];
+  // 같은 색 상자는 한 덩어리로 합친다 (그리는 횟수를 줄여 휴대폰에서도 부드럽게)
+  const parts = new Map();
+  const pb = (x, y, z, w, h, d, c) => { const g = new THREE.BoxGeometry(w, h, d).toNonIndexed(); g.translate(x, y + h / 2, z); (parts.get(c) || parts.set(c, []).get(c)).push(g); };
+  const pbc = (x, y, z, w, h, d, c) => { pb(x, y, z, w, h, d, c); addCol(x, z, w, d, null, { topY: y + h }); };
+  const flush = () => {
+    for (const [c, gs] of parts) {
+      let n = 0; for (const g of gs) n += g.attributes.position.count;
+      const pos = new Float32Array(n * 3), nor = new Float32Array(n * 3); let o = 0;
+      for (const g of gs) { pos.set(g.attributes.position.array, o); nor.set(g.attributes.normal.array, o); o += g.attributes.position.array.length; g.dispose(); }
+      const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3)); geo.computeBoundingSphere();
+      const m = new THREE.Mesh(geo, LMC(c)); m.castShadow = !lowGfx; m.receiveShadow = true; world.add(m);
+    }
+  };
+  const free = (x, z, m = 1.5) => Math.hypot(x - sp.x, z - sp.z) > 14 && !colliders.some(c => !c.disabled && distToBox(x, z, c) < m);
+  const STREETS = [-100, -60, -20, 20, 60, 100], BLOCKS = [-80, -40, 0, 40, 80], SW = 10, B = 13;
+  const onStreet = () => { const along = rr(-HX + 4, HX - 4), at = pick(STREETS) + rr(-SW / 2 + 1, SW / 2 - 1); return Math.random() < .5 ? [along, at] : [at, along]; };
+  const streetSpot = (m) => { for (let t = 0; t < 30; t++) { const [x, z] = onStreet(); if (free(x, z, m)) return [x, z]; } return null; };
+  const BRICK = [0x8a4b3a, 0x9a5a44, 0x7a4434, 0xa86a50, 0x6e3d30], STUCCO = 0xcfc6b4, SLATE = 0x3b3f46, WIN = 0x1d2228, DOOR = 0x3a2a20, SOOT = 0x2a2622;
+  // 바닥: 잿빛 땅 · 자갈 깔린 거리 · 보도
+  floorPlaneW(L.w, L.d, MAT.col(0x4d4842, .97), 0, 0, .03);
+  for (const a of STREETS) { floorPlaneW(L.w, SW, MAT.col(0x55534f, .95), 0, a, .034); floorPlaneW(SW, L.d, MAT.col(0x55534f, .95), a, 0, .035); for (const sd of [-1, 1]) { floorPlaneW(L.w, 1.8, MAT.col(0x8a857a, .9), 0, a + sd * (SW / 2 + .9), .037); floorPlaneW(1.8, L.d, MAT.col(0x8a857a, .9), a + sd * (SW / 2 + .9), 0, .038); } }
+  // 강변 산책로 (시작 지점) + 강둑 벽
+  floorPlaneW(L.w, 14, MAT.col(0x9a948a, .9), 0, HZ - 7, .04); pb(0, 0, HZ - .6, L.w, 1.2, .8, 0x7c776e); addCol(0, HZ - .6, L.w, .8, null, { topY: 1.2 });
+  for (let x = -HX + 8; x < HX; x += 14) { pb(x, 0, HZ - 2, .2, 4.2, .2, 0x23382c); pb(x, 4.2, HZ - 2, .6, .5, .6, 0x23382c); }
+  // 연립주택 한 채: 길 쪽 앞면에 창문·문, 경사 지붕과 굴뚝. 폭격 맞은 집은 지붕이 없고 벽이 들쭉날쭉, 앞에 잔해
+  function house(cx, cz, ux, uz, nx, nz, w, d, h, col, bombed) {
+    const wx = ux ? w : d, wz = uz ? w : d, fx = cx + nx * (d / 2 + .04), fz = cz + nz * (d / 2 + .04), win = (off, y, ww, hh, c) => pb(fx + ux * off, y, fz + uz * off, ux ? ww : .08, hh, uz ? ww : .08, c);
+    if (!bombed) {
+      pbc(cx, 0, cz, wx, h, wz, col);
+      pb(cx, h, cz, wx + .3, .45, wz + .3, SLATE); pb(cx, h + .45, cz, ux ? w : d * .45, .9, uz ? w : d * .45, SLATE);
+      pb(cx + ux * (w / 2 - .7), h + .4, cz + uz * (w / 2 - .7), .7, 1.6, .7, 0x5e3328);
+      for (let y = 3.2; y < h - 1; y += 2.7) for (const off of [-w / 4, w / 4]) win(off, y, 1.1, 1.4, Math.random() < .12 ? 0xffd27a : WIN);
+      win(-w / 4, 0, 1, 2.1, DOOR); win(w / 4, .9, 1.1, 1.3, WIN);
+    } else {
+      const top = rr(2.4, h * .75), seg = 3; for (let k = 0; k < seg; k++) { const off = -w / 2 + w / seg * (k + .5), hh = Math.max(1.2, top * rr(.4, 1)); pb(cx + ux * off, 0, cz + uz * off, ux ? w / seg : d, hh, uz ? w / seg : d, Math.random() < .3 ? SOOT : col); }
+      addCol(cx, cz, wx, wz, null, { topY: top });
+      for (let y = 1; y < top - 1.4; y += 2.7) win(-w / 4, y, 1.1, 1.4, WIN);
+      for (let k = 0; k < 4; k++) pb(fx + ux * rr(-w / 2, w / 2) + nx * rr(.6, 2.2), 0, fz + uz * rr(-w / 2, w / 2) + nz * rr(.6, 2.2), rr(.6, 1.4), rr(.25, .7), rr(.6, 1.4), pick([col, SOOT, 0x8c8a82]));
     }
   }
-  // 모래주머니 기관총 진지 (반원형)
-  for (let k = 0; k < 14; k++) { const [x, z] = spot(18); for (let a = -1.2; a <= 1.2; a += .4) { const px = x + Math.sin(a) * 3, pz = z + Math.cos(a) * 3; bx(px, 0, pz, 1.4, 1.1, 1, 0x9c8a62); } mesh(BOX(.15, .15, 1.6), dark, x, 1.4, z + 2.6).castShadow = false; }
-  // 철조망 (낮은 말뚝 + 가는 줄, 몸은 지나갈 수 없다)
-  for (let k = 0; k < 16; k++) { const [x, z] = spot(16), len = rr(8, 14), rot = Math.random() < .5; for (let t = 0; t <= len; t += 2) { const px = rot ? x : x - len / 2 + t, pz = rot ? z - len / 2 + t : z; mesh(BOX(.12, 1.1, .12), rust, px, .55, pz).castShadow = false; } for (const y of [.35, .7, 1]) mesh(BOX(rot ? .05 : len, .04, rot ? len : .05), dark, x, y, z).castShadow = false; addCol(x, z, rot ? .5 : len, rot ? len : .5, null, { topY: 1.1 }); }
-  // 대전차 장애물 (X자 쇠기둥)
-  for (let k = 0; k < 40; k++) { const [x, z] = spot(14); const g = new THREE.Group(); g.position.set(x, .7, z); g.rotation.y = rr(0, 3); world.add(g); for (const [rx, rz] of [[.8, 0], [-.8, 0], [0, .8]]) { const m = mesh(BOX(.22, 1.9, .22), dark, 0, 0, 0, g); m.rotation.set(rx, 0, rz); } addCol(x, z, 1.4, 1.4, null, { topY: 1.3 }); }
-  // 포탄 구덩이 (진흙 늪: 느려진다) + 둘레 흙더미
-  L.mud = [];
-  for (let k = 0; k < 26; k++) { const [x, z] = spot(16), rad = rr(3, 7); const m = new THREE.Mesh(new THREE.CircleGeometry(rad, 24), MAT.col(0x2f2619, .4)); m.rotation.x = -Math.PI / 2; m.position.set(x, .066, z); world.add(m); const rim = new THREE.Mesh(new THREE.TorusGeometry(rad, .35, 6, 24), MAT.col(0x6b5a40, .95)); rim.rotation.x = -Math.PI / 2; rim.position.set(x, .1, z); world.add(rim); L.mud.push({ x, z, r: rad }); }
-  // 무너진 마을: 반쯤 남은 벽돌 벽·창문 구멍·잔해
-  for (let k = 0; k < 14; k++) {
-    const [x, z] = spot(26, 14), w = rr(8, 14), d = rr(7, 11);
-    const walls = [[x, z - d / 2, w, .6], [x, z + d / 2, w, .6], [x - w / 2, z, .6, d], [x + w / 2, z, .6, d]];
-    for (const [wx, wz, ww, wd] of walls) { if (Math.random() < .3) continue; const h = rr(1.5, 5.5); bx(wx, 0, wz, ww * rr(.4, 1), h, wd * (ww < 1 ? rr(.4, 1) : 1), brick); if (h > 3 && Math.random() < .6) mesh(BOX(ww < 1 ? .7 : 1.2, 1, ww < 1 ? 1.2 : .7), dark, wx, h - 1.6, wz).castShadow = false; }
-    for (let t = 0; t < 6; t++) bx(x + rr(-w / 2, w / 2), 0, z + rr(-d / 2, d / 2), rr(.6, 1.6), rr(.3, .8), rr(.6, 1.6), pick([brick, conc, 0x6b4a3a]));
-    if (Math.random() < .5) sign(pick(['🏚 무너진 마을', '🏚 폭격 맞은 농가', '⛪ 부서진 교회']), x, 6.5, z, .5, 'rgba(60,50,40,.9)');
+  // 블록 한 칸을 네 면 연립주택으로 채운다 (각 면에 골목 틈을 하나 이상 남겨 안뜰로 드나들 수 있게)
+  function terraceBlock(bx0, bz0, ruin) {
+    for (const [nx, nz] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
+      const ux = nz ? 1 : 0, uz = nz ? 0 : 1, d = rr(7, 9), lim = nz ? B : B - 9, slots = [];
+      for (let t = -lim; t < lim - 3;) { const w = rr(4.6, 6.2); if (t + w > lim) break; slots.push([t + w / 2, w]); t += w + .02; }
+      const gap = Math.floor(Math.random() * slots.length), h0 = rr(6.5, 9.5), col = pick(BRICK);
+      slots.forEach(([t, w], i) => { if (i === gap || Math.random() < .1) return; house(bx0 + nx * (B - d / 2) + ux * t, bz0 + nz * (B - d / 2) + uz * t, ux, uz, nx, nz, w, d, h0 + (Math.random() < .2 ? 2.6 : 0), Math.random() < .15 ? STUCCO : col, Math.random() < (ruin ? .7 : .28)); });
+    }
+    // 안뜰: 잔해·상자·빨랫줄 기둥
+    for (let k = 0; k < 6; k++) pb(bx0 + rr(-4, 4), 0, bz0 + rr(-4, 4), rr(.6, 1.6), rr(.3, .9), rr(.6, 1.6), pick([SOOT, 0x8c8a82, 0x6e3d30]));
   }
-  // 부서진 전차·트럭 (표식 없는 국방색, 비스듬히)
-  for (let k = 0; k < 10; k++) {
-    const [x, z] = spot(22, 10), g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.set(rr(-.08, .08), rr(0, 6.28), rr(-.12, .12)); world.add(g);
-    if (Math.random() < .65) { mesh(BOX(6.4, 1.4, 3.4), olive, 0, 1, 0, g); mesh(BOX(6.6, .9, .9), dark, 0, .55, 1.6, g); mesh(BOX(6.6, .9, .9), dark, 0, .55, -1.6, g); const tur = new THREE.Group(); tur.position.set(-.4, 2, 0); tur.rotation.y = rr(-1, 1); g.add(tur); mesh(BOX(2.6, 1, 2.4), olive, 0, 0, 0, tur); mesh(BOX(3.4, .25, .25), dark, 2.6, .1, 0, tur); addCol(x, z, 6, 6, null, { topY: 2.6 }); }
-    else { mesh(BOX(5.6, 1.6, 2.2), olive, -.4, 1.2, 0, g); mesh(BOX(1.8, 1.8, 2.2), olive, 2.6, 1.3, 0, g); for (const sx of [-2, 0, 2.6]) for (const sz of [-1.1, 1.1]) mesh(BOX(.9, .9, .35), dark, sx, .45, sz, g); addCol(x, z, 6, 6, null, { topY: 2.4 }); }
-    L.fires = L.fires || []; L.fires.push([x, z]);
+  const special = { '-40,-40': 'church', '40,-80': 'factory', '-80,40': 'park', '80,40': 'park', '40,40': 'shelter', '-80,-80': 'factory' };
+  for (const bx0 of BLOCKS) for (const bz0 of BLOCKS) {
+    if (bx0 === 0 && bz0 === 0) continue;
+    const kind = special[bx0 + ',' + bz0] || (Math.random() < .25 ? 'ruin' : 'terrace');
+    if (kind === 'terrace' || kind === 'ruin') terraceBlock(bx0, bz0, kind === 'ruin');
+    else if (kind === 'church') {
+      // 무너진 성당: 긴 본당 + 높은 종탑과 첨탑 (한쪽 벽이 뚫림)
+      pbc(bx0, 0, bz0 + 2, 11, 9, 20, 0x8f8a7e); pb(bx0, 9, bz0 + 2, 11.4, .5, 20.4, SLATE); pb(bx0, 9.5, bz0 + 2, 4, 1.6, 20.4, SLATE);
+      for (const sd of [-1, 1]) for (let z = -5; z <= 9; z += 4.5) pb(bx0 + sd * 5.55, 3, bz0 + z, .1, 3.6, 1.3, WIN);
+      pbc(bx0, 0, bz0 - 11, 5.5, 22, 5.5, 0x857f72); pb(bx0, 15, bz0 - 13.8, 1.6, 2.4, .1, 0xe8e2d0);
+      const sp1 = new THREE.Mesh(new THREE.ConeGeometry(3.2, 9, 4), LMC(SLATE)); sp1.position.set(bx0, 26.5, bz0 - 11); sp1.rotation.y = Math.PI / 4; world.add(sp1);
+      for (let k = 0; k < 10; k++) pb(bx0 + rr(-9, 9), 0, bz0 + rr(-10, 12), rr(.8, 2), rr(.3, 1.1), rr(.8, 2), pick([0x8f8a7e, SOOT]));
+      sign('⛪ 무너진 성당', bx0, 11.5, bz0 + 13, .6, 'rgba(60,50,40,.9)');
+    } else if (kind === 'factory') {
+      // 공장: 톱니 지붕 창고 + 높은 벽돌 굴뚝
+      pbc(bx0 - 2, 0, bz0, 20, 8, 18, 0x6e4a3a); for (let z = -7; z <= 7; z += 3.5) pb(bx0 - 2, 8, bz0 + z, 20.4, 1.6, 1.6, SLATE);
+      for (let x = -10; x <= 6; x += 4) pb(bx0 + x, 2.5, bz0 - 9.05, 2.4, 2.2, .1, WIN);
+      pbc(bx0 + 10, 0, bz0 + 8, 2.6, 24, 2.6, 0x7a4434); pb(bx0 + 10, 24, bz0 + 8, 3.2, .8, 3.2, SOOT); L.fires.push([bx0 + 10, bz0 + 8, 24.5]);
+      for (let k = 0; k < 8; k++) pb(bx0 + rr(-11, 11), 0, bz0 + rr(10, 12.5), 1.2, 1.2, 1.2, 0x5d5230);
+      sign('🏭 폭격 맞은 공장', bx0 - 2, 10.5, bz0 - 9, .6, 'rgba(60,50,40,.9)');
+    } else if (kind === 'park') {
+      // 공원: 생울타리·불탄 나무·포탄 구덩이·모래주머니 대공포 진지
+      floorPlaneW(26, 26, MAT.col(0x4a5a36, .97), bx0, bz0, .045);
+      for (const [nx, nz] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) for (let t = -12; t < 12; t += 4) if (Math.random() < .7) pbc(bx0 + nx * 12.5 + (nz ? t + 1.6 : 0), 0, bz0 + nz * 12.5 + (nx ? t + 1.6 : 0), nz ? 3.2 : .8, .9, nx ? 3.2 : .8, 0x2f4a26);
+      for (let k = 0; k < 7; k++) { const x = bx0 + rr(-9, 9), z = bz0 + rr(-9, 9); pbc(x, 0, z, .45, rr(3, 6), .45, 0x2a241c); pb(x + .6, 2.6, z, 1.2, .2, .2, 0x2a241c); }
+      for (let a = 0; a < 6.28; a += .5) pbc(bx0 + Math.cos(a) * 3.4, 0, bz0 + Math.sin(a) * 3.4, 1.3, 1.1, 1.3, 0x9c8a62);
+      const gun = new THREE.Group(); gun.position.set(bx0, 1, bz0); world.add(gun); mesh(BOX(1.6, 1, 1.6), LMC(0x4a5236), 0, 0, 0, gun); const bar = mesh(BOX(.25, .25, 4), LMC(0x2b2b28), 0, 1.2, 1.4, gun); bar.rotation.x = -.7;
+      envAnim.push(() => { gun.rotation.y = Math.sin(time * .4 + bx0) * 1.2; });
+      sign('🛡 공원 대공포 진지', bx0, 4.5, bz0, .55, 'rgba(60,50,40,.9)');
+    } else if (kind === 'shelter') {
+      // 지하 대피소 입구 + 모래주머니
+      terraceBlock(bx0, bz0, false);
+      pbc(bx0, 0, bz0, 7, 2.6, 5, 0x8c8a82); pb(bx0, 0, bz0 + 2.55, 2.4, 2, .1, WIN);
+      for (let x = -4; x <= 4; x += 1.3) pb(bx0 + x, 0, bz0 + 4, 1.2, .9, .9, 0x9c8a62);
+      sign('🚇 지하 대피소', bx0, 4, bz0, .55, 'rgba(60,50,40,.9)');
+    }
   }
-  // 콘크리트 벙커 (총구 틈)
-  for (let k = 0; k < 6; k++) { const [x, z] = spot(28, 12); bx(x, 0, z, 7, 2.6, 6, conc); mesh(BOX(4, .4, .3), dark, x, 1.8, z + 3.05).castShadow = false; mesh(BOX(7.6, .4, 6.6), LMC(0x7a786f), x, 2.8, z); sign('🪖 벙커', x, 4, z, .45, 'rgba(60,50,40,.9)'); }
-  // 탄약 상자·드럼통·전봇대·불탄 나무
-  for (let k = 0; k < 40; k++) { const [x, z] = spot(12); if (Math.random() < .5) bx(x, 0, z, 1.2, .7, .8, 0x5d5230); else { mesh(new THREE.CylinderGeometry(.45, .45, 1.2, 10), rust, x, .6, z); addCol(x, z, .9, .9, null, { topY: 1.2 }); } }
-  for (let k = 0; k < 30; k++) { const [x, z] = spot(12); bx(x, 0, z, .45, rr(3, 6), .45, 0x2a241c); }
-  for (let k = 0; k < 8; k++) { const [x, z] = spot(14); bx(x, 0, z, .3, 7, .3, 0x4a3a2a); mesh(BOX(2.4, .15, .15), LMC(0x4a3a2a), x, 6.5, z).castShadow = false; }
-  // 불기둥 함정 (불붙은 기름 웅덩이: 빨갛게 깜빡이면 곧 불기둥)
-  L.vents = [];
-  for (let k = 0; k < 40; k++) { const [x, z] = spot(14); const m = new THREE.Mesh(new THREE.CircleGeometry(1.6, 16), new THREE.MeshBasicMaterial({ color: 0x401010, toneMapped: false })); m.rotation.x = -Math.PI / 2; m.position.set(x, .07, z); world.add(m); L.vents.push({ x, z, m, t: rr(0, 8), per: rr(5, 9) }); }
-  // 타는 잔해 불길·검은 연기, 멀리서 들리는 포성·섬광
-  for (let k = 0; k < 10; k++) { const [x, z] = spot(14); L.fires = L.fires || []; L.fires.push([x, z]); bx(x, 0, z, 1.6, .4, 1.6, 0x2a241c); }
+  // 가운데 광장: 돌바닥 + 젖소가 솟아나는 폭격 분화구
+  floorPlaneW(28, 28, MAT.col(0x9a948a, .9), 0, 0, .045);
+  for (const [x, z] of [[-11, -11], [11, -11], [-11, 11], [11, 11]]) { pbc(x, 0, z, 1.4, 1, 1.4, 0x8f8a7e); pb(x, 1, z, .5, 2.4, .5, 0x8f8a7e); }
+  // 거리: 가로등·빨간 전화부스·우체통
+  for (const a of STREETS) for (let t = -HX + 6; t < HX - 4; t += 16) for (const [x, z] of [[t, a + SW / 2 + 1.2], [a + SW / 2 + 1.2, t]]) { if (!free(x, z, .8)) continue; pb(x, 0, z, .22, 4.4, .22, 0x23382c); pb(x, 4.4, z, .6, .5, .6, 0x23382c); }
+  for (let k = 0; k < 14; k++) { const [x, z] = [pick(STREETS) + pick([-1, 1]) * (SW / 2 + 1.3), pick(BLOCKS) + rr(-10, 10)]; const sw = Math.random() < .5; const X = sw ? z : x, Z = sw ? x : z; if (!free(X, Z, 1)) continue; if (Math.random() < .6) { pbc(X, 0, Z, 1.1, 2.6, 1.1, 0xb51f24); pb(X, 2.6, Z, 1.2, .25, 1.2, 0xb51f24); pb(X, 1, Z, 1.14, 1.3, .9, 0x2a3036); } else { pbc(X, 0, Z, .6, 1.3, .6, 0xb51f24); pb(X, 1.3, Z, .7, .15, .7, 0x1a1a1a); } }
+  // 거리 바리케이드: 모래주머니 줄 (가운데에 지나갈 틈)
+  for (let k = 0; k < 16; k++) { const a = pick(STREETS), t = pick(BLOCKS) + rr(-8, 8), vert = Math.random() < .5; for (let u = -SW / 2 + .6; u < SW / 2; u += 1.2) { if (Math.abs(u) < 1.6) continue; const x = vert ? a + u : t, z = vert ? t : a + u; if (free(x, z, .4)) pbc(x, 0, z, 1.2, 1.1, 1, 0x9c8a62); } }
+  // 대전차 장애물 · 잔해 더미 · 탄약 상자 · 드럼통
+  for (let k = 0; k < 30; k++) { const p = streetSpot(2); if (!p) continue; const [x, z] = p, g = new THREE.Group(); g.position.set(x, .7, z); g.rotation.y = rr(0, 3); world.add(g); for (const [rx, rz] of [[.8, 0], [-.8, 0], [0, .8]]) { const m = mesh(BOX(.22, 1.9, .22), LMC(0x2b2b28), 0, 0, 0, g); m.rotation.set(rx, 0, rz); } addCol(x, z, 1.4, 1.4, null, { topY: 1.3 }); }
+  for (let k = 0; k < 45; k++) { const p = streetSpot(1.5); if (!p) continue; const [x, z] = p, c = pick([SOOT, 0x8c8a82, 0x7a4434]); pbc(x, 0, z, rr(1.2, 2.4), rr(.5, 1), rr(1.2, 2.4), c); pb(x + rr(-.4, .4), .7, z + rr(-.4, .4), rr(.6, 1.2), rr(.4, .8), rr(.6, 1.2), c); }
+  for (let k = 0; k < 24; k++) { const p = streetSpot(1.2); if (!p) continue; const [x, z] = p; if (Math.random() < .5) pbc(x, 0, z, 1.2, .7, .8, 0x5d5230); else { mesh(new THREE.CylinderGeometry(.45, .45, 1.2, 10), LMC(0x5a3b28), x, .6, z); addCol(x, z, .9, .9, null, { topY: 1.2 }); } }
+  // 철조망 (거리를 가로지르는 낮은 말뚝 + 줄)
+  for (let k = 0; k < 10; k++) { const p = streetSpot(3); if (!p) continue; const [x, z] = p, len = rr(5, 8), rot = Math.random() < .5; for (let t = 0; t <= len; t += 2) pb(rot ? x : x - len / 2 + t, 0, rot ? z - len / 2 + t : z, .12, 1.1, .12, 0x5a3b28); for (const y of [.35, .7, 1]) pb(x, y, z, rot ? .05 : len, .04, rot ? len : .05, 0x2b2b28); addCol(x, z, rot ? .5 : len, rot ? len : .5, null, { topY: 1.1 }); }
+  // 2층 버스 잔해 (빨간색, 표식 없음)·뒤집힌 자동차 — 불타는 중
+  for (let k = 0; k < 4; k++) { const p = streetSpot(5); if (!p) continue; const [x, z] = p, g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.set(0, pick([0, Math.PI / 2]) + rr(-.4, .4), rr(-.1, .1)); world.add(g); const red = LMC(0x9e1c1c); mesh(BOX(9, 2.2, 2.5), red, 0, 1.4, 0, g); mesh(BOX(9, 2, 2.5), red, 0, 3.6, 0, g); for (const y of [1.9, 4]) mesh(BOX(9.05, .8, 2.3), LMC(WIN), 0, y, 0, g); mesh(BOX(9.1, .3, 2.6), LMC(SOOT), 0, 4.75, 0, g); for (const sx of [-3, 3]) for (const sz of [-1.2, 1.2]) mesh(BOX(1, 1, .35), LMC(0x1a1a1a), sx, .5, sz, g); addCol(x, z, 7, 7, null, { topY: 4.8 }); L.fires.push([x, z, 5]); }
+  for (let k = 0; k < 9; k++) { const p = streetSpot(3); if (!p) continue; const [x, z] = p, g = new THREE.Group(); g.position.set(x, .9, z); g.rotation.set(Math.random() < .4 ? Math.PI : rr(-.3, .3), rr(0, 6.28), rr(-.2, .2)); world.add(g); const c = LMC(pick([0x2c2f33, 0x3d4a3a, 0x4a3a2c, 0x1f2a3a])); mesh(BOX(4.2, .9, 1.8), c, 0, 0, 0, g); mesh(BOX(2.2, .7, 1.7), c, -.2, .8, 0, g); mesh(BOX(2.25, .5, 1.75), LMC(WIN), -.2, .85, 0, g); addCol(x, z, 4, 4, null, { topY: 1.8 }); if (Math.random() < .5) L.fires.push([x, z, 1.5]); }
+  // 포탄 구덩이 (진흙: 느려진다)
+  for (let k = 0; k < 22; k++) { const p = Math.random() < .7 ? streetSpot(3) : [rr(-HX + 8, HX - 8), rr(-HZ + 8, HZ - 20)]; if (!p || !free(p[0], p[1], 2)) continue; const [x, z] = p, rad = rr(2.5, 4.5); const m = new THREE.Mesh(new THREE.CircleGeometry(rad, 24), MAT.col(0x2f2619, .4)); m.rotation.x = -Math.PI / 2; m.position.set(x, .066, z); world.add(m); const rim = new THREE.Mesh(new THREE.TorusGeometry(rad, .3, 6, 24), MAT.col(0x5e5446, .95)); rim.rotation.x = -Math.PI / 2; rim.position.set(x, .1, z); world.add(rim); L.mud.push({ x, z, r: rad }); }
+  // 불붙은 기름 웅덩이 (빨갛게 깜빡이면 곧 불기둥)
+  for (let k = 0; k < 36; k++) { const p = streetSpot(2); if (!p) continue; const [x, z] = p; const m = new THREE.Mesh(new THREE.CircleGeometry(1.6, 16), new THREE.MeshBasicMaterial({ color: 0x401010, toneMapped: false })); m.rotation.x = -Math.PI / 2; m.position.set(x, .07, z); world.add(m); L.vents.push({ x, z, m, t: rr(0, 8), per: rr(5, 9) }); }
+  // 불타는 집 몇 채 (지붕 위로 불길·연기)
+  for (let k = 0; k < 10; k++) L.fires.push([pick(BLOCKS) + rr(-11, 11), pick(BLOCKS) + rr(-11, 11), rr(3, 8)]);
+  flush();
+  // 하늘: 방공 기구(풍선)·탐조등
+  const balloons = [];
+  for (let k = 0; k < 7; k++) { const g = new THREE.Group(); g.position.set(rr(-HX, HX), rr(32, 44), rr(-HZ, HZ - 30)); world.add(g); const b = new THREE.Mesh(new THREE.SphereGeometry(2.2, 14, 10), LMC(0x8d9096)); b.scale.set(1, 1, 2); g.add(b); for (const [rx, rz] of [[0, 1], [1, 0], [-1, 0]]) mesh(BOX(rx ? .1 : 1.6, rx ? 1.6 : .1, 1.4), LMC(0x7c8086), rx * 1.2, rz * 1.2, -4, g); balloons.push(g); }
+  const lights = [];
+  for (const [x, z] of [[-60, -100], [60, -100], [-100, 0], [100, 20]]) { const g = new THREE.Group(); g.position.set(x, .5, z); world.add(g); const beam = new THREE.Mesh(new THREE.CylinderGeometry(2.4, .3, 70, 12, 1, true), new THREE.MeshBasicMaterial({ color: 0xfff6d0, transparent: true, opacity: .1, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, toneMapped: false })); beam.position.y = 35; g.add(beam); lights.push(g); }
+  // 타는 불길·검은 연기, 멀리서 들리는 포성·섬광, 기구가 흔들리고 탐조등이 하늘을 훑는다
   let boomT = 3;
   envAnim.push(dt => {
-    for (const [x, z] of L.fires || []) { if (Math.abs(x - dog.x) > 45 || Math.abs(z - dog.z) > 45) continue; if (Math.random() < .5) spawnP(x + mr(-.6, .6), 1.2, z + mr(-.6, .6), mr(-.3, .3), mr(2, 4), mr(-.3, .3), Math.random() < .5 ? new THREE.Color(0xff7a00) : RED, .5); if (Math.random() < .25) spawnP(x, 2.5, z, mr(-.4, .4), mr(1.5, 3), mr(-.4, .4), new THREE.Color(0x2a2a2a), 1.4); }
-    if ((boomT -= dt) <= 0 && state === 'play') { boomT = rr(3, 7); const a = Math.random() * 6.283, x = dog.x + Math.cos(a) * 70, z = dog.z + Math.sin(a) * 70; burst(x, 4, z, [new THREE.Color(0xffb000), new THREE.Color(0xff5000)], 30, 9); tone(50, .6, 'sawtooth', .05, -20); }
+    for (const [x, z, y = 1.2] of L.fires) { if (Math.abs(x - dog.x) > 50 || Math.abs(z - dog.z) > 50) continue; if (Math.random() < .45) spawnP(x + mr(-.8, .8), y, z + mr(-.8, .8), mr(-.3, .3), mr(2, 4), mr(-.3, .3), Math.random() < .5 ? new THREE.Color(0xff7a00) : RED, .5); if (Math.random() < .25) spawnP(x, y + 1.5, z, mr(-.4, .4), mr(1.5, 3), mr(-.4, .4), new THREE.Color(0x2a2a2a), 1.6); }
+    for (const [i, g] of balloons.entries()) { g.position.y += Math.sin(time * .5 + i) * .01; g.rotation.y = Math.sin(time * .1 + i) * .5; }
+    for (const [i, g] of lights.entries()) { g.rotation.z = Math.sin(time * .3 + i * 1.7) * .5; g.rotation.x = Math.cos(time * .25 + i) * .35; }
+    if ((boomT -= dt) <= 0 && state === 'play') { boomT = rr(3, 7); const a = Math.random() * 6.283, x = dog.x + Math.cos(a) * 70, z = dog.z + Math.sin(a) * 70; burst(x, 6, z, [new THREE.Color(0xffb000), new THREE.Color(0xff5000)], 30, 9); tone(50, .6, 'sawtooth', .05, -20); }
   });
-  // 가운데: 젖소가 솟아나는 폭격 분화구
-  { const ring = new THREE.Mesh(new THREE.RingGeometry(9, 10, 48), new THREE.MeshBasicMaterial({ color: 0xff2a2a, transparent: true, opacity: .6, toneMapped: false })); ring.rotation.x = -Math.PI / 2; ring.position.set(0, .06, 0); world.add(ring); envAnim.push(() => { ring.material.opacity = .35 + Math.abs(Math.sin(time * 1.5)) * .4; }); sign('🐄 젖소가 솟아나는 분화구', 0, 3, 0, .7, 'rgba(120,10,10,.92)'); }
-  sign('⚠ 카우존 전쟁터 — 클리어 없음 · 오래 버티기!', 0, 3.4, HZ - 14, .7, 'rgba(120,10,10,.92)');
+  { const ring = new THREE.Mesh(new THREE.RingGeometry(9, 10, 48), new THREE.MeshBasicMaterial({ color: 0xff2a2a, transparent: true, opacity: .6, toneMapped: false })); ring.rotation.x = -Math.PI / 2; ring.position.set(0, .07, 0); world.add(ring); envAnim.push(() => { ring.material.opacity = .35 + Math.abs(Math.sin(time * 1.5)) * .4; }); sign('🐄 젖소가 솟아나는 광장 분화구', 0, 3, 0, .7, 'rgba(120,10,10,.92)'); }
+  sign('⚠ 카우존 · 폭격 맞은 옛 도시 거리 — 클리어 없음 · 오래 버티기!', 0, 3.4, HZ - 12, .7, 'rgba(120,10,10,.92)');
 }
 // 젖소 모양으로 바꾸기: 사람 머리를 숨기고 소머리·뿔·얼룩·창을 단다
 function cowify(p, boss) {
@@ -7377,21 +7448,15 @@ for (const b of document.querySelectorAll('#topbar button:not(#tbMenu)')) b.addE
 { let tapT = 0;
   // 터치 탭이 click으로 이어지지 않는 기기(전체화면 전환·화면 갱신 중 탭 유실)를 위해 손을 뗄 때 바로 누른다 — 상단바와 클리어·승리 화면 버튼
   const TAP = '#topbar button, #mmFold, #mmToggle, #mmwrap, #clear button, #win button';
-  let down = null, tapEl = null;
+  let down = null;
   document.addEventListener('pointerdown', e => {
     // 메뉴·지도 버튼은 손가락이 닿는 순간 누른다: iOS가 터치를 취소(pointercancel)해도 놓치지 않게
     const quick = e.pointerType === 'touch' && e.target.closest && !e.target.closest('#info') && e.target.closest('#topbar button, #mmFold, #mmToggle, #mmwrap');
-    if (quick) { e.preventDefault(); e.stopPropagation(); down = null; tapT = performance.now(); tapEl = quick; quick.click(); return; }
-    tapEl = null;
+    if (quick) { e.preventDefault(); e.stopPropagation(); down = null; tapT = performance.now(); quick.click(); return; }
     down = e.pointerType === 'touch' ? { x: e.clientX, y: e.clientY, b: e.target.closest && e.target.closest(TAP) } : null;
   }, true);
-  document.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') return; const b = e.target.closest && e.target.closest(TAP); if (!b || b.disabled || !down || down.b !== b || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 14) return; e.preventDefault(); tapT = performance.now(); tapEl = b; b.click(); }, true);
-  document.addEventListener('click', e => {
-    if (!e.isTrusted) return;
-    // 손가락으로 이미 누른 버튼(또는 그 버튼이 사라진 자리)에 늦게 도착한 click은 버린다
-    if (tapEl && (performance.now() - tapT < 2500) && (tapEl.contains(e.target) || !tapEl.isConnected || !tapEl.offsetParent)) { tapEl = null; e.stopPropagation(); e.preventDefault(); return; }
-    if (performance.now() - tapT < 600 && e.target.closest && e.target.closest(TAP)) { e.stopPropagation(); e.preventDefault(); }
-  }, true); }
+  document.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') return; const b = e.target.closest && e.target.closest(TAP); if (!b || b.disabled || !down || down.b !== b || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 14) return; e.preventDefault(); tapT = performance.now(); b.click(); }, true);
+  document.addEventListener('click', e => { if (e.isTrusted && performance.now() - tapT < 600 && e.target.closest && e.target.closest(TAP)) { e.stopPropagation(); e.preventDefault(); } }, true); }
 // 랭킹은 늘 최신으로: 화면에 보이는 랭킹을 15초마다·새 사람이 들어올 때 새로 받아온다
 async function refreshRanks() {
   try {
@@ -7514,7 +7579,7 @@ function updateHelpItems(dt) {
     h.g.position.y = .55 + Math.sin(time * 3 + h.x) * .15; h.g.rotation.y += dt * 2;
     if (Math.hypot(h.x - dog.x, h.z - dog.z) < 1.1 && dog.y < 1.5) {
       h.got = true; world.remove(h.g); SFX.found(); burst(h.x, .8, h.z, [new THREE.Color(HELP_KINDS[h.kind].col), WHITE], 25, 3);
-      useNow(h.kind);
+      if (level.cow) useNow(h.kind); else bagAdd(h.kind);
     }
   }
   dog.noseT = Math.max(0, (dog.noseT || 0) - dt); dog.boneT = Math.max(0, (dog.boneT || 0) - dt); dog.autoSniffT = Math.max(0, (dog.autoSniffT || 0) - dt); dog.staT = Math.max(0, (dog.staT || 0) - dt); dog.magT = Math.max(0, (dog.magT || 0) - dt);
@@ -7542,40 +7607,28 @@ function bagAdd(kind) {
 }
 // 하트 최대치: 카우존은 생명력 스킬만큼 더 높다
 const hpCap = () => Math.min(7, (DIFFS[level.dm || 'normal'].hpMax || 7) + (level.cow ? Math.floor((cowUp.heart || 0) / 2) : 0));
-const bagHpFull = () => !!(level && dog && dog.hp >= hpCap());
-const bagBlocked = k => (k === 'heal' || k === 'ball') && bagHpFull() && !level.cow;
 function renderBag() {
-  const ks = Object.keys(bag).filter(k => bag[k] > 0).sort((a, b) => bagBlocked(a) - bagBlocked(b)), n = ks.reduce((a, k) => a + bag[k], 0);
+  const ks = Object.keys(bag).filter(k => bag[k] > 0), n = ks.reduce((a, k) => a + bag[k], 0);
   $('bagN').textContent = n; $('bagN').classList.toggle('zero', !n);
-  $('bagList').innerHTML = ks.length ? ks.map(k => '<button type="button" data-k="' + k + '"' + (bagBlocked(k) ? ' class="full"' : '') + '><i>' + HELP_KINDS[k].emoji + '</i>' + HELP_KINDS[k].name + (bagBlocked(k) ? '<small>하트 가득</small>' : '') + '<em>×' + bag[k] + '</em></button>').join('') : '<div class="bagEmpty">아직 비어 있어요. 맵에서 아이템을 주워 보세요!</div>';
+  $('bagList').innerHTML = ks.length ? ks.map(k => '<button type="button" data-k="' + k + '"><i>' + HELP_KINDS[k].emoji + '</i>' + HELP_KINDS[k].name + '<em>×' + bag[k] + '</em></button>').join('') : '<div class="bagEmpty">아직 비어 있어요. 맵에서 아이템을 주워 보세요!</div>';
 }
 function useHelp(kind) {
   if (!bag[kind]) return;
-  if (state !== 'play' && state !== 'cowlv') { toastNow('🎒 지금은 쓸 수 없어요. 열린 창을 닫고 다시 눌러 주세요'); return; }
+  if (state !== 'play') { toastNow('🎒 지금은 쓸 수 없어요. 열린 창을 닫고 다시 눌러 주세요'); return; }
   const q0 = toastQ.length;
   useHelp0(kind);
   if (toastQ.length > q0) { const fresh = toastQ.splice(q0); toastQ.unshift(...fresh); toastT = 0; } // 아이템 안내를 맨 앞으로
 }
 function toastNow(msg) { toastQ.unshift(trK(msg)); toastT = 0; }
 function useHelp0(kind) {
-  const hpMax = hpCap();
-  if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax && level.cow) {
-    bag[kind]--; renderBag(); saveBag(); SFX.found(); $('bagBox').classList.remove('open');
-    dog.shield = Math.min(2, (dog.shield || 0) + 1); floatText('🛡 하트 가득 → 보호막!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#9fd3ff' });
-    toastNow('🛡 하트가 꽉 차서 방탄 보호막으로 바꿨어요! 창 한 번을 막아 줘요'); return;
-  }
-  if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax) {
-    toastNow('❤️ 하트가 꽉 찼어요! 하트가 줄었을 때 쓰세요'); floatText('❤️ 하트 가득!', dog.x, dog.y + 2.6, dog.z, { h: .5, color: '#ff8a80' });
-    const b = document.querySelector('#bagList button[data-k="' + kind + '"]'); if (b) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); }
-    return;
-  }
+  const hpMax = Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7);
+  if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax) { toast('❤️ 하트가 꽉 찼어요! 하트가 줄었을 때 쓰세요'); return; }
   bag[kind]--; renderBag(); saveBag(); SFX.found(); $('bagBox').classList.remove('open');
   floatText(HELP_KINDS[kind].emoji + ' ' + HELP_KINDS[kind].name + ' 사용!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#ffe08a' }); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(HELP_KINDS[kind].col), WHITE], 25, 3);
   if (kind === 'ball') { dog.hp = Math.min(hpMax, dog.hp + 1); dog.boost = 6; floatText('🎾 ❤️ +1', dog.x, dog.y + 2, dog.z, { h: .55, color: '#ff8a80' }); toast('🎾 하트 공! 하트 +1, 잠깐 빨라져요'); return; }
   applyHelp(kind);
 }
-let bagFlipT = 0;
-$('bagBtn').addEventListener('click', e => { e.stopPropagation(); if (performance.now() - bagFlipT < 350) return; bagFlipT = performance.now(); $('bagBox').classList.toggle('open'); renderBag(); });
+$('bagBtn').addEventListener('click', e => { e.stopPropagation(); $('bagBox').classList.toggle('open'); renderBag(); });
 $('bagList').addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) { e.stopPropagation(); useHelp(b.dataset.k); } });
 addEventListener('keydown', e => { if (e.repeat || e.target.tagName === 'INPUT' || state !== 'play') return; if (e.code === 'KeyB') { $('bagBox').classList.toggle('open'); renderBag(); } else if ($('bagBox').classList.contains('open') && /^Digit[1-9]$/.test(e.code)) { const k = Object.keys(bag).filter(q => bag[q] > 0)[+e.code.slice(5) - 1]; if (k) useHelp(k); } });
 renderBag();
