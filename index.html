@@ -417,7 +417,7 @@ body.touch #topbar>#tbAuto,body.touch #topbar>#tbCoin{position:fixed;top:calc(6p
 #bagPanel{display:none;margin-top:4px;background:rgba(255,253,246,.97);border:3px solid #1b2b3c;border-radius:14px;padding:6px;width:min(330px,64vw);max-height:calc(100dvh - 70px);overflow:auto;box-shadow:0 4px 0 rgba(0,0,0,.25)}#bagBox.open #bagPanel{display:block}
 .bagHead{font-family:Jua,sans-serif;font-size:15px;color:var(--navy);margin:0 2px 5px}.bagHead small{font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--muted);margin-left:4px}
 #bagList{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}#bagList button{position:relative;display:flex!important;flex-direction:column;align-items:center;gap:1px;padding:4px 2px;border:2px solid #1b2b3c;border-radius:10px;background:#fff;font:inherit;font-size:11px;line-height:1.15;color:var(--ink);cursor:pointer;width:auto!important;height:auto!important}
-#bagList button i{font-style:normal;font-size:18px}#bagList button{font-size:10.5px!important;word-break:keep-all}#bagList button em{position:absolute;right:3px;top:2px;font-style:normal;font-weight:800;font-size:11px;color:#c0392b}#bagList .bagEmpty{grid-column:1/-1;font-size:12px;color:var(--muted);text-align:center;padding:6px}
+#bagList button i{font-style:normal;font-size:18px}#bagList button.full{opacity:.5;background:#eee}#bagList button small{font-size:9px;color:#c0392b;line-height:1}#bagList button.nope{animation:bagNope .35s}@keyframes bagNope{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}#bagList button{font-size:10.5px!important;word-break:keep-all}#bagList button em{position:absolute;right:3px;top:2px;font-style:normal;font-weight:800;font-size:11px;color:#c0392b}#bagList .bagEmpty{grid-column:1/-1;font-size:12px;color:var(--muted);text-align:center;padding:6px}
 #autoList{display:none;flex-direction:column;gap:4px}#autoBox.open #autoList{display:flex}
 #topbar #autoList button{width:auto!important;height:auto!important;padding:7px 14px!important;font-size:14px!important;text-align:left;white-space:nowrap;font-family:Jua,sans-serif}
 :is(#tbAuto,#tbCoin,#tbItem,#tbAutoMenu).on{background:#f4c542!important;box-shadow:0 0 0 2px #fff,0 0 12px #ffd23f}
@@ -704,7 +704,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-0009';
+const BUILD = '20261101-0019';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1471,7 +1471,8 @@ const UPG = [
 ];
 // 카우존 전용 스킬 레벨 (최대 20). 카우존에서는 상점 업그레이드 대신 이 레벨을 쓴다
 const COW_MAX = 20;
-const cowUp = (() => { const o = store.get('k9cowup', {}) || {}; for (const [k] of UPG) o[k] = Math.max(0, Math.min(COW_MAX, o[k] | 0)); return o; })();
+// 카우존 스킬은 판마다 Lv1에서 시작해 그 판 안에서만 Lv20까지 오른다
+const cowUp = Object.fromEntries(UPG.map(([k]) => [k, 1]));
 const UPL = () => (typeof level !== 'undefined' && level && level.cow) ? cowUp : wallet.up;
 function setDog(breed, name) {
   dogBreed = BREEDS[breed] ? breed : 'labrador'; dogName = name;
@@ -1598,7 +1599,7 @@ function makeBone() {
 function throwBone() {
   if (handler.boneCd > 0) return;
   const lv = UPL().bone || 0;
-  handler.boneCd = (1.0 / 1.07) * (1 - .05 * lv) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1); handler.throwT = .3;
+  handler.boneCd = (1.0 / 1.07) * (1 - .05 * lv) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1) / cowAutoK(); handler.throwT = .3;
   // 탐지견이 바라보는 방향으로 던진다 (자동 조준 없음). 연사 레벨만큼(최대 Lv5) 뼈다귀가 늘어 부채꼴로 퍼진다
   // 뼈다귀 가방(🦴)이 켜져 있으면 사방으로 둥글게 날린다
   const ring = dog.boneT > 0, src = twoP ? handler : dog, n = ring ? 12 + 2 * Math.min(5, lv) : 1 + Math.min(5, lv), spread = ring ? Math.PI * 2 / n : .2;
@@ -5623,35 +5624,70 @@ LEVELS.push((() => { const d = LMDEF({ mega: true, n: 6, name: '대한민국 통
   build(L) { megaCity(L); } }); d.diff = { stars: 7, speed: 1.5, flee: 1.5, hp: 4, bossHp: 12, sniff: 16, vehicle: 1.35 }; return d; })());
 LEVELS.push({
   cow: true, sc: 1, extras: { decor: [], items: [] }, diff: { stars: 7, speed: 1.6, flee: 1.6, hp: 3, bossHp: 15, sniff: 18, vehicle: 1 },
-  name: '카우존', icon: '🐄', w: 240, d: 240, outdoor: true, bg: 0x3a1414, music: 6,
+  name: '카우존', icon: '🐄', w: 240, d: 240, outdoor: true, bg: 0x6b6355, music: 6,
   people: {}, hide: {}, need: {}, staff: [],
   who: '카우존 경보 방송', short: '끝없는 전투! 땅에서 솟아나는 창 든 젖소와 젖소 대장 무리를 막아요. 클리어 없음 · 오래 버티기',
-  intro: '🐄 경고! 붉은 목장에 창을 든 젖소 군단이 나타났어요.\n\n· 젖소는 땅에서 계속 솟아나요 (탐지견보다 3배 강함: 체력 3배, 창 한 방에 하트 3개)\n· 👑 젖소 대장 무리가 주기적으로 몰려와요\n· 💣 폭탄이 계속 떨어지고, 🔥 불기둥 함정과 진흙 늪(느려짐)이 있어요\n· 젖소를 물리치면 경험치! 레벨업마다 카우존 전용 스킬을 Lv20까지 올려요\n\n클리어는 없어요. 얼마나 오래 버티는지 도전!',
+  intro: '🐄 경고! 포성이 끊이지 않는 옛 전쟁터에 창을 든 젖소 군단이 나타났어요.\n\n· 젖소는 땅에서 계속 솟아나요 (탐지견보다 3배 강함: 체력 3배, 창 한 방에 하트 3개)\n· 👑 젖소 대장 무리가 주기적으로 몰려와요\n· 💣 폭탄이 계속 떨어지고, 🔥 불붙은 기름 웅덩이와 포탄 구덩이(느려짐)·철조망·참호가 길을 막아요\n· 젖소를 물리치면 경험치! 레벨업마다 카우존 전용 스킬을 Lv20까지 올려요\n\n클리어는 없어요. 얼마나 오래 버티는지 도전!',
   build(L) { cowField(L); } });
-// 카우존 지형: 붉은 목장 · 건초벽 미로 · 헛간 · 진흙 늪 · 불기둥 함정 · 마른 나무 · 돌무더기
+// 카우존 지형: 2차 대전 풍 전쟁터 (참호·모래주머니·철조망·포탄 구덩이·무너진 마을·부서진 전차·대전차 장애물·벙커·불·연기)
 function cowField(L) {
   const HX = L.w / 2, HZ = L.d / 2, sp = { x: 0, z: HZ - 6 }, near = (x, z, m) => Math.hypot(x - sp.x, z - sp.z) < m; L.search = [];
-  floorPlaneW(L.w, L.d, MAT.col(0x5b3a2a, .95), 0, 0, .015);
-  for (let k = 0; k < 60; k++) floorPlaneW(rr(6, 18), rr(6, 18), MAT.col(pick([0x6b4a2a, 0x4e2f22, 0x6e5a2e]), .95), rr(-HX + 8, HX - 8), rr(-HZ + 8, HZ - 8), .02 + k * .0004);
-  // 건초벽 미로: 큰 격자 위에 벽을 듬성듬성 세워 길이 막히고 돌아가야 한다
-  const CELL = 24;
-  for (let gx = -HX + CELL; gx < HX; gx += CELL) for (let gz = -HZ + CELL; gz < HZ; gz += CELL) {
-    if (Math.random() < .5 && !near(gx, gz, 20)) bx(gx, 0, gz + CELL / 2 - 2, 1.6, 2.2, CELL - 8, 0xd8b45a);
-    if (Math.random() < .5 && !near(gx, gz, 20)) bx(gx + CELL / 2 - 2, 0, gz, CELL - 8, 2.2, 1.6, 0xd8b45a);
+  const spot = (m, pad = 6) => { for (let t = 0; t < 20; t++) { const x = rr(-HX + pad, HX - pad), z = rr(-HZ + pad, HZ - pad); if (!near(x, z, m)) return [x, z]; } return [rr(-HX + pad, HX - pad), rr(-HZ + pad, -20)]; };
+  floorPlaneW(L.w, L.d, MAT.col(0x5a5040, .97), 0, 0, .03);
+  for (let k = 0; k < 70; k++) floorPlaneW(rr(6, 20), rr(6, 20), MAT.col(pick([0x4e4636, 0x625a46, 0x3f3a2e, 0x6b6450]), .97), rr(-HX + 8, HX - 8), rr(-HZ + 8, HZ - 8), .034 + k * .0003);
+  const sand = LMC(0x9c8a62), dark = LMC(0x2b2b28), olive = LMC(0x4a5236), rust = LMC(0x5a3b28), brick = 0x8a5a44, conc = 0x8c8a82;
+  // 참호: 가로로 길게 판 도랑(어두운 바닥) + 양쪽 모래주머니 둑 (중간중간 끊겨 건너갈 수 있다)
+  for (const z0 of [-80, -40, 10, 55]) {
+    for (let x = -HX + 10; x < HX - 10; x += 16) {
+      if (Math.random() < .25 || near(x, z0, 18)) continue;
+      const len = rr(9, 13), zz = z0 + rr(-4, 4);
+      floorPlaneW(len, 3, MAT.col(0x2e2a22, .98), x, zz, .062);
+      for (const sd of [-1, 1]) { bx(x, 0, zz + sd * 2, len, .9, 1, 0x9c8a62); for (let k = 0; k < len; k += 1.1) mesh(BOX(.9, .35, .9), sand, x - len / 2 + .5 + k, 1.05, zz + sd * 2).castShadow = false; }
+    }
   }
-  // 헛간
-  for (let k = 0; k < 8; k++) { const x = rr(-HX + 20, HX - 20), z = rr(-HZ + 20, HZ - 30); if (near(x, z, 30)) continue; building(x, z, rr(10, 16), rr(8, 12), rr(5, 7), 0x8b1e1e, { sign: '🐄 버려진 헛간' }); }
-  // 마른 나무 · 돌무더기
-  for (let k = 0; k < 50; k++) { const x = rr(-HX + 4, HX - 4), z = rr(-HZ + 4, HZ - 4); if (near(x, z, 12)) continue; if (Math.random() < .5) tree(x, z, rr(.8, 1.3), 0x5a4a2a); else bx(x, 0, z, rr(1.5, 3), rr(.8, 1.6), rr(1.5, 3), 0x6b6560); }
-  // 진흙 늪 (들어가면 느려진다)
+  // 모래주머니 기관총 진지 (반원형)
+  for (let k = 0; k < 14; k++) { const [x, z] = spot(18); for (let a = -1.2; a <= 1.2; a += .4) { const px = x + Math.sin(a) * 3, pz = z + Math.cos(a) * 3; bx(px, 0, pz, 1.4, 1.1, 1, 0x9c8a62); } mesh(BOX(.15, .15, 1.6), dark, x, 1.4, z + 2.6).castShadow = false; }
+  // 철조망 (낮은 말뚝 + 가는 줄, 몸은 지나갈 수 없다)
+  for (let k = 0; k < 16; k++) { const [x, z] = spot(16), len = rr(8, 14), rot = Math.random() < .5; for (let t = 0; t <= len; t += 2) { const px = rot ? x : x - len / 2 + t, pz = rot ? z - len / 2 + t : z; mesh(BOX(.12, 1.1, .12), rust, px, .55, pz).castShadow = false; } for (const y of [.35, .7, 1]) mesh(BOX(rot ? .05 : len, .04, rot ? len : .05), dark, x, y, z).castShadow = false; addCol(x, z, rot ? .5 : len, rot ? len : .5, null, { topY: 1.1 }); }
+  // 대전차 장애물 (X자 쇠기둥)
+  for (let k = 0; k < 40; k++) { const [x, z] = spot(14); const g = new THREE.Group(); g.position.set(x, .7, z); g.rotation.y = rr(0, 3); world.add(g); for (const [rx, rz] of [[.8, 0], [-.8, 0], [0, .8]]) { const m = mesh(BOX(.22, 1.9, .22), dark, 0, 0, 0, g); m.rotation.set(rx, 0, rz); } addCol(x, z, 1.4, 1.4, null, { topY: 1.3 }); }
+  // 포탄 구덩이 (진흙 늪: 느려진다) + 둘레 흙더미
   L.mud = [];
-  for (let k = 0; k < 18; k++) { const x = rr(-HX + 10, HX - 10), z = rr(-HZ + 10, HZ - 10), rad = rr(4, 8); if (near(x, z, 16)) continue; const m = new THREE.Mesh(new THREE.CircleGeometry(rad, 24), MAT.col(0x3b2a1a, .3)); m.rotation.x = -Math.PI / 2; m.position.set(x, .04, z); world.add(m); L.mud.push({ x, z, r: rad }); }
-  // 불기둥 함정: 바닥 균열이 빨갛게 깜빡이다가 불기둥이 솟는다
+  for (let k = 0; k < 26; k++) { const [x, z] = spot(16), rad = rr(3, 7); const m = new THREE.Mesh(new THREE.CircleGeometry(rad, 24), MAT.col(0x2f2619, .4)); m.rotation.x = -Math.PI / 2; m.position.set(x, .066, z); world.add(m); const rim = new THREE.Mesh(new THREE.TorusGeometry(rad, .35, 6, 24), MAT.col(0x6b5a40, .95)); rim.rotation.x = -Math.PI / 2; rim.position.set(x, .1, z); world.add(rim); L.mud.push({ x, z, r: rad }); }
+  // 무너진 마을: 반쯤 남은 벽돌 벽·창문 구멍·잔해
+  for (let k = 0; k < 14; k++) {
+    const [x, z] = spot(26, 14), w = rr(8, 14), d = rr(7, 11);
+    const walls = [[x, z - d / 2, w, .6], [x, z + d / 2, w, .6], [x - w / 2, z, .6, d], [x + w / 2, z, .6, d]];
+    for (const [wx, wz, ww, wd] of walls) { if (Math.random() < .3) continue; const h = rr(1.5, 5.5); bx(wx, 0, wz, ww * rr(.4, 1), h, wd * (ww < 1 ? rr(.4, 1) : 1), brick); if (h > 3 && Math.random() < .6) mesh(BOX(ww < 1 ? .7 : 1.2, 1, ww < 1 ? 1.2 : .7), dark, wx, h - 1.6, wz).castShadow = false; }
+    for (let t = 0; t < 6; t++) bx(x + rr(-w / 2, w / 2), 0, z + rr(-d / 2, d / 2), rr(.6, 1.6), rr(.3, .8), rr(.6, 1.6), pick([brick, conc, 0x6b4a3a]));
+    if (Math.random() < .5) sign(pick(['🏚 무너진 마을', '🏚 폭격 맞은 농가', '⛪ 부서진 교회']), x, 6.5, z, .5, 'rgba(60,50,40,.9)');
+  }
+  // 부서진 전차·트럭 (표식 없는 국방색, 비스듬히)
+  for (let k = 0; k < 10; k++) {
+    const [x, z] = spot(22, 10), g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.set(rr(-.08, .08), rr(0, 6.28), rr(-.12, .12)); world.add(g);
+    if (Math.random() < .65) { mesh(BOX(6.4, 1.4, 3.4), olive, 0, 1, 0, g); mesh(BOX(6.6, .9, .9), dark, 0, .55, 1.6, g); mesh(BOX(6.6, .9, .9), dark, 0, .55, -1.6, g); const tur = new THREE.Group(); tur.position.set(-.4, 2, 0); tur.rotation.y = rr(-1, 1); g.add(tur); mesh(BOX(2.6, 1, 2.4), olive, 0, 0, 0, tur); mesh(BOX(3.4, .25, .25), dark, 2.6, .1, 0, tur); addCol(x, z, 6, 6, null, { topY: 2.6 }); }
+    else { mesh(BOX(5.6, 1.6, 2.2), olive, -.4, 1.2, 0, g); mesh(BOX(1.8, 1.8, 2.2), olive, 2.6, 1.3, 0, g); for (const sx of [-2, 0, 2.6]) for (const sz of [-1.1, 1.1]) mesh(BOX(.9, .9, .35), dark, sx, .45, sz, g); addCol(x, z, 6, 6, null, { topY: 2.4 }); }
+    L.fires = L.fires || []; L.fires.push([x, z]);
+  }
+  // 콘크리트 벙커 (총구 틈)
+  for (let k = 0; k < 6; k++) { const [x, z] = spot(28, 12); bx(x, 0, z, 7, 2.6, 6, conc); mesh(BOX(4, .4, .3), dark, x, 1.8, z + 3.05).castShadow = false; mesh(BOX(7.6, .4, 6.6), LMC(0x7a786f), x, 2.8, z); sign('🪖 벙커', x, 4, z, .45, 'rgba(60,50,40,.9)'); }
+  // 탄약 상자·드럼통·전봇대·불탄 나무
+  for (let k = 0; k < 40; k++) { const [x, z] = spot(12); if (Math.random() < .5) bx(x, 0, z, 1.2, .7, .8, 0x5d5230); else { mesh(new THREE.CylinderGeometry(.45, .45, 1.2, 10), rust, x, .6, z); addCol(x, z, .9, .9, null, { topY: 1.2 }); } }
+  for (let k = 0; k < 30; k++) { const [x, z] = spot(12); bx(x, 0, z, .45, rr(3, 6), .45, 0x2a241c); }
+  for (let k = 0; k < 8; k++) { const [x, z] = spot(14); bx(x, 0, z, .3, 7, .3, 0x4a3a2a); mesh(BOX(2.4, .15, .15), LMC(0x4a3a2a), x, 6.5, z).castShadow = false; }
+  // 불기둥 함정 (불붙은 기름 웅덩이: 빨갛게 깜빡이면 곧 불기둥)
   L.vents = [];
-  for (let k = 0; k < 40; k++) { const x = rr(-HX + 6, HX - 6), z = rr(-HZ + 6, HZ - 6); if (near(x, z, 14)) continue; const m = new THREE.Mesh(new THREE.CircleGeometry(1.6, 16), new THREE.MeshBasicMaterial({ color: 0x401010, toneMapped: false })); m.rotation.x = -Math.PI / 2; m.position.set(x, .05, z); world.add(m); L.vents.push({ x, z, m, t: rr(0, 8), per: rr(5, 9) }); }
-  // 가운데 붉은 원 (젖소가 솟아나는 제단)
-  { const ring = new THREE.Mesh(new THREE.RingGeometry(9, 10, 48), new THREE.MeshBasicMaterial({ color: 0xff2a2a, transparent: true, opacity: .6, toneMapped: false })); ring.rotation.x = -Math.PI / 2; ring.position.set(0, .06, 0); world.add(ring); envAnim.push(() => { ring.material.opacity = .35 + Math.abs(Math.sin(time * 1.5)) * .4; }); sign('🐄 젖소 제단', 0, 3, 0, .7, 'rgba(120,10,10,.92)'); }
-  sign('⚠ 카우존 — 클리어 없음 · 오래 버티기!', 0, 3.4, HZ - 14, .7, 'rgba(120,10,10,.92)');
+  for (let k = 0; k < 40; k++) { const [x, z] = spot(14); const m = new THREE.Mesh(new THREE.CircleGeometry(1.6, 16), new THREE.MeshBasicMaterial({ color: 0x401010, toneMapped: false })); m.rotation.x = -Math.PI / 2; m.position.set(x, .07, z); world.add(m); L.vents.push({ x, z, m, t: rr(0, 8), per: rr(5, 9) }); }
+  // 타는 잔해 불길·검은 연기, 멀리서 들리는 포성·섬광
+  for (let k = 0; k < 10; k++) { const [x, z] = spot(14); L.fires = L.fires || []; L.fires.push([x, z]); bx(x, 0, z, 1.6, .4, 1.6, 0x2a241c); }
+  let boomT = 3;
+  envAnim.push(dt => {
+    for (const [x, z] of L.fires || []) { if (Math.abs(x - dog.x) > 45 || Math.abs(z - dog.z) > 45) continue; if (Math.random() < .5) spawnP(x + mr(-.6, .6), 1.2, z + mr(-.6, .6), mr(-.3, .3), mr(2, 4), mr(-.3, .3), Math.random() < .5 ? new THREE.Color(0xff7a00) : RED, .5); if (Math.random() < .25) spawnP(x, 2.5, z, mr(-.4, .4), mr(1.5, 3), mr(-.4, .4), new THREE.Color(0x2a2a2a), 1.4); }
+    if ((boomT -= dt) <= 0 && state === 'play') { boomT = rr(3, 7); const a = Math.random() * 6.283, x = dog.x + Math.cos(a) * 70, z = dog.z + Math.sin(a) * 70; burst(x, 4, z, [new THREE.Color(0xffb000), new THREE.Color(0xff5000)], 30, 9); tone(50, .6, 'sawtooth', .05, -20); }
+  });
+  // 가운데: 젖소가 솟아나는 폭격 분화구
+  { const ring = new THREE.Mesh(new THREE.RingGeometry(9, 10, 48), new THREE.MeshBasicMaterial({ color: 0xff2a2a, transparent: true, opacity: .6, toneMapped: false })); ring.rotation.x = -Math.PI / 2; ring.position.set(0, .06, 0); world.add(ring); envAnim.push(() => { ring.material.opacity = .35 + Math.abs(Math.sin(time * 1.5)) * .4; }); sign('🐄 젖소가 솟아나는 분화구', 0, 3, 0, .7, 'rgba(120,10,10,.92)'); }
+  sign('⚠ 카우존 전쟁터 — 클리어 없음 · 오래 버티기!', 0, 3.4, HZ - 14, .7, 'rgba(120,10,10,.92)');
 }
 // 젖소 모양으로 바꾸기: 사람 머리를 숨기고 소머리·뿔·얼룩·창을 단다
 function cowify(p, boss) {
@@ -5667,10 +5703,11 @@ function cowify(p, boss) {
 }
 const cow = { t: 0, wave: 1, kills: 0, spawnT: 0, bossT: 0, itemT: 0, xp: 0, lvl: 0, hudT: 0, fogT: 0 };
 function cowReset() {
-  Object.assign(cow, { t: 0, wave: 1, kills: 0, spawnT: 1, bossT: 40, itemT: 4, xp: 0, lvl: 0, hudT: 0 });
+  Object.assign(cow, { t: 0, wave: 1, kills: 0, spawnT: 1, bossT: 40, itemT: 4, xp: 0, lvl: 1, hudT: 0 });
+  for (const [k] of UPG) cowUp[k] = 1;
   level.dm = diffMode === 'extreme' ? 'extreme' : 'hard';
   dog.hp = Math.min(7, DIFFS[level.dm].hpMax + Math.floor((cowUp.heart || 0) / 2));
-  scene.fog = new THREE.Fog(0x3a1414, 22, 80); scene.background = new THREE.Color(0x3a1414);
+  scene.fog = new THREE.Fog(0x6b6355, 24, 90); scene.background = new THREE.Color(0x6b6355);
   $('cowLv').classList.add('hidden');
 }
 function spawnCow(boss) {
@@ -5746,6 +5783,8 @@ function cowBossSkill(p, dt) {
   floatText(label, p.x, 4.6, p.z, { h: .6, color: '#ff6b6b' }); tone(220, .2, 'sawtooth', .08, 80);
   return true;
 }
+// 카우존 자동 플레이 보정: 이동·왕왕 범위·공격 속도·뼈다귀 연사 모두 30% 강하게
+const cowAutoK = () => (auto.on && level && level.cow) ? 1.3 : 1;
 function cowInMud(x, z) { return level && level.mud && level.mud.some(m => Math.hypot(x - m.x, z - m.z) < m.r); }
 function cowDown(p) {
   p.arrested = true; p.downT = 1; cow.kills++; SFX.hit();
@@ -5755,20 +5794,20 @@ function cowDown(p) {
   burst(p.x, 1, p.z, [WHITE, new THREE.Color(0x1a1a1a), RED], 30, 5);
   if (Math.random() < (p.cowBoss ? 1 : .12)) spawnHelpItem(pick2(Object.keys(HELP_KINDS).filter(k => k !== 'ball')), { x: p.x, z: p.z });
   cow.xp += p.cowBoss ? 8 : 1;
-  const need = 6 + cow.lvl * 3; if (cow.xp >= need) { cow.xp -= need; cow.lvl++; cowLevelUp(); }
+  const need = 6 + (cow.lvl - 1) * 3; if (cow.xp >= need) { cow.xp -= need; cow.lvl++; cowLevelUp(); }
 }
 function cowLevelUp() {
   const can = UPG.filter(([k]) => cowUp[k] < COW_MAX);
   SFX.quest && SFX.quest(); floatText('⬆ 레벨 업! Lv' + cow.lvl, dog.x, dog.y + 3, dog.z, { h: .7, color: '#7dff6a' });
   if (!can.length) return toast('🐄 카우존 스킬을 모두 Lv20까지 올렸어요!');
-  const pickUp = k => { cowUp[k] = Math.min(COW_MAX, cowUp[k] + 1); store.set('k9cowup', cowUp); $('cowLv').classList.add('hidden'); if (state === 'cowlv') state = 'play'; keys = {}; toast('⬆ ' + UPG.find(u => u[0] === k)[1] + ' Lv' + cowUp[k] + ' (카우존 전용)'); };
+  const pickUp = k => { cowUp[k] = Math.min(COW_MAX, cowUp[k] + 1); $('cowLv').classList.add('hidden'); if (state === 'cowlv') state = 'play'; keys = {}; toast('⬆ ' + UPG.find(u => u[0] === k)[1] + ' Lv' + cowUp[k] + ' (카우존 전용)'); };
   if (auto.on) { pickUp(can.sort((a, b) => cowUp[a[0]] - cowUp[b[0]])[0][0]); return; } // 자동 플레이 중에는 가장 낮은 스킬을 올린다
   $('cowLvH').textContent = '⬆ 레벨 ' + cow.lvl + '! 스킬 하나를 골라 올리세요';
   $('cowLvList').innerHTML = UPG.map(([k, n, tip]) => '<button type="button" data-k="' + k + '"' + (cowUp[k] >= COW_MAX ? ' disabled' : '') + '>' + n + ' Lv' + cowUp[k] + '→' + Math.min(COW_MAX, cowUp[k] + 1) + '<small>' + tip + '</small></button>').join('');
   $('cowLvList').onclick = e => { const b = e.target.closest('button[data-k]'); if (b && !b.disabled) pickUp(b.dataset.k); };
   state = 'cowlv'; keys = {}; $('cowLv').classList.remove('hidden');
 }
-function cowHud() { return '🐄 생존 ' + fmtTime(cow.t) + ' · 처치 ' + cow.kills + ' · 웨이브 ' + cow.wave + ' · Lv' + cow.lvl + ' (' + cow.xp + '/' + (6 + cow.lvl * 3) + ')'; }
+function cowHud() { return '🐄 생존 ' + fmtTime(cow.t) + ' · 처치 ' + cow.kills + ' · 웨이브 ' + cow.wave + ' · Lv' + cow.lvl + ' (' + cow.xp + '/' + (6 + (cow.lvl - 1) * 3) + ')'; }
 function cowTick(dt) {
   if (!level || !level.cow || state !== 'play') return;
   cow.t += dt; cow.wave = 1 + Math.floor(cow.t / 40);
@@ -6903,7 +6942,7 @@ function damage() {
   state = 'dead'; const carry = levelTime; if (level.cow) cowRecord();
   totals.mistakes++;
   setTimeout(() => {
-    showDialog(level.cow ? '🐄 카우존에서 쓰러졌어요!\n\n생존 ' + fmtTime(cow.t) + ' · 처치 ' + cow.kills + ' · 레벨 ' + cow.lvl + '\n카우존 스킬 레벨은 그대로 남아요. 다시 도전!' : '😢 탐지견 「관세청 탐지견」이(가) 작전 중 부상으로 순직했습니다…\n\n잘못된 적발과 시민 충돌은 탐지견을 다치게 해요.\n같은 맵을 처음부터 다시 시작합니다.\n이전 맵 점수는 그대로지만, 흐른 시간은 계속 이어져요.\n\n🎾 공을 주우면 체력을 회복할 수 있어요!', () => { loadLevel(levelIdx); levelTime = carry; }, level.who);
+    showDialog(level.cow ? '🐄 카우존에서 쓰러졌어요!\n\n생존 ' + fmtTime(cow.t) + ' · 처치 ' + cow.kills + ' · 레벨 ' + cow.lvl + '\n다음 판은 다시 Lv1부터 시작해요. 다시 도전!' : '😢 탐지견 「관세청 탐지견」이(가) 작전 중 부상으로 순직했습니다…\n\n잘못된 적발과 시민 충돌은 탐지견을 다치게 해요.\n같은 맵을 처음부터 다시 시작합니다.\n이전 맵 점수는 그대로지만, 흐른 시간은 계속 이어져요.\n\n🎾 공을 주우면 체력을 회복할 수 있어요!', () => { loadLevel(levelIdx); levelTime = carry; }, level.who);
     $('dok').textContent = '다시 출동! 멍!';
   }, 900);
 }
@@ -7478,10 +7517,12 @@ function bagAdd(kind) {
   floatText('🎒 +' + HELP_KINDS[kind].emoji, dog.x, dog.y + 2.2, dog.z, { h: .5, color: '#ffe08a' });
   toast('🎒 ' + HELP_KINDS[kind].emoji + ' ' + HELP_KINDS[kind].name + '을(를) 가방에 넣었어요! 필요할 때 🎒 버튼(B)으로 꺼내 써요');
 }
+const bagHpFull = () => !!(level && dog && dog.hp >= Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7));
+const bagBlocked = k => (k === 'heal' || k === 'ball') && bagHpFull();
 function renderBag() {
-  const ks = Object.keys(bag).filter(k => bag[k] > 0), n = ks.reduce((a, k) => a + bag[k], 0);
+  const ks = Object.keys(bag).filter(k => bag[k] > 0).sort((a, b) => bagBlocked(a) - bagBlocked(b)), n = ks.reduce((a, k) => a + bag[k], 0);
   $('bagN').textContent = n; $('bagN').classList.toggle('zero', !n);
-  $('bagList').innerHTML = ks.length ? ks.map(k => '<button type="button" data-k="' + k + '"><i>' + HELP_KINDS[k].emoji + '</i>' + HELP_KINDS[k].name + '<em>×' + bag[k] + '</em></button>').join('') : '<div class="bagEmpty">아직 비어 있어요. 맵에서 아이템을 주워 보세요!</div>';
+  $('bagList').innerHTML = ks.length ? ks.map(k => '<button type="button" data-k="' + k + '"' + (bagBlocked(k) ? ' class="full"' : '') + '><i>' + HELP_KINDS[k].emoji + '</i>' + HELP_KINDS[k].name + (bagBlocked(k) ? '<small>하트 가득</small>' : '') + '<em>×' + bag[k] + '</em></button>').join('') : '<div class="bagEmpty">아직 비어 있어요. 맵에서 아이템을 주워 보세요!</div>';
 }
 function useHelp(kind) {
   if (!bag[kind]) return;
@@ -7493,7 +7534,11 @@ function useHelp(kind) {
 function toastNow(msg) { toastQ.unshift(trK(msg)); toastT = 0; }
 function useHelp0(kind) {
   const hpMax = Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7);
-  if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax) { toast('❤️ 하트가 꽉 찼어요! 하트가 줄었을 때 쓰세요'); return; }
+  if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax) {
+    toastNow('❤️ 하트가 꽉 찼어요! 하트가 줄었을 때 쓰세요'); floatText('❤️ 하트 가득!', dog.x, dog.y + 2.6, dog.z, { h: .5, color: '#ff8a80' });
+    const b = document.querySelector('#bagList button[data-k="' + kind + '"]'); if (b) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); }
+    return;
+  }
   bag[kind]--; renderBag(); saveBag(); SFX.found(); $('bagBox').classList.remove('open');
   floatText(HELP_KINDS[kind].emoji + ' ' + HELP_KINDS[kind].name + ' 사용!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#ffe08a' }); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(HELP_KINDS[kind].col), WHITE], 25, 3);
   if (kind === 'ball') { dog.hp = Math.min(hpMax, dog.hp + 1); dog.boost = 6; floatText('🎾 ❤️ +1', dog.x, dog.y + 2, dog.z, { h: .55, color: '#ff8a80' }); toast('🎾 하트 공! 하트 +1, 잠깐 빨라져요'); return; }
@@ -7633,9 +7678,9 @@ function updateDebris(dt) {
 function bark() {
   if (mp) mp.ch.send({ type: 'broadcast', event: 'bark', payload: { k: mp.key } });
   // 왕왕 범위: 견종 능력치 + 업그레이드 레벨마다 +10%
-  const BR = (.8 + .06 * ST().bark) * (1 + .1 * (UPL().bark || 0)) * (dog.giantT > 0 ? 1.3 : 1);
+  const BR = (.8 + .06 * ST().bark) * (1 + .1 * (UPL().bark || 0)) * (dog.giantT > 0 ? 1.3 : 1) * cowAutoK();
   const AS = 1.3 - .06 * ST().bark; // 짖기 능력치가 높을수록 공격 간격이 짧다
-  dog.barkCd = .375 * AS; dog.barkAnim = .22; SFX.bark();
+  dog.barkCd = .375 * AS / cowAutoK(); dog.barkAnim = .22; SFX.bark();
   const hx = dog.x + Math.sin(dog.dir) * .9, hz = dog.z + Math.cos(dog.dir) * .9;
   floatText('왕왕!', hx, dog.y + 1.8, hz, { h: .55 });
   for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; spawnP(hx, dog.y + 1, hz, Math.cos(a) * 5 * BR, .6, Math.sin(a) * 5 * BR, WHITE, .35); }
@@ -7976,7 +8021,7 @@ function updateDog(dt) {
   const sprint = (keys.ShiftLeft || (!twoP && keys.ShiftRight) || touchIn.run || Math.hypot(touchIn.x, touchIn.y) > .93 || (autoOn && auto.run)) && dog.stamina > 3 && len > .1 && !dog.sniffing;
   dog.stamina = clamp(dog.stamina + (sprint && !(dog.staT > 0) ? -24 * (1.4 - .1 * ST().sta) * (handlerJob === 'soldier' ? .8 : 1) : 14 * (.7 + .1 * ST().sta)) * dt, 0, 100);
   dog.boost -= dt; dog.hurt -= dt;
-  const maxSp = (dog.swim ? (handlerJob === 'rescue' ? .87 : .62) : 1) * 1.07 * (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (dog.giantT > 0 ? 1.2 : 1) * (.85 + .06 * ST().spd) * (level ? 1 + (level.sz - 1) * .22 : 1);
+  const maxSp = cowAutoK() * (dog.swim ? (handlerJob === 'rescue' ? .87 : .62) : 1) * 1.07 * (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (dog.giantT > 0 ? 1.2 : 1) * (.85 + .06 * ST().spd) * (level ? 1 + (level.sz - 1) * .22 : 1);
   const k = 1 - Math.exp(-dt * (dog.grounded ? 10 : 3));
   dog.vx = lerp(dog.vx, mx * maxSp, k); dog.vz = lerp(dog.vz, mz * maxSp, k);
   const pushed = moveCircle(dog, dog.vx * dt, dog.vz * dt, .5, true, dog.y);
