@@ -287,6 +287,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 #loadingScreen.hidden{display:none}
 /* 맵 선택 허브: 타일을 누르면 창(#mpanel)으로 연다 */
 #hubTiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0}
+.itemguide{margin-top:8px;padding:8px 10px;border-radius:10px;background:#fff8e6;border:2px solid #e6dcc4;font-size:13px}.itemguide>b{display:block;margin-bottom:4px;color:var(--navy)}.ig{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 8px;align-items:center}.ig span{font-weight:700;white-space:nowrap}.ig small{color:var(--muted)}@media (max-width:560px){.ig{grid-template-columns:auto 1fr}}@media (orientation:landscape) and (max-height:540px){.itemguide{font-size:11px;margin-top:4px;padding:4px 8px}.ig{gap:1px 6px}}
 #diffRow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:-4px 0 10px}#diffRow b{font-size:14px}#diffRow button{font:inherit;font-size:14px;font-weight:700;padding:5px 12px;border:2px solid #1b2b3c;border-radius:999px;background:#fff;color:var(--ink);cursor:pointer}#diffRow button.on{background:#ffd54f;box-shadow:0 2px 0 #1b2b3c}#diffRow small{flex-basis:100%;text-align:center;font-size:12px;opacity:.8}
 @media (orientation:landscape) and (max-height:540px){#diffRow{margin:-6px 0 6px;gap:4px}#diffRow button{font-size:12px;padding:3px 9px}#diffRow small{flex-basis:auto;font-size:11px}}
 .hubtile{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px;border:3px solid #1b2b3c;border-radius:14px;background:#fff8e6;color:var(--ink);font-family:inherit;cursor:pointer;box-shadow:0 4px 0 #1b2b3c;transition:transform .08s}
@@ -336,7 +337,19 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 .hubtile.need{border-color:#d9822b;background:#fff1dc;box-shadow:0 4px 0 #d9822b}.hubtile.need small{color:#b5402a;font-weight:700}
 @media (orientation:landscape) and (max-height:540px){#loginTiles{gap:6px;margin:6px 0 2px}#loginTiles .hubtile{padding:4px 2px}#loginTiles .hubtile .hi{font-size:18px}#loginTiles .hubtile b{font-size:12.5px}#loginTiles .hubtile small{font-size:9.5px}}
 @media (orientation:landscape) and (max-height:540px){#hubTiles{grid-template-columns:repeat(6,1fr);gap:6px;margin:6px 0}.hubtile{padding:6px 2px}.hubtile .hi{font-size:22px}.hubtile b{font-size:13px}.hubtile small{font-size:9.5px}.hubtile.main{grid-column:auto;flex-direction:column;gap:2px;padding:6px 2px}.hubtile.main .hi{font-size:22px}.hubtile.main b{font-size:13px}.mphead{padding:6px 0 4px}.mphead b{font-size:16px}#mpClose{width:34px;height:34px}}
-@media (max-width:560px){#hubTiles{grid-template-columns:repeat(3,1fr)}}
+#maps.paused #hubTiles{grid-template-columns:repeat(6,1fr)}
+@media (orientation:landscape) and (max-height:540px){#maps.paused #hubTiles{grid-template-columns:repeat(7,1fr)}}
+@media (max-width:560px){#hubTiles,#maps.paused #hubTiles{grid-template-columns:repeat(3,1fr)}}
+/* 맵 선택: 구분 없이 번호순으로 한 화면에 */
+#mpanel[data-p="map"] .card{max-width:1100px;width:96vw}
+#mpanel #mapGrid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:6px;margin-top:6px}
+#mpanel .mapcard{padding:4px 3px;gap:0;border-width:2px;flex-direction:row;flex-wrap:wrap;justify-content:center;column-gap:4px}
+#mpanel .mapcard .no{display:inline!important;font-size:12px;color:#fff;background:#13335a;border-radius:6px;padding:0 5px;letter-spacing:0}
+#mpanel .mapcard .ic{font-size:18px;line-height:1.1}#mpanel .mapcard .nm{font-size:13px;line-height:1.15;width:100%}
+#mpanel .mapcard .st{font-size:9.5px;line-height:1.2;width:100%}#mpanel .mapcard .st:not(:last-child){display:none}
+#mpanel .mapcard.done::after{display:none}#mpanel .mapcard.done .nm::before{content:"✅";font-size:10px}#mpanel #mapsIntro{display:none}
+@media (orientation:landscape) and (max-height:540px){#mpanel #mapGrid{grid-template-columns:repeat(12,1fr)!important;gap:3px!important}#mpanel .mapcard{padding:2px 1px!important}#mpanel .mapcard .st{display:none}#mpanel .mapcard .nm{font-size:10.5px!important;line-height:1.1}#mpanel .mapcard .ic{font-size:14px!important}#mpanel .mapcard .no{font-size:10px!important;padding:0 3px}}
+@media (max-width:560px){#mpanel #mapGrid{grid-template-columns:repeat(4,1fr);gap:4px}#mpanel .mapcard .nm{font-size:11px}#mpanel .mapcard .st{display:none}#mpanel .mapcard .ic{font-size:15px}}
 /* 클리어·승리 화면 버튼은 카드가 넘쳐도 항상 아래에 보이게 */
 #win .card>.row:last-child,#clear .card>.row:last-child{position:sticky;bottom:0;background:var(--card);padding:6px 0 2px;z-index:1}
 .ld-ic{font-size:56px;animation:ssBob 1s ease-in-out infinite}.ld-t{font-size:min(6vw,30px);margin:6px 0 12px}
@@ -525,11 +538,9 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 
 <!-- 맵 선택 -->
 <div id="maps" class="overlay hidden"><div class="card">
- <div class="langs"></div>
  <div class="sub" id="mapsWho">플레이어</div>
  <button class="big hidden" id="btnResumeTop" style="margin:8px 0;width:100%">▶ 게임으로 돌아가기</button>
  <h1>순찰할 관문을 고르세요</h1>
- <div class="row" id="pauseRow"><button class="big" id="btnResume">▶ 게임으로 돌아가기</button><button class="big alt" id="btnRestartMap">🔄 이 맵 다시 시작</button></div>
  <div id="hubTiles">
   <button class="hubtile main" data-p="map"><span class="hi">🗺</span><b>맵 선택</b><small id="hubMapSub">관문을 골라 출동!</small></button>
   <button class="hubtile" data-p="shop"><span class="hi">🪙</span><b>업그레이드</b><small id="hubShopSub"></small></button>
@@ -537,8 +548,9 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
   <button class="hubtile" data-p="team"><span class="hi">👥</span><b>팀 방</b><small id="hubTeamSub">최대 20명</small></button>
   <button class="hubtile" data-p="ctl"><span class="hi">🎮</span><b>조작법</b><small>키·버튼 안내</small></button>
   <button class="hubtile" id="btnRankOpen"><span class="hi">🏆</span><b>랭킹</b><small>전체 순위</small></button>
+  <button class="hubtile hidden" id="btnRestartMap"><span class="hi">🔄</span><b>맵 다시 시작</b><small>지금 맵 처음부터</small></button>
  </div>
- <div id="diffRow"><b>난이도</b><button type="button" data-d="easy">🐣 쉬움</button><button type="button" data-d="normal">🐕 보통</button><button type="button" data-d="hard">🔥 어려움</button><small id="diffNote"></small></div>
+ <div id="diffRow"><b>난이도</b><button type="button" data-d="easy">🐣 쉬움</button><button type="button" data-d="normal">🐕 보통</button><button type="button" data-d="hard">🔥 어려움</button><button type="button" data-d="extreme">☠ 극강</button><small id="diffNote"></small></div>
  <div class="row hidden"><button class="big alt" id="btnMode">👤 1인 모드 (눌러서 2인 협동 모드로)</button></div>
  <div class="row"><button class="big alt" id="btnHomeStart">🏠 홈</button><button class="big alt" id="btnLogout">아이디 변경</button></div>
 </div></div>
@@ -559,6 +571,13 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
   <kbd>점프</kbd><span>상자 위로 뛰어오르기</span><kbd>킁킁</kbd><span>꾹 눌러 냄새 맡기</span>
   <kbd>멍!</kbd><span>짖어서 적발 / 밀수범 멈추기</span><kbd>화면 드래그</kbd><span>카메라 회전</span>
  </div>
+ <div class="itemguide"><b>🎁 아이템 소개 (맵에서 빛나는 상자를 먹어요)</b>
+  <div class="ig"><span>🛡 방탄조끼</span><small>다음 공격을 1번 막아 줘요 (최대 2번)</small><span>👃 슈퍼 코 간식</span><small>20초 동안 냄새 범위 1.5배</small>
+  <span>🦴 뼈다귀 가방</span><small>20초 동안 뼈다귀를 2배 빨리 던져요</small><span>👃✨ 자동 킁킁</span><small>10초 동안 저절로 냄새를 맡아요</small>
+  <span>🌟 슈퍼 간식</span><small>10초 동안 커지고 다치지 않아요</small><span>⚡ 번개 간식</span><small>8초 동안 30% 빨라져요</small>
+  <span>❤️ 구급상자</span><small>체력 1 회복</small><span>🥤 시원한 물</span><small>15초 동안 달려도 지치지 않아요</small>
+  <span>❄️ 얼음 호루라기</span><small>주변 범인을 5초 동안 멈춰요</small><span>🧲 코인 자석</span><small>15초 동안 코인을 끌어와요</small>
+  <span>🎾 하트 공</span><small>체력 +1 · 6초간 스피드 업</small><span>📡 X-RAY</span><small>7초 동안 숨긴 물건을 투시해요</small></div></div>
  </div>
  <div class="mpsec" data-p="badges"><div id="badges"></div></div>
  <div class="mpsec" data-p="shop"><div id="shop"></div></div>
@@ -646,7 +665,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1917';
+const BUILD = '20261031-2002';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1748,9 +1767,9 @@ class Person {
     this.villain = kind === 'smuggler' || kind === 'boss'; this.vip = kind === 'officer' || kind === 'chief';
     this.hp = kind === 'boss' ? level.diff.bossHp : 1; // 일반 범인은 한 번에 체포 (보스만 여러 번)
     if (this.villain) { // 범인 레벨: 맵 별점 + 난이도 → 체력·싸움 성향·탄약·공격 속도·기절 시간
-      const Q = DIFFS[level.dm || 'normal'] || DIFFS.normal, lo = Q.lvOff > 0 ? 2 : 1;
+      const Q = DIFFS[level.dm || 'normal'] || DIFFS.normal, lo = Q.lvOff > 1 ? 3 : Q.lvOff > 0 ? 2 : 1;
       this.lv = kind === 'boss' ? Q.lvMax + 1 : Math.max(lo, Math.min(Q.lvMax, Math.ceil(level.diff.stars / 2) + Q.lvOff + (Math.random() < .35 ? 1 : 0)));
-      if (kind !== 'boss' && this.lv >= 4 && Q.lvOff > 0) this.hp = 2; // 어려움에서만 두 번 맞혀야 체포
+      if (kind !== 'boss' && this.lv >= (Q.lvOff > 1 ? 3 : 4) && Q.lvOff > 0) this.hp = 2; // 어려움·극강에서만 두 번 맞혀야 체포
     }
     this.stun = 0; this.glow = 0; this.target = null; this.wait = mr(0, 2); this.dir = mr(0, 6);
     this.phase = mr(0, 6); this.blocked = 0; this.turn = 0; this.turnT = 0; this.alerted = false;
@@ -4811,6 +4830,9 @@ const LANDMARK_LIST = [
       sign('🅿 여객터미널 주차장', -50, 3.5, 50, .6);
       // 육지 쪽 큰 회전교차로(실제 터미널 진입부)
       { const ring = new THREE.Mesh(new THREE.RingGeometry(9, 16, 40), MAT.col(0x3a3d42, .95)); ring.rotation.x = -Math.PI / 2; ring.position.set(76, .03, 52); world.add(ring); mesh(new THREE.CylinderGeometry(9, 9, .5, 32), LMC(0x6fa553), 76, .25, 52); addCol(76, 52, 12, 12, null, { topY: .5 }); tree(76, 52, 1.2); sign('🔄 회전교차로 → 국제항만대로', 76, 4, 52, .55); }
+      // 육지 쪽(남·동·서) 경계 울타리: 바다로 걸어 나가지 않게 막는다 (북쪽 부두만 바다)
+      { const fence = (x, z, w, d) => { const m = mesh(BOX(w, 1.6, d), MAT.metal(0x5d6d7e, .5), x, .8, z); addCol(x, z, w, d, m, { topY: 99, keep: true }); };
+        fence(0, 74.6, 200, .4); fence(-99.6, 6, .4, 137); fence(99.6, 6, .4, 137); }
       L.search = colliders.filter(c => c.topY > .5 && c.topY < 1.6 && c.maxX - c.minX < 5 && c.maxZ - c.minZ < 5 && c.minZ > 40).slice(0, 12);
     } },
 ];
@@ -5765,7 +5787,7 @@ function loadLevel(i) {
   }
   { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); xray = null;
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
-  clearSniffMarks(); setupCoins(); helps = []; dog.shield = 0; dog.noseT = 0; dog.boneT = 0; dog.autoSniffT = 0; dog.giantT = 0; giantS = 1; dogM.g.scale.setScalar(BREEDS[dogBreed]?.scale || 1); handlerM.g.scale.setScalar(1); if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
+  clearSniffMarks(); setupCoins(); helps = []; dog.shield = 0; dog.staT = 0; dog.magT = 0; dog.noseT = 0; dog.boneT = 0; dog.autoSniffT = 0; dog.giantT = 0; giantS = 1; dogM.g.scale.setScalar(BREEDS[dogBreed]?.scale || 1); handlerM.g.scale.setScalar(1); if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
   helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
   if (mp && mp.room !== i) mpLeave(); keepAwake(); if (team) team.picked = i; if (playerId) { mpJoin(); lobbyJoin(); setTimeout(lobbyTrack, 300); }
   if (people.some(p => p.look && p.villain)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
@@ -5833,10 +5855,13 @@ function renderQuest() {
   $('qgoals').innerHTML = Object.entries(level.need).map(([k, n]) => { const v = Math.min(lvStats[k] || 0, n); return `<div class="goal ${v >= n ? 'done' : ''}"><span>${t('g_' + k)}</span><b>${v}/${n}</b></div>`; }).join('');
 }
 // 난이도: 쉬움은 범인이 느리고 찾을 물건이 적다. 어려움은 빠르고 많지만 점수를 더 준다
+// 난이도 4단계. 전체를 7% 올리고, 단계 사이 차이를 크게 벌려 확실히 느껴지게 했다
+// spd 범인 속도 · gun 공격 간격(작을수록 자주) · boss 보스 체력 · need 찾을 물건 수 · sniff 냄새 범위 · veh 차량 속도
 const DIFFS = {
-  easy: { spd: .8, gun: 1.6, boss: .6, need: .75, sniff: 1.3, veh: .8, hp: 5, hpMax: 7, score: .8, lvOff: -1, lvMax: 3, note: '체력 5 · 범인 Lv1~3 · 범인이 느리고 공격이 뜸해요 · 찾을 물건 적게 · 점수 ×0.8' },
-  normal: { spd: 1, gun: 1, boss: 1, need: 1, sniff: 1, veh: 1, hp: 3, hpMax: 7, score: 1, lvOff: 0, lvMax: 4, note: '기본 난이도 · 체력 3 · 범인 Lv1~4 · 점수 ×1' },
-  hard: { spd: 1.15, gun: .7, boss: 1.4, need: 1.3, sniff: .8, veh: 1.15, hp: 2, hpMax: 5, score: 1.2, lvOff: 1, lvMax: 5, note: '체력 2 · 범인 Lv2~5 (Lv4부터 2번 맞혀야 체포) · 범인이 빠르고 자주 공격해요 · 찾을 물건 많이 · 점수 ×1.2' }
+  easy: { spd: .86, gun: 1.5, boss: .64, need: .8, sniff: 1.25, veh: .86, hp: 5, hpMax: 7, score: .8, lvOff: -1, lvMax: 3, note: '체력 5 · 범인 Lv1~3 · 범인이 느리고 공격이 뜸해요 · 찾을 물건 적게 · 점수 ×0.8' },
+  normal: { spd: 1.07, gun: .93, boss: 1.07, need: 1.07, sniff: .93, veh: 1.07, hp: 3, hpMax: 7, score: 1, lvOff: 0, lvMax: 4, note: '기본 난이도 · 체력 3 · 범인 Lv1~4 · 점수 ×1' },
+  hard: { spd: 1.3, gun: .6, boss: 1.6, need: 1.45, sniff: .72, veh: 1.3, hp: 2, hpMax: 5, score: 1.3, lvOff: 1, lvMax: 5, note: '체력 2 · 범인 Lv2~5 (Lv4부터 2번 맞혀야 체포) · 범인이 빠르고 자주 공격 · 냄새 범위 좁음 · 찾을 물건 많이 · 점수 ×1.3' },
+  extreme: { spd: 1.55, gun: .38, boss: 2.3, need: 1.8, sniff: .55, veh: 1.5, hp: 1, hpMax: 3, score: 1.7, lvOff: 2, lvMax: 5, note: '☠ 체력 1 · 범인 Lv3~5 (Lv3부터 2번 맞혀야 체포) · 범인이 아주 빠르고 쉬지 않고 공격 · 냄새 범위 아주 좁음 · 찾을 물건 2배 가까이 · 점수 ×1.7' }
 };
 let diffMode = DIFFS[store.get('k9diff', 'normal')] ? store.get('k9diff', 'normal') : 'normal';
 function setDiff(d, save = true) { diffMode = d; if (save) store.set('k9diff', d); for (const b of document.querySelectorAll('#diffRow button')) b.classList.toggle('on', b.dataset.d === d); $('diffNote').textContent = DIFFS[d].note; }
@@ -5996,17 +6021,17 @@ function showMaps(paused = false) {
   pausedGame = paused && !!level;
   hideAll(); state = 'maps'; $('topbar').classList.add('hidden');
   const prog = getProg();
-  $('mapsWho').textContent = t('who_fmt').replace('{nick}', dispName()).replace('{score}', runScore) + (runActive ? t('run_fmt').replace('{n}', runCleared.size) : '');
+  $('mapsWho').textContent = t('who_fmt').replace('{nick}', dispName()).replace('{score}', runScore) + (runActive ? t('run_fmt').replace('{n}', runCleared.size) : '') + ' · 🗺 ' + LEVELS.filter((L, i) => prog.best[i] !== undefined).length + '/' + LEVELS.length;
   const lmGate = LEVELS.map((L, i) => i).filter(i => LEVELS[i].gate), lmRest = LEVELS.map((L, i) => i).filter(i => LEVELS[i].landmark && !LEVELS[i].gate && !LEVELS[i].mega), megaI = LEVELS.findIndex(L => L.mega);
   const order = [0, 1, 2, 3, 4, ...lmGate, 5, 6, ...lmRest, megaI];
-  $('mapGrid').innerHTML = order.map(i => [LEVELS[i], i]).map(([L, i]) => {
+  $('mapGrid').innerHTML = order.map(i => [LEVELS[i], i]).map(([L, i], no) => {
     const locked = hiddenVip ? false : L.mega ? !lmRest.every(k => prog.best[k] !== undefined) : L.hidden ? prog.best[5] === undefined : i === 5 ? ![0, 1, 2, 3, 4, ...lmGate].every(k => prog.best[k] !== undefined || runCleared.has(k)) : false, cleared = !L.hidden && prog.best[i] !== undefined, inRun = runActive && runCleared.has(i);
     const cur = pausedGame && i === levelIdx;
     const st = cur ? t('st_cur') : locked ? (L.mega ? '🔒 명소 순찰을 모두 마치면 열려요' : L.hidden ? t('st_lockH') : t('st_lockB')) : inRun ? t('st_run') : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
-    return (i === lmRest[0] ? `<div class="mapsep">${t('sep_lm').replace('{n}', lmRest.length)} <small>${t('sep_note')}</small></div>` : '') + `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared done' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${(L.hidden || L.mega) && locked ? "❓" : L.icon}</span><span class="no">${L.hidden || L.mega ? "HIDDEN" : L.gate ? t("lbl_gate") + " " + (lmGate.indexOf(i) + 1) : L.landmark ? t("lbl_lm") + " " + (lmRest.indexOf(i) + 1) : "MAP " + (i + 1)}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(Math.max(0, 5 - L.diff.stars))}</span></button>`;
+    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared done' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${(L.hidden || L.mega) && locked ? "❓" : L.icon}</span><span class="no">${no + 1}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(Math.max(0, 5 - L.diff.stars))}</span></button>`;
   }).join('');
   renderBadges(); renderShop(); hubSubs();
-  $('pauseRow').classList.toggle('hidden', !pausedGame);
+  $('btnRestartMap').classList.toggle('hidden', !pausedGame); $('maps').classList.toggle('paused', pausedGame);
   if (playerId) lobbyJoin(); renderRooms(); $('btnResumeTop').classList.toggle('hidden', !pausedGame);
   $('maps').classList.remove('hidden');
   if (!pausedGame) playMusic(0);
@@ -6034,7 +6059,7 @@ $('hubTiles').addEventListener('click', e => { const b = e.target.closest('.hubt
 $('mpClose').onclick = closePanel;
 $('mpanel').addEventListener('click', e => { if (e.target === $('mpanel')) closePanel(); });
 addEventListener('keydown', e => { if (e.key === 'Escape' && !$('mpanel').classList.contains('hidden')) closePanel(); });
-$('btnResume').onclick = resumeGame; $('btnResumeTop').onclick = resumeGame;
+$('btnResumeTop').onclick = resumeGame;
 $('btnRestartMap').onclick = restartLevel;
 $('tbHelp').onclick = () => { if (state === 'play') showHowto(null); };
 $('tbRestart').onclick = () => { if (state === 'play') restartLevel(); };
@@ -6313,6 +6338,11 @@ const HELP_KINDS = {
   bones: { emoji: '🦴', col: 0xf4e1a8, label: 'ts_bonebag' },
   auto: { emoji: '👃✨', col: 0x7dff6a, label: 'ts_autosniff' },
   giant: { emoji: '🌟', col: 0xffd23f, label: 'ts_giant' },
+  speed: { emoji: '⚡', col: 0xfff200, msg: '⚡ 번개 간식! 8초 동안 30% 빨라져요' },
+  heal: { emoji: '❤️', col: 0xff5a6e, msg: '❤️ 구급상자! 체력이 1 회복됐어요' },
+  water: { emoji: '🥤', col: 0x6ad1ff, msg: '🥤 시원한 물! 15초 동안 달려도 지치지 않아요' },
+  whistle: { emoji: '❄️', col: 0xbfe9ff, msg: '❄️ 얼음 호루라기! 주변 범인이 5초 동안 꼼짝 못 해요' },
+  magnet: { emoji: '🧲', col: 0xd84a4a, msg: '🧲 코인 자석! 15초 동안 멀리 있는 코인도 끌려와요' },
 };
 function spawnHelpItem(kind) {
   const p = placeFree(level.bounds, .7, .7, .4, level.avoid); if (!p) return;
@@ -6331,11 +6361,16 @@ function updateHelpItems(dt) {
       else if (h.kind === 'nose') dog.noseT = 20;
       else if (h.kind === 'giant') { dog.giantT = 10; floatText('🌟 슈퍼 탐지견!', dog.x, dog.y + 2.4, dog.z, { h: .65, color: '#ffd23f' }); tone(523, .12, 'square', .08); tone(659, .12, 'square', .08, 0, .12); tone(784, .2, 'square', .08, 0, .24); }
       else if (h.kind === 'auto') { dog.autoSniffT = 10; floatText('👃✨ 킁킁킁 10초!', dog.x, dog.y + 2, dog.z, { h: .55, color: '#7dff6a' }); }
+      else if (h.kind === 'speed') dog.boost = 8;
+      else if (h.kind === 'heal') { dog.hp = Math.min(DIFFS[level.dm || 'normal'].hpMax, dog.hp + 1); floatText('❤️ +1', dog.x, dog.y + 2, dog.z, { h: .55, color: '#ff8a80' }); }
+      else if (h.kind === 'water') { dog.stamina = 100; dog.staT = 15; }
+      else if (h.kind === 'whistle') { for (const p of people) if (p.villain && !p.dead && !p.arrested && Math.hypot(p.x - dog.x, p.z - dog.z) < 25) p.stun = Math.max(p.stun, 5); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(0xbfe9ff), WHITE], 40, 6); tone(1568, .25, 'sine', .07); }
+      else if (h.kind === 'magnet') dog.magT = 15;
       else dog.boneT = 20;
-      toast(t(HELP_KINDS[h.kind].label));
+      toast(HELP_KINDS[h.kind].msg || t(HELP_KINDS[h.kind].label));
     }
   }
-  dog.noseT = Math.max(0, (dog.noseT || 0) - dt); dog.boneT = Math.max(0, (dog.boneT || 0) - dt); dog.autoSniffT = Math.max(0, (dog.autoSniffT || 0) - dt);
+  dog.noseT = Math.max(0, (dog.noseT || 0) - dt); dog.boneT = Math.max(0, (dog.boneT || 0) - dt); dog.autoSniffT = Math.max(0, (dog.autoSniffT || 0) - dt); dog.staT = Math.max(0, (dog.staT || 0) - dt); dog.magT = Math.max(0, (dog.magT || 0) - dt);
   updateGiant(dt);
 }
 // 슈퍼 간식: 탐지견·핸들러가 30% 커지고(부드럽게) 무적·조금 빨라짐, 끝나기 2초 전부터 깜빡여 알려 준다
@@ -6354,7 +6389,7 @@ function updateHelp(dt) {
   helpT -= dt; if (helpT > 0) return; helpT = 30;
   const live = balls.filter(b => !b.got).length;
   if (Math.random() < .4 && helps.filter(h => !h.got).length < Math.round(5 + (level.sz - 1) * 3.6)) { spawnHelpItem(pick2(Object.keys(HELP_KINDS))); return; }
-  if ((!xray || xray.got) && Math.random() < .45) { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; toast(t('ts_newx')); } return; }
+  if ((!xray || xray.got) && Math.random() < .45) { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const tg = textSprite('📡 X-RAY', { h: .3 }); tg.position.y = .55; g.add(tg); xray = { x: p.x, z: p.z, got: false, m: g }; toast(t('ts_newx')); } return; }
   if (live < Math.round(3 + (level.sz - 1) * 8)) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) { balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); toast(t('ts_newball')); } }
 }
 function updateLeak(dt) {
@@ -6762,7 +6797,7 @@ function updateDog(dt) {
   const len = Math.hypot(mx, mz); if (len > 1) { mx /= len; mz /= len; }
   dog.sniffing = !!(keys.KeyE || touchIn.sniff || (autoOn && auto.sniff)) && dog.grounded;
   const sprint = (keys.ShiftLeft || (!twoP && keys.ShiftRight) || touchIn.run || Math.hypot(touchIn.x, touchIn.y) > .93 || (autoOn && auto.run)) && dog.stamina > 3 && len > .1 && !dog.sniffing;
-  dog.stamina = clamp(dog.stamina + (sprint ? -24 * (1.4 - .1 * ST().sta) * (handlerJob === 'soldier' ? .8 : 1) : 14 * (.7 + .1 * ST().sta)) * dt, 0, 100);
+  dog.stamina = clamp(dog.stamina + (sprint && !(dog.staT > 0) ? -24 * (1.4 - .1 * ST().sta) * (handlerJob === 'soldier' ? .8 : 1) : 14 * (.7 + .1 * ST().sta)) * dt, 0, 100);
   dog.boost -= dt; dog.hurt -= dt;
   const maxSp = (dog.swim ? (handlerJob === 'rescue' ? .87 : .62) : 1) * 1.07 * (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (dog.giantT > 0 ? 1.2 : 1) * (.85 + .06 * ST().spd) * (level ? 1 + (level.sz - 1) * .22 : 1);
   const k = 1 - Math.exp(-dt * (dog.grounded ? 10 : 3));
@@ -7120,11 +7155,11 @@ function showGoalBig() {
 function updateCoins(dt) {
   updateGuide(dt);
   updateSniffMarks(dt);
-  const R = 1.2 + (wallet.up.magnet || 0);
+  const R = 1.2 + (wallet.up.magnet || 0) + (dog.magT > 0 ? 6 : 0);
   for (let i = coins.length - 1; i >= 0; i--) {
     const c = coins[i]; c.m.rotation.z = time * 3 + c.ph; c.m.position.y = c.y + Math.sin(time * 2.5 + c.ph) * .12;
     const d = Math.hypot(c.x - dog.x, c.z - dog.z);
-    if (d < R + 2 && d > .5 && (wallet.up.magnet || 0) > 0) { c.x += (dog.x - c.x) * Math.min(1, dt * 4); c.z += (dog.z - c.z) * Math.min(1, dt * 4); c.m.position.x = c.x; c.m.position.z = c.z; }
+    if (d < R + 2 && d > .5 && ((wallet.up.magnet || 0) > 0 || dog.magT > 0)) { c.x += (dog.x - c.x) * Math.min(1, dt * 4); c.z += (dog.z - c.z) * Math.min(1, dt * 4); c.m.position.x = c.x; c.m.position.z = c.z; }
     if (d < R && Math.abs((dog.y + .5) - c.y) < 2.2) {
       world.remove(c.m); coins.splice(i, 1); wallet.coins += c.v; store.set(walletKey(), wallet);
       floatText('+' + c.v + ' 🪙', c.x, c.y + 1, c.z, { h: c.v >= 30 ? .55 : .42, color: c.v >= 30 ? '#ffd54f' : c.v >= 10 ? '#e6edf3' : '#e0a060' });
@@ -7288,7 +7323,7 @@ const I18N_EL = [
   [() => $('breeds').previousElementSibling, 'ls_breed'], [() => $('jobs').previousElementSibling, 'ls_hand'], [() => $('btnLogin'), 'ls_login'], [() => $('topTxt'), 'ls_top'],
   [() => $('lsAd'), 'ls_ad'], [() => $('lsNote'), 'ls_note'],
   [() => $('agreeTxt'), 'agree'], [() => $('ageTxt'), 'age'],
-  [() => $('maps').querySelector('h1'), 'mp_h1'], [() => $('mapsIntro'), 'mp_p'], [() => $('btnRankOpen'), 'b_rank'], [() => $('btnLogout'), 'b_logout'], [() => $('btnResume'), 'b_resume'], [() => $('btnRestartMap'), 'b_restart'],
+  [() => $('maps').querySelector('h1'), 'mp_h1'], [() => $('mapsIntro'), 'mp_p'], [() => $('btnRankOpen'), 'b_rank'], [() => $('btnLogout'), 'b_logout'], 
   [() => $('howto').querySelector('.sub'), 'ht_sub'], [() => $('howto').querySelector('h1'), 'ht_h1'], [() => $('howto').querySelectorAll('p')[0], 'ht_p'], [() => $('howto').querySelectorAll('p')[1], 'ht_rules'], [() => $('btnHowtoOk'), 'ht_ok'],
   [() => $('btnNext'), 'cl_next'], [() => $('btnToMaps'), 'cl_maps'], [() => $('rank').querySelector('.sub'), 'rk_sub'], [() => $('rank').querySelector('h1'), 'rk_h1'], [() => $('btnRankClose'), 'rk_close'],
   [() => $('win').querySelector('.sub'), 'wn_sub'], [() => $('win').querySelector('h1'), 'wn_h1'], [() => $('btnHidden'), 'wn_hidden'], [() => $('btnWinMaps'), 'wn_maps'],
