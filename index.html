@@ -56,7 +56,7 @@
 :root{--gold:#f4c542;--navy:#173a5e;--panel:rgba(12,28,44,.84);--bg:#0e1a24;--fg:#fff;--card:#fffaf0;--ink:#2b2b2b;--muted:#7a6a4a;
  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);color-scheme:dark}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:'Noto Sans KR',system-ui,sans-serif;color:var(--fg);touch-action:none;user-select:none;-webkit-user-select:none}
-#game{position:fixed;inset:0}#game canvas{display:block}
+#game{position:fixed;inset:0}#game canvas{display:block;width:100%!important;height:100%!important}
 .hud{position:fixed;pointer-events:none;z-index:5}
 #quest{top:calc(12px + var(--st));left:calc(12px + var(--sl));width:min(300px,calc(100vw - 196px));background:var(--panel);border:2px solid var(--gold);border-radius:14px;padding:10px 14px;box-sizing:border-box}
 #qzone{font-size:12px;color:var(--gold);font-weight:700}
@@ -596,7 +596,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1349';
+const BUILD = '20261031-1359';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -933,7 +933,11 @@ const skyScene = new THREE.Scene(); skyScene.add(sky);
 const envSky = pmrem.fromScene(skyScene, 0, 0.1, 1000).texture;
 skyScene.remove(sky);
 
-const fitScreen = () => { const w = innerWidth, h = innerHeight; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h); };
+// 3D 화면 크기는 실제 게임 영역 크기로 맞춘다 (주소창·전체화면 전환 중 잘못된 창 크기로 작아지는 것 방지)
+const gameBox = () => renderer.domElement.parentElement || document.body;
+const fitScreen = () => { const b = gameBox(), w = b.clientWidth || innerWidth, h = b.clientHeight || innerHeight; if (!w || !h) return; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h); };
+{ setInterval(() => { const b = gameBox(), cv = renderer.domElement, pr = renderer.getPixelRatio(); if (Math.abs(cv.width - Math.floor(b.clientWidth * pr)) > 2 || Math.abs(cv.height - Math.floor(b.clientHeight * pr)) > 2) fitScreen(); }, 400); if (window.ResizeObserver) new ResizeObserver(() => fitScreen()).observe(gameBox()); }
+for (const ev of ['fullscreenchange', 'webkitfullscreenchange']) document.addEventListener(ev, () => { fitScreen(); setTimeout(fitScreen, 300); setTimeout(fitScreen, 1000); });
 addEventListener('resize', fitScreen);
 // 휴대폰을 돌린 직후에는 크기가 늦게 바뀌는 경우가 있어 조금 뒤에 다시 맞춘다
 for (const ev of ['orientationchange', 'pageshow']) addEventListener(ev, () => { fitScreen(); setTimeout(fitScreen, 300); setTimeout(fitScreen, 900); });
