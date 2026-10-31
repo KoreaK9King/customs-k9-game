@@ -234,6 +234,8 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 @media (orientation:landscape) and (max-height:540px){.ss-logo{max-height:40px}.ss-title{font-size:min(9vh,64px);margin:0}.ss-run{height:44px;margin-bottom:6px}.ss-dog{font-size:32px}.ss-bag{font-size:26px}#btnStart{font-size:24px;padding:8px 34px}.ss-note{margin-top:8px}}
 #loadingScreen{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#21578c 0%,#122f4d 60%,#0b1f33 100%);color:#fff;text-align:center;font-family:Jua,sans-serif;padding:16px;box-sizing:border-box}
 #loadingScreen.hidden{display:none}
+/* 클리어·승리 화면 버튼은 카드가 넘쳐도 항상 아래에 보이게 */
+#win .card>.row:last-child,#clear .card>.row:last-child{position:sticky;bottom:0;background:var(--card);padding:6px 0 2px;z-index:1}
 .ld-ic{font-size:56px;animation:ssBob 1s ease-in-out infinite}.ld-t{font-size:min(6vw,30px);margin:6px 0 12px}
 .ld-bar{width:min(70vw,420px);height:16px;margin:0 auto;background:rgba(255,255,255,.15);border-radius:10px;overflow:hidden;border:2px solid rgba(255,255,255,.3)}
 .ld-fill{height:100%;width:0;background:linear-gradient(90deg,#f4c542,#ff9a3c);border-radius:8px;transition:width .25s}
@@ -496,7 +498,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031013513';
+const BUILD = '20261031-1324';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4485,12 +4487,13 @@ const scaleNums = t => level && level.sz > 1.05 ? t.replace(/(\d+)(개|정|명)/
 const LOAD_TIPS = ['💥 점프를 3번 하면 공중 덤블링! 착지하면 쿵! 주변 범인을 공격해요', '👃 [E]·[킁킁]을 누르고 있으면 숨긴 물건 냄새가 길을 알려 줘요', '🪙 맵 곳곳의 코인을 모아 업그레이드 상점에서 탐지견을 키워요', '👥 팀 방을 만들면 친구 5명까지 같은 맵을 함께 수색해요', '🦴 뼈다귀를 던지면 도망가는 범인을 멈출 수 있어요', '❤️ 하트 공을 먹으면 체력이 회복돼요', '📞 실제로 수상한 밀수품을 보면 ☎ 125 (관세청 밀수신고센터)', '🏊 바다가 있는 맵에서는 탐지견과 핸들러가 함께 수영할 수 있어요', '🛃 해외여행에서 산 물건이 면세 한도를 넘으면 세관에 자진신고해요', '🐕 진짜 관세청 탐지견은 마약·총기 냄새를 찾도록 훈련받아요'];
 function startLevel(i) {
   if (!startLevel.go && LEVELS[i]) {
+    if (startLevel.busy) return; // 연타로 같은 맵을 두 번 불러오지 않게
+    startLevel.busy = true; setTimeout(() => startLevel.busy = false, 400);
     const L = LEVELS[i], ld = $('loadingScreen'), fill = $('ldFill');
     $('ldIcon').textContent = L.icon || '🗺'; $('ldTitle').textContent = lang === 'ko' ? (L.name + '(으)로 출동 중…') : ((t('m' + i) || L.name) + ' 🚓 GO!'); $('ldTip').textContent = '💡 ' + pick2(LOAD_TIPS);
     fill.style.transition = 'none'; fill.style.width = '0'; ld.classList.remove('hidden');
     setTimeout(() => { fill.style.transition = ''; fill.style.width = '45%'; setTimeout(() => {
-      const t0 = performance.now(); startLevel.go = true; try { startLevel(i); } finally { startLevel.go = false; }
-      fill.style.width = '100%'; setTimeout(() => ld.classList.add('hidden'), Math.max(250, 700 - (performance.now() - t0)));
+      const t0 = performance.now(); startLevel.go = true; try { startLevel(i); } catch (err) { console.error(err); showMaps(); } finally { startLevel.go = false; fill.style.width = '100%'; setTimeout(() => ld.classList.add('hidden'), Math.max(250, 700 - (performance.now() - t0))); }
     }, 80); }, 30);
     return;
   }
@@ -4796,14 +4799,18 @@ async function goFull() { const el = document.documentElement; try { if (!docume
 $('tbFull').onclick = () => { if (canFull) goFull(); else toast('📲 아이폰은 공유(⬆) → 홈 화면에 추가 → 아이콘으로 실행하면 전체 화면이에요'); };
 const appMode = () => matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches || navigator.standalone;
 let fullTry = 0;
-if (isMobile && canFull) addEventListener('pointerup', () => { if (appMode() || document.fullscreenElement || document.webkitFullscreenElement || !$('startScreen').classList.contains('hidden') || performance.now() - fullTry < 15000) return; fullTry = performance.now(); goFull(); }, { passive: true });
+if (isMobile && canFull) addEventListener('pointerup', e => { if (e.target.closest?.('button, a, input, label') || appMode() || document.fullscreenElement || document.webkitFullscreenElement || !$('startScreen').classList.contains('hidden') || performance.now() - fullTry < 15000) return; fullTry = performance.now(); goFull(); }, { passive: true });
 if (!isMobile) document.body.classList.add('pc');
 $('bars').appendChild($('info')); $('bars').prepend($('qsum'));
 $('tbMenu').onclick = () => $('topbar').classList.toggle('open');
 for (const b of document.querySelectorAll('#topbar button:not(#tbMenu)')) b.addEventListener('click', () => $('topbar').classList.remove('open'));
 { let tapT = 0;
-  document.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') return; const b = e.target.closest && e.target.closest('#topbar button, #mmToggle'); if (!b) return; e.preventDefault(); tapT = performance.now(); b.click(); }, true);
-  document.addEventListener('click', e => { if (e.isTrusted && performance.now() - tapT < 600 && e.target.closest && e.target.closest('#topbar button, #mmToggle')) { e.stopPropagation(); e.preventDefault(); } }, true); }
+  // 터치 탭이 click으로 이어지지 않는 기기(전체화면 전환·화면 갱신 중 탭 유실)를 위해 손을 뗄 때 바로 누른다 — 상단바와 클리어·승리 화면 버튼
+  const TAP = '#topbar button, #mmToggle, #clear button, #win button';
+  let down = null;
+  document.addEventListener('pointerdown', e => { down = e.pointerType === 'touch' ? { x: e.clientX, y: e.clientY, b: e.target.closest && e.target.closest(TAP) } : null; }, true);
+  document.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') return; const b = e.target.closest && e.target.closest(TAP); if (!b || b.disabled || !down || down.b !== b || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 14) return; e.preventDefault(); tapT = performance.now(); b.click(); }, true);
+  document.addEventListener('click', e => { if (e.isTrusted && performance.now() - tapT < 600 && e.target.closest && e.target.closest(TAP)) { e.stopPropagation(); e.preventDefault(); } }, true); }
 // 랭킹은 늘 최신으로: 화면에 보이는 랭킹을 15초마다·새 사람이 들어올 때 새로 받아온다
 async function refreshRanks() {
   try {
@@ -4871,7 +4878,7 @@ $('btnHomeStart').onclick = async () => { pausedGame = false; await showLogin();
 $('btnLogout').onclick = showLogin;
 $('btnRankOpen').onclick = openRank;
 $('dok').onclick = closeDialog;
-$('btnNext').onclick = () => { if (level && level.landmark) { const n = levelIdx + 1 < LEVELS.length && !LEVELS[levelIdx + 1].mega ? levelIdx + 1 : LANDMARK_START; startLevel(n); return; } const n = [0, 1, 2, 3, 4].find(k => !runCleared.has(k)); startLevel(n ?? 5); };
+$('btnNext').onclick = () => { if (level && level.landmark) { const n = levelIdx + 1 < LEVELS.length && !LEVELS[levelIdx + 1].mega ? levelIdx + 1 : LANDMARK_START; startLevel(n); return; } const n = [1, 2, 3, 4, 5].map(d => (levelIdx + d) % 5).find(k => !runCleared.has(k)); startLevel(n ?? 5); };
 $('btnToMaps').onclick = showMaps;
 $('btnHidden').onclick = () => startLevel(LEVELS.findIndex(L => L.hidden));
 $('btnWinMaps').onclick = () => { runActive = false; showMaps(); };
