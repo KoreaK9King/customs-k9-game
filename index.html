@@ -107,7 +107,7 @@ html body #mmwrap.big #info,html body #mmwrap.big #mmToggle{display:none!importa
 body.touch #tut{top:calc(118px + var(--st))}
 @media (max-height:520px){#tut,body.touch #tut{top:calc(108px + var(--st));width:min(330px,calc(100vw - 32px));padding:5px 10px 7px;border-radius:12px}#tutTxt{font-size:14px;margin:0 0 5px}#tutStep{font-size:11px}}
 #annBanner{position:fixed;left:50%;top:calc(140px + var(--st));transform:translateX(-50%);z-index:14;display:none;background:#13335a;color:#fff;border:3px solid #f4c542;border-radius:14px;padding:8px 18px;font-family:Jua,sans-serif;font-size:19px;white-space:nowrap;max-width:94vw;overflow:hidden;text-overflow:ellipsis;box-shadow:0 4px 0 rgba(0,0,0,.35);pointer-events:none}
-#annBanner.show{display:block}
+#annBanner.show{display:block}html body #annBanner{font-size:11px!important;padding:2px 9px!important;top:calc(4px + var(--st))!important;background:rgba(19,51,90,.5)!important;border:1px solid rgba(244,197,66,.55)!important;border-radius:9px!important;opacity:.8;pointer-events:none;z-index:7;animation:annIn .2s}@keyframes annIn{from{opacity:0}}
 @media (max-width:700px){#annBanner{font-size:13px;padding:5px 10px;top:calc(84px + var(--st))}}
 #coverTitle{position:fixed;z-index:40;left:0;right:0;top:7%;text-align:center;font-family:Jua,sans-serif;pointer-events:none}
 #coverTitle .ct1{font-size:min(11vw,92px);color:#fff;text-shadow:0 6px 0 #13335a,0 0 24px rgba(0,0,0,.5)}
@@ -704,7 +704,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-0045';
+const BUILD = '20261101-0058';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1743,7 +1743,7 @@ function arrivalsCurb(L) {
 // ── 공항 승객 흐름 공용 장치 ──
 // 승객은 단계(steps)를 차례로 수행한다: ['go', 경유점들] 걷기 · ['q', 줄] 줄서서 차례 기다리기 · ['wait', 초, 말]
 // ['talk', 말목록] 혼잣말 바꾸기 · ['fn', p => 단계들] 그때그때 정하기 · ['end', p => 넘겨받았는지] 퇴장
-function annBanner(txt) { const b = $('annBanner'); b.textContent = trK(txt); b.classList.add('show'); clearTimeout(annBanner.t); annBanner.t = setTimeout(() => b.classList.remove('show'), 6500); }
+function annBanner(txt) { const b = $('annBanner'); b.textContent = trK(txt); b.classList.add('show'); clearTimeout(annBanner.t); annBanner.t = setTimeout(() => b.classList.remove('show'), 1700); }
 function paxQueue(sx, sz, dx, dz, gap, cap, face, tSrv, onFront) { return { sx, sz, dx, dz, gap, cap, face, tSrv, onFront, list: [], slot(i) { return [sx + dx * gap * i, sz + dz * gap * i]; } }; }
 function paxSystem(cap) {
   if (lowGfx) cap = Math.round(cap * .55);
@@ -1826,7 +1826,7 @@ function ferryCrowd(L) {
       else if (o.st === 'leave') { g.position.x += (g.position.x - o.dock + 2 * Math.sign(o.from)) * dt * .35; if (Math.abs(g.position.x - o.dock) > Math.abs(o.from - o.dock)) { o.st = 'away'; o.t = rr(12, 30); g.visible = false; } }
       else if (o.st === 'away' && o.t <= 0) { o.st = 'come'; g.visible = true; g.position.x = o.from; }
       else if (o.st === 'come') { const d = o.dock - g.position.x; g.position.x += Math.sign(d) * Math.max(1.5, Math.min(22, Math.abs(d) * .4)) * dt; if (Math.abs(d) < .3) { g.position.x = o.dock; o.st = 'dock';
-        if (o.kind === 'in') { o.left = Math.round(rr(50, 130)); o.t = 15; o.st2 = 0; annBanner('🛳 ' + pick(FERRY_CITY) + '발 한중 카페리 입항 · 관광객 ' + o.left + '명 하선'); toast('🛳 카페리 도착! 관광객들이 하선해서 세관 검사대로 와요'); }
+        if (o.kind === 'in') { o.left = Math.round(rr(50, 130)); o.t = 15; o.st2 = 0; annBanner('🛳 ' + pick(FERRY_CITY) + '발 한중 카페리 입항 · 관광객 ' + o.left + '명 하선'); }
         else { o.t = rr(45, 75); annBanner('🛳 ' + pick(FERRY_CITY) + '행 카페리 승선 시작 · 승선 게이트로 오세요'); } } }
       g.position.y = Math.sin(time * .8 + o.dock) * .12;
       if (o.kind === 'in' && o.st === 'dock' && o.left > 0) { o.st2 -= dt; while (o.st2 <= 0 && o.left > 0 && S.n < S.cap) { o.st2 += .3; o.left--; S.add(pick(['tourist', 'tourist', 'civ', 'merchant']), -40 + rr(-2, 2), -34.6, arrive(), { dir: 0 }); } if (o.st2 < 0) o.st2 = 0; } }
@@ -1962,7 +1962,7 @@ function arrivalsCrowd(L) {
     waveT -= dt;
     if (waveT <= 0) { waveT = rr(14, 40);
       if (waves.length < 2) { const [code, city] = pick(FLIGHTS_IN.filter(f => !waves.some(w => w.code === f[0]))), n = Math.round(rr(120, 200)), br = waves.length ? BR.filter(x => !waves[0].br.includes(x)).concat(pick(BR)) : (k => BR.filter((_, j) => j !== k))(Math.floor(Math.random() * 3)).slice(0, Math.random() < .5 ? 1 : 2);
-        waves.push({ code, left: n, t: 0, br }); annBanner('🛬 ' + code + ' ' + city + '발 항공편 도착 · 승객 ' + n + '명 입국' + (waves.length > 1 ? ' (현재 비행기 2대 도착)' : '')); toast('🛬 ' + city + '발 비행기 도착! 승객 ' + n + '명이 세관 검사대로 몰려와요'); } }
+        waves.push({ code, left: n, t: 0, br }); annBanner('🛬 ' + code + ' ' + city + '발 항공편 도착 · 승객 ' + n + '명 입국' + (waves.length > 1 ? ' (현재 비행기 2대 도착)' : '')); } }
     for (let wi = waves.length - 1; wi >= 0; wi--) { const w = waves[wi]; w.t -= dt;
       while (w.t <= 0 && w.left > 0 && S.n < S.cap) { w.t += .18; w.left--; const x = pick(w.br) + rr(-1.4, 1.4), p = S.add(Math.random() < .75 ? 'civ' : 'tourist', x, spawnZ(Math.round(x)), [['talk', ARR_TALK.walk], ['go', [[x, -26.6]]], ['fn', steps]], { dir: 0 }); if (p && Math.random() < .25) S.say(p, pick(ARR_TALK.walk)); }
       if (w.t < 0) w.t = 0; if (w.left <= 0) waves.splice(wi, 1); }
@@ -6925,6 +6925,7 @@ function loadLevel(i) {
   const pool = [...level.search].sort(() => rnd() - .5);
   const spreadPick = () => { let bi = pool.length - 1, bd = -1; for (let q = 0; q < Math.min(14, pool.length); q++) { const i = Math.floor(rnd() * pool.length), p = center(pool[i]), d = hidden.length ? Math.min(...hidden.map(h => { const o = center(h); return Math.hypot(o.x - p.x, o.z - p.z); })) : rnd(); if (d > bd) { bd = d; bi = i; } } return pool.splice(bi, 1)[0]; };
   for (const [type, n0] of Object.entries(def.hide)) for (let k = 0, n = Math.max((level.need[type] || 0) + 1, Math.ceil(n0 * (1 + (level.sz - 1) * .55))); k < n && pool.length; k++) { const c = spreadPick(); c.hidden = type; hidden.push(c); }
+  if (!def.relax && level.swimSea && level.poly) seaDrugs();
   // 초기화
   lvStats = { drug: 0, gun: 0, smuggler: 0, boss: 0 };
   Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: Math.min(DIFFS[diffMode].hpMax, Math.max(DIFFS[diffMode].hp + Math.ceil((UPL().heart || 0) / 2), dog.hp || 0)), boost: 0, hurt: 0, fetch: null, idleT: 0, jumps: 0, prop: null, prevIdle: null });
@@ -6937,6 +6938,24 @@ function loadLevel(i) {
   deZFight(); renderQuest(); playMusic(def.music);
 }
 
+// 바다 밀수: 해안에서 4~22m 떨어진 바다에 떠 있는 꾸러미 5~7개, 그중 2~3개는 마약
+function seaDrugs() {
+  const b = level.bounds, n = 5 + Math.floor(rnd() * 3), nDrug = 2 + (rnd() < .5 ? 1 : 0), made = [];
+  for (let t = 0; t < 400 && made.length < n; t++) {
+    const x = rr(b.minX - 22, b.maxX + 22), z = rr(b.minZ - 22, b.maxZ + 22), d = distToPoly(level.poly, x, z);
+    if (!inSea(x, z) || d < 4 || d > 22 || made.some(m => Math.hypot(m.x - x, m.z - z) < 14)) continue;
+    const [g, c] = pushGroup(x, z, 1.2, 1.2, .6, '🌊 바다에 떠 있는 꾸러미'); c.pushable = false;
+    const wrap = mesh(RBOX(.9, .45, .7, .08), MAT.col(0x1c1f24, .35), 0, .1, 0, g); wrap.rotation.y = rr(0, 3);
+    for (const dx of [-.22, .22]) mesh(BOX(.06, .47, .72), MAT.col(0xd8c040, .5), dx, .1, 0, g);
+    const buoy = mesh(SPH(.28, 12, 8), MAT.col(0xff6a1a, .4), .62, .05, .3, g);
+    mesh(BOX(.03, .7, .03), MAT.col(0x333333, .6), .62, .45, .3, g); mesh(BOX(.28, .18, .02), MAT.col(0xff2a2a, .6), .76, .72, .3, g);
+    const tx = textSprite('🌊 떠다니는 꾸러미', { h: .38, bg: 'rgba(19,51,90,.85)' }); tx.position.y = 1.3; g.add(tx);
+    const ph = rr(0, 6); g.position.y = -.42; envAnim.push(() => { g.position.y = -.42 + Math.sin(time * 1.6 + ph) * .08; g.rotation.z = Math.sin(time * 1.1 + ph) * .08; buoy.position.y = .05 + Math.sin(time * 2 + ph) * .04; });
+    made.push({ x, z, c }); level.search.push(c);
+  }
+  made.sort(() => rnd() - .5).slice(0, nDrug).forEach(m => { m.c.hidden = 'drug'; hidden.push(m.c); });
+  if (made.length) setTimeout(() => { if (level && state === 'play') toast('🌊 바다에 수상한 꾸러미가 떠 있어요! 헤엄쳐 가서 킁킁 맡아 보세요'); }, 6000);
+}
 const scaleNums = t => level && level.sz > 1.05 ? t.replace(/(\d+)(개|정|명)/g, (m, n, u) => Math.ceil(+n * (1 + (level.sz - 1) * .42)) + u) : t;
 const LOAD_TIPS = ['💥 점프를 3번 하면 공중 덤블링! 착지하면 쿵! 주변 범인을 공격해요', '👃 [E]·[킁킁]을 누르고 있으면 숨긴 물건 냄새가 길을 알려 줘요', '🪙 맵 곳곳의 코인을 모아 업그레이드 상점에서 탐지견을 키워요', '👥 팀 방은 최대 20명! 통합 도시는 한 반 20명이 모두 함께, 일반 맵은 5명씩 함께 수색해요', '🦴 뼈다귀를 던지면 도망가는 범인을 멈출 수 있어요', '❤️ 하트 공을 먹으면 체력이 회복돼요', '📞 실제로 수상한 밀수품을 보면 ☎ 125 (관세청 밀수신고센터)', '🏊 바다가 있는 맵에서는 탐지견과 핸들러가 함께 수영할 수 있어요', '🛃 해외여행에서 산 물건이 면세 한도를 넘으면 세관에 자진신고해요', '🐕 진짜 관세청 탐지견은 마약·총기 냄새를 찾도록 훈련받아요'];
 fetchWeather().then(() => { if (level && !level.wxApplied && !level.sunset) { level.wxApplied = true; applyTimeOfDay(true); } });
@@ -7357,7 +7376,8 @@ function dispName() { if (playerNick && !playerNick.includes('@')) return player
   $('mmwrap').addEventListener('click', e => {
     if (e.target.closest('#info') || e.target.closest('#mmFold')) return; const w = $('mmwrap');
     if (w.classList.contains('big')) return mmBig(false);
-    if (w.classList.contains('mini')) { w.classList.remove('mini'); save('mm', 'open'); return; }
+    // [지도 보기]든 작은 지도든 누르면 바로 큰 지도
+    if (w.classList.contains('mini')) { w.classList.remove('mini'); save('mm', 'open'); }
     mmBig(true);
   }); }
 // 개인정보 안내를 끝까지 읽어야 [필수] 동의에 체크할 수 있다 (이미 동의해 저장된 경우는 그대로)
@@ -7448,15 +7468,21 @@ for (const b of document.querySelectorAll('#topbar button:not(#tbMenu)')) b.addE
 { let tapT = 0;
   // 터치 탭이 click으로 이어지지 않는 기기(전체화면 전환·화면 갱신 중 탭 유실)를 위해 손을 뗄 때 바로 누른다 — 상단바와 클리어·승리 화면 버튼
   const TAP = '#topbar button, #mmFold, #mmToggle, #mmwrap, #clear button, #win button';
-  let down = null;
+  let down = null, tapEl = null;
   document.addEventListener('pointerdown', e => {
     // 메뉴·지도 버튼은 손가락이 닿는 순간 누른다: iOS가 터치를 취소(pointercancel)해도 놓치지 않게
     const quick = e.pointerType === 'touch' && e.target.closest && !e.target.closest('#info') && e.target.closest('#topbar button, #mmFold, #mmToggle, #mmwrap');
-    if (quick) { e.preventDefault(); e.stopPropagation(); down = null; tapT = performance.now(); quick.click(); return; }
+    if (quick) { e.preventDefault(); e.stopPropagation(); down = null; tapT = performance.now(); tapEl = quick; quick.click(); return; }
+    tapEl = null;
     down = e.pointerType === 'touch' ? { x: e.clientX, y: e.clientY, b: e.target.closest && e.target.closest(TAP) } : null;
   }, true);
-  document.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') return; const b = e.target.closest && e.target.closest(TAP); if (!b || b.disabled || !down || down.b !== b || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 14) return; e.preventDefault(); tapT = performance.now(); b.click(); }, true);
-  document.addEventListener('click', e => { if (e.isTrusted && performance.now() - tapT < 600 && e.target.closest && e.target.closest(TAP)) { e.stopPropagation(); e.preventDefault(); } }, true); }
+  document.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') return; const b = e.target.closest && e.target.closest(TAP); if (!b || b.disabled || !down || down.b !== b || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 14) return; e.preventDefault(); tapT = performance.now(); tapEl = b; b.click(); }, true);
+  // 화면이 느리면 손가락을 뗀 뒤 click이 0.6초보다 늦게 와서 메뉴가 열렸다 바로 닫힌다: 방금 누른 그 버튼에 오는 click은 한 번 더 버린다
+  document.addEventListener('click', e => {
+    if (!e.isTrusted) return;
+    if (tapEl && performance.now() - tapT < 2500 && tapEl.contains(e.target)) { tapEl = null; e.stopPropagation(); e.preventDefault(); return; }
+    if (performance.now() - tapT < 600 && e.target.closest && e.target.closest(TAP)) { e.stopPropagation(); e.preventDefault(); }
+  }, true); }
 // 랭킹은 늘 최신으로: 화면에 보이는 랭킹을 15초마다·새 사람이 들어올 때 새로 받아온다
 async function refreshRanks() {
   try {
@@ -7622,7 +7648,12 @@ function useHelp(kind) {
 function toastNow(msg) { toastQ.unshift(trK(msg)); toastT = 0; }
 function useHelp0(kind) {
   const hpMax = Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7);
-  if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax) { toast('❤️ 하트가 꽉 찼어요! 하트가 줄었을 때 쓰세요'); return; }
+  // 하트가 꽉 찼을 때 누른 구급상자·하트 공은 방탄 보호막으로 바꿔 쓴다 (눌러도 아무 일 없던 문제)
+  if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax) {
+    bag[kind]--; renderBag(); saveBag(); SFX.found(); $('bagBox').classList.remove('open');
+    dog.shield = Math.min(2, (dog.shield || 0) + 1); floatText('🛡 하트 가득 → 보호막!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#9fd3ff' });
+    toastNow('🛡 하트가 꽉 차서 방탄 보호막으로 바꿨어요! 공격 한 번을 막아 줘요'); return;
+  }
   bag[kind]--; renderBag(); saveBag(); SFX.found(); $('bagBox').classList.remove('open');
   floatText(HELP_KINDS[kind].emoji + ' ' + HELP_KINDS[kind].name + ' 사용!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#ffe08a' }); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(HELP_KINDS[kind].col), WHITE], 25, 3);
   if (kind === 'ball') { dog.hp = Math.min(hpMax, dog.hp + 1); dog.boost = 6; floatText('🎾 ❤️ +1', dog.x, dog.y + 2, dog.z, { h: .55, color: '#ff8a80' }); toast('🎾 하트 공! 하트 +1, 잠깐 빨라져요'); return; }
