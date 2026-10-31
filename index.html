@@ -55,6 +55,11 @@
 /* 단일 다크 테마: 3D 캔버스 전체화면 + 가장자리 HUD + 중앙 카드 오버레이 */
 :root{--gold:#f4c542;--navy:#173a5e;--panel:rgba(12,28,44,.84);--bg:#0e1a24;--fg:#fff;--card:#fffaf0;--ink:#2b2b2b;--muted:#7a6a4a;
  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);color-scheme:dark}
+/* 게임 중 확대·텍스트 선택·복사 메뉴 막기 (이름 입력칸 제외) */
+*{-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+*:not(input):not(textarea):not([contenteditable]){-webkit-user-select:none;user-select:none}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+canvas{touch-action:none}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:'Noto Sans KR',system-ui,sans-serif;color:var(--fg);touch-action:none;user-select:none;-webkit-user-select:none}
 #game{position:fixed;inset:0}#game canvas{display:block;width:100%!important;height:100%!important}
 .hud{position:fixed;pointer-events:none;z-index:5}
@@ -630,7 +635,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1536';
+const BUILD = '20261031-1616';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -5327,6 +5332,16 @@ const ptrEnd = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null;
 cvs.addEventListener('pointerup', ptrEnd); cvs.addEventListener('pointercancel', ptrEnd);
 cvs.addEventListener('wheel', e => { camDist = clamp(camDist + e.deltaY * .012, 4.5, 42); }, { passive: true });
 cvs.addEventListener('contextmenu', e => e.preventDefault());
+{ // 휴대폰: 두 손가락 확대, 두 번 탭 확대, 길게 눌러 복사 메뉴, 텍스트 선택을 게임 전체에서 막는다 (입력칸은 허용)
+  const typing = e => e.target.closest && e.target.closest('input,textarea,[contenteditable]');
+  for (const ev of ['gesturestart', 'gesturechange', 'gestureend']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
+  document.addEventListener('touchmove', e => { if (e.touches.length > 1 || (e.scale && e.scale !== 1)) e.preventDefault(); }, { passive: false });
+  document.addEventListener('dblclick', e => { if (!typing(e)) e.preventDefault(); }, { passive: false });
+  document.addEventListener('contextmenu', e => { if (!typing(e)) e.preventDefault(); });
+  document.addEventListener('selectstart', e => { if (!typing(e)) e.preventDefault(); });
+  document.addEventListener('copy', e => { if (!typing(e)) e.preventDefault(); });
+  document.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+}
 // 마우스: 왼쪽 클릭(끌지 않고) = 왕왕 공격 · 가운데(휠) 버튼 누르고 있기 = 킁킁 · 오른쪽 클릭 = 뼈다귀 던지기 (왼쪽 끌기는 카메라 회전)
 const mDown = {};
 cvs.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; mDown[e.button] = { x: e.clientX, y: e.clientY }; if (e.button === 1) { e.preventDefault(); keys.KeyE = true; } if (e.button === 2 && state === 'play') throwBone(); });
