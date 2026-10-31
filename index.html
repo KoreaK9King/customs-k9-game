@@ -704,7 +704,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-0032';
+const BUILD = '20261101-0039';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -5803,7 +5803,7 @@ function cowDown(p) {
   wallet.coins += p.cowBoss ? 15 : 1; store.set(walletKey(), wallet);
   floatText((p.cowBoss ? '👑 젖소 대장 처치! +' : '🐄 처치! +') + pts, p.x, 3, p.z, { h: .5, color: '#ffd54f' });
   burst(p.x, 1, p.z, [WHITE, new THREE.Color(0x1a1a1a), RED], 30, 5);
-  if (Math.random() < (p.cowBoss ? 1 : .12)) spawnHelpItem(pick2(Object.keys(HELP_KINDS).filter(k => k !== 'ball')), { x: p.x, z: p.z });
+  if (Math.random() < (p.cowBoss ? 1 : .12)) spawnHelpItem(pick2(Object.keys(HELP_KINDS).filter(k => k !== 'ball' && (k !== 'star' || Math.random() < .5))), { x: p.x, z: p.z });
   cow.xp += Math.round((p.cowBoss ? 8 : 1) * (1 + .06 * cowUp.nose) * 10) / 10;
   { const hpMax = hpCap(), gain = p.cowBoss && cowUp.leak >= 10 ? 2 : (Math.random() < .02 * cowUp.leak ? 1 : 0);
     if (gain && dog.hp < hpMax) { dog.hp = Math.min(hpMax, dog.hp + gain); floatText('🩸 +' + gain, dog.x, dog.y + 2.4, dog.z, { h: .5, color: '#ff6b6b' }); } }
@@ -5829,7 +5829,7 @@ function cowTick(dt) {
   const alive = people.filter(p => p.cow && !p.arrested && !p.dead).length, cap = (isMobile || lowGfx) ? 24 : 40;
   if ((cow.spawnT -= dt) <= 0) { cow.spawnT = Math.max(.5, 2.4 - cow.wave * .15); const want = Math.min(cap, 8 + cow.wave * 3); for (let k = 0, n = 1 + Math.floor(cow.wave / 3); k < n && alive + k < want; k++) spawnCow(false); }
   if ((cow.bossT -= dt) <= 0) { cow.bossT = Math.max(22, 45 - cow.wave * 2); for (let k = 0; k < Math.min(4, 1 + Math.floor(cow.wave / 2)); k++) spawnCow(true); for (let k = 0; k < 4; k++) spawnCow(false); toastNow('👑 젖소 대장 무리가 솟아난다! (웨이브 ' + cow.wave + ')'); shake = .4; }
-  if ((cow.itemT -= dt) <= 0) { cow.itemT = 6; const a = Math.random() * 6.283, rad = mr(5, 14); spawnHelpItem(pick2(Object.keys(HELP_KINDS).filter(k => k !== 'ball')), { x: clamp(dog.x + Math.cos(a) * rad, level.bounds.minX + 2, level.bounds.maxX - 2), z: clamp(dog.z + Math.sin(a) * rad, level.bounds.minZ + 2, level.bounds.maxZ - 2) }); }
+  if ((cow.itemT -= dt) <= 0) { cow.itemT = 6; const a = Math.random() * 6.283, rad = mr(5, 14); spawnHelpItem(pick2(Object.keys(HELP_KINDS).filter(k => k !== 'ball' && (k !== 'star' || Math.random() < .5))), { x: clamp(dog.x + Math.cos(a) * rad, level.bounds.minX + 2, level.bounds.maxX - 2), z: clamp(dog.z + Math.sin(a) * rad, level.bounds.minZ + 2, level.bounds.maxZ - 2) }); }
   // 불기둥 함정
   for (const v of level.vents || []) {
     v.t += dt; const ph = v.t % v.per, warn = ph > v.per - 1.2, fire = ph < .5 && v.t > 1;
@@ -6844,7 +6844,7 @@ function loadLevel(i) {
   }
   { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); xray = null;
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY 스캐너', { h: .46 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
-  clearSniffMarks(); setupCoins(); helps = []; dog.shield = 0; dog.staT = 0; dog.magT = 0; dog.noseT = 0; dog.boneT = 0; dog.autoSniffT = 0; dog.giantT = 0; giantS = 1; dogM.g.scale.setScalar(BREEDS[dogBreed]?.scale || 1); handlerM.g.scale.setScalar(1); if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
+  clearSniffMarks(); setupCoins(); helps = []; dog.shield = 0; dog.staT = 0; dog.magT = 0; dog.noseT = 0; dog.boneT = 0; dog.autoSniffT = 0; dog.giantT = 0; dog.starT = 0; giantS = 1; dogM.g.scale.setScalar(BREEDS[dogBreed]?.scale || 1); handlerM.g.scale.setScalar(1); if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
   helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
   if (mp && mp.room !== i) mpLeave(); keepAwake(); if (team) team.picked = i; if (playerId) { mpJoin(); lobbyJoin(); setTimeout(lobbyTrack, 300); }
   if (people.some(p => p.look && p.villain)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
@@ -6946,6 +6946,7 @@ function stackTopHud() {
 function addScore(n) { levelScore = Math.max(-500, levelScore + n); }
 function damage() {
   if (dog.hurt > 0 || state !== 'play') return;
+  if (dog.starT > 0) { dog.hurt = .3; return; }
   if (dog.giantT > 0) { dog.hurt = .6; floatText('🌟 무적!', dog.x, dog.y + 2.2, dog.z, { h: .45, color: '#ffd23f' }); return; }
   if (hiddenVip) { dog.hurt = .8; floatText('🛡 관리자 무적', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#ffd54f' }); return; }
   if (dog.shield > 0) { dog.shield--; dog.hurt = .8; floatText(t('ts_blocked'), dog.x, dog.y + 1.8, dog.z, { h: .5, color: '#7fd3ff' }); burst(dog.x, dog.y + .8, dog.z, [new THREE.Color(0x7fd3ff)], 20, 3); return; }
@@ -7354,7 +7355,7 @@ $('tbLow').classList.toggle('on', lowGfx);
 $('tbLow').onclick = () => { setLowGfx(!lowGfx); toast(lowGfx ? '🐢 저사양 모드 켬 · 화질을 낮추고 그림자를 껐어요 (사람 수는 다음 맵부터 줄어요)' : '✨ 저사양 모드 끔 · 원래 화질로 돌아왔어요'); };
 // 플레이 중 계속 느리면 (초당 20프레임 미만이 두 번 연속) 저사양 모드를 한 번 권한다
 const fpsMon = { n: 0, t0: 0, slow: 0, told: false };
-const BUFFS = [['noseT', '👃'], ['autoSniffT', '👃✨'], ['boneT', '🦴'], ['giantT', '🌟'], ['staT', '🥤'], ['magT', '🧲'], ['boost', '⚡']];
+const BUFFS = [['starT', '⭐'], ['noseT', '👃'], ['autoSniffT', '👃✨'], ['boneT', '🦴'], ['giantT', '🌟'], ['staT', '🥤'], ['magT', '🧲'], ['boost', '⚡']];
 let buffT = 0, buffHtml = '';
 function buffTick(dt) {
   if ((buffT -= dt) > 0) return; buffT = .25;
@@ -7376,15 +7377,21 @@ for (const b of document.querySelectorAll('#topbar button:not(#tbMenu)')) b.addE
 { let tapT = 0;
   // 터치 탭이 click으로 이어지지 않는 기기(전체화면 전환·화면 갱신 중 탭 유실)를 위해 손을 뗄 때 바로 누른다 — 상단바와 클리어·승리 화면 버튼
   const TAP = '#topbar button, #mmFold, #mmToggle, #mmwrap, #clear button, #win button';
-  let down = null;
+  let down = null, tapEl = null;
   document.addEventListener('pointerdown', e => {
     // 메뉴·지도 버튼은 손가락이 닿는 순간 누른다: iOS가 터치를 취소(pointercancel)해도 놓치지 않게
     const quick = e.pointerType === 'touch' && e.target.closest && !e.target.closest('#info') && e.target.closest('#topbar button, #mmFold, #mmToggle, #mmwrap');
-    if (quick) { e.preventDefault(); e.stopPropagation(); down = null; tapT = performance.now(); quick.click(); return; }
+    if (quick) { e.preventDefault(); e.stopPropagation(); down = null; tapT = performance.now(); tapEl = quick; quick.click(); return; }
+    tapEl = null;
     down = e.pointerType === 'touch' ? { x: e.clientX, y: e.clientY, b: e.target.closest && e.target.closest(TAP) } : null;
   }, true);
-  document.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') return; const b = e.target.closest && e.target.closest(TAP); if (!b || b.disabled || !down || down.b !== b || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 14) return; e.preventDefault(); tapT = performance.now(); b.click(); }, true);
-  document.addEventListener('click', e => { if (e.isTrusted && performance.now() - tapT < 600 && e.target.closest && e.target.closest(TAP)) { e.stopPropagation(); e.preventDefault(); } }, true); }
+  document.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') return; const b = e.target.closest && e.target.closest(TAP); if (!b || b.disabled || !down || down.b !== b || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 14) return; e.preventDefault(); tapT = performance.now(); tapEl = b; b.click(); }, true);
+  document.addEventListener('click', e => {
+    if (!e.isTrusted) return;
+    // 손가락으로 이미 누른 버튼(또는 그 버튼이 사라진 자리)에 늦게 도착한 click은 버린다
+    if (tapEl && (performance.now() - tapT < 2500) && (tapEl.contains(e.target) || !tapEl.isConnected || !tapEl.offsetParent)) { tapEl = null; e.stopPropagation(); e.preventDefault(); return; }
+    if (performance.now() - tapT < 600 && e.target.closest && e.target.closest(TAP)) { e.stopPropagation(); e.preventDefault(); }
+  }, true); }
 // 랭킹은 늘 최신으로: 화면에 보이는 랭킹을 15초마다·새 사람이 들어올 때 새로 받아온다
 async function refreshRanks() {
   try {
@@ -7491,6 +7498,7 @@ const HELP_KINDS = {
   water: { name: '시원한 물', emoji: '🥤', col: 0x6ad1ff, msg: '🥤 시원한 물! 15초 동안 달려도 지치지 않아요' },
   whistle: { name: '얼음 호루라기', emoji: '❄️', col: 0xbfe9ff, msg: '❄️ 얼음 호루라기! 주변 범인이 5초 동안 꼼짝 못 해요' },
   magnet: { name: '코인 자석', emoji: '🧲', col: 0xd84a4a, msg: '🧲 코인 자석! 15초 동안 멀리 있는 코인도 끌려와요' },
+  star: { name: '무적 별', emoji: '⭐', col: 0xffe14a, msg: '⭐ 무적 별! 5초 동안 번쩍번쩍, 부딪히기만 해도 악당을 무찔러요' },
 };
 function ballLabel(m) { const tx = textSprite('🎾 하트 공', { h: .46, bg: 'rgba(19,51,90,.85)' }); tx.position.y = .75; m.add(tx); return m; }
 function spawnHelpItem(kind, at) {
@@ -7510,7 +7518,7 @@ function updateHelpItems(dt) {
     }
   }
   dog.noseT = Math.max(0, (dog.noseT || 0) - dt); dog.boneT = Math.max(0, (dog.boneT || 0) - dt); dog.autoSniffT = Math.max(0, (dog.autoSniffT || 0) - dt); dog.staT = Math.max(0, (dog.staT || 0) - dt); dog.magT = Math.max(0, (dog.magT || 0) - dt);
-  updateGiant(dt);
+  updateGiant(dt); updateStar(dt);
 }
 // 🎒 아이템 가방 — 종류마다 최대 9개, 맵을 옮겨도 이번 게임 동안 유지
 const bag = {}, BAG_MAX = 9, bagCap = () => DQ().bag;
@@ -7543,7 +7551,7 @@ function renderBag() {
 }
 function useHelp(kind) {
   if (!bag[kind]) return;
-  if (state !== 'play') { toastNow('🎒 지금은 쓸 수 없어요. 열린 창을 닫고 다시 눌러 주세요'); return; }
+  if (state !== 'play' && state !== 'cowlv') { toastNow('🎒 지금은 쓸 수 없어요. 열린 창을 닫고 다시 눌러 주세요'); return; }
   const q0 = toastQ.length;
   useHelp0(kind);
   if (toastQ.length > q0) { const fresh = toastQ.splice(q0); toastQ.unshift(...fresh); toastT = 0; } // 아이템 안내를 맨 앞으로
@@ -7566,7 +7574,8 @@ function useHelp0(kind) {
   if (kind === 'ball') { dog.hp = Math.min(hpMax, dog.hp + 1); dog.boost = 6; floatText('🎾 ❤️ +1', dog.x, dog.y + 2, dog.z, { h: .55, color: '#ff8a80' }); toast('🎾 하트 공! 하트 +1, 잠깐 빨라져요'); return; }
   applyHelp(kind);
 }
-$('bagBtn').addEventListener('click', e => { e.stopPropagation(); $('bagBox').classList.toggle('open'); renderBag(); });
+let bagFlipT = 0;
+$('bagBtn').addEventListener('click', e => { e.stopPropagation(); if (performance.now() - bagFlipT < 350) return; bagFlipT = performance.now(); $('bagBox').classList.toggle('open'); renderBag(); });
 $('bagList').addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) { e.stopPropagation(); useHelp(b.dataset.k); } });
 addEventListener('keydown', e => { if (e.repeat || e.target.tagName === 'INPUT' || state !== 'play') return; if (e.code === 'KeyB') { $('bagBox').classList.toggle('open'); renderBag(); } else if ($('bagBox').classList.contains('open') && /^Digit[1-9]$/.test(e.code)) { const k = Object.keys(bag).filter(q => bag[q] > 0)[+e.code.slice(5) - 1]; if (k) useHelp(k); } });
 renderBag();
@@ -7586,11 +7595,36 @@ function applyHelp0(kind) {
       else if (h.kind === 'water') { dog.stamina = 100; dog.staT = 15; }
       else if (h.kind === 'whistle') { for (const p of people) if (p.villain && !p.dead && !p.arrested && Math.hypot(p.x - dog.x, p.z - dog.z) < 25) { p.stun = Math.max(p.stun, 5); p.iceT = 5; } burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(0xbfe9ff), WHITE], 40, 6); tone(1568, .25, 'sine', .07); }
       else if (h.kind === 'magnet') dog.magT = 15;
+      else if (h.kind === 'star') { dog.starT = 5; floatText('⭐ 무적 별!', dog.x, dog.y + 2.4, dog.z, { h: .65, color: '#ffe14a' }); for (let i = 0; i < 6; i++) tone(523 * Math.pow(1.26, i % 3), .09, 'square', .07, 0, i * .09); }
       else { dog.boneT = 20; handler.boneCd = 0; throwBone(); }
       toast(HELP_KINDS[h.kind].msg || t(HELP_KINDS[h.kind].label));
   }
 }
 // 슈퍼 간식: 탐지견·핸들러가 3배로 커지고(부드럽게) 무적·조금 빨라짐, 끝나기 2초 전부터 깜빡여 알려 준다
+let starFx = null;
+function updateStar(dt) {
+  const on = dog.starT > 0; dog.starT = Math.max(0, (dog.starT || 0) - dt);
+  if (!starFx) { starFx = new THREE.Mesh(new THREE.SphereGeometry(1.15, 18, 12), new THREE.MeshBasicMaterial({ color: 0xffe14a, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); starFx.visible = false; scene.add(starFx); }
+  starFx.visible = on;
+  if (!on) return;
+  if (dog.starT === 0) floatText('⭐ 별 효과 끝', dog.x, dog.y + 2, dog.z, { h: .45 });
+  // 번쩍번쩍: 무지개색으로 빠르게 바뀌고, 끝나기 2초 전부터는 깜빡인다
+  const blink = dog.starT < 2 && Math.sin(time * 30) < 0;
+  starFx.material.color.setHSL((time * 3) % 1, 1, .6); starFx.material.opacity = blink ? .08 : .32 + Math.abs(Math.sin(time * 18)) * .25;
+  starFx.position.set(dog.x, dog.y + .7, dog.z); starFx.scale.setScalar(giantS * (1 + Math.sin(time * 20) * .08));
+  if (Math.random() < .8) spawnP(dog.x + mr(-.7, .7), dog.y + mr(.2, 1.6), dog.z + mr(-.7, .7), mr(-1, 1), 2, mr(-1, 1), new THREE.Color().setHSL(Math.random(), 1, .65), .5);
+  // 몸통 박치기: 닿은 악당은 바로 쓰러지고, 보스는 한 번에 3씩 깎인다
+  const R = 1.5 * giantS;
+  for (const p of people) {
+    if (!p.villain || p.dead || p.arrested || p.riseT > 0) continue;
+    if ((p.starCd = (p.starCd || 0) - dt) > 0) continue;
+    if (Math.hypot(p.x - dog.x, p.z - dog.z) > R + (p.r || .4)) continue;
+    p.starCd = .35;
+    const big = p.kind === 'boss' || p.cowBoss;
+    for (let k = 0; k < (big ? 3 : 99) && !p.dead && !p.arrested && p.hp > 0; k++) hitVillain(p, '⭐ 쾅!');
+    burst(p.x, 1.2, p.z, [new THREE.Color(0xffe14a), WHITE], 30, 6); shake = .3;
+  }
+}
 let giantS = 1;
 function updateGiant(dt) {
   const was = dog.giantT > 0; dog.giantT = Math.max(0, (dog.giantT || 0) - dt);
@@ -7605,7 +7639,7 @@ function updateHelp(dt) {
   if (!level || level.relax) return;
   helpT -= dt; if (helpT > 0) return; helpT = 30 * DQ().helpT;
   const live = balls.filter(b => !b.got).length;
-  if (Math.random() < .4 && helps.filter(h => !h.got).length < Math.max(1, Math.round((5 + (level.sz - 1) * 3.6) * DQ().helpCap))) { spawnHelpItem(pick2(Object.keys(HELP_KINDS).filter(k => k !== 'ball'))); return; }
+  if (Math.random() < .4 && helps.filter(h => !h.got).length < Math.max(1, Math.round((5 + (level.sz - 1) * 3.6) * DQ().helpCap))) { spawnHelpItem(pick2(Object.keys(HELP_KINDS).filter(k => k !== 'ball' && (k !== 'star' || Math.random() < .5)))); return; }
   if ((!xray || xray.got) && Math.random() < .45) { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const tg = textSprite('📡 X-RAY 스캐너', { h: .46 }); tg.position.y = .55; g.add(tg); xray = { x: p.x, z: p.z, got: false, m: g }; toast(t('ts_newx')); } return; }
   if (live < Math.round((3 + (level.sz - 1) * 8) * DQ().balls)) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) { balls.push({ x: p.x, z: p.z, m: ballLabel(mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z)) }); toast(t('ts_newball')); } }
 }
