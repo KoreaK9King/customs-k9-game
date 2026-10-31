@@ -374,7 +374,12 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 :is(body.touch,body.pc) #topbar.open{flex-wrap:wrap-reverse;align-content:flex-start;z-index:12}
 /* 자동 플레이·코인 자동 사냥 버튼은 왼쪽 위 */
 body.touch #topbar>#tbAuto,body.touch #topbar>#tbCoin{position:fixed;top:calc(6px + var(--st));left:calc(8px + var(--sl))}body.touch #topbar>#tbCoin{left:calc(52px + var(--sl))}
-:is(#tbAuto,#tbCoin).on{background:#f4c542!important;box-shadow:0 0 0 2px #fff,0 0 12px #ffd23f}
+#autoBox{position:fixed;top:calc(6px + var(--st));left:calc(8px + var(--sl));z-index:12;display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+#topbar #autoBox button{display:block!important;position:static!important}
+#topbar #tbAutoMenu{width:44px!important;height:38px!important;font-size:19px!important}
+#autoList{display:none;flex-direction:column;gap:4px}#autoBox.open #autoList{display:flex}
+#topbar #autoList button{width:auto!important;height:auto!important;padding:7px 14px!important;font-size:14px!important;text-align:left;white-space:nowrap;font-family:Jua,sans-serif}
+:is(#tbAuto,#tbCoin,#tbItem,#tbAutoMenu).on{background:#f4c542!important;box-shadow:0 0 0 2px #fff,0 0 12px #ffd23f}
 #autoBadge{top:calc(36px + var(--st));left:50%;transform:translateX(-50%);background:rgba(244,197,66,.95);color:#173a5e;font-family:Jua,sans-serif;font-size:13px;padding:2px 12px;border-radius:12px;pointer-events:auto;cursor:pointer;white-space:nowrap}
 :is(body.touch,body.pc) #mmwrap{top:calc(6px + var(--st))!important;right:calc(54px + var(--sr))!important;padding:3px!important;background:rgba(12,28,44,.7)}
 :is(body.touch,body.pc) #mmwrap #info{display:none}
@@ -427,7 +432,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 
 <div id="quest" class="hud mini"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><div id="qsum"></div><p id="qdesc"></p><div id="qgoals"></div></div>
 <div id="mmwrap" class="hud mini"><button id="mmToggle" type="button">🗺 지도 보기</button><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
-<div id="wx" class="hud hidden"></div><div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><button id="tbAuto" title="자동 플레이 켜기/끄기 (P)" aria-label="자동 플레이">🤖</button><button id="tbCoin" title="코인 자동 사냥 켜기/끄기 (C)" aria-label="코인 자동 사냥">💰</button><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
+<div id="wx" class="hud hidden"></div><div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><div id="autoBox"><button id="tbAutoMenu" title="자동 사냥 (누르면 3가지)" aria-label="자동 사냥">🤖</button><div id="autoList"><button id="tbAuto" title="자동 플레이 (P)">🤖 자동 플레이</button><button id="tbCoin" title="코인 자동 사냥 (C)">💰 코인 사냥</button><button id="tbItem" title="아이템 자동 사냥 (I)">🎁 아이템 사냥</button></div></div><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div>
 <div id="mission" class="hud hidden"></div>
@@ -665,7 +670,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2002';
+const BUILD = '20261031-2012';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1723,6 +1728,11 @@ function makePerson(kind, opt = {}) {
 }
 const people = [];
 const pick2 = a => a[Math.floor(Math.random() * a.length)];
+const GREET = {
+  civ: ['와, 탐지견이다! 🐶', '멍멍아 안녕~ 👋', '수고 많으세요!', '킁킁, 뭐 찾고 있니?', '우리 가방은 깨끗해요~', '사진 찍어도 돼요? 📸', '똑똑하게 생겼다!', '관세청 탐지견 멋있다!'],
+  kid: ['강아지다!! 🐕', '나도 만져 보고 싶다~', '이름이 뭐예요?', '탐지견 최고! 👍', '엄마, 나도 키우고 싶어!'],
+  villain: ['저… 저리 가! 😰', '(식은땀 뻘뻘…)', '아, 아무것도 없다니까요!', '왜 자꾸 따라와…', '(가방을 꼭 끌어안는다)']
+};
 const LINES = {
   hiker: ['백록담까지 얼마나 남았지? ⛰', '오늘 날씨 등산하기 딱 좋다!', '물 한 모금 마시고 가자~', '정상에서 인증샷 찍어야지! 📸', '헉헉… 그래도 경치 최고!'],
   rescue119: ['🚑 119 구조대입니다. 수영은 안전선 안에서!', '구명조끼 꼭 착용하세요!', '물놀이 전 준비운동 필수!', '이상한 사람 보면 알려 주세요.'],
@@ -1784,6 +1794,12 @@ class Person {
     this.bubble = textSprite(line, { h: .3, bg: 'rgba(255,255,255,.95)', color: '#1b2b3c' });
     this.bubble.position.y = 2.75; this.g.add(this.bubble); this.bubbleT = 2.8;
   }
+  chatter(dt) {
+    if (this.bubble || this.dead || this.arrested) return;
+    const dd = Math.hypot(this.x - dog.x, this.z - dog.z); if (dd > 18) return;
+    if (dd < 3.2 && !(this.greetT > time)) { this.greetT = time + mr(9, 16); this.say(pick2(this.villain && Math.random() < .4 ? GREET.villain : this.ageGrp === 'child' ? GREET.kid : (LINES[this.look || this.kind] && Math.random() < .5) ? this.lines() : GREET.civ)); return; }
+    if (Math.random() < dt * .07) this.say(pick2(this.lines()));
+  }
   lines() { return (this.ageGrp === 'child' && LINES.kid) || (this.ageGrp === 'senior' && LINES.senior) || (this.ageGrp === 'baby' && LINES.parent) || LINES[this.look || this.kind] || LINES.civ; }
   findEscape(awx, awz) {
     // 12방향을 살펴 막히지 않고 탐지견에게서 먼 쪽을 고른다 (낮은 장애물은 점프로 넘을 수 있음)
@@ -1843,8 +1859,9 @@ class Person {
       if (!this.bubble && (dd < 4 && !(this.greetT > time) || Math.random() < dt * .08)) { if (dd < 4) this.greetT = time + 9; const w = this.seller; this.say(pick2([w + ' 팔아요~! 🛒', w + ' 구경하고 가세요!', '어서 오세요~ ' + w + ' 있어요!', '싸게 드릴게요! ' + w, '탐지견도 ' + w + ' 좋아하려나? 🐶'])); }
       return;
     }
-    if (this.seated) { if (this.bubble) { this.bubbleT -= dt; if (this.bubbleT <= 0) { disposeSprite(this.bubble); this.bubble = null; } } this.phase += dt; this.body.children.forEach(c => { if (c.isGroup && c.position.y > 1.6) c.rotation.y = Math.sin(this.phase * .4 + this.x) * .5; }); if (!this.bubble && ((Math.hypot(dog.x - this.x, dog.z - this.z) < 2.4 && !(this.greetT > time) && (this.greetT = time + 12)) || Math.random() < dt * .03)) this.say(pick2(Math.random() < .5 ? LINES.seated : this.lines())); return; }
+    if (this.seated) { if (this.bubble) { this.bubbleT -= dt; if (this.bubbleT <= 0) { disposeSprite(this.bubble); this.bubble = null; } } this.chatter(dt); this.phase += dt; this.body.children.forEach(c => { if (c.isGroup && c.position.y > 1.6) c.rotation.y = Math.sin(this.phase * .4 + this.x) * .5; }); if (!this.bubble && ((Math.hypot(dog.x - this.x, dog.z - this.z) < 2.4 && !(this.greetT > time) && (this.greetT = time + 12)) || Math.random() < dt * .03)) this.say(pick2(Math.random() < .5 ? LINES.seated : this.lines())); return; }
     if (this.bubble) { this.bubbleT -= dt; if (this.bubbleT <= 0) { disposeSprite(this.bubble); this.bubble = null; } }
+    this.chatter(dt);
     if (this.arrested) {
       if (!this.cuffed) { this.body.rotation.z = Math.sin(time * 18) * .1; this.stars.visible = true; }
       if (Math.random() < .15) spawnP(this.x, 2.6, this.z, mr(-1, 1), 1, mr(-1, 1), Math.random() < .5 ? RED : BLUE, .5);
@@ -5786,7 +5803,7 @@ function loadLevel(i) {
     for (let k = 0; k < Math.round(3 * level.crowd) && civK.length; k++) { const p = placeFree(r, 1, 1, .5, level.avoid); if (p) new Person(pick(civK), p.x, p.z); }
   }
   { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); xray = null;
-    if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
+    if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY 스캐너', { h: .46 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
   clearSniffMarks(); setupCoins(); helps = []; dog.shield = 0; dog.staT = 0; dog.magT = 0; dog.noseT = 0; dog.boneT = 0; dog.autoSniffT = 0; dog.giantT = 0; giantS = 1; dogM.g.scale.setScalar(BREEDS[dogBreed]?.scale || 1); handlerM.g.scale.setScalar(1); if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
   helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
   if (mp && mp.room !== i) mpLeave(); keepAwake(); if (team) team.picked = i; if (playerId) { mpJoin(); lobbyJoin(); setTimeout(lobbyTrack, 300); }
@@ -5802,7 +5819,7 @@ function loadLevel(i) {
   Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: Math.min(DIFFS[diffMode].hpMax, Math.max(DIFFS[diffMode].hp + Math.ceil((wallet.up.heart || 0) / 2), dog.hp || 0)), boost: 0, hurt: 0, fetch: null, idleT: 0, jumps: 0, prop: null, prevIdle: null });
   Object.assign(handler, { x: spawn.x, z: spawn.z + 1.9, y: 0, vy: 0, dir: Math.PI, boneCd: 0 });
   for (const b of bones) scene.remove(b.m); bones.length = 0;
-  balls = []; for (let k = 0; k < Math.round(3 + (level.sz - 1) * 8); k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); }
+  balls = []; for (let k = 0; k < Math.round(3 + (level.sz - 1) * 8); k++) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) balls.push({ x: p.x, z: p.z, m: ballLabel(mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z)) }); }
   yaw = 0; camPos.set(spawn.x, 6, spawn.z + 9);
   levelTime = 0; levelScore = 0; keys = {};
   renderQuest(); playMusic(def.music);
@@ -6333,22 +6350,23 @@ let leakT = 0, helpT = 30;
 // 하트 공·X-ray가 일정 시간마다 새로 나타난다 (기본 36초 → 20% 빠르게 30초)
 let helps = [];
 const HELP_KINDS = {
-  shield: { emoji: '🛡', col: 0x4f9ad8, label: 'ts_shield' },
-  nose: { emoji: '👃', col: 0xff9a4a, label: 'ts_nose' },
-  bones: { emoji: '🦴', col: 0xf4e1a8, label: 'ts_bonebag' },
-  auto: { emoji: '👃✨', col: 0x7dff6a, label: 'ts_autosniff' },
-  giant: { emoji: '🌟', col: 0xffd23f, label: 'ts_giant' },
-  speed: { emoji: '⚡', col: 0xfff200, msg: '⚡ 번개 간식! 8초 동안 30% 빨라져요' },
-  heal: { emoji: '❤️', col: 0xff5a6e, msg: '❤️ 구급상자! 체력이 1 회복됐어요' },
-  water: { emoji: '🥤', col: 0x6ad1ff, msg: '🥤 시원한 물! 15초 동안 달려도 지치지 않아요' },
-  whistle: { emoji: '❄️', col: 0xbfe9ff, msg: '❄️ 얼음 호루라기! 주변 범인이 5초 동안 꼼짝 못 해요' },
-  magnet: { emoji: '🧲', col: 0xd84a4a, msg: '🧲 코인 자석! 15초 동안 멀리 있는 코인도 끌려와요' },
+  shield: { name: '방탄조끼', emoji: '🛡', col: 0x4f9ad8, label: 'ts_shield' },
+  nose: { name: '슈퍼 코 간식', emoji: '👃', col: 0xff9a4a, label: 'ts_nose' },
+  bones: { name: '뼈다귀 가방', emoji: '🦴', col: 0xf4e1a8, label: 'ts_bonebag' },
+  auto: { name: '자동 킁킁', emoji: '👃✨', col: 0x7dff6a, label: 'ts_autosniff' },
+  giant: { name: '슈퍼 간식', emoji: '🌟', col: 0xffd23f, label: 'ts_giant' },
+  speed: { name: '번개 간식', emoji: '⚡', col: 0xfff200, msg: '⚡ 번개 간식! 8초 동안 30% 빨라져요' },
+  heal: { name: '구급상자', emoji: '❤️', col: 0xff5a6e, msg: '❤️ 구급상자! 체력이 1 회복됐어요' },
+  water: { name: '시원한 물', emoji: '🥤', col: 0x6ad1ff, msg: '🥤 시원한 물! 15초 동안 달려도 지치지 않아요' },
+  whistle: { name: '얼음 호루라기', emoji: '❄️', col: 0xbfe9ff, msg: '❄️ 얼음 호루라기! 주변 범인이 5초 동안 꼼짝 못 해요' },
+  magnet: { name: '코인 자석', emoji: '🧲', col: 0xd84a4a, msg: '🧲 코인 자석! 15초 동안 멀리 있는 코인도 끌려와요' },
 };
+function ballLabel(m) { const tx = textSprite('🎾 하트 공', { h: .46, bg: 'rgba(19,51,90,.85)' }); tx.position.y = .75; m.add(tx); return m; }
 function spawnHelpItem(kind) {
   const p = placeFree(level.bounds, .7, .7, .4, level.avoid); if (!p) return;
   const K = HELP_KINDS[kind], g = new THREE.Group(); g.position.set(p.x, .55, p.z); world.add(g);
   mesh(BOX(.55, .55, .55), M('help' + kind, () => std(K.col, .4, .1, { emissive: K.col, emissiveIntensity: .35 })), 0, 0, 0, g);
-  const tx = textSprite(K.emoji, { h: .45, bg: null }); tx.position.y = .7; g.add(tx);
+  const tx = textSprite(K.emoji + ' ' + K.name, { h: .52, bg: 'rgba(19,51,90,.85)' }); tx.position.y = 1; g.add(tx);
   helps.push({ kind, x: p.x, z: p.z, g, got: false });
 }
 function updateHelpItems(dt) {
@@ -6389,8 +6407,8 @@ function updateHelp(dt) {
   helpT -= dt; if (helpT > 0) return; helpT = 30;
   const live = balls.filter(b => !b.got).length;
   if (Math.random() < .4 && helps.filter(h => !h.got).length < Math.round(5 + (level.sz - 1) * 3.6)) { spawnHelpItem(pick2(Object.keys(HELP_KINDS))); return; }
-  if ((!xray || xray.got) && Math.random() < .45) { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const tg = textSprite('📡 X-RAY', { h: .3 }); tg.position.y = .55; g.add(tg); xray = { x: p.x, z: p.z, got: false, m: g }; toast(t('ts_newx')); } return; }
-  if (live < Math.round(3 + (level.sz - 1) * 8)) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) { balls.push({ x: p.x, z: p.z, m: mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z) }); toast(t('ts_newball')); } }
+  if ((!xray || xray.got) && Math.random() < .45) { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const tg = textSprite('📡 X-RAY 스캐너', { h: .46 }); tg.position.y = .55; g.add(tg); xray = { x: p.x, z: p.z, got: false, m: g }; toast(t('ts_newx')); } return; }
+  if (live < Math.round(3 + (level.sz - 1) * 8)) { const p = placeFree(level.bounds, .6, .6, .4, level.avoid); if (p) { balls.push({ x: p.x, z: p.z, m: ballLabel(mesh(SPH(.22, 16, 12), M('ball', () => std(0xc8e632, .5, 0, { emissive: 0x334400 })), p.x, .5, p.z)) }); toast(t('ts_newball')); } }
 }
 function updateLeak(dt) {
   if (!level || level.relax) return;
@@ -6596,14 +6614,14 @@ function autoPlay(dt) {
     if (!(p.aim > 0)) p._autoAim = false;
     else if (d < 17) {
       // 초보자라 늘 피하지는 못하지만, 체력이 적으면 꼭 옆으로 피한다 (조준 한 번에 한 번만 판단)
-      if (!p._autoAim) { p._autoAim = true; p._autoDodge = auto.mode === 'coin' || dog.hp <= 2 || Math.random() < .6; p._autoSide = Math.random() < .5 ? 1 : -1; }
+      if (!p._autoAim) { p._autoAim = true; p._autoDodge = auto.mode === 'coin' || auto.mode === 'item' || dog.hp <= 2 || Math.random() < .6; p._autoSide = Math.random() < .5 ? 1 : -1; }
       if (p._autoDodge) { ax += -dz / d * p._autoSide * 2; az += dx / d * p._autoSide * 2; danger++; auto.run = true; }
     }
   }
   // 코인 사냥 고수는 범인에게 붙지 않는다
-  if (auto.mode === 'coin') for (const p of foes) { const dx = dog.x - p.x, dz = dog.z - p.z, d = Math.hypot(dx, dz) || .1; if (d < 3.5) { ax += dx / d * 1.5; az += dz / d * 1.5; danger++; } }
+  if (auto.mode === 'coin' || auto.mode === 'item') for (const p of foes) { const dx = dog.x - p.x, dz = dog.z - p.z, d = Math.hypot(dx, dz) || .1; if (d < 3.5) { ax += dx / d * 1.5; az += dz / d * 1.5; danger++; } }
   if (danger) { auto.mx = ax; auto.mz = az; return; }
-  if (auto.mode === 'coin') return coinHunt(dt);
+  if (auto.mode === 'coin' || auto.mode === 'item') return coinHunt(dt);
   // 2) 목표 정하기 (0.35초마다 생각)
   if (auto.think <= 0) {
     auto.think = .35;
@@ -6741,13 +6759,15 @@ function autoRoute(tx, tz, dx, dz, dt) {
 }
 // 코인 자동 사냥 (최고 등급 플레이어처럼): 값과 거리로 다음 두 개까지 내다보고 최단 경로로, 기력 관리하며 전력 질주
 function coinScore(c, fx, fz) { const d = Math.hypot(c.x - fx, c.z - fz); return c.v / (d + 1.5); }
+// 아이템 사냥 대상: 도움 아이템·하트 공·X-RAY (가치는 코인 10개쯤으로 친다)
+const huntPool = () => auto.mode === 'item' ? [...helps.filter(h => !h.got), ...balls.filter(b => !b.got), ...(xray && !xray.got ? [xray] : [])].map(o => (o.v = o.v || 10, o)) : coins;
 function coinHunt(dt) {
-  auto.think -= dt;
-  if (auto.think <= 0 || !auto.goal || !coins.includes(auto.goal.c)) {
+  auto.think -= dt; const pool = huntPool();
+  if (auto.think <= 0 || !auto.goal || !pool.includes(auto.goal.c)) {
     auto.think = .15; let best = null, bs = -1;
-    for (const c of coins) {
+    for (const c of pool) {
       // 한 수 앞: 이 코인 다음에 주울 코인까지 합쳐서 고른다
-      let nx = 0; for (const c2 of coins) if (c2 !== c) nx = Math.max(nx, coinScore(c2, c.x, c.z));
+      let nx = 0; for (const c2 of pool) if (c2 !== c) nx = Math.max(nx, coinScore(c2, c.x, c.z));
       const s = coinScore(c, dog.x, dog.z) + nx * .6; if (s > bs) { bs = s; best = c; }
     }
     auto.goal = best ? { t: 'coin', c: best } : null;
@@ -6771,15 +6791,19 @@ function coinHunt(dt) {
 function setAuto(on, mode = 'play') {
   auto.on = on; auto.mode = mode; auto.goal = null; auto.think = 0; auto.rest = false;
   const b = $('autoBadge'); b.classList.toggle('hidden', !on);
-  b.textContent = mode === 'coin' ? '💰 코인 자동 사냥 중 · 누르면 끄기' : '🤖 자동 플레이 중 · 누르면 끄기';
-  $('tbAuto').classList.toggle('on', on && mode === 'play'); $('tbCoin').classList.toggle('on', on && mode === 'coin');
-  toast(!on ? '⏹ 자동 꺼짐' : mode === 'coin' ? '💰 코인 자동 사냥 켜짐 (C 키 / 💰 다시 누르면 꺼짐)' : '🤖 자동 플레이 켜짐 (P 키 / 🤖 다시 누르면 꺼짐) · 조작하면 그동안은 내가 움직여요');
+  b.textContent = mode === 'coin' ? '💰 코인 자동 사냥 중 · 누르면 끄기' : mode === 'item' ? '🎁 아이템 자동 사냥 중 · 누르면 끄기' : '🤖 자동 플레이 중 · 누르면 끄기';
+  $('tbAuto').classList.toggle('on', on && mode === 'play'); $('tbCoin').classList.toggle('on', on && mode === 'coin'); $('tbItem').classList.toggle('on', on && mode === 'item');
+  $('tbAutoMenu').classList.toggle('on', on); $('tbAutoMenu').textContent = !on ? '🤖' : mode === 'coin' ? '💰' : mode === 'item' ? '🎁' : '🤖';
+  toast(!on ? '⏹ 자동 꺼짐' : mode === 'item' ? '🎁 아이템 자동 사냥 켜짐 (I 키 / 다시 누르면 꺼짐) · 빛나는 아이템·하트 공·X-RAY를 모아요' : mode === 'coin' ? '💰 코인 자동 사냥 켜짐 (C 키 / 💰 다시 누르면 꺼짐)' : '🤖 자동 플레이 켜짐 (P 키 / 🤖 다시 누르면 꺼짐) · 조작하면 그동안은 내가 움직여요');
 }
 const toggleAuto = mode => setAuto(!(auto.on && auto.mode === mode), mode);
 // 자동 플레이 중에는 안내 대화창도 사람처럼 잠깐 읽고 넘긴다
 $('tbAuto').addEventListener('click', e => { e.stopPropagation(); toggleAuto('play'); });
 $('tbCoin').addEventListener('click', e => { e.stopPropagation(); toggleAuto('coin'); });
-addEventListener('keydown', e => { if (e.repeat || e.target.tagName === 'INPUT' || state !== 'play') return; if (e.code === 'KeyP') toggleAuto('play'); if (e.code === 'KeyC') toggleAuto('coin'); });
+$('tbItem').addEventListener('click', e => { e.stopPropagation(); toggleAuto('item'); });
+$('tbAutoMenu').addEventListener('click', e => { e.stopPropagation(); $('autoBox').classList.toggle('open'); });
+for (const b of document.querySelectorAll('#autoList button')) b.addEventListener('click', () => $('autoBox').classList.remove('open'));
+addEventListener('keydown', e => { if (e.repeat || e.target.tagName === 'INPUT' || state !== 'play') return; if (e.code === 'KeyP') toggleAuto('play'); if (e.code === 'KeyC') toggleAuto('coin'); if (e.code === 'KeyI') toggleAuto('item'); });
 $('autoBadge').addEventListener('click', () => setAuto(false));
 setInterval(() => { if (!auto.on) return; if (state === 'howto' && !$('howto').classList.contains('hidden')) { auto.dlgT += .5; if (auto.dlgT >= 2.5) { auto.dlgT = 0; $('btnHowtoOk').click(); } } else if (state === 'dialog') { auto.dlgT += .5; if (auto.dlgT >= 2.5) { auto.dlgT = 0; closeDialog(); } } else auto.dlgT = 0; }, 500);
 
