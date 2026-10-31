@@ -645,7 +645,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1752';
+const BUILD = '20261031-1805';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4045,18 +4045,37 @@ const LANDMARK_LIST = [
       for (const sd of [-1, 1]) { mesh(BOX(16, .3, 4.5), LMC(0xdfe4e8), sd * 18, 1, 3); mesh(BOX(1.4, 1.4, 3), MAT.metal(0x9aa3ab), sd * 14, .2, 2); }
       sign('✈ BOEING 777-300ER · 인천행', 0, 4, -33, .5);
     } },
-  { name: '명동', fill: 'city', icon: '🛍', w: 84, d: 60, floor: TILE('#c8bfb0', '#a89f90', .3), obj: luggage, sky: [0x6aa8e8, 0xf2e6f0], st: 3,
-    people: { tourist: 6, merchant: 3, civ: 3, smuggler: 3 }, items: [["cosmetics",3],["dutyBag",2],["flowerPot",2],["shoeBox",1]], who: '윤쇼핑 명동 상인회장', short: '명동성당 아래 쇼핑 거리! 노점 거리, 화장품 가게, 환전소, 명동예술극장을 순찰해요.',
+  { name: '명동', fill: 'city', icon: '🛍', sc: 1, w: 230, d: 180, floor: TILE('#c8bfb0', '#a89f90', .3), obj: luggage, sky: [0x6aa8e8, 0xf2e6f0], st: 3,
+    staff: [{ kind: 'police', route: [[0, -54], [80, -54]], wait: 2 }, { kind: 'police', route: [[-100, 21], [100, 21]], wait: 2 }, { kind: 'customs', route: [[-52, -50], [-52, 80]], wait: 2 }],
+    people: { tourist: 6, merchant: 3, civ: 3, smuggler: 3 }, items: [["cosmetics",3],["dutyBag",2],["flowerPot",2],["shoeBox",1]], who: '윤쇼핑 명동 상인회장', short: '📏 실제 1/2 축척(명동 약 450×350m)! 남쪽 명동역 6번 출구 → 노점 카트가 줄지은 명동8길 → 명동예술극장 앞 명동길, 북동쪽 언덕 위 명동성당(첨탑 45m), 북서쪽 을지로입구. 골목마다 화장품·환전소 간판.',
     intro: '명동 쇼핑 거리야. 가운데 길엔 떡볶이·회오리감자 노점이 줄지어 있고, 양옆엔 화장품 가게와 환전소가 가득해.\n북쪽 언덕 위에는 고딕 양식의 명동성당이 있어. 멀리 남산타워도 보여!',
     build(L) {
-      const fac = [0xf8c8d8, 0xc8e0f0, 0xfff0c0, 0xd8f0d0, 0xe8d0f0, 0xffd8b0];
-      for (const sx of [-1, 1]) for (let k = 0; k < 4; k++) { const z = -16 + k * 9, x = sx * 26; building(x, z, 14, 7, rr(9, 16), fac[(k + (sx > 0 ? 3 : 0)) % 6], { lit: true }); neon(x - sx * 7.6, 4.5, z, [['COSMETIC 화장품', '환전 EXCHANGE', 'K-POP STORE', '카페 CAFE'], ['FACE MASK SALE', 'SNEAKERS', '면세점 DUTY FREE', '닭강정']][sx > 0 ? 1 : 0][k], ['#ff4fa3', '#4fd3ff', '#ffd54f', '#7dff6a'][k]); mesh(BOX(.3, 2.6, 6), LMC(fac[k]), x - sx * 7.1, 1.3, z); }
-      building(-26, 20, 14, 8, 8, 0xe8dcc4); columns(-26, 15.8, 4, 3, 6, 0xf4efe4); sign('🎭 명동예술극장', -26, 9.4, 16, .55);
-      for (let k = 0; k < 5; k++) stall(k % 2 ? 4.5 : -4.5, -12 + k * 5, [0xd63a2a, 0x2c6fb7, 0xf39c12, 0x27ae60, 0x8e44ad][k], ['떡볶이', '회오리감자', '닭꼬치', '계란빵', '호떡'][k]);
-      for (const z of [-14, -2, 10]) lanternLine(-18, 18, z, 6.4);
-      stepsUp(0, -17.5, 12, 3, -1, 1); bx(0, 0, -22, 16, 1.05, 4, 0xbdb5a8); bx(0, 1.05, -26.5, 16, 9, 5.5, 0x9c4a35, false); addCol(0, -26.5, 16, 5.5, null, { topY: 99 }); mesh(new THREE.CylinderGeometry(1.6, 1.6, .2, 16), glow(0xffd27a, .8), 0, 6.5, -23.7).rotation.x = Math.PI / 2; spire(0, -25.2, 3.6, 18, 0x9c4a35); bx(-7, 0, -27, 2, 12, 2, 0x8a4030); bx(7, 0, -27, 2, 12, 2, 0x8a4030); sign('⛪ 명동성당 (1898)', 0, 28, -23, .8);
-      const nt = new THREE.Group(); nt.position.set(30, 0, -120); world.add(nt); mesh(BOX(30, 20, 20), LMC(0x587a4a), 0, 10, 0, nt); mesh(new THREE.CylinderGeometry(1, 1.6, 26, 10), LMC(0xf0f0f0), 0, 33, 0, nt); mesh(new THREE.CylinderGeometry(3, 2.4, 3, 12), LMC(0xdfe4e8), 0, 47, 0, nt);
-      sign('🛍 MYEONGDONG 명동 쇼핑거리', 0, 7.5, 12, 1);
+      const fac = [0xf8c8d8, 0xc8e0f0, 0xfff0c0, 0xd8f0d0, 0xe8d0f0, 0xffd8b0, 0xdcdcdc, 0xc9d4de];
+      const NE = ['COSMETIC 화장품', '환전 EXCHANGE', 'K-POP STORE', '카페 CAFE', 'SALE 50%', 'SNEAKERS', '면세점 DUTY FREE', 'MASK PACK', 'DRUGSTORE', '칼국수', '한식당'], NC = ['#ff4fa3', '#4fd3ff', '#ffd54f', '#7dff6a'];
+      // 블록 채우기: 상가 4~10층 (1/2 → 높이 7~17)
+      const fill = (x0, x1, z0, z1, nz) => { let x = x0; while (x1 - x > 6) { let w = rr(14, 22); if (x1 - x - w < 8) w = x1 - x; const cx = x + w / 2; building(cx, (z0 + z1) / 2, w - .4, z1 - z0 - .4, rr(7, 17), pick(fac), { lit: true }); if (nz) neon(cx, 4.5, nz > 0 ? z1 + .3 : z0 - .3, pick(NE), pick(NC)); x += w; } };
+      for (const [a, b] of [[-113, -55], [4, 44], [50, 110]]) { fill(a, b, -50, -17, -1); fill(a, b, -17, 18, 1); }
+      for (const [a, b] of [[-113, -55], [-49, -4], [4, 44], [50, 110]]) { fill(a, b, 24, 52, -1); fill(a, b, 52, 80, 1); }
+      fill(-49, -4, -88, -58, 1); fill(4, 44, -88, -58, 1);
+      // 명동예술극장 (흰 아치 파사드, 명동길 쪽)
+      building(-26, -40, 20, 16, 8, 0xf4efe4); columns(-26, -48.6, 5, 3.6, 6, 0xffffff, 'x', .8); sign('🎭 명동예술극장 (옛 국립극장)', -26, 10, -49, .6);
+      fill(-49, -37, -50, -30, 0); fill(-15, -4, -50, -30, 0); fill(-49, -4, -28, -5, 0); fill(-49, -4, -5, 18, 1);
+      // 북서: 을지로입구 백화점·눈스퀘어
+      building(-84, -73, 56, 28, 20, 0xd9cdb8, { glass: 0x4f6a80, sign: '을지로입구 · 백화점 · 눈스퀘어', sh: .8 });
+      // 북동 언덕: 명동성당 (1898, 고딕, 첨탑 약 45m → 22)
+      bx(82, 0, -73, 34, 1.05, 22, 0xbdb5a8); stepsUp(82, -59.5, 12, 3, -1, 1);
+      bx(82, 1.05, -76, 14, 10, 16, 0x9c4a35, false); addCol(82, -76, 14, 16, null, { topY: 99 }); mesh(new THREE.CylinderGeometry(1.8, 1.8, .2, 16), glow(0xffd27a, .8), 82, 8, -63.9).rotation.x = Math.PI / 2;
+      spire(82, -66, 4, 22, 0x9c4a35); for (const sx of [-1, 1]) for (const z of [-82, -70]) mesh(BOX(1.2, 13, 1.2), LMC(0x8a4030), 82 + sx * 7.3, 7.5, z); sign('⛪ 명동성당 (1898 · 첨탑 45m)', 82, 40, -64, .9);
+      for (const x of [56, 108]) tree(x, -80, 1);
+      // 명동8길: 가운데 노점 카트 행렬 + 등불
+      const SN = ['떡볶이', '회오리감자', '닭꼬치', '계란빵', '호떡', '어묵', '딸기모찌', '랍스터구이'], SC = [0xd63a2a, 0x2c6fb7, 0xf39c12, 0x27ae60, 0x8e44ad];
+      for (let k = 0; k < 13; k++) { const z = -44 + k * 9.5; if (z > 16 && z < 26) continue; stall(0, z, SC[k % 5], SN[k % SN.length]); }
+      for (const z of [-30, 0, 40, 70]) lanternLine(-4, 4, z, 6);
+      for (const z of [-40, -25, -5, 10, 35, 55, 72]) for (const sx of [-1, 1]) neon(sx * 4.3, 4 + rr(0, 3), z, pick(NE), pick(NC));
+      // 남쪽 명동역 6번 출구 + 멀리 남산 N서울타워
+      bx(12, 0, 86, 4, 3, 5, 0x4a6a8a); sign('🚇 명동역 6번 출구', 12, 5, 86, .55); sign('🛍 MYEONGDONG 명동8길', 0, 8, 80, 1);
+      { const nt = new THREE.Group(); nt.position.set(40, 0, 300); world.add(nt); mesh(new THREE.SphereGeometry(70, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x587a4a), 0, 0, 0, nt).scale.y = .5; mesh(new THREE.CylinderGeometry(1.5, 2.5, 60, 10), LMC(0xf0f0f0), 0, 65, 0, nt); mesh(new THREE.CylinderGeometry(6, 4.5, 6, 12), LMC(0xdfe4e8), 0, 95, 0, nt); sign('남산 N서울타워', 40, 108, 300, 2); }
+
     } },
   { name: '경복궁', fill: 'heritage', icon: '🏯', sc: 1, w: 200, d: 345, floor: FLOOR(() => TEX.slab('palace', '#c4bba8', [.18, .18])), mmCol: 0xd8cfb8, obj: crate, sky: [0x5fb0ff, 0xf0f6ff], st: 4, shape: [[-1, 1], [-1, -1], [1, -1], [1, 1]], rail: { h: 4, col: 0xc9b8a0, t: .6 },
     staff: [{ kind: 'royalguard', route: [[-7, 165], [7, 165]], wait: 3 }, { kind: 'royalguard', route: [[-8, 112], [8, 112]], wait: 3 }, { kind: 'royalguard', route: [[-8, 136], [8, 136]], wait: 3 }, { kind: 'police', route: [[-85, -30], [-25, -30]], wait: 2 }, { kind: 'police', route: [[30, -30], [85, -30]], wait: 2 }, { kind: 'customs', route: [[-30, 100], [-80, 100]], wait: 2 }], people: { hanbok: 7, tourist: 3, royalguard: 2, smuggler: 3 },
@@ -4115,17 +4134,38 @@ const LANDMARK_LIST = [
       for (let k = 0; k < 12; k++) tree(rr(-90, -50), rr(100, 118), 1);
 
     } },
-  { name: '홍대', fill: 'city', icon: '🎸', w: 82, d: 58, floor: FLOOR(() => TEX.brick('hongdae', '#b5583f', [.25, .25])), mmCol: 0xa8553e, obj: luggage, sky: [0x7a6ad8, 0xffd0e8], st: 3,
-    people: { busker: 3, student: 5, tourist: 2, smuggler: 3 }, items: [["meterBox",3],["flowerPot",2],["guitarCase",2],["speaker",1]], who: '배버스킹 홍대 걷고싶은거리 상인회장', short: '버스킹 무대, 홍익대 정문, 홍대 놀이터, 경의선숲길, 그래피티 골목을 순찰해요.',
+  { name: '홍대', fill: 'city', icon: '🎸', sc: 1, w: 210, d: 140, floor: FLOOR(() => TEX.brick('hongdae', '#b5583f', [.25, .25])), mmCol: 0xa8553e, obj: luggage, sky: [0x7a6ad8, 0xffd0e8], st: 3,
+    staff: [{ kind: 'police', route: [[0, -38], [0, 60]], wait: 2 }, { kind: 'police', route: [[-90, 20], [-6, 20]], wait: 2 }, { kind: 'customs', route: [[47, -38], [47, 66]], wait: 2 }],
+    people: { busker: 3, student: 5, tourist: 2, smuggler: 3 }, items: [["meterBox",3],["flowerPot",2],["guitarCase",2],["speaker",1]], who: '배버스킹 홍대 걷고싶은거리 상인회장', short: '📏 실제 1/2 축척(약 400×250m)! 북쪽 홍대입구역과 경의선숲길 → 붉은 레드로드 어울마당로(버스킹 광장) → 서쪽 홍익로 끝 홍익대 정문과 홍대 놀이터, 동쪽 와우산로 클럽·라이브홀 골목, 그래피티 골목.',
     intro: '홍대 앞이야! 걷고싶은거리에선 버스킹 공연이 한창이고, 북쪽엔 홍익대학교 정문이 있어.\n홍대 놀이터 플리마켓, 옛 철길을 공원으로 바꾼 경의선숲길, 그래피티 골목까지 돌아보자!',
     build(L) {
-      bx(-6, 0, -24, 3, 10, 3, 0xbfc3c7); bx(6, 0, -24, 3, 10, 3, 0xbfc3c7); mesh(BOX(18, 3, 3), LMC(0xbfc3c7), 0, 11.5, -24); mesh(BOX(16, .8, .2), LMC(0x1f3b6b), 0, 11.5, -22.4); sign('🎓 홍익대학교 정문', 0, 14.5, -22, .7);
-      for (let k = 0; k < 3; k++) for (const sx of [-1, 1]) { const x = sx * (16 + k * 9); building(x, -20, 8, 8, rr(6, 13), [0x3d3d4f, 0x5b3a6b, 0x2f4f5f, 0x6b4a3a][(k + (sx > 0 ? 2 : 0)) % 4], { lit: true }); neon(x, 4.5, -15.8, ['LIVE', 'CLUB', 'ART', 'COFFEE', 'PUB', 'DANCE'][k * 2 + (sx > 0 ? 1 : 0)], ['#ff4fa3', '#4fd3ff', '#ffd54f', '#7dff6a', '#ff8a4f', '#b388ff'][k * 2 + (sx > 0 ? 1 : 0)]); }
-      bx(12, 0, -4, 10, .6, 6, 0x333333); for (const x of [8.2, 15.8]) bx(x, .6, -6, 1, 2.2, 1, 0x111111, false); for (let k = 0; k < 6; k++) { const l = mesh(BOX(.4, .4, .4), glow([0xff4fa3, 0x4fd3ff, 0xffd54f][k % 3], 2), 8 + k * 1.6, 4, -7); l.castShadow = false; envAnim.push(() => { l.material.emissiveIntensity = 1 + Math.sin(time * 6 + k) * 1; }); } sign('🎤 버스킹 무대', 12, 5.2, -4, .6);
-      for (const x of [22, 26, 30]) { bx(x, 0, 10, .25, 3, .25, 0xe74c3c); bx(x + 2, 0, 10, .25, 3, .25, 0xe74c3c); mesh(BOX(2.3, .2, .2), LMC(0xe74c3c), x + 1, 3, 10); } bx(34, 0, 12, 2, 1.6, 5, 0x4fc3f7); sign('🛝 홍대 놀이터 · 프리마켓', 28, 4.6, 12, .55); for (let k = 0; k < 4; k++) stall(20 + k * 5, 18, [0xff4fa3, 0x4fd3ff, 0xffd54f, 0x7dff6a][k], ['수공예', '액세서리', '빈티지', '그림']);
-      for (let z = -12; z <= 24; z += 2) { mesh(BOX(.2, .15, 2.1), MAT.metal(0x6d5a4a), -33, .08, z); mesh(BOX(.2, .15, 2.1), MAT.metal(0x6d5a4a), -31, .08, z); mesh(BOX(2.8, .1, .3), LMC(0x5d4037), -32, .05, z); } for (let k = 0; k < 8; k++) tree(k % 2 ? -37 : -27, -10 + k * 4.5, .8); sign('🌳 경의선숲길 (연트럴파크)', -32, 5, 6, .55);
-      for (let k = 0; k < 8; k++) { const m = mesh(BOX(4, 3, .4), LMC([0xff4fa3, 0x4fd3ff, 0xffd54f, 0x7dff6a, 0xb388ff][k % 5]), -20 + (k % 4) * 4.2, 1.5, k < 4 ? 4 : -10); m.castShadow = false; } bx(-14, 0, 4, 17, 3, .3, 0x777777); sign('🎨 그래피티 골목', -14, 4, 4.4, .5);
-      sign('🎸 HONGDAE 걷고싶은거리', 0, 6, 8, 1);
+      const FC = [0x3d3d4f, 0x5b3a6b, 0x2f4f5f, 0x6b4a3a, 0x7a6a5a, 0x4a5a3a], NE = ['LIVE', 'CLUB', 'ART', 'COFFEE', 'PUB', 'DANCE', '포토부스', '빈티지', '타투', '버스킹'], NC = ['#ff4fa3', '#4fd3ff', '#ffd54f', '#7dff6a', '#b388ff'];
+      const fill = (x0, x1, z0, z1, nz, nx) => { let x = x0; while (x1 - x > 5) { let w = rr(10, 16); if (x1 - x - w < 7) w = x1 - x; const cx = x + w / 2; building(cx, (z0 + z1) / 2, w - .4, z1 - z0 - .4, rr(5, 10), pick(FC), { lit: true }); if (nz) neon(cx, 4, nz > 0 ? z1 + .3 : z0 - .3, pick(NE), pick(NC)); x += w; } if (nx) for (let z = z0 + 5; z < z1 - 3; z += 9) neon(nx, 4, z, pick(NE), pick(NC)); };
+      // 레드로드 (어울마당로 붉은 포장)
+      floorPlane(8, 112, MAT.col(0xb5402f, .9), 0, 14, .014); floorPlane(20, 20, MAT.col(0xb5402f, .9), 14, 30, .014);
+      // 서쪽 블록 (홍익로 북·남)
+      fill(-92, -4, -42, -14, 0, -4.3); fill(-92, -4, -9, 16, 1); fill(-92, -60, 24, 47, -1); fill(-92, -60, 47, 66, 0); fill(-60, -30, 54, 66, 0); fill(-30, -4, 24, 47, -1, -4.3); fill(-30, -4, 47, 66, 0, -4.3);
+      // 그래피티 골목 (서쪽 블록 사이 동서 골목)
+      for (let k = 0; k < 10; k++) { const m = mesh(BOX(6, 3, .3), LMC([0xff4fa3, 0x4fd3ff, 0xffd54f, 0x7dff6a, 0xb388ff][k % 5]), -88 + k * 8.5, 1.8, -13.9); m.castShadow = false; } sign('🎨 그래피티 골목', -50, 4.4, -11.5, .55);
+      // 홍익대학교 정문 (홍익로 서쪽 끝)
+      for (const z of [12, 28]) bx(-98, 0, z, 3, 10, 3, 0xbfc3c7); mesh(BOX(3, 3, 19), LMC(0xbfc3c7), -98, 11.5, 20); mesh(BOX(.2, .8, 16), LMC(0x1f3b6b), -96.4, 11.5, 20); sign('🎓 홍익대학교 정문', -95, 14.5, 20, .7);
+      // 홍대 놀이터 (홍익어린이공원 약 40×40m → 20×20) + 프리마켓
+      floorPlane(20, 20, MAT.col(0xc9a77a, .95), -45, 40, .013);
+      for (const x of [-52, -48]) { bx(x, 0, 33, .25, 3, .25, 0xe74c3c); bx(x + 2, 0, 33, .25, 3, .25, 0xe74c3c); mesh(BOX(2.3, .2, .2), LMC(0xe74c3c), x + 1, 3, 33); } bx(-38, 0, 34, 2, 1.6, 5, 0x4fc3f7);
+      for (let k = 0; k < 3; k++) stall(-51 + k * 6, 46, [0xff4fa3, 0x4fd3ff, 0xffd54f][k], ['핸드메이드', '빈티지', '일러스트'][k]); sign('🛝 홍대 놀이터 · 프리마켓', -45, 4.6, 40, .6);
+      // 동쪽 블록 (어울마당로 ~ 와우산로 ~ 클럽 골목)
+      fill(4, 44, -42, -15, 0, 4.3); fill(4, 44, -10, 20, 0, 4.3); fill(24, 44, 20, 40, 0); fill(4, 44, 40, 55, 0, 4.3); fill(4, 44, 55, 66, 0, 4.3);
+      fill(50, 100, -42, -15, 0, 50.3); fill(50, 100, -10, 28, 1, 50.3); fill(50, 100, 33, 66, -1, 50.3);
+      sign('🎶 와우산로 클럽·라이브홀 골목', 47, 7, 0, .6);
+      // 버스킹 광장 무대 + 조명
+      bx(14, 0, 25, 10, .6, 5, 0x333333); for (const x of [10, 18]) bx(x, .6, 23.4, 1, 2.2, 1, 0x111111, false);
+      for (let k = 0; k < 6; k++) { const l = mesh(BOX(.4, .4, .4), glow([0xff4fa3, 0x4fd3ff, 0xffd54f][k % 3], 2), 10 + k * 1.6, 4, 22.6); l.castShadow = false; envAnim.push(() => { l.material.emissiveIntensity = 1 + Math.sin(time * 6 + k) * .9; }); }
+      sign('🎸 HONGDAE 버스킹 광장', 14, 6, 30, .9);
+      // 북쪽 경의선숲길 (옛 철길 공원) + 홍대입구역
+      for (let x = -100; x <= 100; x += 2) { mesh(BOX(2.1, .15, .2), MAT.metal(0x6d5a4a), x, .08, -59); mesh(BOX(2.1, .15, .2), MAT.metal(0x6d5a4a), x, .08, -57); mesh(BOX(.3, .1, 2.8), LMC(0x5d4037), x, .05, -58); }
+      for (let x = -96; x <= 96; x += 12) { tree(x, -64, .9); tree(x + 6, -51, .9); } sign('🌳 경의선숲길 (옛 철길 공원)', -30, 5, -58, .7);
+      bx(14, 0, -46, 6, 3.2, 4, 0x4a8a5a); sign('🚇 홍대입구역 9번 출구', 14, 5.2, -44, .6);
+
     } },
   { name: '롯데월드타워', fill: 'park', icon: '🏙', sc: 1, w: 340, d: 270, veh: [{ type: 'taxi', road: 'asphalt', route: JSRD }, { type: 'bus', road: 'asphalt', route: JSRD, start: 1 }, { type: 'car', route: JSRD, start: 2 }, { type: 'car', route: JSRD, start: 3 }, { type: 'moto', route: JSRD, start: 1 }], floor: TILE('#d3d0c8', '#b6b2a8', .25), obj: luggage, sky: [0x4f9fe8, 0xe6f2fc], st: 4,
     people: { tourist: 10, civ: 8, student: 6, smuggler: 4 }, staff: [{ kind: 'police', route: [[-150, -2], [150, -2]], wait: 2 }, { kind: 'customs', route: [[60, -20], [150, -20]], wait: 2 }, { kind: 'attendant', route: [[-110, 40], [-60, 40]], wait: 3 }], items: [["dutyBag",3],["wine",2],["trashBin",2]], who: '서높이 롯데월드타워 운영총괄', short: '📏 실제 1/2 축척! 북쪽 롯데월드타워(555m·123층)·에비뉴엘·몰, 서쪽 롯데월드 어드벤처(실내), 남쪽 석촌호수 서호의 매직아일랜드 놀이공원과 동호 벚꽃 산책로.',
@@ -4257,33 +4297,72 @@ const LANDMARK_LIST = [
       lanternLine(80, 94, -30, 5.5); lanternLine(80, 94, 10, 5.5);
 
     } },
-  { name: '수원화성', fill: 'heritage', icon: '🏰', w: 96, d: 74, floor: FLOOR(() => TEX.grass('hwaseong', '#a9be78', [.25, .25])), mmCol: 0xc9d6a0, obj: crate, sky: [0x5fb0ff, 0xf2f6e6], st: 4, shape: [[-.95, .7], [-1, .1], [-.85, -.5], [-.55, -.9], [0, -1], [.5, -.88], [.9, -.55], [1, 0], [.85, .65], [.4, .92], [-.3, .95], [-.7, .88]], rail: { h: 4.2, col: 0xb7ae98, t: .9, cren: true }, outside: { col: 0x7fa65a, y: .02 },
-    staff: [{ kind: 'royalguard', route: [[-20, 18], [20, 18]], wait: 3 }, { kind: 'police', route: [[-30, -6], [30, -6]], wait: 2 }], veh: [{ type: 'dragon', route: [[-30, 12], [30, 12], [30, -8], [-30, -8]] }], people: { hanbok: 4, tourist: 4, student: 2, smuggler: 3 },
-    items: [["stoneLantern",2],["hanbokBag",2],["drum",2],["souvenir",1]], who: '정조대왕 수원화성 사업소장', short: '세계유산 수원화성! 팔달문·장안문·화서문, 서북공심돈, 방화수류정, 봉돈, 화성행궁, 화성어차까지.',
+  { name: '수원화성', fill: 'heritage', icon: '🏰', sc: 1, w: 150, d: 200, floor: FLOOR(() => TEX.grass('hwaseong', '#a9be78', [.25, .25])), mmCol: 0xc9d6a0, obj: crate, sky: [0x5fb0ff, 0xf2f6e6], st: 4, shape: [[-.95, .7], [-1, .1], [-.85, -.5], [-.55, -.9], [0, -1], [.5, -.88], [.9, -.55], [1, 0], [.85, .65], [.4, .98], [-.3, .99], [-.7, .88]], rail: { h: 4.2, col: 0xb7ae98, t: .9, cren: true }, outside: { col: 0x7fa65a, y: .02 },
+    staff: [{ kind: 'royalguard', route: [[-10, 76], [10, 76]], wait: 3 }, { kind: 'royalguard', route: [[-10, -84], [10, -84]], wait: 3 }, { kind: 'police', route: [[-30, -20], [20, -20]], wait: 2 }, { kind: 'police', route: [[50, -30], [50, 40]], wait: 2 }], veh: [{ type: 'dragon', route: [[-45, 50], [25, 50], [25, -50], [-45, -50]] }], people: { hanbok: 4, tourist: 4, student: 2, smuggler: 3 },
+    items: [["stoneLantern",2],["hanbokBag",2],["drum",2],["souvenir",1]], who: '정조대왕 수원화성 사업소장', short: '📏 평면 1/10 축척(성곽 둘레 5.74km, 남북 1.9km×동서 1.4km)! 남쪽 팔달문, 북쪽 장안문, 서쪽 화서문·서북공심돈, 동쪽 창룡문·연무대·봉돈, 북동 수원천 위 화홍문과 방화수류정, 가운데 화성행궁, 서쪽 팔달산 서장대.',
     intro: '정조 때 쌓은 세계유산 수원화성이야. 바깥은 돌로, 안쪽은 흙으로 쌓은 성벽이 꼬불꼬불 이어져.\n남쪽 팔달문, 북쪽 장안문, 서쪽 화서문과 망루 서북공심돈, 연못 위 방화수류정, 연기 신호를 올리던 봉돈이 있어.\n용머리 화성어차도 다니니까 조심!',
     build(L) {
-      gateTop(0, 22, 16, 6, 4.5, { tier: true }); sign('팔달문 八達門 (남문)', 0, 16, 25, .8);
-      gateTop(0, -33, 16, 6, 4.5, { tier: true }); sign('장안문 長安門 (북문)', 0, 16, -30, .8);
-      gateTop(-44, 2, 6, 12, 4.2); sign('화서문 華西門', -42, 12, 2, .6); bx(-40, 0, -14, 6, 8, 6, 0xb7ae98); for (let y = 2; y < 8; y += 2) for (const sx of [-1, 1]) mesh(BOX(.1, .6, .6), LMC(0x3a3a3a), -40 + sx * 3.02, y, -14); bx(-40, 8, -14, 6.4, .5, 6.4, 0x8b2e22, false); hroof(-40, 9.6, -14, 4.6, 4.6); sign('서북공심돈 (망루)', -40, 14, -10.5, .55);
-      pond(30, -22, 14, 10); bx(32, 0, -26, 6, 3, 5, 0x8a8a80); pavilion(32, -26, 1, 3); sign('방화수류정 · 용연', 30, 10, -18, .6);
-      bx(40, 0, 8, 5, 3, 8, 0xb7ae98); for (let k = 0; k < 5; k++) chimney(40, 4.6 + k * 1.4 - 2.8, 4.6, 0xb7ae98); sign('봉돈 (봉화 신호대)', 40, 8, 13, .55);
-      hanok(-6, -18, 16, 8, 3, { tier: true }); sign('화성행궁', -6, 11.5, -13.5, .6);
-      for (let k = 0; k < 4; k++) { bx(-28 + k * 3, 0, -2, .2, 1.8, .2, 0x6d4c2f); mesh(new THREE.CylinderGeometry(.8, .8, .15, 16), LMC([0xd63a2a, 0xffd54f, 0x2c6fb7, 0xffffff][k % 4]), -28 + k * 3, 1.6, -2).rotation.x = Math.PI / 2; } sign('🏹 연무대 활쏘기', -24, 3.4, -2, .5);
-      for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2, x = Math.cos(a) * 42, z = Math.sin(a) * 31; flag(x, z, [0xd63a2a, 0xffd54f, 0x2c6fb7, 0x27ae60, 0xffffff][k % 5], 6); }
-      for (let k = 0; k < 10; k++) tree(rr(-30, 30), rr(-10, 8), .8);
+      // 동서 방향 통로 성문(화서문·창룡문)
+      const gateEW = (x, z, L, D, H) => { const gap = 3.4, sl = (L - gap) / 2; bx(x, 0, z - gap / 2 - sl / 2, D, H, sl, 0xb7ae98); bx(x, 0, z + gap / 2 + sl / 2, D, H, sl, 0xb7ae98); bx(x, H * .7, z, D, H * .3, gap, 0xb7ae98, false); bx(x, H, z, D * .7, 2.2, L * .8, 0xeadfca, false); hroof(x, H + 2.2, z, D * .7, L * .8); };
+      // 팔달문(남문)·장안문(북문): 2층 문루, 폭 약 20m
+      gateTop(0, 84, 14, 6, 4, { tier: true, gap: 4 }); sign('팔달문 八達門 (남문 · 보물)', 0, 14, 87.5, .8);
+      gateTop(0, -90, 14, 6, 4, { tier: true, gap: 4 }); sign('장안문 長安門 (북문 · 정문)', 0, 14, -86.5, .8);
+      // 서쪽: 화서문 + 서북공심돈(벽돌 망루)
+      gateEW(-62, -30, 12, 5, 3.8); sign('화서문 華西門 (서문 · 보물)', -60, 10, -30, .6);
+      bx(-55, 0, -50, 6, 8, 6, 0xa79d88); for (let y = 2; y < 8; y += 2) for (const sx of [-1, 1]) mesh(BOX(.1, .6, .6), LMC(0x3a3a3a), -55 + sx * 3.02, y, -50); bx(-55, 8, -50, 6.4, .5, 6.4, 0x8b2e22, false); hroof(-55, 9.6, -50, 4.6, 4.6); sign('서북공심돈 (벽돌 망루)', -55, 13, -46, .55);
+      // 동쪽: 창룡문, 연무대(활쏘기), 봉돈(봉화대)
+      gateEW(66, -5, 12, 5, 3.8); sign('창룡문 蒼龍門 (동문)', 62, 10, -5, .6);
+      hanok(55, 15, 10, 6, 3); sign('연무대 (군사 훈련장)', 55, 7.5, 19, .55);
+      for (let k = 0; k < 4; k++) { bx(48 + k * 4, 0, 32, .2, 1.8, .2, 0x6d4c2f); mesh(new THREE.CylinderGeometry(.8, .8, .15, 16), LMC([0xd63a2a, 0xffd54f, 0x2c6fb7, 0xffffff][k % 4]), 48 + k * 4, 1.6, 32).rotation.x = Math.PI / 2; } sign('🏹 국궁 활쏘기 체험', 54, 3.6, 32, .5);
+      bx(64, 0, 48, 5, 3, 8, 0xb7ae98); for (let k = 0; k < 5; k++) chimney(64, 44.8 + k * 1.6, 4.6, 0xb7ae98); sign('봉돈 (봉화 연기 신호대)', 64, 8, 53, .55);
+      // 수원천 (남북으로 흐름) + 북쪽 화홍문(7칸 홍예 수문) — 다리로만 건넌다
+      for (const [z, l] of [[-78, 12], [-35, 66], [30, 56], [72, 20]]) pond(40, z, 6, l, 0x6fb5d8);
+      bx(40, 0, -70, 10, .3, 4, 0xbfb6a4, false); for (let k = 0; k < 7; k++) mesh(BOX(1, 1.2, 4.2), LMC(0x9a917e), 37 + k, -.3, -70); bx(40, 1.6, -70, 7, 1.8, 3, 0xeadfca, false); hroof(40, 3.4, -70, 7.6, 3.6); sign('화홍문 華虹門 (7칸 수문)', 40, 7, -67, .6);
+      for (const z of [0, 60]) { bx(40, 0, z, 8, .3, 4, 0xbfb6a4, false); for (const sz of [-2, 2]) mesh(BOX(8, .5, .2), LMC(0x9a917e), 40, .5, z + sz); }
+      pond(52, -50, 10, 8, 0x4f8fc0); pavilion(52, -62, 1.1, .8); hroof(52, 4.4, -62, 2.6, 2.6); sign('방화수류정 · 용연', 52, 8, -58, .6);
+      // 화성행궁 (팔달산 동쪽 기슭)
+      floorPlane(36, 40, std(0xffffff, .9, 0, { map: TEX.slab('haenggung', '#cfc7b4', [.3, .3]) }), -25, 20, .014);
+      hanok(-25, 8, 18, 8, 3.5, { tier: true }); sign('화성행궁 봉수당 (정조의 행궁)', -25, 12, 12.5, .6); for (const x of [-37, -13]) hanok(x, 22, 6, 10, 2.8);
+      gateTop(-25, 36, 10, 4, 3, { gap: 3.6 }); sign('신풍루 (행궁 정문)', -25, 9.5, 38.5, .5);
+      // 팔달산 서장대 (지휘소) — 계단으로 오른다
+      bx(-55, 0, 35, 14, 2.1, 14, 0x8a9a6a); stepsUp(-55, 46.4, 5, 6, -1, .8, 0xb7ae98);
+      bx(-55, 2.1, 31, 6, 2.4, 5, 0xeadfca, false); addCol(-55, 31, 6, 5, null, { topY: 99 }); hroof(-55, 4.5, 31, 6.6, 5.6); bx(-55, 6.4, 31, 3.6, 1.4, 3, 0xeadfca, false); hroof(-55, 7.8, 31, 4, 3.4); sign('팔달산 서장대 西將臺', -55, 12, 35, .6);
+      // 성벽 위 오방색 깃발
+      for (const [i, p] of [[-.95, .7], [-1, .1], [-.85, -.5], [-.55, -.9], [0, -1], [.5, -.88], [.9, -.55], [1, 0], [.85, .65], [.4, .98], [-.3, .99], [-.7, .88]].entries()) flag(p[0] * 75 * .9, p[1] * 100 * .9, [0xd63a2a, 0xffd54f, 0x2c6fb7, 0x27ae60, 0xffffff][i % 5], 6);
+      for (let k = 0; k < 14; k++) tree(rr(-5, 30), rr(-45, -25), .9);
+      // 플라잉 수원 열기구
+      { const bl = new THREE.Group(); bl.position.set(-20, 0, 60); world.add(bl); const ball = mesh(new THREE.SphereGeometry(4, 16, 12), LMC(0xffffff), 0, 22, 0, bl); ball.castShadow = false; mesh(BOX(1.6, 1, 1.6), LMC(0x7a5a3a), 0, 16, 0, bl); envAnim.push(() => { bl.position.y = Math.sin(time * .3) * 3; }); sign('플라잉 수원 열기구', -20, 29, 60, .6); }
+
     } },
-  { name: '경주', fill: 'heritage', icon: '🗿', w: 92, d: 70, floor: FLOOR(() => TEX.grass('tumuli', '#8fb86b', [.25, .25])), mmCol: 0x9cc27a, obj: crate, sky: [0x6ab4f0, 0xf3eedb], st: 3,
-    staff: [{ kind: 'monk', route: [[-30, -18], [-20, -18]], wait: 3 }, { kind: 'police', route: [[-36, 22], [36, 22]], wait: 2 }], people: { monk: 2, tourist: 5, student: 3, hanbok: 2, smuggler: 3 },
-    items: [["vase",3],["statue",2],["backpack",2]], who: '신라천년 경주 문화유산 관리소장', short: '천년 고도 경주! 첨성대, 대릉원 고분, 불국사와 다보탑·석가탑, 석굴암, 동궁과 월지, 황리단길까지.',
-    intro: '신라의 서울 경주야! 별을 관측하던 첨성대, 커다란 왕릉이 모인 대릉원이 있어.\n불국사에는 청운교·백운교 돌계단과 다보탑·석가탑, 산 위 석굴암엔 커다란 부처님이 계셔.\n밤이 예쁜 동궁과 월지, 한옥 카페 거리 황리단길까지 문화재 도굴범을 막자!',
+  { name: '경주', fill: 'heritage', icon: '🗿', sc: 1, w: 260, d: 260, floor: FLOOR(() => TEX.grass('tumuli', '#8fb86b', [.25, .25])), mmCol: 0x9cc27a, obj: crate, sky: [0x6ab4f0, 0xf3eedb], st: 3,
+    staff: [{ kind: 'monk', route: [[-60, 5], [-25, 5]], wait: 3 }, { kind: 'police', route: [[-40, 95], [40, 95]], wait: 2 }, { kind: 'customs', route: [[40, -40], [40, 40]], wait: 2 }], people: { monk: 2, tourist: 5, student: 3, hanbok: 2, smuggler: 3 },
+    items: [["vase",3],["statue",2],["backpack",2]], who: '신라천년 경주 문화유산 관리소장', short: '📏 동부사적지 평면 1/3 축척! 북서쪽 대릉원(고분 23기 중 황남대총·천마총), 서쪽 황리단길, 가운데 첨성대(실물 9.17m)와 꽃단지, 남쪽 계림 숲과 반달 모양 월성, 동쪽 동궁과 월지.',
+    intro: '신라의 서울 경주, 동부사적지야! 큰 왕릉이 모인 대릉원에는 국내에서 가장 큰 쌍둥이 무덤 황남대총과 천마총이 있어.\n남동쪽 들판엔 별을 관측하던 첨성대(높이 9.17m)가 서 있고, 그 남쪽엔 계림 숲과 반달 모양 왕궁터 월성, 동쪽엔 밤이 예쁜 동궁과 월지가 있어.\n대릉원 서쪽 한옥 카페 거리 황리단길까지 문화재 도둑을 찾아보자!',
     build(L) {
-      for (let k = 0; k < 27; k++) { const r = 2.6 - Math.sin(k / 27 * Math.PI) * .6 + (k < 4 ? .4 : 0); mesh(new THREE.CylinderGeometry(r * .97, r, .5, 16), LMC(0xd2c39e), 0, .25 + k * .5, -4); } addCol(0, -4, 5, 5, null, { topY: 99 }); bx(0, 13.5, -4, 3.4, .6, 3.4, 0xc4b48e, false); mesh(BOX(1, 1, .1), LMC(0x222222), 0, 7, -1.4); sign('첨성대 瞻星臺 (국보)', 0, 17, -2, .7); flowers(0, 6, 22, 6, [0xf48fb1, 0xffeb3b, 0xff7043, 0xba68c8], 70);
-      for (const [x, z, r] of [[-30, 4, 9], [-14, 10, 6], [-40, -8, 6]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x6f9f4a)); m.scale.y = .55; m.position.set(x, 0, z); world.add(m); addCol(x, z, r * 1.5, r * 1.5, null, { topY: 99 }); } sign('대릉원 고분 (천마총)', -26, 8, 8, .6);
-      bx(-24, 0, -29.5, 30, 2.8, 8, 0xbfb6a4); stepsUp(-30, -19.5, 4, 8, -1, .8, 0xd2c8b4); stepsUp(-18, -19.5, 4, 8, -1, .8, 0xd2c8b4); sign('청운교 · 백운교', -24, 4.6, -22, .5); hanok(-24, -31.5, 14, 3, 2.6, { tier: true, base: 0xbfb6a4 }); sign('불국사 佛國寺 · 자하문 · 대웅전', -24, 12, -28, .7); pavilion(-36, -28, .8, 2.8); sign('범영루', -36, 8, -26, .4);
-      for (const [x, sga] of [[-34, 0], [-14, 1]]) { for (let k = 0; k < 3; k++) bx(x, k * 2.4, -16, 3.6 - k * .7, 1.6, 3.6 - k * .7, 0xbfb6a4, k === 0); for (let k = 0; k < 3; k++) mesh(BOX(5 - k * 1.1, .4, 5 - k * 1.1), LMC(0xa89e8c), x, 1.8 + k * 2.4, -16); mesh(BOX(.5, 2.4, .5), LMC(0xa89e8c), x, 8.8, -16); sign(sga ? '석가탑' : '다보탑', x, 11.5, -13.5, .55); }
-      const cave = new THREE.Mesh(new THREE.SphereGeometry(8, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x9a948a)); cave.position.set(30, 0, -26); world.add(cave); addCol(30, -26, 12, 12, null, { topY: 99 }); bx(30, 0, -18.5, 4, 4, 2, 0x6d675e, false); statue(30, -19.4, 0xd9c9a0, true, 3.4); sign('석굴암 石窟庵 (국보)', 30, 10, -18, .65);
-      pond(30, 8, 20, 12, 0x3f7fa8); for (const [x, z] of [[24, 2.4], [36, 2.4]]) { bx(x, 0, z, 6, .6, 3, 0xbfb6a4); pavilion(x, z, 1, .6); } for (let k = 0; k < 14; k++) mesh(BOX(.3, .3, .3), glow(0xffd27a, 1.2), 20 + k * 1.5, .5, 14.2).castShadow = false; sign('동궁과 월지 (안압지)', 30, 6, 2, .6);
-      for (let k = 0; k < 4; k++) hanok(-38 + k * 8.5, 22, 6, 5, 2.4); sign('☕ 황리단길', -26, 7, 25, .6); for (let k = 0; k < 8; k++) tree(rr(14, 44), rr(20, 30), .9, 0x5f9a3e);
+      const mound = (x, z, r, h, col = 0x6f9f4a) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 9, 0, Math.PI * 2, 0, Math.PI / 2), LMC(col)); m.scale.y = h / r; m.position.set(x, 0, z); world.add(m); addCol(x, z, r * 1.4, r * 1.4, null, { topY: 99 }); };
+      // 대릉원 (약 350×350m → 110×110) 돌담 + 고분
+      bx(-60, 0, -115, 110, 1.2, .8, 0xa89e8c); bx(-115, 0, -60, .8, 1.2, 110, 0xa89e8c); bx(-67.5, 0, -5, 95, 1.2, .8, 0xa89e8c); bx(-7.5, 0, -5, 5, 1.2, .8, 0xa89e8c); bx(-5, 0, -72.5, .8, 1.2, 85, 0xa89e8c); bx(-5, 0, -12.5, .8, 1.2, 15, 0xa89e8c);
+      sign('대릉원 大陵苑 (고분 23기)', -15, 4, -2, .7);
+      mound(-50, -62, 12, 7.3); mound(-50, -42, 12, 7.3); sign('황남대총 (쌍분 · 국내 최대 고분 120×80m)', -50, 11, -52, .7);
+      mound(-90, -85, 8, 4.3, 0x76a64f); bx(-90, 0, -78.6, 3, 2.2, 1.2, 0x5d554a, false); sign('천마총 (지름 47m · 내부 관람)', -90, 7.5, -78, .6);
+      for (const [x, z, r] of [[-95, -40, 7], [-80, -20, 6], [-30, -95, 7], [-25, -75, 5], [-70, -100, 6], [-100, -60, 5], [-20, -50, 6], [-65, -80, 5]]) mound(x, z, r, r * .55);
+      for (let k = 0; k < 10; k++) pine(-110 + k * 10, -10, 1);
+      // 황리단길 (대릉원 서쪽 한옥 카페 거리)
+      for (let k = 0; k < 8; k++) hanok(-122, -110 + k * 12, 6, 9, 2.6); sign('☕ 황리단길 (한옥 카페 거리)', -116, 6, -60, .6);
+      // 첨성대: 실물 높이 9.17m, 27단, 남쪽 창
+      { const X = 25, Z = 15; bx(X, 0, Z, 5.4, .4, 5.4, 0xc4b48e); for (let k = 0; k < 27; k++) { const r = 2.5 - Math.sin(k / 27 * Math.PI * .9) * .35 - k * .03; mesh(new THREE.CylinderGeometry(r * .98, r, .3, 18), LMC(0xd2c39e), X, .55 + k * .3, Z); }
+        addCol(X, Z, 5.4, 5.4, null, { topY: 99 }); for (const s of [-1, 1]) { mesh(BOX(3, .3, .3), LMC(0xc4b48e), X, 8.9, Z + s * .9); mesh(BOX(.3, .3, 3), LMC(0xc4b48e), X + s * .9, 9.05, Z); } mesh(BOX(.9, .9, .1), LMC(0x222222), X, 4.4, Z + 2.2);
+        sign('첨성대 瞻星臺 (국보 · 높이 9.17m 실물 크기)', X, 12, Z, .7); }
+      floorPlane(36, 30, MAT.col(0xe58fb0, .95), 62, 22, .013); flowers(62, 22, 34, 28, [0xf2a7c3, 0xe57fa8, 0xffc6dc], 90); sign('🌸 핑크뮬리 꽃단지', 62, 3.4, 22, .55);
+      floorPlane(30, 24, MAT.col(0xe7d36a, .95), -10, 30, .013); flowers(-10, 30, 28, 22, [0xffe066, 0xffffff], 60);
+      // 계림 숲
+      for (let i = 0; i < 5; i++) for (let j = 0; j < 4; j++) tree(-10 + i * 7, 62 + j * 8, 1.1, 0x4f8a3a); sign('계림 鷄林 (신라 김씨 시조 탄생 숲)', 4, 7, 58, .6);
+      // 월성 (반달 모양 왕궁터 토성)
+      for (const sx of [-1, 1]) { const m = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 8, 0, Math.PI * 2, 0, Math.PI / 2), LMC(0x7fa65a)); m.scale.set(35, 3, 5); m.position.set(sx * 70, 0, 112); world.add(m); addCol(sx * 70, 112, 70, 8, null, { topY: 99 }); } sign('월성 月城 (반달 모양 신라 왕궁터)', -70, 7, 112, .7);
+      // 동궁과 월지 (연못 + 서쪽 물가 누각 3채 + 야간 조명)
+      pond(95, 60, 40, 30, 0x3f7fa8); for (const z of [48, 60, 72]) { bx(72, 0, z, 6, .6, 5, 0xbfb6a4); pavilion(72, z, 1, .6); } for (let k = 0; k < 20; k++) mesh(BOX(.3, .3, .3), glow(0xffd27a, 1.2), 76 + k * 2, .5, 44.5).castShadow = false; sign('동궁과 월지 (안압지)', 90, 7, 44, .7);
+      mountainBack(-150, 0x587a4a, 6); sign('남산 · 토함산 방향 → 불국사·석굴암 (약 16km)', 110, 8, -110, .6);
+
     } },
   { name: 'N서울타워', fill: 'mountain', icon: '🗼', sc: 1, w: 200, d: 150, floor: FLOOR(() => TEX.grass('namsan', '#5f8b45', [.25, .25])), mmCol: 0x6f9a52, obj: luggage, sky: [0x5aa8ef, 0xf6e8d8], st: 3, shape: ELL(1, 1, 28), outside: { col: 0x3f6b3a, y: .02 }, rail: { h: 1.1, col: 0x8a6a4a, t: .2 },
     people: { tourist: 6, student: 3, civ: 3, smuggler: 3 }, items: [["trashBin",2],["teddy",2],["souvenir",2],["backpack",1]], who: '남산 N서울타워 총지배인', short: '📏 실제 크기(1:1)! 남산 정상 약 200×150m. 높이 236.7m N서울타워(기단 지름 40m), 북쪽 팔각정·봉수대, 남서쪽 사랑의 자물쇠, 서쪽 케이블카, 남쪽 한양도성 성곽길.',
