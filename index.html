@@ -619,13 +619,13 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1425';
+const BUILD = '20261031-1436';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { } if (typeof cloudTouch === 'function') cloudTouch(k); },
+  set(k, v) { if (v && typeof v === 'object' && k.startsWith('k9wallet:')) v.t = Date.now(); try { localStorage.setItem(k, JSON.stringify(v)); } catch { } if (typeof cloudTouch === 'function') cloudTouch(k); },
 };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 // ================= 다국어 (8개 언어) =================
@@ -874,6 +874,7 @@ const HELPT = { ko: ['🛡 탐지견 방탄조끼! 다음 공격을 한 번 막�
   hi: ['🛡 K9 जैकेट! अगला वार रोकेगी', '👃 सुपर नाक ट्रीट! 20 सेकंड तक सूंघने की दूरी 1.5×', '🦴 हड्डी थैला! 20 सेकंड तक 2× तेज़ फेंकें', '🛡 जैकेट ने बचा लिया!'], ar: ['🛡 سترة الكلب! تصد الضربة التالية', '👃 حلوى الأنف الخارق! مدى الشم ×1.5 لمدة 20 ثانية', '🦴 حقيبة العظام! رمي أسرع ×2 لمدة 20 ثانية', '🛡 صدّتها السترة!'],
   vi: ['🛡 Áo giáp chó K9! Chặn đòn tiếp theo', '👃 Bánh mũi siêu thính! Tầm đánh hơi ×1.5 trong 20 giây', '🦴 Túi xương! Ném nhanh ×2 trong 20 giây', '🛡 Áo giáp đã chặn!'], ja: ['🛡 探知犬の防弾ベスト！次の攻撃を1回防ぐ', '👃 スーパー鼻おやつ！20秒間においの範囲1.5倍', '🦴 骨バッグ！20秒間2倍速で投げられる', '🛡 ベストが防いだ！'],
   ru: ['🛡 Жилет K9! Блокирует следующий удар', '👃 Лакомство «супернюх»! Радиус нюха ×1.5 на 20 с', '🦴 Сумка с костями! Броски ×2 быстрее 20 с', '🛡 Жилет защитил!'] };
+Object.assign(KO, { ts_giant: '🌟 슈퍼 간식! 10초 동안 탐지견과 핸들러가 30% 커지고 다치지 않아요' }); Object.assign(DICT.en || {}, { ts_giant: '🌟 Super snack! Dog and handler grow 30% and are invincible for 10 s' });
 Object.assign(KO, { ts_autosniff: '👃✨ 킁킁킁! 10초 동안 저절로 냄새를 맡아요' }); Object.assign(DICT.en || {}, { ts_autosniff: '👃✨ Super sniff! Auto-sniffing for 10 s' }); Object.assign(DICT.zh || {}, { ts_autosniff: '👃✨ 超级嗅探！10秒自动嗅闻' }); Object.assign(DICT.ja || {}, { ts_autosniff: '👃✨ クンクンクン！10秒間自動で嗅ぐよ' }); Object.assign(DICT.vi || {}, { ts_autosniff: '👃✨ Đánh hơi tự động 10 giây!' }); Object.assign(DICT.ru || {}, { ts_autosniff: '👃✨ Супернюх! Авто-поиск 10 сек' }); Object.assign(DICT.hi || {}, { ts_autosniff: '👃✨ सुपर सूँघना! 10 सेकंड अपने आप' }); Object.assign(DICT.ar || {}, { ts_autosniff: '👃✨ شمّ تلقائي لمدة 10 ثوانٍ!' });
 for (const [l, [a, b, c, d]] of Object.entries(HELPT)) { const D = l === 'ko' ? KO : DICT[l]; if (D) Object.assign(D, { ts_shield: a, ts_nose: b, ts_bonebag: c, ts_blocked: d }); }
 const CROWDT = { ko: ['👥 지금은 유동인구가 적어요 (한산한 시간)', '👥 유동인구 보통', '👥 유동인구가 많아요', '👥 지금이 유동인구 최고조예요!'], en: ['👥 Few people around now (quiet hours)', '👥 Normal crowd', '👥 Busy crowd', '👥 Peak crowd right now!'], zh: ['👥 现在人流很少（清闲时段）', '👥 人流一般', '👥 人流较多', '👥 现在是人流高峰！'], hi: ['👥 अभी भीड़ कम है', '👥 सामान्य भीड़', '👥 भीड़ ज़्यादा है', '👥 अभी सबसे ज़्यादा भीड़!'], ar: ['👥 الزحام قليل الآن', '👥 زحام عادي', '👥 زحام كبير', '👥 ذروة الزحام الآن!'], vi: ['👥 Lúc này vắng người', '👥 Lượng người bình thường', '👥 Đông người', '👥 Đang là giờ cao điểm!'], ja: ['👥 今は人が少ない時間です', '👥 人出はふつう', '👥 人出が多い', '👥 今が人出のピーク！'], ru: ['👥 Сейчас людей мало', '👥 Обычный поток людей', '👥 Много людей', '👥 Сейчас пик толпы!'] };
@@ -4588,7 +4589,7 @@ function loadLevel(i) {
   }
   { const p = placeFree(level.bounds, .8, .8, .5, level.avoid); xray = null;
     if (p) { const g = new THREE.Group(); g.position.set(p.x, .6, p.z); world.add(g); mesh(BOX(.6, .4, .3), MAT.col(0x2e86c1, .3, .4), 0, 0, 0, g); mesh(BOX(.4, .25, .02), M('xscr', () => std(0x66ffcc, .2, 0, { emissive: 0x33ffaa, emissiveIntensity: .8 })), 0, .02, .16, g); const t = textSprite('📡 X-RAY', { h: .3 }); t.position.y = .55; g.add(t); xray = { x: p.x, z: p.z, got: false, m: g }; } }
-  clearSniffMarks(); setupCoins(); helps = []; dog.shield = 0; dog.noseT = 0; dog.boneT = 0; dog.autoSniffT = 0; if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
+  clearSniffMarks(); setupCoins(); helps = []; dog.shield = 0; dog.noseT = 0; dog.boneT = 0; dog.autoSniffT = 0; dog.giantT = 0; giantS = 1; dogM.g.scale.setScalar(BREEDS[dogBreed]?.scale || 1); handlerM.g.scale.setScalar(1); if (!def.relax) for (const k of Object.keys(HELP_KINDS)) for (let n = 0; n < Math.round(level.sz); n++) spawnHelpItem(k);
   helpT = 30; xrayT = 0; mission = null; missionCd = def.relax ? 1e9 : mr(25, 40); combo = 0; $('mission').classList.add('hidden');
   if (mp && mp.room !== i) mpLeave(); keepAwake(); if (team) team.picked = i; if (playerId) { mpJoin(); lobbyJoin(); setTimeout(lobbyTrack, 300); }
   if (people.some(p => p.look && p.villain)) setTimeout(() => toast('⚠ 제복으로 변장한 밀수범이 있어요! 냄새로 구별하세요'), 1500);
@@ -4655,6 +4656,7 @@ function renderQuest() {
 function addScore(n) { levelScore = Math.max(-500, levelScore + n); }
 function damage() {
   if (dog.hurt > 0 || state !== 'play') return;
+  if (dog.giantT > 0) { dog.hurt = .6; floatText('🌟 무적!', dog.x, dog.y + 2.2, dog.z, { h: .45, color: '#ffd23f' }); return; }
   if (hiddenVip) { dog.hurt = .8; floatText('🛡 관리자 무적', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#ffd54f' }); return; }
   if (dog.shield > 0) { dog.shield--; dog.hurt = .8; floatText(t('ts_blocked'), dog.x, dog.y + 1.8, dog.z, { h: .5, color: '#7fd3ff' }); burst(dog.x, dog.y + .8, dog.z, [new THREE.Color(0x7fd3ff)], 20, 3); return; }
   if (Math.random() < .06 * (wallet.up.armor || 0)) { dog.hurt = .6; floatText('🦺 방탄 조끼가 막았다!', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#9fe870' }); return; }
@@ -4854,7 +4856,7 @@ function restoreLogin() {
   $('idList').innerHTML = store.get('k9ids', id ? [id] : []).map(x => '<option value="' + esc(x) + '">').join('');
   if (store.get('k9agree', false)) $('agree').checked = true;
   if (store.get('k9pcons', false)) { $('pread').checked = true; $('pcons').checked = true; $('age14').checked = true; $('pread').disabled = $('pcons').disabled = $('age14').disabled = false; $('pvHint').style.display = 'none'; }
-  loadSavedDog(id); $('nick').value = store.get('k9nick:' + id, '') || '';
+  loadSavedDog(id); $('nick').value = store.get('k9nick:' + id, '') || store.get('k9nick:last', '') || $('nick').value || '';
   const known = id && store.get('k9dog:' + id, null);
   if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || (id.includes('@') ? '' : id)) + ' ' + t('hd_word') + ' · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true, true);
 }
@@ -4879,7 +4881,7 @@ function loginTiles() {
 }
 loginTiles();
 loadSavedDog(store.get('k9id', ''));
-$('pid').addEventListener('change', () => { const id = $('pid').value.trim(), d = store.get('k9dog:' + id, null); if (d) { $('dname').value = d.name; pickBreed = d.breed; renderBreeds(); } $('nick').value = store.get('k9nick:' + id, '') || ''; });
+$('pid').addEventListener('change', () => { const id = $('pid').value.trim(), d = store.get('k9dog:' + id, null); if (d) { $('dname').value = d.name; pickBreed = d.breed; renderBreeds(); } $('nick').value = store.get('k9nick:' + id, '') || $('nick').value || store.get('k9nick:last', '') || ''; loginTiles(); });
 const rpc = (name, body) => fetch(RANK_CFG.url + '/rest/v1/rpc/' + name, { method: 'POST', headers: sbHeaders(), body: JSON.stringify(body) });
 const loginErr = t => { $('pidErr').textContent = t; };
 // 히든맵 바로 입장 허용 계정 (이메일은 공개하지 않고 SHA-256 해시로만 비교)
@@ -4901,7 +4903,11 @@ async function cloudLoad(id, pw, freshDevice) {
     for (const [k, v] of Object.entries(lp.best || {})) best[k] = best[k] === undefined ? v : Math.min(best[k], v);
     store.set('k9prog:' + id, { unlocked: Math.max(lp.unlocked || 0, cp.unlocked || 0), best });
     // 간식·업적은 더 많이 모은 쪽
-    const lw = store.get('k9wallet:' + id, null), cw = d['k9wallet:']; if (cw && (!lw || (cw.coins || 0) + Object.values(cw.up || {}).reduce((a, b) => a + b, 0) * 50 > (lw.coins || 0) + Object.values(lw.up || {}).reduce((a, b) => a + b, 0) * 50)) store.set('k9wallet:' + id, cw);
+    // 업그레이드는 항목마다 더 높은 단계를 지키고(절대 줄지 않게), 코인은 더 최근에 저장된 쪽을 쓴다
+    const lw = store.get('k9wallet:' + id, null), cw = d['k9wallet:'];
+    if (cw || lw) { const a = lw || {}, b = cw || {}, up = { ...(a.up || {}) }; for (const [k, v] of Object.entries(b.up || {})) up[k] = Math.max(up[k] || 0, v || 0);
+      const newer = (b.t || 0) > (a.t || 0) ? b : (a.t || 0) > (b.t || 0) ? a : ((b.coins || 0) > (a.coins || 0) ? b : a);
+      store.set('k9wallet:' + id, { ...a, ...b, coins: newer.coins || 0, up }); }
     const la = store.get('k9ach:' + id, null), ca = d['k9ach:']; if (ca && (!la || (ca.earned || []).length >= (la.earned || []).length)) store.set('k9ach:' + id, ca);
     // 처음 쓰는 기기라면 탐지견·핸들러·닉네임·언어도 그대로 가져온다
     if (fresh) { for (const k of ['k9dog:', 'k9hand:', 'k9nick:']) if (d[k]) store.set(k + id, d[k]); if (d.lang && d.lang !== lang && LANGS.some(L => L[0] === d.lang)) { lang = d.lang; try { localStorage.setItem('k9lang', lang); } catch { } } }
@@ -5025,7 +5031,7 @@ async function login() {
   if (res === 'locked') return loginErr('비밀번호를 여러 번 틀려서 5분간 잠겼어요. 잠시 후 다시 시도하세요.');
   loginErr('');
   const freshDevice = !guest && !store.get('k9dog:' + v, null);
-  playerId = guest ? 'guest_' + nk : v; playerNick = nk; await checkVip(guest ? '' : v); store.set('k9nick:' + v, nk); setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; if (!guest) { store.set('k9id', $('remember').checked ? v : ''); if ($('remember').checked) store.set('k9ids', [v, ...store.get('k9ids', []).filter(x => x !== v)].slice(0, 5)); } store.set('k9agree', $('agree').checked); if (!guest) store.set('k9pcons', true); runScore = 0; runActive = false;
+  playerId = guest ? 'guest_' + nk : v; playerNick = nk; await checkVip(guest ? '' : v); store.set('k9nick:' + v, nk); if (!guest) store.set('k9nick:last', nk); setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; if (!guest) { store.set('k9id', $('remember').checked ? v : ''); if ($('remember').checked) store.set('k9ids', [v, ...store.get('k9ids', []).filter(x => x !== v)].slice(0, 5)); } store.set('k9agree', $('agree').checked); if (!guest) store.set('k9pcons', true); runScore = 0; runActive = false;
   if (serverOn() && playerPw) rpc('set_profile', { p_id: v, p_pw: pw, p_nick: nk, p_dog: dn, p_consent: true }).catch(() => { });
   if (serverOn() && playerPw) { const fresh = await cloudLoad(v, pw, freshDevice); if (fresh) { setTimeout(syncProfile, 500); const dd = store.get('k9dog:' + v, null), hh = store.get('k9hand:' + v, null); if (dd) setDog(dd.breed, dd.name); if (hh) setHandlerLook(hh.job, hh.skin); playerNick = store.get('k9nick:' + v, playerNick) || playerNick; setHandlerLabel(playerNick); applyLang(); toast('☁ 다른 기기에서 쓰던 탐지견과 기록을 불러왔어요'); } loadAch(); loadWallet(); cloudSave(); }
   if (guest) toast(t('ts_guest'));
@@ -5078,6 +5084,7 @@ const HELP_KINDS = {
   nose: { emoji: '👃', col: 0xff9a4a, label: 'ts_nose' },
   bones: { emoji: '🦴', col: 0xf4e1a8, label: 'ts_bonebag' },
   auto: { emoji: '👃✨', col: 0x7dff6a, label: 'ts_autosniff' },
+  giant: { emoji: '🌟', col: 0xffd23f, label: 'ts_giant' },
 };
 function spawnHelpItem(kind) {
   const p = placeFree(level.bounds, .7, .7, .4, level.avoid); if (!p) return;
@@ -5094,12 +5101,24 @@ function updateHelpItems(dt) {
       h.got = true; world.remove(h.g); SFX.found(); burst(h.x, .8, h.z, [new THREE.Color(HELP_KINDS[h.kind].col), WHITE], 25, 3);
       if (h.kind === 'shield') dog.shield = Math.min(2, (dog.shield || 0) + 1);
       else if (h.kind === 'nose') dog.noseT = 20;
+      else if (h.kind === 'giant') { dog.giantT = 10; floatText('🌟 슈퍼 탐지견!', dog.x, dog.y + 2.4, dog.z, { h: .65, color: '#ffd23f' }); tone(523, .12, 'square', .08); tone(659, .12, 'square', .08, 0, .12); tone(784, .2, 'square', .08, 0, .24); }
       else if (h.kind === 'auto') { dog.autoSniffT = 10; floatText('👃✨ 킁킁킁 10초!', dog.x, dog.y + 2, dog.z, { h: .55, color: '#7dff6a' }); }
       else dog.boneT = 20;
       toast(t(HELP_KINDS[h.kind].label));
     }
   }
   dog.noseT = Math.max(0, (dog.noseT || 0) - dt); dog.boneT = Math.max(0, (dog.boneT || 0) - dt); dog.autoSniffT = Math.max(0, (dog.autoSniffT || 0) - dt);
+  updateGiant(dt);
+}
+// 슈퍼 간식: 탐지견·핸들러가 30% 커지고(부드럽게) 무적·조금 빨라짐, 끝나기 2초 전부터 깜빡여 알려 준다
+let giantS = 1;
+function updateGiant(dt) {
+  const was = dog.giantT > 0; dog.giantT = Math.max(0, (dog.giantT || 0) - dt);
+  if (was && dog.giantT === 0) floatText('🌟 원래 크기로!', dog.x, dog.y + 2, dog.z, { h: .45 });
+  const blink = dog.giantT > 0 && dog.giantT < 2 && Math.sin(time * 30) > 0;
+  giantS += ((dog.giantT > 0 && !blink ? 1.3 : 1) - giantS) * Math.min(1, dt * 8);
+  dogM.g.scale.setScalar((BREEDS[dogBreed]?.scale || 1) * giantS); handlerM.g.scale.setScalar(giantS);
+  if (dog.giantT > 0 && Math.random() < .6) spawnP(dog.x + mr(-.6, .6), dog.y + mr(.2, 1.4), dog.z + mr(-.6, .6), 0, 1.2, 0, new THREE.Color().setHSL((time * .8 + Math.random() * .3) % 1, 1, .6), .6);
 }
 function updateHelp(dt) {
   if (level && !level.relax) updateHelpItems(dt);
@@ -5180,7 +5199,7 @@ function updateDebris(dt) {
 function bark() {
   if (mp) mp.ch.send({ type: 'broadcast', event: 'bark', payload: { k: mp.key } });
   // 왕왕 범위: 견종 능력치 + 업그레이드 레벨마다 +10%
-  const BR = (.8 + .06 * ST().bark) * (1 + .1 * (wallet.up.bark || 0));
+  const BR = (.8 + .06 * ST().bark) * (1 + .1 * (wallet.up.bark || 0)) * (dog.giantT > 0 ? 1.3 : 1);
   const AS = 1.3 - .06 * ST().bark; // 짖기 능력치가 높을수록 공격 간격이 짧다
   dog.barkCd = .375 * AS; dog.barkAnim = .22; SFX.bark();
   const hx = dog.x + Math.sin(dog.dir) * .9, hz = dog.z + Math.cos(dog.dir) * .9;
@@ -5418,7 +5437,7 @@ function updateDog(dt) {
   const sprint = (keys.ShiftLeft || (!twoP && keys.ShiftRight) || touchIn.run || Math.hypot(touchIn.x, touchIn.y) > .93 || (autoOn && auto.run)) && dog.stamina > 3 && len > .1 && !dog.sniffing;
   dog.stamina = clamp(dog.stamina + (sprint ? -24 * (1.4 - .1 * ST().sta) * (handlerJob === 'soldier' ? .8 : 1) : 14 * (.7 + .1 * ST().sta)) * dt, 0, 100);
   dog.boost -= dt; dog.hurt -= dt;
-  const maxSp = (dog.swim ? (handlerJob === 'rescue' ? .87 : .62) : 1) * 1.07 * (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (.85 + .06 * ST().spd) * (level ? 1 + (level.sz - 1) * .22 : 1);
+  const maxSp = (dog.swim ? (handlerJob === 'rescue' ? .87 : .62) : 1) * 1.07 * (dog.sniffing ? 2.2 : sprint ? 9.5 : 5.5) * (dog.boost > 0 ? 1.3 : 1) * (dog.giantT > 0 ? 1.2 : 1) * (.85 + .06 * ST().spd) * (level ? 1 + (level.sz - 1) * .22 : 1);
   const k = 1 - Math.exp(-dt * (dog.grounded ? 10 : 3));
   dog.vx = lerp(dog.vx, mx * maxSp, k); dog.vz = lerp(dog.vz, mz * maxSp, k);
   const pushed = moveCircle(dog, dog.vx * dt, dog.vz * dt, .5, true, dog.y);
