@@ -331,6 +331,10 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 :is(body.touch,body.pc) #topbar>button:not(#tbMenu){display:none}:is(body.touch,body.pc) #topbar.open>button:not(#tbMenu){display:block}
 :is(body.touch,body.pc) #topbar button{width:38px;height:34px;font-size:17px}
 :is(body.touch,body.pc) #topbar>button:is(#tbAuto,#tbCoin){display:block}
+/* 펼친 메뉴: 넘치면 왼쪽으로 새 줄 (조작 버튼과 겹치지 않게 높이는 fitMenu가 정한다) */
+:is(body.touch,body.pc) #topbar.open{flex-wrap:wrap-reverse;align-content:flex-start;z-index:12}
+/* 자동 플레이·코인 자동 사냥 버튼은 왼쪽 위 */
+body.touch #topbar>#tbAuto,body.touch #topbar>#tbCoin{position:fixed;top:calc(6px + var(--st));left:calc(8px + var(--sl))}body.touch #topbar>#tbCoin{left:calc(52px + var(--sl))}
 :is(#tbAuto,#tbCoin).on{background:#f4c542!important;box-shadow:0 0 0 2px #fff,0 0 12px #ffd23f}
 #autoBadge{top:calc(36px + var(--st));left:50%;transform:translateX(-50%);background:rgba(244,197,66,.95);color:#173a5e;font-family:Jua,sans-serif;font-size:13px;padding:2px 12px;border-radius:12px;pointer-events:auto;cursor:pointer;white-space:nowrap}
 :is(body.touch,body.pc) #mmwrap{top:calc(6px + var(--st))!important;right:calc(54px + var(--sr))!important;padding:3px!important;background:rgba(12,28,44,.7)}
@@ -596,7 +600,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1359';
+const BUILD = '20261031-1402';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4944,7 +4948,10 @@ let fullTry = 0;
 if (isMobile && canFull) addEventListener('pointerup', e => { if (e.target.closest?.('button, a, input, label') || appMode() || document.fullscreenElement || document.webkitFullscreenElement || !$('startScreen').classList.contains('hidden') || performance.now() - fullTry < 15000) return; fullTry = performance.now(); goFull(); }, { passive: true });
 if (!isMobile) document.body.classList.add('pc');
 $('bars').appendChild($('info')); $('bars').prepend($('qsum'));
-$('tbMenu').onclick = () => $('topbar').classList.toggle('open');
+// 메뉴를 펼치면 오른쪽 아래 조작 버튼(킁킁·왕왕·뼈다귀·점프)에 닿기 전까지만 세로로 놓고, 넘치면 왼쪽으로 줄을 바꾼다
+function fitMenu() { const tb = $('topbar'); if (!tb.classList.contains('open')) { tb.style.maxHeight = ''; return; } const top = tb.getBoundingClientRect().top; let lim = innerHeight; for (const id of ['bSniff', 'bBone', 'bBark', 'bJump']) { const el = $(id); if (el && el.getClientRects().length) lim = Math.min(lim, el.getBoundingClientRect().top); } tb.style.maxHeight = Math.max(80, lim - top - 10) + 'px'; }
+$('tbMenu').onclick = () => { $('topbar').classList.toggle('open'); fitMenu(); };
+addEventListener('resize', () => setTimeout(fitMenu, 60));
 for (const b of document.querySelectorAll('#topbar button:not(#tbMenu)')) b.addEventListener('click', () => $('topbar').classList.remove('open'));
 { let tapT = 0;
   // 터치 탭이 click으로 이어지지 않는 기기(전체화면 전환·화면 갱신 중 탭 유실)를 위해 손을 뗄 때 바로 누른다 — 상단바와 클리어·승리 화면 버튼
