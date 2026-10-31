@@ -704,7 +704,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-0008';
+const BUILD = '20261101-0009';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -5697,9 +5697,9 @@ function cowUpdate(p, dt) {
   if (p.downT !== undefined) { p.downT -= dt; g.position.y = -Math.min(1, 1 - p.downT) * 2.4; p.body.rotation.z += dt * 2; if (p.downT <= 0) { p.dead = true; world.remove(g); const i = people.indexOf(p); if (i >= 0) people.splice(i, 1); } return; }
   if (state !== 'play') return;
   if (p.riseT > 0) { p.riseT -= dt; g.position.set(p.x, -2.2 * Math.max(0, p.riseT) / 1.2, p.z); if (Math.random() < .5) spawnP(p.x + mr(-.6, .6), .2, p.z + mr(-.6, .6), mr(-1, 1), 2, mr(-1, 1), DUST, .5); return; }
-  // Lv2 이상·대장은 맞아도 움찔하지 않는다 (얼음 호루라기만 통한다)
+  // 맞아도 움찔하지 않는다 (얼음 호루라기만 통한다)
   if (p.iceT > 0) { p.iceT -= dt; p.stun = 0; p.windup = 0; g.position.set(p.x, 0, p.z); if (Math.random() < .2) spawnP(p.x, 1.5, p.z, 0, .5, 0, new THREE.Color(0xbfe9ff), .4); return; }
-  if (p.stun > 0 && (p.lv >= 2 || p.cowBoss)) p.stun = 0;
+  p.stun = 0; // 카우존 젖소는 레벨과 상관없이 맞아도 움찔하지 않고 계속 공격한다
   if (p.stun > 0) { p.stun -= dt; p.body.rotation.z = Math.sin(time * 18) * .12; p.windup = 0; g.position.set(p.x, 0, p.z); return; }
   if (p.cowBoss && cowBossSkill(p, dt)) { g.position.set(p.x, 0, p.z); g.rotation.y = p.dir; return; }
   p.body.rotation.z = 0;
