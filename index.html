@@ -704,7 +704,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-0019';
+const BUILD = '20261101-0023';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1460,7 +1460,7 @@ let dogName = '관세청 탐지견', dogBreed = 'labrador';
 let dogM = makeDog(BREEDS.labrador, dogName); scene.add(dogM.g);
 const UP0 = { spd: 0, nose: 0, sta: 0, bark: 0, jump: 0, heart: 0, armor: 0, magnet: 0, bone: 0, leak: 0 };
 let wallet = { coins: 0, up: { ...UP0 } };
-const ST = () => { const b = BREEDS[dogBreed].stat, u = UPL(), k = .5 * DQ().up; return { spd: b.spd + u.spd * k, nose: b.nose + u.nose * k, sta: b.sta + u.sta * k, bark: b.bark + u.bark * k, jump: b.jump + u.jump * k }; };
+const ST = () => { const b = BREEDS[dogBreed].stat, u = (typeof level !== 'undefined' && level && level.cow) ? Object.fromEntries(UPG.map(([q]) => [q, cowUp[q] * .5])) : UPL(), k = .5 * DQ().up; return { spd: b.spd + u.spd * k, nose: b.nose + u.nose * k, sta: b.sta + u.sta * k, bark: b.bark + u.bark * k, jump: b.jump + u.jump * k }; };
 // [키, 이름, 설명, 최대 레벨, 레벨별 가격]
 const P10 = [40, 70, 110, 160, 220, 290, 370, 460, 560, 680];
 const UPG = [
@@ -1473,6 +1473,15 @@ const UPG = [
 const COW_MAX = 20;
 // 카우존 스킬은 판마다 Lv1에서 시작해 그 판 안에서만 Lv20까지 오른다
 const cowUp = Object.fromEntries(UPG.map(([k]) => [k, 1]));
+// 카우존에서만 쓰는 스킬 이름·설명 (같은 칸이 카우존에서는 다른 효과를 낸다)
+const COW_SKILL = {
+  spd: ['🏃 속도', '이동 속도 +1.5%'], nose: ['📈 성장', '처치 경험치 +6%'], sta: ['💪 지구력', '기력 소모 감소·회복 증가'],
+  bark: ['📢 짖기', '왕왕 범위 +6% · Lv10 각성: 범위 +25%'], jump: ['🦘 점프', '점프 높이 +1.2%'],
+  heart: ['❤️ 생명력', '올릴 때 하트 +1 회복 · 맞은 뒤 무적 +5%'], armor: ['🦺 방탄 조끼', '막을 확률 +2.5% (최대 45%)'],
+  magnet: ['🧲 자석', '코인·아이템 끌어오는 거리 +1m'], bone: ['🦴 뼈다귀 연사', '4레벨마다 뼈다귀 +1 · 간격 -3% · Lv20 각성: 관통'],
+  leak: ['🩸 흡혈', '처치할 때 하트 +1 확률 +2% · Lv10 각성: 대장 처치 시 하트 +2'],
+};
+const cowSk = k => (typeof level !== 'undefined' && level && level.cow) ? (cowUp[k] || 0) : -1;
 const UPL = () => (typeof level !== 'undefined' && level && level.cow) ? cowUp : wallet.up;
 function setDog(breed, name) {
   dogBreed = BREEDS[breed] ? breed : 'labrador'; dogName = name;
@@ -1598,8 +1607,8 @@ function makeBone() {
 }
 function throwBone() {
   if (handler.boneCd > 0) return;
-  const lv = UPL().bone || 0;
-  handler.boneCd = (1.0 / 1.07) * (1 - .05 * lv) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1) / cowAutoK(); handler.throwT = .3;
+  const cb = cowSk('bone'), lv = cb >= 0 ? Math.min(5, Math.floor(cb / 4)) : (UPL().bone || 0);
+  handler.boneCd = (1.0 / 1.07) * (cb >= 0 ? 1 - .03 * cb : 1 - .05 * lv) * (dog.boneT > 0 ? .5 : 1) * (handlerJob === 'police' ? .7 : 1) / cowAutoK(); handler.throwT = .3;
   // 탐지견이 바라보는 방향으로 던진다 (자동 조준 없음). 연사 레벨만큼(최대 Lv5) 뼈다귀가 늘어 부채꼴로 퍼진다
   // 뼈다귀 가방(🦴)이 켜져 있으면 사방으로 둥글게 날린다
   const ring = dog.boneT > 0, src = twoP ? handler : dog, n = ring ? 12 + 2 * Math.min(5, lv) : 1 + Math.min(5, lv), spread = ring ? Math.PI * 2 / n : .2;
@@ -1624,6 +1633,7 @@ function updateShots(dt) {
   }
   shots = shots.filter(b => { if (b.t > 0) return true; world.remove(b.m); return false; });
 }
+const wallAt = (b, y) => colliders.some(c => !c.disabled && c.topY > y && distToBox(b.x, b.z, c) < .15);
 function updateBones(dt) {
   for (let i = bones.length - 1; i >= 0; i--) {
     const b = bones[i]; b.t += dt;
@@ -1633,7 +1643,8 @@ function updateBones(dt) {
     let hit = null;
     const car = y < 2.8 && vehicles.find(v => !v.broken && v.distTo(b.x, b.z) < .3);
     if (car) { scene.remove(b.m); bones.splice(i, 1); car.hit('🦴'); continue; }
-    for (const p of people) { if (p.dead || p.arrested || p.vip) continue; if (Math.hypot(p.x - b.x, p.z - b.z) < 1.17) { hit = p; break; } }
+    for (const p of people) { if (p.dead || p.arrested || p.vip || (b.hits && b.hits.has(p))) continue; if (Math.hypot(p.x - b.x, p.z - b.z) < 1.17) { hit = p; break; } }
+    if (hit && hit.cow && cowSk('bone') >= 20 && !wallAt(b, y)) { (b.hits || (b.hits = new Set())).add(hit); hitVillain(hit, '🦴 관통!'); continue; }
     const wall = colliders.some(c => !c.disabled && c.topY > y && distToBox(b.x, b.z, c) < .15);
     const box = !hit && colliders.find(c => c.search && !c.disabled && !c.revealed && !c.boned && distToBox(b.x, b.z, c) < .35);
     if (!hit && !wall && !box && u < 1) continue;
@@ -5793,21 +5804,25 @@ function cowDown(p) {
   floatText((p.cowBoss ? '👑 젖소 대장 처치! +' : '🐄 처치! +') + pts, p.x, 3, p.z, { h: .5, color: '#ffd54f' });
   burst(p.x, 1, p.z, [WHITE, new THREE.Color(0x1a1a1a), RED], 30, 5);
   if (Math.random() < (p.cowBoss ? 1 : .12)) spawnHelpItem(pick2(Object.keys(HELP_KINDS).filter(k => k !== 'ball')), { x: p.x, z: p.z });
-  cow.xp += p.cowBoss ? 8 : 1;
+  cow.xp += Math.round((p.cowBoss ? 8 : 1) * (1 + .06 * cowUp.nose) * 10) / 10;
+  { const hpMax = Math.min(7, DIFFS[level.dm].hpMax + Math.floor((cowUp.heart || 0) / 2)), gain = p.cowBoss && cowUp.leak >= 10 ? 2 : (Math.random() < .02 * cowUp.leak ? 1 : 0);
+    if (gain && dog.hp < hpMax) { dog.hp = Math.min(hpMax, dog.hp + gain); floatText('🩸 +' + gain, dog.x, dog.y + 2.4, dog.z, { h: .5, color: '#ff6b6b' }); } }
   const need = 6 + (cow.lvl - 1) * 3; if (cow.xp >= need) { cow.xp -= need; cow.lvl++; cowLevelUp(); }
 }
 function cowLevelUp() {
   const can = UPG.filter(([k]) => cowUp[k] < COW_MAX);
   SFX.quest && SFX.quest(); floatText('⬆ 레벨 업! Lv' + cow.lvl, dog.x, dog.y + 3, dog.z, { h: .7, color: '#7dff6a' });
   if (!can.length) return toast('🐄 카우존 스킬을 모두 Lv20까지 올렸어요!');
-  const pickUp = k => { cowUp[k] = Math.min(COW_MAX, cowUp[k] + 1); $('cowLv').classList.add('hidden'); if (state === 'cowlv') state = 'play'; keys = {}; toast('⬆ ' + UPG.find(u => u[0] === k)[1] + ' Lv' + cowUp[k] + ' (카우존 전용)'); };
+  const pickUp = k => { cowUp[k] = Math.min(COW_MAX, cowUp[k] + 1);
+    if (k === 'heart') { const hm = Math.min(7, DIFFS[level.dm].hpMax + Math.floor(cowUp.heart / 2)); if (dog.hp < hm) dog.hp++; }
+    if (cowUp[k] === 10 || cowUp[k] === 20) { floatText('✨ ' + COW_SKILL[k][0] + ' 각성 Lv' + cowUp[k] + '!', dog.x, dog.y + 3.4, dog.z, { h: .7, color: '#ffd23f' }); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(0xffd23f), WHITE], 50, 6); } $('cowLv').classList.add('hidden'); if (state === 'cowlv') state = 'play'; keys = {}; toast('⬆ ' + COW_SKILL[k][0] + ' Lv' + cowUp[k] + ' (카우존 전용)'); };
   if (auto.on) { pickUp(can.sort((a, b) => cowUp[a[0]] - cowUp[b[0]])[0][0]); return; } // 자동 플레이 중에는 가장 낮은 스킬을 올린다
   $('cowLvH').textContent = '⬆ 레벨 ' + cow.lvl + '! 스킬 하나를 골라 올리세요';
-  $('cowLvList').innerHTML = UPG.map(([k, n, tip]) => '<button type="button" data-k="' + k + '"' + (cowUp[k] >= COW_MAX ? ' disabled' : '') + '>' + n + ' Lv' + cowUp[k] + '→' + Math.min(COW_MAX, cowUp[k] + 1) + '<small>' + tip + '</small></button>').join('');
+  $('cowLvList').innerHTML = UPG.map(([k]) => [k, ...COW_SKILL[k]]).map(([k, n, tip]) => '<button type="button" data-k="' + k + '"' + (cowUp[k] >= COW_MAX ? ' disabled' : '') + '>' + n + ' Lv' + cowUp[k] + '→' + Math.min(COW_MAX, cowUp[k] + 1) + '<small>' + tip + '</small></button>').join('');
   $('cowLvList').onclick = e => { const b = e.target.closest('button[data-k]'); if (b && !b.disabled) pickUp(b.dataset.k); };
   state = 'cowlv'; keys = {}; $('cowLv').classList.remove('hidden');
 }
-function cowHud() { return '🐄 생존 ' + fmtTime(cow.t) + ' · 처치 ' + cow.kills + ' · 웨이브 ' + cow.wave + ' · Lv' + cow.lvl + ' (' + cow.xp + '/' + (6 + (cow.lvl - 1) * 3) + ')'; }
+function cowHud() { return '🐄 생존 ' + fmtTime(cow.t) + ' · 처치 ' + cow.kills + ' · 웨이브 ' + cow.wave + ' · Lv' + cow.lvl + ' (' + Math.floor(cow.xp) + '/' + (6 + (cow.lvl - 1) * 3) + ')'; }
 function cowTick(dt) {
   if (!level || !level.cow || state !== 'play') return;
   cow.t += dt; cow.wave = 1 + Math.floor(cow.t / 40);
@@ -6934,7 +6949,7 @@ function damage() {
   if (dog.giantT > 0) { dog.hurt = .6; floatText('🌟 무적!', dog.x, dog.y + 2.2, dog.z, { h: .45, color: '#ffd23f' }); return; }
   if (hiddenVip) { dog.hurt = .8; floatText('🛡 관리자 무적', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#ffd54f' }); return; }
   if (dog.shield > 0) { dog.shield--; dog.hurt = .8; floatText(t('ts_blocked'), dog.x, dog.y + 1.8, dog.z, { h: .5, color: '#7fd3ff' }); burst(dog.x, dog.y + .8, dog.z, [new THREE.Color(0x7fd3ff)], 20, 3); return; }
-  if (Math.random() < .05 * (UPL().armor || 0)) { dog.hurt = .6; floatText('🦺 방탄 조끼가 막았다!', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#9fe870' }); return; }
+  if (Math.random() < (cowSk('armor') >= 0 ? Math.min(.45, .025 * cowSk('armor')) : .05 * (UPL().armor || 0))) { dog.hurt = .6; floatText('🦺 방탄 조끼가 막았다!', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#9fe870' }); return; }
   if (handlerJob === 'soldier' && Math.random() < .3) { dog.hurt = .6; floatText('🛡 막아냈다!', dog.x, dog.y + 1.8, dog.z, { h: .45, color: '#9fe870' }); return; }
   dog.hp--; dog.hurt = 1 + .05 * (UPL().heart || 0); lastHurt = time; shake = .4; burst(dog.x, dog.y + .8, dog.z, [RED], 25, 3);
   if (dog.hp > 0) return;
@@ -7678,7 +7693,7 @@ function updateDebris(dt) {
 function bark() {
   if (mp) mp.ch.send({ type: 'broadcast', event: 'bark', payload: { k: mp.key } });
   // 왕왕 범위: 견종 능력치 + 업그레이드 레벨마다 +10%
-  const BR = (.8 + .06 * ST().bark) * (1 + .1 * (UPL().bark || 0)) * (dog.giantT > 0 ? 1.3 : 1) * cowAutoK();
+  const BR = (.8 + .06 * ST().bark) * (cowSk('bark') >= 0 ? (1 + .06 * cowSk('bark')) * (cowSk('bark') >= 10 ? 1.25 : 1) : 1 + .1 * (UPL().bark || 0)) * (dog.giantT > 0 ? 1.3 : 1) * cowAutoK();
   const AS = 1.3 - .06 * ST().bark; // 짖기 능력치가 높을수록 공격 간격이 짧다
   dog.barkCd = .375 * AS / cowAutoK(); dog.barkAnim = .22; SFX.bark();
   const hx = dog.x + Math.sin(dog.dir) * .9, hz = dog.z + Math.cos(dog.dir) * .9;
