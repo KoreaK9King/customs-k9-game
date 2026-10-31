@@ -682,7 +682,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2134';
+const BUILD = '20261031-2157';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1474,7 +1474,7 @@ const leash = new THREE.Line(new THREE.BufferGeometry().setFromPoints(leashPts),
 leash.frustumCulled = false; scene.add(leash);
 function updateHandler(dt) {
   const hx0 = handler.x, hz0 = handler.z;
-  { const pad = level.swimSea ? SWIM_PAD : 0; handler.x = clamp(handler.x, level.bounds.minX + .3 - pad, level.bounds.maxX - .3 + pad); handler.z = clamp(handler.z, level.bounds.minZ + .3 - pad, level.bounds.maxZ - .3 + pad); }
+  { const pad = level.swimSea ? SWIM_PAD : 0; handler.x = clamp(handler.x, level.bounds.minX + .3 - pad, level.bounds.maxX - .3 + pad); handler.z = clamp(handler.z, level.bounds.minZ + .3 - pad, level.bounds.maxZ - .3 + (level.seaSouth ? 0 : pad)); }
   // 탐지견이 올라간 높이까지 핸들러도 뛰어 올라간다
   const gh = groundAt(handler.x, handler.z, .4, Math.max(dog.y, 0) + .05).h;
   if (handler.y < gh - .05 && handler.vy <= 0) { if (gh - handler.y < .45) handler.y = Math.min(gh, handler.y + dt * 3); else handler.vy = Math.sqrt(2 * 22 * (gh - handler.y + .35)); }
@@ -1496,8 +1496,9 @@ function updateHandler(dt) {
     const ex = handler.x - dog.x, ez = handler.z - dog.z, ed = Math.hypot(ex, ez);
     if (ed > 5) { handler.x = dog.x + ex / ed * 5; handler.z = dog.z + ez / ed * 5; }
   }
-  if (d > 9) { handler.x = bx; handler.z = bz; }
-  const sp = d > .3 ? Math.min(d * 4.5, 11) : 0;
+  const dogSp = Math.hypot(dog.vx || 0, dog.vz || 0); // 간식·부스트로 빨라진 탐지견도 핸들러가 같은 속도로 따라간다
+  if (d > 9 + dogSp * .4) { handler.x = bx; handler.z = bz; }
+  const sp = d > .3 ? Math.min(d * 4.5, Math.max(11, dogSp * 1.25 + 2)) : 0;
   if (sp > 0) { handler.x += dx / d * sp * dt; handler.z += dz / d * sp * dt; }
   // 바라보는 방향: 멀면 가는 쪽, 탐지견이 걸으면 탐지견과 같은 쪽, 멈추면 탐지견 쪽
   if (!twoP) {
@@ -5937,7 +5938,7 @@ function applyTimeOfDay(silent) {
 }
 function distToPoly(P, x, z) { let best = 1e9; for (let i = 0; i < P.length; i++) { const [ax, az] = P[i], [bx2, bz] = P[(i + 1) % P.length], vx = bx2 - ax, vz = bz - az, L2 = vx * vx + vz * vz || 1, u = clamp(((x - ax) * vx + (z - az) * vz) / L2, 0, 1); best = Math.min(best, Math.hypot(x - ax - vx * u, z - az - vz * u)); } return best; }
 const SWIM_PAD = 60;
-function inSea(x, z) { return !!(level && level.swimSea && level.poly && !pip(level.poly, x, z) && distToPoly(level.poly, x, z) < SWIM_PAD && (level.buoyZ === undefined || z > level.buoyZ + 1)); }
+function inSea(x, z) { return !!(level && level.swimSea && level.poly && !pip(level.poly, x, z) && distToPoly(level.poly, x, z) < SWIM_PAD && (level.buoyZ === undefined || z > level.buoyZ + 1) && (!level.seaSouth || (z < level.bounds.maxZ - 2 && x > level.bounds.minX && x < level.bounds.maxX))); }
 function pip(poly, x, z) { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, zi] = poly[i], [xj, zj] = poly[j]; if ((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; }
 function ELL(rx = 1, rz = 1, n = 32, cx = 0, cz = 0) { return Array.from({ length: n }, (_, i) => [cx + Math.cos(i / n * Math.PI * 2) * rx, cz + Math.sin(i / n * Math.PI * 2) * rz]); }
 // 앞뒤가 둥근 긴 통 (열차·비행기)
@@ -6070,7 +6071,7 @@ function loadLevel(i) {
   const SC = def.sc ?? (def.relax ? 1 : 2.24); // 넓이 5배
   const W = def.w * SC, D = def.d * SC;
   level = { ...def, w: W, d: D, w0: def.w, d0: def.d, scaled: SC > 1, bounds: { minX: -W / 2 + 1, maxX: W / 2 - 1 + (def.extraEast || 0), minZ: -D / 2 + 1 - (def.extraZ || 0), maxZ: D / 2 - 1 + (def.extraZ || 0) } };
-  if (def.shape) { level.poly = def.shape.map(([u, v]) => [u * W / 2, v * D / 2]); level.inside = (x, z) => pip(level.poly, x, z); level.swimSea = !!(def.outside && def.outside.water); }
+  if (def.shape) { level.poly = def.shape.map(([u, v]) => [u * W / 2, v * D / 2]); level.inside = (x, z) => pip(level.poly, x, z); level.swimSea = !!(def.outside && def.outside.water); level.seaSouth = def.shape.some(p => p[1] === 1); } // 위쪽 끝까지 땅인 맵은 바다가 남쪽에만 있다
   level.fav = ({ 1: .35, 2: .30, 3: .25, 4: .20, 5: .15 })[def.diff.stars] || 0; level.diff = { ...def.diff, speed: def.diff.speed / (1 + level.fav) / 1.15, flee: def.diff.flee / (1 + level.fav) / 1.15 };
   { const Q = DIFFS[diffMode]; level.dm = diffMode; level.diff.speed *= Q.spd; level.diff.flee *= Q.spd; level.diff.bossHp = Math.max(2, Math.round(level.diff.bossHp * Q.boss)); level.diff.sniff *= Q.sniff; level.diff.vehicle = (level.diff.vehicle || 1) * Q.veh; level.fav = (1 + level.fav) * Q.gun - 1; }
   level.sz = clamp(Math.sqrt((W * D) / 2640), 1, 3.2); const SZ = level.sz;
@@ -7232,7 +7233,7 @@ function updateDog(dt) {
   // 점프 / 중력
   unstick(dog, .5, dog.y);
   // 점프로도 맵 밖으로 나갈 수 없다
-  { const pad = level.swimSea ? SWIM_PAD : 0; dog.x = clamp(dog.x, level.bounds.minX + .3 - pad, level.bounds.maxX - .3 + pad); dog.z = clamp(dog.z, level.bounds.minZ + .3 - pad, level.bounds.maxZ - .3 + pad); }
+  { const pad = level.swimSea ? SWIM_PAD : 0; dog.x = clamp(dog.x, level.bounds.minX + .3 - pad, level.bounds.maxX - .3 + pad); dog.z = clamp(dog.z, level.bounds.minZ + .3 - pad, level.bounds.maxZ - .3 + (level.seaSouth ? 0 : pad)); }
   // 2단 점프: 공중에서 한 번 더. 핸들러도 함께 뛴다
   if (jumpQ && (dog.grounded || (dog.jumps || 0) < 3)) {
     const air = !dog.grounded;
@@ -7448,7 +7449,7 @@ function updateDog(dt) {
   } else m.head.rotation.y = lerp(m.head.rotation.y, 0, Math.min(1, dt * 5));
   // 자동 이동(산책·공놀이 등) 뒤에도 맵 경계 안으로
   if (slopes.length && !dog.swim) { const th = terrainH(dog.x, dog.z); if (th > dog.y + .05) { dog.y = th; dog.vy = Math.max(0, dog.vy); dog.grounded = true; m.g.position.y = dog.y; } }
-  const bpad = level.swimSea ? SWIM_PAD : 0, bx0 = clamp(dog.x, level.bounds.minX + .3 - bpad, level.bounds.maxX - .3 + bpad), bz0 = clamp(dog.z, level.bounds.minZ + .3 - bpad, level.bounds.maxZ - .3 + bpad);
+  const bpad = level.swimSea ? SWIM_PAD : 0, bx0 = clamp(dog.x, level.bounds.minX + .3 - bpad, level.bounds.maxX - .3 + bpad), bz0 = clamp(dog.z, level.bounds.minZ + .3 - bpad, level.bounds.maxZ - .3 + (level.seaSouth ? 0 : bpad));
   if (bx0 !== dog.x || bz0 !== dog.z) { dog.x = bx0; dog.z = bz0; m.g.position.x = dog.x; m.g.position.z = dog.z; }
 }
 
