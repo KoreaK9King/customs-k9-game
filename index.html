@@ -646,7 +646,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1842';
+const BUILD = '20261031-1851';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4718,8 +4718,10 @@ const LANDMARK_LIST = [
       floorPlaneW(200, 10, MAT.col(0x3a3d42, .95), 0, 27, .02); for (let x = -95; x <= 95; x += 8) mesh(BOX(4, .02, .25), MAT.col(0xffffff, .5), x, .04, 27);
       for (let x = -60; x <= 60; x += 15) { mesh(BOX(.3, 4, .3), MAT.metal(0x9aa3ab), x, 2, 20); } mesh(BOX(126, .3, 6), LMC(0xf4f4f2), 0, 4.1, 19).castShadow = false;
       sign('🚌 버스 · 🚕 택시 승차장', -50, 5.2, 21, .6);
-      for (let x = -90; x <= 90; x += 6) { if (Math.abs(x) < 9) continue; for (const z of [44, 56]) { mesh(BOX(.15, .02, 5), MAT.col(0xffffff, .5), x - 3, .03, z); if (rnd() < .65) bx(x, 0, z, 2.2, 1.4, 4.2, pick([0xf4f4f2, 0x222222, 0x9aa3ab, 0xc0392b, 0x2c6fb7])); } }
-      sign('🅿 여객터미널 주차장', 50, 3.5, 50, .6);
+      for (let x = -90; x <= 90; x += 6) { if (Math.abs(x) < 9 || x > 48) continue; for (const z of [44, 56]) { mesh(BOX(.15, .02, 5), MAT.col(0xffffff, .5), x - 3, .03, z); if (rnd() < .65) bx(x, 0, z, 2.2, 1.4, 4.2, pick([0xf4f4f2, 0x222222, 0x9aa3ab, 0xc0392b, 0x2c6fb7])); } }
+      sign('🅿 여객터미널 주차장', -50, 3.5, 50, .6);
+      // 육지 쪽 큰 회전교차로(실제 터미널 진입부)
+      { const ring = new THREE.Mesh(new THREE.RingGeometry(9, 16, 40), MAT.col(0x3a3d42, .95)); ring.rotation.x = -Math.PI / 2; ring.position.set(76, .03, 52); world.add(ring); mesh(new THREE.CylinderGeometry(9, 9, .5, 32), LMC(0x6fa553), 76, .25, 52); addCol(76, 52, 12, 12, null, { topY: .5 }); tree(76, 52, 1.2); sign('🔄 회전교차로 → 국제항만대로', 76, 4, 52, .55); }
       L.search = colliders.filter(c => c.topY > .5 && c.topY < 1.6 && c.maxX - c.minX < 5 && c.maxZ - c.minZ < 5 && c.minZ > 40).slice(0, 12);
     } },
 ];
@@ -5322,7 +5324,7 @@ function skyDome(top, bot, ph) {
 }
 // ================= 실시간 날씨(Open-Meteo) + 해·달 위치(천문 계산) =================
 // 맵마다 실제 위치(위도, 경도, 지역명)
-const GEO = { '공항 입국장': [37.4602, 126.4407, '인천공항'], '공항 화물터미널': [37.4436, 126.4559, '인천공항 화물터미널'], '국제우편·특송센터': [37.4489, 126.4628, '인천 국제우편물류센터'], '국제 여객선': [37.3683, 126.6253, '인천항'], '인천항 국제여객터미널': [37.3683, 126.6253, '인천항 국제여객터미널'],
+const GEO = { '공항 입국장': [37.4602, 126.4407, '인천공항'], '공항 화물터미널': [37.4436, 126.4559, '인천공항 화물터미널'], '국제우편·특송센터': [37.4489, 126.4628, '인천 국제우편물류센터'], '국제 여객선': [37.3683, 126.6253, '인천항'], '인천항 국제여객터미널': [37.4241, 126.6055, '인천항 국제여객터미널'],
   '부두 컨테이너 야적장': [35.0767, 128.8167, '부산신항'], '보세창고 (보스전)': [35.1028, 129.0403, '부산항'], '우체국': [37.5627, 126.9817, '서울 중구'], '교도소': [37.3935, 126.9862, '경기 의왕'], '서울역': [37.5547, 126.9707, '서울역'],
   'KTX': [36.3326, 127.4342, '대전 부근'], '버스터미널': [37.5049, 127.0049, '서울 서초'], '명동': [37.5636, 126.985, '서울 명동'], '경복궁': [37.5796, 126.977, '서울 종로'], '홍대': [37.5563, 126.9236, '서울 마포'],
   '롯데월드타워': [37.5126, 127.1026, '서울 잠실'], '동대문': [37.5665, 127.0092, '서울 동대문'], '광안리 해변': [35.1532, 129.1186, '부산 광안리'], '숭례문': [37.56, 126.9753, '서울 중구'], '수원화성': [37.2871, 127.0118, '수원'],
@@ -6374,7 +6376,7 @@ const cvs = renderer.domElement;
 const ptrs = new Map(); let pinch = null;
 cvs.addEventListener('pointerdown', () => { if (state === 'intro' && intro) intro.t = Math.max(intro.t, 3.85); });
 cvs.addEventListener('pointerdown', e => {
-  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); cvs.setPointerCapture(e.pointerId);
+  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); try { cvs.setPointerCapture(e.pointerId); } catch { }
   if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), cam: camDist }; }
 });
 cvs.addEventListener('pointermove', e => {
@@ -6408,12 +6410,12 @@ function joyMove(e) {
   const l = Math.hypot(dx, dy), m = 50; if (l > m) { dx *= m / l; dy *= m / l; }
   knob.style.transform = `translate(${dx}px,${dy}px)`; touchIn.x = dx / m; touchIn.y = -dy / m;
 }
-joy.addEventListener('pointerdown', e => { joyId = e.pointerId; joy.setPointerCapture(e.pointerId); joyMove(e); });
+joy.addEventListener('pointerdown', e => { joyId = e.pointerId; try { joy.setPointerCapture(e.pointerId); } catch { } joyMove(e); });
 joy.addEventListener('pointermove', e => { if (e.pointerId === joyId) joyMove(e); });
 const joyEnd = () => { joyId = null; touchIn.x = touchIn.y = 0; knob.style.transform = ''; };
 joy.addEventListener('pointerup', joyEnd); joy.addEventListener('pointercancel', joyEnd);
 function holdBtn(el, key) {
-  el.addEventListener('pointerdown', e => { e.preventDefault(); el.setPointerCapture(e.pointerId); touchIn[key] = true; });
+  el.addEventListener('pointerdown', e => { e.preventDefault(); try { el.setPointerCapture(e.pointerId); } catch { } touchIn[key] = true; });
   const up = () => touchIn[key] = false; el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
 }
 holdBtn($('bSniff'), 'sniff'); holdBtn($('bRun'), 'run');
