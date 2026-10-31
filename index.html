@@ -534,7 +534,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
   <button class="hubtile main" data-p="map"><span class="hi">🗺</span><b>맵 선택</b><small id="hubMapSub">관문을 골라 출동!</small></button>
   <button class="hubtile" data-p="shop"><span class="hi">🪙</span><b>업그레이드</b><small id="hubShopSub"></small></button>
   <button class="hubtile" data-p="badges"><span class="hi">🏅</span><b>배지</b><small id="hubBadgeSub"></small></button>
-  <button class="hubtile" data-p="team"><span class="hi">👥</span><b>팀 방</b><small id="hubTeamSub">최대 5명</small></button>
+  <button class="hubtile" data-p="team"><span class="hi">👥</span><b>팀 방</b><small id="hubTeamSub">최대 20명</small></button>
   <button class="hubtile" data-p="ctl"><span class="hi">🎮</span><b>조작법</b><small>키·버튼 안내</small></button>
   <button class="hubtile" id="btnRankOpen"><span class="hi">🏆</span><b>랭킹</b><small>전체 순위</small></button>
  </div>
@@ -564,7 +564,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
  <div class="mpsec" data-p="shop"><div id="shop"></div></div>
  <div class="mpsec" data-p="team">
   <div class="row" id="teamRow" style="flex-wrap:wrap;gap:6px;align-items:center;justify-content:center"><input type="hidden" id="teamSize" value="5"><button class="alt" id="btnTeamNew" style="font-size:14px;padding:8px 12px;border-radius:10px">방 만들기</button><input id="teamCode" dir="ltr" placeholder="방 번호 (예: 1234)" maxlength="6" style="width:150px;font-size:15px;padding:7px;border-radius:8px;border:2px solid #d6cdb8"><button class="alt" id="btnTeamJoin" style="font-size:14px;padding:8px 12px;border-radius:10px">접속</button><button class="alt hidden" id="btnTeamOut" style="font-size:14px;padding:8px 12px;border-radius:10px">나가기</button></div>
-  <p style="font-size:13px;margin:6px 0 0;text-align:center;color:var(--muted)">방을 만들어 번호를 친구에게 알려 주거나, 친구의 방 번호로 접속하세요. (최대 5명)</p>
+  <p style="font-size:13px;margin:6px 0 0;text-align:center;color:var(--muted)">방을 만들어 번호를 친구에게 알려 주거나, 친구의 방 번호로 접속하세요. (최대 20명 · 통합 도시는 한 반 20명이 모두 함께, 일반 맵은 5명씩 함께 보여요)</p>
   <div class="sub" id="teamInfo" style="text-align:center;min-height:1em"></div>
   <div id="teamList" style="display:flex;flex-direction:column;gap:6px;margin:6px 0"></div>
  </div>
@@ -646,7 +646,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1912';
+const BUILD = '20261031-1917';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4823,8 +4823,8 @@ LEVELS.push((() => { const d = LMDEF({ mega: true, n: 6, name: '대한민국 통
   people: { civ: 26, tourist: 14, student: 6, merchant: 6, busker: 2, smuggler: 20, boss: 1 }, hide: { drug: 14, gun: 10 }, need: { drug: 28, gun: 20, smuggler: 18, boss: 1 },
   items: [['coinLocker', 3], ['trashBin', 3], ['flowerPot', 3], ['meterBox', 3], ['dutyBag', 3], ['marketBox', 3], ['briefcase', 2], ['stoneLantern', 2], ['clothBundle', 2], ['backpack', 3]],
   staff: [{ kind: 'police', route: [[0, 140], [0, -140]], wait: 2 }, { kind: 'police', route: [[-230, 0], [230, 0]], wait: 2 }, { kind: 'customs', route: [[-115, 140], [115, 140]], wait: 2 }, { kind: 'customs', route: [[-115, -140], [115, -140]], wait: 2 }],
-  who: '대한민국 관세청장', short: '★7 최종 히든! 명소 12곳을 도로 없이 한데 모은 거대한 미로 도시. 담장 사이 문을 찾아 구역을 넘나들어요. 5명이 힘을 합쳐야만 국제 밀수 조직을 일망타진할 수 있어요.',
-  intro: '드디어 마지막이야! 지금까지 순찰한 명소들이 하나의 거대한 도시로 모였어.\n국제 밀수 조직이 도시 전체에 물건을 숨기고 보스까지 숨어 있어.\n혼자서는 절대 못 해. 5명이 구역을 나눠서 수색하고, 마지막엔 모두 모여 보스를 잡자!',
+  who: '대한민국 관세청장', short: '★7 최종 히든! 명소 12곳을 도로 없이 한데 모은 거대한 미로 도시. 담장 사이 문을 찾아 구역을 넘나들어요. 최대 20명(한 반 전체)이 힘을 합쳐야만 국제 밀수 조직을 일망타진할 수 있어요.',
+  intro: '드디어 마지막이야! 지금까지 순찰한 명소들이 하나의 거대한 도시로 모였어.\n국제 밀수 조직이 도시 전체에 물건을 숨기고 보스까지 숨어 있어.\n혼자서는 절대 못 해. 반 친구들(최대 20명)이 구역을 나눠서 수색하고, 마지막엔 모두 모여 보스를 잡자!',
   build(L) { megaCity(L); } }); d.diff = { stars: 7, speed: 1.5, flee: 1.5, hp: 4, bossHp: 12, sniff: 16, vehicle: 1.35 }; return d; })());
 // 실제 크기 명소를 통합 도시 구역에 넣을 때 보여 줄 핵심부 중심
 const MEGA_FOCUS = { '경복궁': [0, 90], '청와대': [0, -15], '국회의사당': [0, -15], '동대문': [0, 50], '명동': [0, -30], '홍대': [0, 10], '롯데월드타워': [90, -50], '전주 한옥마을': [-40, 0], '대전 한빛탑': [0, 20], 'N서울타워': [0, 0], '광화문광장': [-15, 0] };
@@ -4884,17 +4884,18 @@ $('btnMode').onclick = () => {
 let mp = null;
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rd3hzbmR5Ym9qdmp1d2xtZWl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMDE4NDMsImV4cCI6MjEwODY3Nzg0M30.W-ltwTtWmibN6ec_mlkjad7QvN2fFCcOkFxHl3abbZw';
 // 팀 방: 같은 코드끼리 같은 맵에서 함께, 찾은 물건·체포는 팀 공동 목표로 합산
-let team = null;
+let team = null; const TEAM_MAX = 20;
 function teamSet(code, size, host = false) {
   team = code ? { code, size, host } : null; try { team ? sessionStorage.setItem('k9team', code + '-' + size + (host ? '-h' : '')) : sessionStorage.removeItem('k9team'); } catch { }
-  $('teamInfo').innerHTML = team ? '✅ 팀 방 <b style="font-size:16px">' + code + '</b> 에 들어와 있어요 (최대 5명)<br>친구에게 방 번호 <b>' + code + '</b> 를 알려 주세요 → 친구가 아래 목록에서 [접속 ▶]을 누르거나 번호를 넣고 [접속] → 방장이 맵을 고르면 <b>모두 같은 맵으로 자동 접속</b>!' : '<b>👥 함께 하는 방법</b> ① 방 번호(숫자 3~6자리, 비워 두면 자동)를 넣고 [방 만들기] (최대 5명) ② 친구는 아래 목록에서 [접속 ▶]을 누르거나 같은 번호를 넣고 [접속] ③ 방장이 맵을 고르면 모두 그 맵으로 자동 접속해 함께 수색해요. 방 없이 맵을 고르면 혼자 플레이해요.';
+  $('teamInfo').innerHTML = team ? '✅ 팀 방 <b style="font-size:16px">' + code + '</b> 에 들어와 있어요 (최대 20명 · 통합 도시는 20명 모두 함께, 일반 맵은 5명씩)<br>친구에게 방 번호 <b>' + code + '</b> 를 알려 주세요 → 친구가 아래 목록에서 [접속 ▶]을 누르거나 번호를 넣고 [접속] → 방장이 맵을 고르면 <b>모두 같은 맵으로 자동 접속</b>!' : '<b>👥 함께 하는 방법</b> ① 방 번호(숫자 3~6자리, 비워 두면 자동)를 넣고 [방 만들기] (최대 5명) ② 친구는 아래 목록에서 [접속 ▶]을 누르거나 같은 번호를 넣고 [접속] ③ 방장이 맵을 고르면 모두 그 맵으로 자동 접속해 함께 수색해요. 방 없이 맵을 고르면 혼자 플레이해요.';
   $('btnTeamOut').classList.toggle('hidden', !team); if (mp) mpLeave(); lobbyTrack(); renderRooms();
 }
-$('btnTeamNew').onclick = () => { if (!playerId) { toast('로그인한 핸들러만 팀 방을 만들 수 있어요'); return; } const sz = 5, typed = ($('teamCode').value.trim().match(/^(\d{3,6})/) || [])[1]; if ($('teamCode').value.trim() && !typed) { toast('방 번호는 숫자 3~6자리로 넣어 주세요 (비워 두면 자동)'); return; } if (typed && lobbyRooms.some(r => r.code === typed && r.hostFixed)) { toast('이미 있는 방 번호예요. 아래 목록에서 눌러 참가하거나 다른 번호를 넣어 주세요'); return; } const code = typed || String(1000 + Math.floor(Math.random() * 9000)); $('teamCode').value = code; teamSet(code, sz, true); toast('👥 방 ' + code + ' 을(를) 만들었어요! 친구에게 번호를 알려 주세요'); };
-$('btnTeamJoin').onclick = () => { const m = $('teamCode').value.trim().match(/^(\d{3,6})(?:-([1-5]))?$/); if (!m) { toast('방 번호(숫자 3~6자리)를 넣어 주세요'); return; } if (!m[2]) { const r = lobbyRooms.find(q => q.code === m[1]); if (r) m[2] = r.size; } if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } if (!lobbyRooms.some(q => q.code === m[1])) { teamSet(m[1], 5, true); toast('👥 방 ' + m[1] + ' 이(가) 없어서 새로 만들었어요! 내가 방장이에요 · 맵을 고르면 팀 게임 시작'); return; } teamSet(m[1], 5); { const rr = lobbyRooms.find(q => q.code === m[1]); toast('👥 방 ' + m[1] + ' 에 접속했어요!' + (rr && rr.hmap != null ? '' : ' 방장이 맵을 고르면 자동으로 들어가요')); if (rr && rr.hmap != null && LEVELS[rr.hmap]) { team.follow = rr.hmap; setTimeout(() => startLevel(rr.hmap), 500); } } };
+$('btnTeamNew').onclick = () => { if (!playerId) { toast('로그인한 핸들러만 팀 방을 만들 수 있어요'); return; } const sz = TEAM_MAX, typed = ($('teamCode').value.trim().match(/^(\d{3,6})/) || [])[1]; if ($('teamCode').value.trim() && !typed) { toast('방 번호는 숫자 3~6자리로 넣어 주세요 (비워 두면 자동)'); return; } if (typed && lobbyRooms.some(r => r.code === typed && r.hostFixed)) { toast('이미 있는 방 번호예요. 아래 목록에서 눌러 참가하거나 다른 번호를 넣어 주세요'); return; } const code = typed || String(1000 + Math.floor(Math.random() * 9000)); $('teamCode').value = code; teamSet(code, sz, true); toast('👥 방 ' + code + ' 을(를) 만들었어요! 친구에게 번호를 알려 주세요'); };
+$('btnTeamJoin').onclick = () => { const m = $('teamCode').value.trim().match(/^(\d{3,6})(?:-(\d{1,2}))?$/); if (!m) { toast('방 번호(숫자 3~6자리)를 넣어 주세요'); return; } if (!m[2]) { const r = lobbyRooms.find(q => q.code === m[1]); if (r) m[2] = r.size; } if (!playerId) { toast('로그인한 핸들러만 팀 방에 들어갈 수 있어요'); return; } if (!lobbyRooms.some(q => q.code === m[1])) { teamSet(m[1], TEAM_MAX, true); toast('👥 방 ' + m[1] + ' 이(가) 없어서 새로 만들었어요! 내가 방장이에요 · 맵을 고르면 팀 게임 시작'); return; } teamSet(m[1], TEAM_MAX); { const rr = lobbyRooms.find(q => q.code === m[1]); toast('👥 방 ' + m[1] + ' 에 접속했어요!' + (rr && rr.hmap != null ? '' : ' 방장이 맵을 고르면 자동으로 들어가요')); if (rr && rr.hmap != null && LEVELS[rr.hmap]) { team.follow = rr.hmap; setTimeout(() => startLevel(rr.hmap), 500); } } };
 $('btnTeamOut').onclick = () => { $('teamCode').value = ''; teamSet(null); };
-try { const v = sessionStorage.getItem('k9team'), m = v && v.match(/^(\d{3,6})-([1-5])(-h)?$/); if (m) { $('teamCode').value = m[1]; setTimeout(() => teamSet(m[1], 5, !!m[3]), 0); } else setTimeout(() => teamSet(null), 0); } catch { }
-const mpCap = () => team ? team.size : 5;
+try { const v = sessionStorage.getItem('k9team'), m = v && v.match(/^(\d{3,6})-(\d{1,2})(-h)?$/); if (m) { $('teamCode').value = m[1]; setTimeout(() => teamSet(m[1], TEAM_MAX, !!m[3]), 0); } else setTimeout(() => teamSet(null), 0); } catch { }
+// 팀 방은 최대 20명(한 반 전체). 같은 맵에 함께 보이는 인원은 통합 도시 20명, 일반 맵 5명
+const mpCap = () => team && level && level.mega ? TEAM_MAX : 5;
 function becomeHost() { if (!team) return; team.host = true; try { sessionStorage.setItem('k9team', team.code + '-' + team.size + '-h'); } catch { } lobbyTrack(); toast('👑 방장이 되었어요! 맵을 고르면 팀원 모두 함께 들어가요'); }
 // 로비: 열린 팀 방을 모두가 볼 수 있게 (이메일은 보내지 않고 닉네임만)
 let lobby = null, lobbyRooms = [];
@@ -4960,12 +4961,12 @@ function mpRecv(p) {
   Object.assign(o, { tx: p.x, tz: p.z, ty: p.y, tdir: p.r, hx: p.hx, hz: p.hz, hr: p.hr, last: time });
 }
 function mpRemove(k) { const o = mp && mp.others.get(k); if (!o) return; world.remove(o.d.g); world.remove(o.h.g); mp.others.delete(k); updateMpCount(); }
-function updateMpCount() { $('mpCount').textContent = mp && level ? (team ? '👥 팀 ' + team.code + ' · ' + (mp.others.size + 1) + '/' + team.size + '명 함께 수색 중' : t('mp_count').replace('{n}', mp.others.size + 1)) : ''; }
+function updateMpCount() { $('mpCount').textContent = mp && level ? (team ? '👥 팀 ' + team.code + ' · ' + (mp.others.size + 1) + '/' + mpCap() + '명 함께 수색 중' : t('mp_count').replace('{n}', mp.others.size + 1)) : ''; }
 function updateMp(dt) {
   if (!mp) return;
   mp.sendT -= dt;
   if (mp.sendT <= 0) {
-    mp.sendT = .12;
+    mp.sendT = .12 * Math.max(1, (mp.others.size + 1) / 5); // 인원이 많으면 위치 전송 간격을 늘려 서버 한도를 지킨다
     mp.ch.send({ type: 'broadcast', event: 'pos', payload: { k: mp.key, room: mp.room, j: handlerJob, id: mp.me, n: dogName, b: dogBreed, x: +dog.x.toFixed(2), z: +dog.z.toFixed(2), y: +dog.y.toFixed(2), r: +dog.dir.toFixed(2), hx: +handler.x.toFixed(2), hz: +handler.z.toFixed(2), hr: +handler.dir.toFixed(2) } });
   }
   for (const [k, o] of mp.others) {
@@ -5786,7 +5787,7 @@ function loadLevel(i) {
 }
 
 const scaleNums = t => level && level.sz > 1.05 ? t.replace(/(\d+)(개|정|명)/g, (m, n, u) => Math.ceil(+n * (1 + (level.sz - 1) * .42)) + u) : t;
-const LOAD_TIPS = ['💥 점프를 3번 하면 공중 덤블링! 착지하면 쿵! 주변 범인을 공격해요', '👃 [E]·[킁킁]을 누르고 있으면 숨긴 물건 냄새가 길을 알려 줘요', '🪙 맵 곳곳의 코인을 모아 업그레이드 상점에서 탐지견을 키워요', '👥 팀 방을 만들면 친구 5명까지 같은 맵을 함께 수색해요', '🦴 뼈다귀를 던지면 도망가는 범인을 멈출 수 있어요', '❤️ 하트 공을 먹으면 체력이 회복돼요', '📞 실제로 수상한 밀수품을 보면 ☎ 125 (관세청 밀수신고센터)', '🏊 바다가 있는 맵에서는 탐지견과 핸들러가 함께 수영할 수 있어요', '🛃 해외여행에서 산 물건이 면세 한도를 넘으면 세관에 자진신고해요', '🐕 진짜 관세청 탐지견은 마약·총기 냄새를 찾도록 훈련받아요'];
+const LOAD_TIPS = ['💥 점프를 3번 하면 공중 덤블링! 착지하면 쿵! 주변 범인을 공격해요', '👃 [E]·[킁킁]을 누르고 있으면 숨긴 물건 냄새가 길을 알려 줘요', '🪙 맵 곳곳의 코인을 모아 업그레이드 상점에서 탐지견을 키워요', '👥 팀 방은 최대 20명! 통합 도시는 한 반 20명이 모두 함께, 일반 맵은 5명씩 함께 수색해요', '🦴 뼈다귀를 던지면 도망가는 범인을 멈출 수 있어요', '❤️ 하트 공을 먹으면 체력이 회복돼요', '📞 실제로 수상한 밀수품을 보면 ☎ 125 (관세청 밀수신고센터)', '🏊 바다가 있는 맵에서는 탐지견과 핸들러가 함께 수영할 수 있어요', '🛃 해외여행에서 산 물건이 면세 한도를 넘으면 세관에 자진신고해요', '🐕 진짜 관세청 탐지견은 마약·총기 냄새를 찾도록 훈련받아요'];
 fetchWeather().then(() => { if (level && !level.wxApplied && !level.sunset) { level.wxApplied = true; applyTimeOfDay(true); } });
 setInterval(() => { const el = $('wx'); if (el) el.classList.add('hidden'); }, 700);
 setInterval(() => { if (level && !level.sunset && state === 'play') { const A = level.astro = astroNow(level.name); if (level.outdoor) level.lightDir = A.sunAlt > -2 ? A.sunDir : A.moonAlt > 0 ? A.moonDir : null; } }, 60e3);
@@ -5802,7 +5803,7 @@ function startLevel(i) {
     }, 80); }, 30);
     return;
   }
-  if (LEVELS[i].mega && !hiddenVip && !(team && team.size >= 5)) { toast('🏙 통합 도시는 5명 팀 방에서만 도전할 수 있어요! 팀 방에서 5명 방을 만들거나 참가하세요'); showMaps(); openPanel('team'); return; }
+  if (LEVELS[i].mega && !hiddenVip && !(team && team.size >= 5)) { toast('🏙 통합 도시는 팀 방에서만 도전할 수 있어요! 팀 방을 만들거나 참가하세요 (최대 20명 · 한 반 전체)'); showMaps(); openPanel('team'); return; }
   if (LEVELS[i].landmark) { /* 명소 순찰: 작전 점수와 따로 */ }
   else if (!runActive || runCleared.has(i) || LEVELS[i].relax) { runScore = 0; runTime = 0; runStage = 0; runCleared = new Set(); totals = { items: 0, arrests: 0, mistakes: 0 }; runToken = LEVELS[i].relax ? null : startServerRun(i); dog.hp = Math.min(DIFFS[diffMode].hpMax, DIFFS[diffMode].hp + Math.ceil((wallet.up.heart || 0) / 2)); }
   if (!LEVELS[i].landmark) runActive = !LEVELS[i].relax;
@@ -6024,7 +6025,7 @@ function hubSubs() {
   $('hubShopSub').textContent = '보유 ' + wallet.coins + ' 코인';
   $('hubBadgeSub').textContent = ach.earned.length + ' / ' + BADGES.length + ' 획득';
   $('hubMapSub').textContent = runActive ? '작전 중 · ' + runCleared.size + '곳 클리어' : '관문을 골라 출동!';
-  $('hubTeamSub').textContent = team ? '방 ' + team.code + ' 접속 중' : '최대 5명';
+  $('hubTeamSub').textContent = team ? '방 ' + team.code + ' 접속 중' : '최대 20명';
   const p = $('mpanel').dataset.p; if (p) $('mpTitle').textContent = PANEL_T[p] + (p === 'shop' ? ' · 보유 ' + wallet.coins + ' 코인' : p === 'badges' ? ' · ' + ach.earned.length + '/' + BADGES.length : '');
 }
 function openPanel(p) { const m = $('mpanel'); m.dataset.p = p; $('mpTitle').textContent = PANEL_T[p] || ''; if (state === 'maps') try { hubSubs(); } catch { } m.classList.remove('hidden'); m.querySelector('.card').scrollTop = 0; }
