@@ -184,6 +184,13 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 .mapcard .nm{font-family:Jua,sans-serif;font-size:16px}.mapcard .st{font-size:11.5px;color:#56708a}
 .mapcard.locked{opacity:.45;cursor:not-allowed}
 .mapcard{position:relative;overflow:hidden}
+#clrStamp{position:absolute;top:6px;right:8px;width:96px;height:96px;border:5px double #d62828;border-radius:50%;color:#d62828;display:none;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-16deg);font-family:Jua,sans-serif;background:rgba(255,240,240,.35);pointer-events:none;z-index:2;box-shadow:inset 0 0 0 3px rgba(214,40,40,.25)}
+#clrStamp b{font-size:22px;letter-spacing:1px;line-height:1}#clrStamp span{font-size:12px;margin-top:3px}#clrStamp i{position:absolute;inset:-12px;border-radius:50%;border:3px solid rgba(214,40,40,.5);opacity:0}
+#clrStamp.on{display:flex;animation:stampIn .45s cubic-bezier(.2,1.6,.4,1) both}#clrStamp.on i{animation:stampRing .6s .3s ease-out}
+@keyframes stampIn{0%{transform:rotate(-16deg) scale(3);opacity:0}60%{transform:rotate(-16deg) scale(.88);opacity:1}100%{transform:rotate(-16deg) scale(1);opacity:1}}
+@keyframes stampRing{0%{opacity:1;transform:scale(.8)}100%{opacity:0;transform:scale(1.4)}}
+.mapcard .stamp{position:absolute;top:4px;right:4px;width:44px;height:44px;border:3px double #d62828;border-radius:50%;color:#d62828;font:11px/1 Jua,sans-serif;display:flex;align-items:center;justify-content:center;transform:rotate(-16deg);background:rgba(255,240,240,.55);pointer-events:none}
+#mpanel .mapcard .stamp{width:32px;height:32px;font-size:8px;border-width:2px;top:2px;right:2px}@media (max-height:460px){#clrStamp{width:72px;height:72px}#clrStamp b{font-size:16px}#clrStamp span{font-size:9px}}
 .mapcard.done::after{content:"CLEAR";position:absolute;right:3px;top:3px;transform:rotate(-12deg);font-family:Jua,sans-serif;font-size:10px;letter-spacing:.04em;color:#d32f2f;border:2px solid #d32f2f;border-radius:8px;padding:1px 4px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 2px rgba(255,255,255,.6);opacity:.85;pointer-events:none}
 .mapcard.done .st::before{content:""}.mapcard.cleared{background:#e3f6e8}
 #dlg .drow{display:flex;gap:16px;align-items:flex-start}
@@ -657,7 +664,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
  <div class="row" style="justify-content:flex-end"><button class="big" id="dok">알겠어요! 멍!</button></div>
 </div></div>
 
-<div id="clear" class="overlay hidden"><div class="card" style="text-align:center">
+<div id="clear" class="overlay hidden"><div class="card" style="text-align:center;position:relative"><div id="clrStamp"><b>CLEAR</b><span>참 잘했어요</span><i></i></div>
  <div class="sub" id="clrSub">MAP 1 클리어</div>
  <h1 id="clrTitle">관문 통과!</h1>
  <div class="stats" id="clrStats"></div>
@@ -704,7 +711,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-0058';
+const BUILD = '20261101-0102';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -7059,6 +7066,10 @@ function checkQuest() {
   for (const k in level.need) if ((lvStats[k] || 0) < level.need[k]) return;
   levelClear();
 }
+function clearStamp() {
+  const st = $('clrStamp'); st.classList.remove('on'); void st.offsetWidth;
+  setTimeout(() => { st.classList.add('on'); try { tone(90, .18, 'square', .12); tone(60, .25, 'sine', .15, 0, .02); } catch { } if (navigator.vibrate) try { navigator.vibrate(40); } catch { } }, 350);
+}
 function levelClear() {
   state = 'clear'; SFX.quest(); syncProfile();
   const timeBonus = Math.max(0, Math.round(((240 + (level.sz - 1) * 325) - levelTime) * 2));
@@ -7076,7 +7087,7 @@ function levelClear() {
   $('clrSub').textContent = `MAP ${levelIdx + 1} 클리어`;
   $('clrTitle').textContent = `${level.icon} ${mapName(levelIdx)} ${t('clr_title')}`;
   $('clrStats').innerHTML = `⏱ ${t('clr_time')} <b>${fmtTime(levelTime)}</b><br>✅ ${t('clr_bonus')} +${timeBonus}<br>⭐ ${t('clr_score')} <b>${levelScore}</b> / <b>${runScore}</b><br>🦴 ${t('clr_snack')} +${coinsGot}`;
-  $('clear').classList.remove('hidden');
+  $('clear').classList.remove('hidden'); clearStamp();
 }
 async function win() {
   state = 'win'; setTimeout(() => toast('🌅 히든맵 「노을 활주로」가 열렸어요! 맵 선택에서 확인하세요'), 600);
@@ -7227,7 +7238,7 @@ function showMaps(paused = false) {
     const locked = hiddenVip ? false : L.mega ? !megaNeed.every(k => prog.best[k] !== undefined) : L.hidden ? prog.best[5] === undefined : i === 5 ? ![0, 1, 2, 3, 4, ...lmGate].every(k => prog.best[k] !== undefined || runCleared.has(k)) : false, cleared = !L.hidden && prog.best[i] !== undefined, inRun = runActive && runCleared.has(i);
     const cur = pausedGame && i === levelIdx;
     const st = cur ? t('st_cur') : locked ? (L.mega ? `🔒 모든 맵 클리어 필요 (${done}/${megaNeed.length})` : L.hidden ? t('st_lockH') : t('st_lockB')) : inRun ? t('st_run') : cleared ? `${t('st_best')} ${fmtTime(prog.best[i])}` : t('st_open');
-    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared done' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}><span class="ic">${(L.hidden || L.mega) && locked ? "❓" : L.icon}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(Math.max(0, 5 - L.diff.stars))}</span></button>`;
+    return `<button class="mapcard ${cur ? 'cleared' : ''} ${locked ? 'locked' : ''} ${cleared ? 'cleared done' : ''}" data-i="${i}" ${locked ? 'disabled' : ''}>${cleared ? '<span class="stamp">CLEAR</span>' : ''}<span class="ic">${(L.hidden || L.mega) && locked ? "❓" : L.icon}</span><span class="nm">${L.hidden && locked ? t("st_hidden") : mapName(i)}</span><span class="st">${st}</span><span class="st" style="color:#c98a00">${L.relax ? t('st_relax') : t('st_diff') + ' ' + '★'.repeat(L.diff.stars) + '☆'.repeat(Math.max(0, 5 - L.diff.stars))}</span></button>`;
   };
   // 구역마다 줄을 꽉 채우는 카드 묶음
   const grp = (h, ids, cls) => `<div class="mapsep">${h[0]} <small>${h[1]}</small></div><div class="mapflex ${cls}">${ids.map(i => card([LEVELS[i], i])).join('')}</div>`;
