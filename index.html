@@ -88,6 +88,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 .howShort{display:none}.howGrid{margin:6px 0}.howGrid kbd{background:var(--navy);color:#fff;border-radius:6px;padding:1px 7px;font-family:inherit;font-size:12.5px;white-space:nowrap;margin-left:4px;vertical-align:1px}.howGrid .igc{text-align:left}.howGrid .igc b{font-size:16px;white-space:nowrap}.howGrid .igc small{font-size:12.5px}.how2p{font-size:12.5px!important;color:#40566c;margin:2px 0 4px!important}@media (orientation:landscape) and (max-height:540px){.howGrid{grid-template-columns:repeat(4,1fr)!important;gap:5px!important;margin:4px 0!important}.howGrid .igc{padding:4px 7px!important}.howGrid .igc i{font-size:22px!important}.howGrid .igc b{font-size:14px!important}.howGrid kbd{font-size:11.5px}.howGrid .igc small{font-size:11.5px!important;line-height:1.25}.how2p{font-size:11.5px!important}}@media (max-width:560px){.howGrid{grid-template-columns:repeat(2,1fr)!important}}
 #toast{top:calc(96px + var(--st));left:50%;transform:translateX(-50%);font-family:Jua,sans-serif;font-size:22px;background:rgba(0,0,0,.6);padding:8px 18px;border-radius:24px;opacity:0;transition:opacity .25s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1}
+#annBanner{position:fixed;left:50%;top:calc(140px + var(--st));transform:translateX(-50%);z-index:14;display:none;background:#13335a;color:#fff;border:3px solid #f4c542;border-radius:14px;padding:8px 18px;font-family:Jua,sans-serif;font-size:19px;white-space:nowrap;max-width:94vw;overflow:hidden;text-overflow:ellipsis;box-shadow:0 4px 0 rgba(0,0,0,.35);pointer-events:none}
+#annBanner.show{display:block}
+@media (max-width:700px){#annBanner{font-size:13px;padding:5px 10px;top:calc(84px + var(--st))}}
 #coverTitle{position:fixed;z-index:40;left:0;right:0;top:7%;text-align:center;font-family:Jua,sans-serif;pointer-events:none}
 #coverTitle .ct1{font-size:min(11vw,92px);color:#fff;text-shadow:0 6px 0 #13335a,0 0 24px rgba(0,0,0,.5)}
 #coverTitle .ct2{font-size:min(4.4vw,34px);color:#f4c542;text-shadow:0 3px 0 #13335a;margin-top:6px}
@@ -455,7 +458,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 <div id="mmwrap" class="hud mini"><button id="mmToggle" type="button">🗺 지도 보기</button><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
 <div id="wx" class="hud hidden"></div><div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><div id="bagBox"><button id="bagBtn" title="아이템 가방 (B)" aria-label="아이템 가방">🎒<span id="bagN">0</span></button><div id="bagPanel"><div class="bagHead">🎒 아이템 가방 <small>눌러서 사용 · B 키</small></div><div id="bagList"></div></div></div><div id="autoBox"><button id="tbAutoMenu" title="자동 사냥 (누르면 3가지)" aria-label="자동 사냥">🤖</button><div id="autoList"><button id="tbAuto" title="자동 플레이 (P)">🤖 자동 플레이</button><button id="tbCoin" title="코인 자동 사냥 (C)">💰 코인 사냥</button><button id="tbItem" title="아이템 자동 사냥 (I)">🎁 아이템 사냥</button></div></div><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
 <div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
-<div id="toast" class="hud"></div>
+<div id="toast" class="hud"></div><div id="annBanner"></div>
 <div id="mission" class="hud hidden"></div>
 <div id="mpCount" class="hud"></div><div id="sniffLegend" class="hud hidden"></div><div id="autoBadge" class="hud hidden">🤖 자동 플레이 중 · 누르면 끄기</div><div id="guide" class="hud hidden"></div><div id="goalBig" class="hud hidden"></div>
 <div id="combo" class="hud"></div>
@@ -682,7 +685,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-2236';
+const BUILD = '20261031-2251';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1667,11 +1670,14 @@ function arrivalsCurb(L) {
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) mesh(BOX(.7, .7, .3), MAT.col(0x111111, .8), sx * (kind === 'bus' ? 3.8 : 1.4), .35, sz * (kind === 'bus' ? 1.3 : .95), g); g.visible = false; return g; };
   const spots = [...[-36, -22].map(x => ({ x, kind: 'bus', cap: 4 })), ...[38, 46, 54, 62].map(x => ({ x, kind: 'taxi', cap: 1 }))].map(o => ({ ...o, g: car(o.kind), st: 'away', t: rr(0, 6), z: LANE[2], cx: 0, on: 0, wait: [] }));
   const trav = []; let spawnT = 1;
+  L.curbAdopt = (P, bag, x, z) => { if (trav.length >= 26) return false; const spot = pick(spots.filter(o => o.wait.length < (o.kind === 'bus' ? 8 : 3))); const d = doors.reduce((a, b) => Math.abs(b.x - x) < Math.abs(a.x - x) ? b : a);
+    const b2 = bag || mesh(BOX(.5, .7, .35), MAT.shell(pick(bagColors)), 0, 0, 0); P.arms[0].rotation.x = 0;
+    trav.push({ P, bag: b2, x, z, ph: 0, dir: 0, path: [[d.x, ZW + 1.6], spot ? [spot.x + rr(-1.5, 1.5), SW] : [pick([-140, 140]), SW]], spot, st: 'walk' }); if (spot) spot.wait.push(trav[trav.length - 1]); return true; };
   const spawn = () => { if (trav.length >= 14) return; const ex = pick([-50, 0, 50]), P = makePerson('civ'); world.add(P.g); const bag = mesh(BOX(.5, .7, .35), MAT.shell(pick(bagColors)), 0, 0, 0); bag.castShadow = false;
     const spot = pick(spots.filter(o => o.wait.length < (o.kind === 'bus' ? 6 : 2))); const d = doors.reduce((a, b) => Math.abs(b.x - ex) < Math.abs(a.x - ex) ? b : a);
     trav.push({ P, bag, x: ex + rr(-2, 2), z: 3, ph: 0, dir: 0, path: [[d.x + rr(-.6, .6), ZW - 1.5], [d.x, ZW + 1.6], spot ? [spot.x + rr(-1.5, 1.5), SW] : [pick([-140, 140]), SW]], spot, st: 'walk' }); if (spot) spot.wait.push(trav[trav.length - 1]); };
   envAnim.push(dt => {
-    spawnT -= dt; if (spawnT <= 0) { spawnT = rr(1.6, 3.2); spawn(); }
+    spawnT -= dt; if (spawnT <= 0) { spawnT = rr(3, 6); spawn(); }
     // 자동문: 여행객·탐지견·핸들러가 가까이 오면 열린다 (출국장처럼 밖으로 나갈 수 있어요)
     for (const D of doors) { const near = trav.some(T => Math.abs(T.x - D.x) < 3 && Math.abs(T.z - ZW) < 3.2) || [dog, handler].some(o => Math.abs(o.x - D.x) < 3 && Math.abs(o.z - ZW) < 3.5); D.o += ((near ? 1 : 0) - D.o) * Math.min(1, dt * 6); D.pl[0].position.x = D.x - 1.03 - D.o * 1.9; D.pl[1].position.x = D.x + 1.03 + D.o * 1.9; }
     // 차량: 도착 → 정차(승객 태움) → 출발
@@ -1694,6 +1700,151 @@ function arrivalsCurb(L) {
           if (d < .5) { S.on++; S.wait.splice(S.wait.indexOf(T), 1); world.remove(P.g); world.remove(T.bag); trav.splice(i, 1); continue; } T.x += dx / d * sp * dt; T.z += dz / d * sp * dt; T.dir = Math.atan2(dx, dz); } }
       T.ph += dt * sp * 3; const k = sp > 0 ? 1 : 0; P.legs[0].rotation.x = Math.sin(T.ph) * .6 * k; P.legs[1].rotation.x = -Math.sin(T.ph) * .6 * k; P.arms[0].rotation.x = -Math.sin(T.ph) * .5 * k; P.arms[1].rotation.x = -.3;
       P.g.position.set(T.x, 0, T.z); P.g.rotation.y = T.dir; T.bag.position.set(T.x + Math.cos(T.dir) * .55 - Math.sin(T.dir) * .5, .45, T.z - Math.sin(T.dir) * .55 - Math.cos(T.dir) * .5); T.bag.rotation.y = T.dir; }
+  });
+}
+// ── 공항 승객 흐름 공용 장치 ──
+// 승객은 단계(steps)를 차례로 수행한다: ['go', 경유점들] 걷기 · ['q', 줄] 줄서서 차례 기다리기 · ['wait', 초, 말]
+// ['talk', 말목록] 혼잣말 바꾸기 · ['fn', p => 단계들] 그때그때 정하기 · ['end', p => 넘겨받았는지] 퇴장
+function annBanner(txt) { const b = $('annBanner'); b.textContent = trK(txt); b.classList.add('show'); clearTimeout(annBanner.t); annBanner.t = setTimeout(() => b.classList.remove('show'), 6500); }
+function paxQueue(sx, sz, dx, dz, gap, cap, face, tSrv, onFront) { return { sx, sz, dx, dz, gap, cap, face, tSrv, onFront, list: [], slot(i) { return [sx + dx * gap * i, sz + dz * gap * i]; } }; }
+function paxSystem(cap) {
+  const all = []; let bub = 0;
+  const S = { all, cap, get n() { return all.length; } };
+  S.say = (p, txt) => { if (!txt || Math.hypot(p.x - dog.x, p.z - dog.z) > 24) return; if (p.bub) { disposeSprite(p.bub); bub--; p.bub = null; } if (bub >= 7) return; p.bub = textSprite(trK(txt), { h: .28, bg: 'rgba(255,255,255,.96)', color: '#1b2b3c' }); p.bub.position.y = 2.75; p.P.g.add(p.bub); p.bubT = 2.8; bub++; };
+  S.staff = (x, z, txt) => { if (Math.hypot(x - dog.x, z - dog.z) < 22) floatText(txt, x, 2.7, z, { h: .3, bg: 'rgba(19,51,90,.95)', color: '#fff' }); };
+  S.add = (look, x, z, steps, o = {}) => {
+    if (all.length >= cap) return null;
+    const P = makePerson(look); world.add(P.g); P.g.position.set(x, 0, z);
+    const p = { P, x, z, dir: o.dir || 0, ph: rr(0, 6), steps, si: 0, wi: 0, spd: rr(1.8, 2.4), talk: o.talk || null, sayT: rr(1, 6), bag: null, dogT: 0 };
+    if (o.bag) S.giveBag(p); all.push(p); return p;
+  };
+  S.giveBag = p => { if (p.bag) return; p.bag = mesh(BOX(.5, .7, .35), MAT.shell(pick(bagColors)), 0, 0, 0); p.bag.castShadow = false; };
+  S.dropBag = p => { if (p.bag) { world.remove(p.bag); p.bag = null; } };
+  const remove = (i, keep) => { const p = all[i]; if (p.bub) { disposeSprite(p.bub); bub--; p.bub = null; } if (p.inQ) { const k = p.inQ.list.indexOf(p); if (k >= 0) p.inQ.list.splice(k, 1); } if (!keep) { world.remove(p.P.g); S.dropBag(p); } all.splice(i, 1); };
+  const walk = (p, tx, tz, sp, dt) => { const dx = tx - p.x, dz = tz - p.z, d = Math.hypot(dx, dz); if (d < .25) return true; const k = Math.min(d, sp * dt); p.x += dx / d * k; p.z += dz / d * k; p.dir += angDiff(p.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 8); p.moving = sp; return d < .3; };
+  S.update = dt => {
+    for (let i = all.length - 1; i >= 0; i--) {
+      const p = all[i]; p.moving = 0;
+      if (p.bub) { p.bubT -= dt; if (p.bubT <= 0) { disposeSprite(p.bub); bub--; p.bub = null; } }
+      const st = p.steps[p.si];
+      if (!st) { remove(i); continue; }
+      const next = () => { p.si++; p.wi = 0; p.t = 0; };
+      if (st[0] === 'go') { const w = st[1][p.wi]; if (!w) next(); else if (walk(p, w[0], w[1], p.spd, dt)) p.wi++; }
+      else if (st[0] === 'q') {
+        const Q = st[1]; if (!p.inQ) { p.inQ = Q; Q.list.push(p); }
+        const k = Q.list.indexOf(p), [tx, tz] = Q.slot(Math.min(k, Q.cap + 4)), at = walk(p, tx, tz, p.spd * .8, dt);
+        if (at) p.dir += angDiff(p.dir, k === 0 ? Q.face : Math.atan2(-Q.dx, -Q.dz)) * Math.min(1, dt * 6);
+        if (k === 0 && at) { if (p.srv === undefined) { p.srv = rr(Q.tSrv[0], Q.tSrv[1]); Q.onFront && Q.onFront(p, S); } p.srv -= dt; if (p.srv <= 0) { Q.list.shift(); p.inQ = null; p.srv = undefined; if (st[2]) st[2](p, S); next(); } }
+      }
+      else if (st[0] === 'wait') { if (!p.t) { p.t = st[1]; if (st[2]) S.say(p, pick(st[2])); if (st[3] !== undefined) p.face = st[3]; } p.t -= dt; if (p.face !== undefined) p.dir += angDiff(p.dir, p.face) * Math.min(1, dt * 5); if (p.t <= 0) { p.face = undefined; next(); } }
+      else if (st[0] === 'talk') { p.talk = st[1]; next(); continue; }
+      else if (st[0] === 'fn') { const more = st[1](p, S) || []; p.steps.splice(p.si + 1, 0, ...more); next(); continue; }
+      else if (st[0] === 'end') { const kept = st[1] ? st[1](p, S) : false; remove(i, kept); continue; }
+      // 혼잣말 · 탐지견을 보면 한마디
+      p.sayT -= dt; p.dogT -= dt;
+      if (p.dogT <= 0 && Math.hypot(p.x - dog.x, p.z - dog.z) < 3) { p.dogT = 15; S.say(p, pick(p.dogLines || ['탐지견이다! 귀엽다 🐶', '와, 세관 탐지견이야!', '열심히 일하는구나 🐕'])); }
+      else if (p.sayT <= 0) { p.sayT = rr(7, 16); if (p.talk && Math.random() < .55) S.say(p, pick(p.talk)); }
+      // 걷기 자세 · 가방 끌기
+      const P = p.P, k = p.moving ? 1 : 0; p.ph += dt * (p.moving || 0) * 3;
+      P.legs[0].rotation.x = Math.sin(p.ph) * .6 * k; P.legs[1].rotation.x = -Math.sin(p.ph) * .6 * k; P.arms[0].rotation.x = -Math.sin(p.ph) * .5 * k; P.arms[1].rotation.x = p.bag ? -.3 : Math.sin(p.ph) * .5 * k;
+      P.g.position.set(p.x, 0, p.z); P.g.rotation.y = p.dir;
+      if (p.bag) { if (!p.bag.parent) world.add(p.bag); p.bag.position.set(p.x + Math.cos(p.dir) * .55 - Math.sin(p.dir) * .5, .45, p.z - Math.sin(p.dir) * .55 - Math.cos(p.dir) * .5); p.bag.rotation.y = p.dir; }
+    }
+  };
+  return S;
+}
+// 입국장: 비행기가 도착하면 200명이 도착 통로에서 쏟아져 나와 수하물을 찾고, 세관 검사대에 줄을 서 검사받은 뒤 나간다
+const FLIGHTS_IN = [['KE082', '뉴욕'], ['OZ712', '방콕'], ['KE704', '도쿄'], ['7C1102', '오사카'], ['OZ362', '상하이'], ['KE624', '마닐라'], ['LJ082', '괌'], ['KE902', '파리'], ['OZ204', 'LA'], ['VN416', '하노이'], ['TW302', '다낭']];
+const ARR_TALK = {
+  walk: ['드디어 인천이다! 🇰🇷', '와~ 집에 왔다', '짐 찾는 곳이 어디지?', '비행기 오래 탔더니 다리 아파', '수취대 번호 확인해 봐', '엄마한테 도착했다고 연락해야지 📱', 'Finally in Korea! · 드디어 한국!', '着いた～! · 도착했다!', '到了到了! · 도착했다!'],
+  belt: ['내 가방 언제 나오지…', '아, 저기 내 캐리어다!', '빨간 리본 단 가방이야', '짐이 왜 이렇게 안 나와 😥', 'Where is my bag? · 내 가방 어디 있지?', '카트 하나 가져올까?'],
+  line: ['줄이 꽤 기네', '신고할 물건 없지?', '면세 한도 넘었나… 🤔', '세관 신고서 작성했어?', '여권 어디 뒀더라?', '탐지견이 냄새 맡고 다니네', 'Nothing to declare · 신고할 것 없어요'],
+  out: ['마중 나온 사람 어디 있지?', '택시 타러 가자 🚕', '공항버스 몇 번이지? 🚌', '배고프다, 뭐 먹고 가자', '유심부터 사야겠다', '환전소 들렀다 가자 💱'],
+};
+function arrivalsCrowd(L) {
+  const S = L.pax = paxSystem(isMobile ? 90 : 140), ZW = L.d / 2;
+  const BR = [-49, 8, 51], BELT = [[-60, -16, 10], [-36, -18, 14], [-12, -18, 14], [12, -18, 14], [36, -18, 14], [60, -16, 10]];
+  for (const x of BR) sign('🛬 도착 통로 ARRIVAL', x, 4.2, -30, .45, 'rgba(19,51,90,1)');
+  const G = [[-56, false], [-44, true], [-6, false], [6, true], [44, false], [56, true]].map(([x, red]) => {
+    const ox = x + (red ? 2.7 : -2.7) + (red ? 1 : -1), face = Math.atan2(ox - x, 0);
+    return { x, red, ox, Q: paxQueue(x, -5.4, 0, -1, 1.05, 22, face, red ? [3, 5.5] : [1.2, 2.6], (p, S2) => {
+      const deep = red || Math.random() < .15; if (deep) p.srv += 3;
+      S2.staff(ox, -5.4, pick(deep ? ['가방 한번 열어 주시겠어요?', '세관 신고서 보여 주세요', '이 물건은 어디서 사셨나요?'] : ['신고하실 물품 있으세요?', '여권 보여 주세요', '어디에서 오셨어요?']));
+      setTimeout(() => S2.say(p, pick(red ? ['면세 한도를 넘어서 신고하려고요', '이거 신고 대상인가요?', '영수증 여기 있어요'] : deep ? ['네, 열어 드릴게요', '선물로 산 거예요', '여행 기념품이에요'] : ['신고할 물건 없어요!', 'Nothing to declare!', '네, 여행 다녀왔어요 ✈'])), 900);
+    }) };
+  });
+  const EX = [-50, 0, 50], DOOR = [-47.7, 2.3, 52.3];
+  let wave = null, waveT = 5, z0 = {};
+  const spawnZ = x => { if (z0[x] !== undefined) return z0[x]; let z = -40; while (z < -26 && !(level.inside ? level.inside(x, z) && level.inside(x, z - .8) : true)) z += .5; return (z0[x] = z + 1.2); };
+  const steps = () => {
+    const [bx0, bz0, bl] = pick(BELT), side = pick([-2.5, 2.5]), sx = bx0 + side, sz = rr(bz0 - bl / 2 + 1, bz0 + bl / 2 - 1);
+    return [['go', [[sx, -26.6], [sx, sz]]], ['talk', ARR_TALK.belt], ['wait', rr(2, 8), ARR_TALK.belt, side < 0 ? Math.PI / 2 : -Math.PI / 2],
+      ['fn', (p, S2) => { S2.giveBag(p); if (Math.random() < .4) S2.say(p, pick(['찾았다! 내 가방 🧳', '아싸, 내 짐 나왔다', 'Got it! · 찾았다!'])); return []; }],
+      ['go', [[sx, -9.6]]], ['talk', ARR_TALK.line],
+      ['fn', p => { const red = Math.random() < .2, opts = G.filter(g => g.red === red).sort((a, b) => a.Q.list.length - b.Q.list.length + rr(-2, 2)); const g = opts[0], ex = EX.reduce((a, b) => Math.abs(b - g.x) < Math.abs(a - g.x) ? b : a), di = EX.indexOf(ex);
+        return [['go', [[g.x, Math.min(-9.6, g.Q.slot(g.Q.list.length)[1])]]], ['q', g.Q], ['talk', ARR_TALK.out], ['go', [[g.x, .5], [ex + rr(-3, 3), 2], [ex + rr(-3, 3), 7], [DOOR[di] + rr(-1, 1), 30], [DOOR[di], ZW - 1.4]]],
+          ['end', (p2, S2) => L.curbAdopt ? L.curbAdopt(p2.P, p2.bag, p2.x, p2.z) : false]]; }]];
+  };
+  // 비행기는 무작위 간격으로 도착, 동시에 최대 2대 · 1대당 승객 120~200명(무작위) — 화면에 동시에 걷는 인원은 S.cap까지만, 나머지는 통로에서 차례로 나온다
+  const waves = [];
+  envAnim.push(dt => {
+    waveT -= dt;
+    if (waveT <= 0) { waveT = rr(14, 40);
+      if (waves.length < 2) { const [code, city] = pick(FLIGHTS_IN.filter(f => !waves.some(w => w.code === f[0]))), n = Math.round(rr(120, 200)), br = waves.length ? BR.filter(x => !waves[0].br.includes(x)).concat(pick(BR)) : (k => BR.filter((_, j) => j !== k))(Math.floor(Math.random() * 3)).slice(0, Math.random() < .5 ? 1 : 2);
+        waves.push({ code, left: n, t: 0, br }); annBanner('🛬 ' + code + ' ' + city + '발 항공편 도착 · 승객 ' + n + '명 입국' + (waves.length > 1 ? ' (현재 비행기 2대 도착)' : '')); toast('🛬 ' + city + '발 비행기 도착! 승객 ' + n + '명이 세관 검사대로 몰려와요'); } }
+    for (let wi = waves.length - 1; wi >= 0; wi--) { const w = waves[wi]; w.t -= dt;
+      while (w.t <= 0 && w.left > 0 && S.n < S.cap) { w.t += .18; w.left--; const x = pick(w.br) + rr(-1.4, 1.4), p = S.add(Math.random() < .75 ? 'civ' : 'tourist', x, spawnZ(Math.round(x)), [['talk', ARR_TALK.walk], ['go', [[x, -26.6]]], ['fn', steps]], { dir: 0 }); if (p && Math.random() < .25) S.say(p, pick(ARR_TALK.walk)); }
+      if (w.t < 0) w.t = 0; if (w.left <= 0) waves.splice(wi, 1); }
+    S.update(dt);
+  });
+}
+// 출국장: 공항버스(동시에 최대 3대)가 무작위로 도착 → 외국인 50명씩 내려 체크인 → 보안검색 → 출국심사 → 면세 → 탑승
+const FOREIGN = [
+  ['Where is the check-in counter?', '체크인 카운터 어디죠?'], ['Korea was amazing!', '한국 정말 최고였어!'], ['楽しかった！また来たい', '즐거웠어! 또 오고 싶다'], ['韩国真好玩！', '한국 정말 재밌었어!'],
+  ['Tôi muốn mua kimchi', '김치 사 가고 싶어'], ['¡Qué rápido es este aeropuerto!', '공항이 정말 빠르네!'], ['C\'était génial, la Corée !', '한국 정말 멋졌어!'], ['สนุกมาก!', '정말 재밌었어!'],
+  ['I bought so much K-beauty!', 'K-뷰티 엄청 샀어!'], ['Do I have time for duty free?', '면세점 갈 시간 있을까?'], ['Hast du deinen Pass?', '여권 챙겼어?'], ['Mi vuelo sale a las 3', '내 비행기 3시에 떠나'],
+];
+const FT = () => { const [a, b] = pick(FOREIGN); return a + ' · ' + b; };
+function departuresCrowd(L) {
+  const S = L.pax = paxSystem(isMobile ? 80 : 120), LANE = 67.8, ENT = [-60, -20, 20, 60], SLOT = [-60, -20, 20, 60], GATE = [[-70, 250], [-25, 248], [25, 233], [70, 231]];
+  // 체크인: 섬 8개 × 양쪽 × 데스크 7개
+  const DESK = []; for (let n = 0; n < 8; n++) { const ix = -84 + n * 24; for (const sd of [-1, 1]) for (let z = 18; z <= 42; z += 4) DESK.push({ ix, sd, Q: paxQueue(ix + sd * 4.25, z, sd, 0, 1, 4, Math.atan2(-sd, 0), [3, 6], (p, S2) => { S2.staff(ix + sd * 3.1, z, pick(['Passport, please · 여권 보여 주세요', 'Window or aisle? · 창가석, 통로석?', 'Any batteries in your bag? · 가방에 배터리 있나요?'])); setTimeout(() => S2.say(p, pick(['Here you are · 여기 있어요', 'Window seat, please · 창가석으로 주세요', 'Thank you! · 감사합니다'])), 900); }, ) }); }
+  const KIOSK = []; for (let n = 0; n < 7; n++) for (const dx of [-2, 2]) KIOSK.push(paxQueue(-72 + n * 24 + dx, 48.9, 0, -1, .9, 2, 0, [2.5, 4.5], (p, S2) => S2.say(p, pick(['Self check-in, easy! · 셀프 체크인 쉽네!', '티켓 출력 완료 🎫']))));
+  const SEC = []; for (const cx of [-50, 50]) for (const dx of [-4.5, 0, 4.5]) SEC.push({ cx, Q: paxQueue(cx + dx + 1.1, -1.4, 0, 1, .9, 8, Math.PI, [1.5, 3], (p, S2) => { S2.staff(cx + dx - 1.2, -1, pick(['주머니 속 물건은 바구니에 · Pockets in the tray', '노트북은 꺼내 주세요 · Laptop out, please', '액체류는 100ml까지 · Liquids 100ml max'])); }) });
+  const EMI = []; for (const cx of [-50, 50]) for (const dx of [-3.3, 0, 3.3]) EMI.push({ cx, x: cx + dx, Q: paxQueue(cx + dx, -6.4, 0, 1, .9, 3, Math.PI, [1, 2.2], (p, S2) => { if (Math.random() < .3) S2.say(p, pick(['Stamp done! · 출국심사 끝!', '자동출입국심사 통과 ✅'])); }) });
+  const SHOP = [[-60, -16.2], [-82, -16.2], [60, -16.2], [82, -16.2], [-60, -32.2], [-82, -32.2], [60, -32.2], [82, -32.2], [-40, -18.3], [40, -18.3]];
+  const steps = p => {
+    const ox = ENT.reduce((a, b) => Math.abs(b - p.x) < Math.abs(a - p.x) ? b : a);
+    const go1 = [['go', [[ox + rr(-2.5, 2.5), 61], [ox + rr(-2.5, 2.5), 55]]]];
+    let ck;
+    if (Math.random() < .25) { const Q = pick(KIOSK); ck = [['go', [[Q.sx, 55]]], ['q', Q, (p2, S2) => S2.dropBag(p2)]]; }
+    else { const d = [0, 1, 2, 3, 4].map(() => pick(DESK)).sort((a, b) => a.Q.list.length - b.Q.list.length)[0];
+      ck = [['go', [[d.ix + d.sd * 9, 47]]], ['q', d.Q, (p2, S2) => S2.dropBag(p2)], ['go', [[d.ix + d.sd * 9, d.Q.sz], [d.ix + d.sd * 9, 14.6]]]]; }
+    const after = [['fn', p2 => { const near = SEC.filter(o => Math.sign(o.cx) === Math.sign(p2.x || 1)), o = (Math.random() < .8 ? near : SEC).slice().sort((a, b) => a.Q.list.length - b.Q.list.length + rr(-1, 1))[0];
+        const e = EMI.filter(m => m.cx === o.cx).sort((a, b) => a.Q.list.length - b.Q.list.length)[0], corr = pick(o.cx < 0 ? [-46, -16] : [46, 16]), g = pick(GATE), bX = g[0] + 4.5;
+        const shop = Math.random() < .45 ? SHOP.filter(([x]) => Math.sign(x) === Math.sign(corr)) : [];
+        const tail = [['go', [[o.Q.sx, o.Q.slot(Math.min(o.Q.list.length, 9))[1] + 1]]], ['q', o.Q], ['go', [[o.Q.sx, -4.6]]], ['q', e.Q], ['go', [[e.x, -10], [o.cx + rr(-5, 5), -14], [corr, -14]]]];
+        if (shop.length) { const [sx, sz] = pick(shop); tail.push(['go', [[corr, sz], [sx + rr(-4, 4), sz]]], ['wait', rr(3, 7), ['Duty free! · 면세점이다!', 'K-뷰티 하나 더 살까?', '김이랑 홍삼 사 가자', 'This is cheap! · 이거 싸다!', '☕ 커피 한 잔 하고 가자'], Math.PI], ['go', [[corr, sz]]]); }
+        tail.push(['talk', ['Gate ' + g[1] + '! · ' + g[1] + '번 탑승구!', 'Boarding soon · 곧 탑승이야', 'Bye Korea! · 안녕 한국! 👋', 'See you again! · 또 올게!']], ['go', [[corr, -45.6], [bX + rr(-1, 1), -45.6], [bX, -54.2]]],
+          ['wait', rr(1, 5), ['Boarding now! · 탑승 시작!', 'Bye Korea! · 안녕 한국! 👋', '다음에 또 올게요!'], Math.PI], ['go', [[bX, -58], [bX, -65.6]]], ['end']);
+        return tail; }]];
+    return [...go1, ['talk', FOREIGN.map(([a, b]) => a + ' · ' + b)], ...ck, ...after];
+  };
+  // 공항버스: 동시에 최대 3대, 무작위 간격으로 들어와 정차 → 50명 하차 → 출발
+  const bus = () => { const g = new THREE.Group(); world.add(g); mesh(BOX(11, 2.8, 2.6), MAT.col(pick([0x2c6fb7, 0x27ae60, 0x8e44ad, 0xd84a3a]), .4), 0, 1.7, 0, g); mesh(BOX(10.6, .9, 2.66), MAT.col(0x1b2833, .1, .3), .2, 2.3, 0, g); const t = textSprite('🚌 ' + pick(['공항리무진 · 명동', '공항리무진 · 강남', '관광버스 · 외국인 단체', 'Airport Limousine', '관광버스 · 부산']), { h: .4 }); t.position.y = 3.6; g.add(t); for (const sx of [-3.8, 3.8]) for (const sz of [-1.3, 1.3]) mesh(BOX(.7, .7, .3), MAT.col(0x111111, .8), sx, .35, sz, g); return g; };
+  const buses = []; let nextT = rr(2, 5);
+  envAnim.push(dt => {
+    nextT -= dt;
+    if (nextT <= 0) { nextT = rr(6, 22); const free = SLOT.filter(x => !buses.some(b => b.slot === x)); if (buses.length < 3 && free.length) { const b = { g: bus(), slot: pick(free), x: -150, st: 'in', left: Math.round(rr(30, 50)), t: 0 }; buses.push(b); } }
+    for (let i = buses.length - 1; i >= 0; i--) { const b = buses[i];
+      const blocked = Math.abs(dog.z - LANE) < 2.2 && dog.x - b.x > 0 && dog.x - b.x < 11;
+      if (b.st === 'in') { if (!blocked) b.x += dt * Math.max(3, Math.min(16, (b.slot - b.x) * 1.2)); if (b.x >= b.slot - .05) { b.x = b.slot; b.st = 'unload'; annBanner('🚌 공항버스 도착 · 외국인 관광객 ' + b.left + '명이 출국 수속을 시작해요' + (buses.length > 1 ? ' (버스 ' + buses.length + '대 정차 중)' : '')); } }
+      else if (b.st === 'unload') { b.t -= dt; while (b.t <= 0 && b.left > 0 && S.n < S.cap) { b.t += .3; b.left--; const x = b.x + rr(-4.5, 4.5), p = S.add(Math.random() < .8 ? 'tourist' : 'civ', x, LANE - 1.6, [['fn', steps]], { bag: true, dir: Math.PI }); if (p && Math.random() < .2) S.say(p, FT()); } if (b.left <= 0) { b.st = 'out'; b.t = 2; } }
+      else if (b.st === 'out') { b.t -= dt; if (b.t <= 0 && !blocked) b.x += dt * 14; if (b.x > 150) { world.remove(b.g); buses.splice(i, 1); continue; } }
+      if (blocked && !(b.honk > time)) { b.honk = time + 2.5; floatText('🚌 빵빵!', b.x, 3.4, LANE, { h: .4 }); }
+      if (Math.abs(dog.x - b.x) < 5.9 && Math.abs(dog.z - LANE) < 1.6) dog.z = LANE + (dog.z < LANE ? -1.65 : 1.65);
+      b.g.position.set(b.x, 0, LANE); }
+    S.update(dt);
   });
 }
 function makePerson(kind, opt = {}) {
@@ -3172,7 +3323,7 @@ const LEVELS = [
       { const t2 = new THREE.Group(); t2.position.set(-150, 0, -420); world.add(t2); mesh(BOX(140, 22, 50), MAT.col(0xe4e8ec, .35), 0, 11, 0, t2); for (const sx of [-1, 1]) { const w = mesh(BOX(110, 12, 22), MAT.col(0xe4e8ec, .35), sx * 70, 6, 50, t2); w.rotation.y = sx * .6; } sign('제2여객터미널 T2 (약 2.7km 북서쪽)', -150, 34, -400, 1.6); }
       // 남쪽 도착 도로(버스·택시 승차장)와 교통센터
       floorPlaneW(300, 24, MAT.col(0x3a3d42, .95), 0, 56, .05); for (let x = -140; x <= 140; x += 8) mesh(BOX(4, .02, .25), MAT.col(0xffffff, .5), x, .07, 56);
-      arrivalsCurb(L);
+      arrivalsCurb(L); arrivalsCrowd(L);
       { const gnd = new THREE.Mesh(new THREE.PlaneGeometry(900, 700), MAT.col(0x6b7076, .95)); gnd.rotation.x = -Math.PI / 2; gnd.position.set(0, -.06, 0); gnd.receiveShadow = true; world.add(gnd); } // 맵 밖도 땅이 이어져 하얀 허공이 안 보이게
       building(0, 96, 90, 22, 11, 0xc9d0d6, { glass: 0x4f7898 }); sign('🚉 교통센터 · 공항철도 인천공항1터미널역', 0, 13.5, 84.5, 1.1);
       L.search = scatter(L, 15, luggage, 1, 1);
@@ -5108,7 +5259,7 @@ const LANDMARK_LIST = [
       L.search = colliders.filter(c => c.topY > .5 && c.topY < 1.6 && c.maxX - c.minX < 5 && c.maxZ - c.minZ < 5 && c.minZ > 40).slice(0, 12);
     } },
   { name: '공항 출국장', gate: true, icon: '🧳', sc: 1, w: 200, d: 180, floor: 0xcfd3d6, mmCol: 0xd6d0c4, obj: luggage, ns: 26, st: 3, music: 4, sky: [0x4f9be6, 0xdcecf8],
-    veh: [{ type: 'bus', route: [[-95, 69], [95, 69], [95, 73], [-95, 73]] }, { type: 'taxi', route: [[95, 73], [-95, 73], [-95, 69], [95, 69]] }],
+    veh: [{ type: 'taxi', route: [[95, 75], [-95, 75], [-95, 71.5], [95, 71.5]] }],
     staff: [{ kind: 'attendant', route: [[-80, 30], [-10, 30]], wait: 2.5 }, { kind: 'attendant', route: [[10, 30], [80, 30]], wait: 2.5 }, { kind: 'customs', route: [[-60, -4], [-40, -4]], wait: 2 }, { kind: 'customs', route: [[40, -4], [60, -4]], wait: 2 }, { kind: 'customs', route: [[-50, -30], [50, -30]], wait: 3 }, { kind: 'police', route: [[-80, 52], [80, 52]], wait: 2 }, { kind: 'pilot', route: [[-60, -46], [60, -46]], wait: 3 }],
     people: { civ: 14, tourist: 10, kid: 3, smuggler: 4 }, hide: { drug: 5, gun: 3 }, need: { drug: 3, gun: 1, smuggler: 3 },
     items: [["dutyBag", 4], ["backpack", 3], ["golfBag", 2], ["cooler", 1]], who: '하늘길 인천공항세관 출국검사과장', chief: 'customs',
@@ -5126,7 +5277,7 @@ const LANDMARK_LIST = [
       wallX(58, [[-60, 8], [-20, 8], [20, 8], [60, 8]]);
       for (const x of [-60, -20, 20, 60]) sign('🚪 ' + (x < 0 ? '출국장 2 방향' : '출국장 1 방향'), x, 4.4, 58.6, .45);
       sign('✈ 인천국제공항 제2여객터미널 출발 DEPARTURES · 3F', 0, H + 3, 59, 1.3);
-      sign('🚕 택시 · 🚌 버스 하차장 (출발층 3층)', -60, 5.5, 64, .55);
+      sign('🚕 택시 · 🚌 버스 하차장 (출발층 3층)', -60, 5.5, 64, .55); departuresCrowd(L);
       // ── 체크인 카운터 A~H ──
       const AIR = [['A', '대한항공 일등석·프레스티지'], ['B', '대한항공'], ['C', '대한항공'], ['D', '대한항공 · 셀프 백드롭'], ['E', '델타항공 · 아에로멕시코'], ['F', '에어프랑스 · KLM'], ['G', '중화항공 · 가루다'], ['H', '진에어 · 샤먼항공']];
       AIR.forEach(([k, a], n) => { const x = -84 + n * 24; bx(x, 0, 30, 5, 1.1, 30, 0xeceae4); mesh(BOX(5.2, .1, 30.2), LMC(0x1f4e8c), x, 1.15, 30); mesh(BOX(4, 3, .4), LMC(0x13335a), x, 6.5, 45); mesh(BOX(.4, 5.3, .4), MAT.metal(0x8a9399), x, 3.2, 45);
@@ -6224,6 +6375,7 @@ function startLevel(i) {
   if (!LEVELS[i].landmark) runActive = !LEVELS[i].relax;
   if (i === 5 && runCleared.size < 5) setTimeout(() => toast(t('ts_boss_rank')), 4500);
   hideAll(); loadLevel(i); intelRoll();
+  { const on = UPG.filter(([k]) => wallet.up[k] > 0); if (on.length) setTimeout(() => toast('🪙 업그레이드 적용 중: ' + on.map(([k, n]) => n + ' Lv' + wallet.up[k]).join(' · ')), 2500); }
   $('topbar').classList.remove('hidden');
   const intro = () => showDialog(lang !== 'ko' ? LEVELS[i].relax ? t('intro_hidden').replace('{dog}', dogName) : t('intro').replace('{map}', mapName(i)).replace('{dog}', dogName) : scaleNums(LEVELS[i].intro) + (level.scaled && levelIdx < 6 ? '\n\n🗺 이번 맵은 A~D 구역까지 넓어졌어. 미니맵을 보며 구석구석 수색해!' : ''), null, LEVELS[i].who);
   playIntro(() => { if (!seenHowto) showHowto(intro); else intro(); });
@@ -6538,7 +6690,7 @@ const HIDDEN_VIP = ['f31f2ec546aeb4af9e3579b21d61a6a707375f6a5ec73096567eed2bdc7
 let hiddenVip = false;
 async function checkVip(id) { try { const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(id)); hiddenVip = HIDDEN_VIP.includes([...new Uint8Array(d)].map(b => b.toString(16).padStart(2, '0')).join('')); } catch { hiddenVip = false; } }
 // ---- 계정 클라우드 동기화 (PC와 휴대폰이 같은 설정·기록을 쓰도록) ----
-const CLOUD_KEYS = ['k9prog:', 'k9wallet:', 'k9ach:', 'k9dog:', 'k9hand:', 'k9nick:'];
+const CLOUD_KEYS = ['k9prog:', 'k9wallet:', 'k9ach:', 'k9bag:', 'k9dog:', 'k9hand:', 'k9nick:'];
 let cloudT = null, cloudBusy = false;
 function cloudPack() { const id = playerId, o = { v: 1, t: Date.now(), lang }; for (const k of CLOUD_KEYS) o[k] = store.get(k + id, null); return o; }
 function cloudTouch(k) { if (!playerPw || !serverOn() || !playerId || playerId.startsWith('guest_')) return; if (!CLOUD_KEYS.some(p => k === p + playerId)) return; clearTimeout(cloudT); cloudT = setTimeout(cloudSave, 2500); }
@@ -6557,6 +6709,7 @@ async function cloudLoad(id, pw, freshDevice) {
     if (cw || lw) { const a = lw || {}, b = cw || {}, up = { ...(a.up || {}) }; for (const [k, v] of Object.entries(b.up || {})) up[k] = Math.max(up[k] || 0, v || 0);
       const newer = (b.t || 0) > (a.t || 0) ? b : (a.t || 0) > (b.t || 0) ? a : ((b.coins || 0) > (a.coins || 0) ? b : a);
       store.set('k9wallet:' + id, { ...a, ...b, coins: newer.coins || 0, up }); }
+    const lb = store.get('k9bag:' + id, null), cb = d['k9bag:']; if (cb && (!lb || (cb.t || 0) > (lb.t || 0))) store.set('k9bag:' + id, cb);
     const la = store.get('k9ach:' + id, null), ca = d['k9ach:']; if (ca && (!la || (ca.earned || []).length >= (la.earned || []).length)) store.set('k9ach:' + id, ca);
     // 처음 쓰는 기기라면 탐지견·핸들러·닉네임·언어도 그대로 가져온다
     if (fresh) { for (const k of ['k9dog:', 'k9hand:', 'k9nick:']) if (d[k]) store.set(k + id, d[k]); if (d.lang && d.lang !== lang && LANGS.some(L => L[0] === d.lang)) { lang = d.lang; try { localStorage.setItem('k9lang', lang); } catch { } } }
@@ -6685,9 +6838,9 @@ async function login() {
   if (res === 'locked') return loginErr('비밀번호를 여러 번 틀려서 5분간 잠겼어요. 잠시 후 다시 시도하세요.');
   loginErr('');
   const freshDevice = !guest && !store.get('k9dog:' + v, null);
-  playerId = guest ? 'guest_' + nk : v; playerNick = nk; await checkVip(guest ? '' : v); store.set('k9nick:' + v, nk); if (!guest) store.set('k9nick:last', nk); setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; if (!guest) { store.set('k9id', $('remember').checked ? v : ''); if ($('remember').checked) store.set('k9ids', [v, ...store.get('k9ids', []).filter(x => x !== v)].slice(0, 5)); } store.set('k9agree', $('agree').checked); if (!guest) store.set('k9pcons', true); runScore = 0; runActive = false;
+  playerId = guest ? 'guest_' + nk : v; playerNick = nk; await checkVip(guest ? '' : v); store.set('k9nick:' + v, nk); if (!guest) store.set('k9nick:last', nk); setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); loadBag(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; if (!guest) { store.set('k9id', $('remember').checked ? v : ''); if ($('remember').checked) store.set('k9ids', [v, ...store.get('k9ids', []).filter(x => x !== v)].slice(0, 5)); } store.set('k9agree', $('agree').checked); if (!guest) store.set('k9pcons', true); runScore = 0; runActive = false;
   if (serverOn() && playerPw) rpc('set_profile', { p_id: v, p_pw: pw, p_nick: nk, p_dog: dn, p_consent: true }).catch(() => { });
-  if (serverOn() && playerPw) { const fresh = await cloudLoad(v, pw, freshDevice); if (fresh) { setTimeout(syncProfile, 500); const dd = store.get('k9dog:' + v, null), hh = store.get('k9hand:' + v, null); if (dd) setDog(dd.breed, dd.name); if (hh) setHandlerLook(hh.job, hh.skin); playerNick = store.get('k9nick:' + v, playerNick) || playerNick; setHandlerLabel(playerNick); applyLang(); toast('☁ 다른 기기에서 쓰던 탐지견과 기록을 불러왔어요'); } loadAch(); loadWallet(); cloudSave(); }
+  if (serverOn() && playerPw) { const fresh = await cloudLoad(v, pw, freshDevice); if (fresh) { setTimeout(syncProfile, 500); const dd = store.get('k9dog:' + v, null), hh = store.get('k9hand:' + v, null); if (dd) setDog(dd.breed, dd.name); if (hh) setHandlerLook(hh.job, hh.skin); playerNick = store.get('k9nick:' + v, playerNick) || playerNick; setHandlerLabel(playerNick); applyLang(); toast('☁ 다른 기기에서 쓰던 탐지견과 기록을 불러왔어요'); } loadAch(); loadWallet(); loadBag(); cloudSave(); }
   if (guest) toast(t('ts_guest'));
   if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
   if (res === 'offline' && !guest) toast('📡 랭킹 서버에 연결하지 못해 이 기기에만 기록돼요');
@@ -6767,10 +6920,13 @@ function updateHelpItems(dt) {
 }
 // 🎒 아이템 가방 — 종류마다 최대 9개, 맵을 옮겨도 이번 게임 동안 유지
 const bag = {}, BAG_MAX = 9;
+const bagKey = () => 'k9bag:' + playerId;
+function saveBag() { if (playerId) store.set(bagKey(), { t: Date.now(), items: { ...bag } }); }
+function loadBag() { for (const k in bag) delete bag[k]; const o = playerId ? store.get(bagKey(), null) : null; for (const [k, v] of Object.entries((o && o.items) || {})) if (HELP_KINDS[k] && v > 0) bag[k] = Math.min(BAG_MAX, v | 0); renderBag(); }
 HELP_KINDS.ball = { name: '하트 공', emoji: '🎾', col: 0xc8e632 };
 function bagAdd(kind) {
   if ((bag[kind] || 0) >= BAG_MAX) { toast('🎒 ' + HELP_KINDS[kind].name + '은(는) 가방에 ' + BAG_MAX + '개까지만 넣을 수 있어요'); return; }
-  bag[kind] = (bag[kind] || 0) + 1; renderBag();
+  bag[kind] = (bag[kind] || 0) + 1; renderBag(); saveBag();
   floatText('🎒 +' + HELP_KINDS[kind].emoji, dog.x, dog.y + 2.2, dog.z, { h: .5, color: '#ffe08a' });
   toast('🎒 ' + HELP_KINDS[kind].emoji + ' ' + HELP_KINDS[kind].name + '을(를) 가방에 넣었어요! 필요할 때 🎒 버튼(B)으로 꺼내 써요');
 }
@@ -6783,7 +6939,7 @@ function useHelp(kind) {
   if (!bag[kind] || state !== 'play') return;
   const hpMax = Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7);
   if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax) { toast('❤️ 하트가 꽉 찼어요! 하트가 줄었을 때 쓰세요'); return; }
-  bag[kind]--; renderBag(); SFX.found(); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(HELP_KINDS[kind].col), WHITE], 25, 3);
+  bag[kind]--; renderBag(); saveBag(); SFX.found(); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(HELP_KINDS[kind].col), WHITE], 25, 3);
   if (kind === 'ball') { dog.hp = Math.min(hpMax, dog.hp + 1); dog.boost = 6; floatText('🎾 ❤️ +1', dog.x, dog.y + 2, dog.z, { h: .55, color: '#ff8a80' }); toast('🎾 하트 공! 하트 +1, 잠깐 빨라져요'); return; }
   applyHelp(kind);
 }
