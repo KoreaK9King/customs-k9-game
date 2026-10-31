@@ -275,6 +275,12 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 #mpClose{border:3px solid #1b2b3c;background:#fff;color:#1b2b3c;line-height:1;padding:0;border-radius:10px;width:40px;height:40px;font-size:18px;font-weight:900;cursor:pointer;flex:none}
 .mpsec{display:none}#mpanel[data-p="map"] .mpsec[data-p="map"],#mpanel[data-p="ctl"] .mpsec[data-p="ctl"],#mpanel[data-p="badges"] .mpsec[data-p="badges"],#mpanel[data-p="shop"] .mpsec[data-p="shop"],#mpanel[data-p="team"] .mpsec[data-p="team"]{display:block}
 #mpanel #badges h2,#mpanel #shop h2{display:none}
+#mpanel .mpsec[data-p]{display:none}#mpanel[data-p="char"] .mpsec[data-p="char"],#mpanel[data-p="pv"] .mpsec[data-p="pv"],#mpanel[data-p="lrank"] .mpsec[data-p="lrank"],#mpanel[data-p="info"] .mpsec[data-p="info"]{display:block}
+#mpanel #rankMini{max-height:none!important}#mpanel .notice[style*="13335a"]{display:block!important}
+@media (orientation:landscape) and (max-height:540px){#creds{display:grid;grid-template-columns:1fr 1fr;gap:10px}#creds label{margin-top:0!important;font-size:13px}#creds label small{display:none}#creds input{padding:6px 8px!important;font-size:14px!important}#login .card>.sub{display:none}#login .card>h1{font-size:19px!important;margin:0 0 4px!important}#login .card .row{margin-top:4px}#login #btnLogin{padding:6px 28px}}
+#loginTiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 4px}#loginTiles .hubtile{padding:8px 4px}#loginTiles .hubtile .hi{font-size:24px}#loginTiles .hubtile b{font-size:15px}
+.hubtile.need{border-color:#d9822b;background:#fff1dc;box-shadow:0 4px 0 #d9822b}.hubtile.need small{color:#b5402a;font-weight:700}
+@media (orientation:landscape) and (max-height:540px){#loginTiles{gap:6px;margin:6px 0 2px}#loginTiles .hubtile{padding:4px 2px}#loginTiles .hubtile .hi{font-size:18px}#loginTiles .hubtile b{font-size:12.5px}#loginTiles .hubtile small{font-size:9.5px}}
 @media (orientation:landscape) and (max-height:540px){#hubTiles{grid-template-columns:repeat(6,1fr);gap:6px;margin:6px 0}.hubtile{padding:6px 2px}.hubtile .hi{font-size:22px}.hubtile b{font-size:13px}.hubtile small{font-size:9.5px}.hubtile.main{grid-column:auto;flex-direction:column;gap:2px;padding:6px 2px}.hubtile.main .hi{font-size:22px}.hubtile.main b{font-size:13px}.mphead{padding:6px 0 4px}.mphead b{font-size:16px}#mpClose{width:34px;height:34px}}
 @media (max-width:560px){#hubTiles{grid-template-columns:repeat(3,1fr)}}
 /* 클리어·승리 화면 버튼은 카드가 넘쳐도 항상 아래에 보이게 */
@@ -392,11 +398,11 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
  <img id="logo" src="logo.png" alt="관세청" style="display:block;max-height:56px;max-width:60%;margin:0 auto 10px" onerror="this.remove()">
  <div class="sub">관세청 일일 특강 교육 게임</div>
  <h1>🐕 탐지견 킁킁 게임</h1>
- <p>나만의 <b>탐지견</b>을 만들어 공항부터 보세창고까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
- <label for="pid" id="lbId" style="font-weight:700;color:var(--navy)">🔑 아이디 <small style="font-weight:500;color:var(--muted)">(이메일 주소 · 랭킹에 공개되지 않아요)</small></label>
- <input id="pid" dir="ltr" type="email" inputmode="email" maxlength="60" placeholder="예: dkslek123@google.com" autocomplete="username" name="username" list="idList"><datalist id="idList"></datalist>
+ <p id="lsIntro">나만의 <b>탐지견</b>을 만들어 공항부터 보세창고까지 6개 관문을 순찰하세요. 숨겨진 <b>마약</b>과 <b>불법 총기</b>를 찾아 폐기하고 <b>밀수범</b>과 <b>밀수 조직 보스</b>를 붙잡으면 점수가 쌓여 랭킹에 올라갑니다.</p>
+ <div id="creds"><div class="cred"><label for="pid" id="lbId" style="font-weight:700;color:var(--navy)">🔑 아이디 <small style="font-weight:500;color:var(--muted)">(이메일 주소 · 랭킹에 공개되지 않아요)</small></label>
+ <input id="pid" dir="ltr" type="email" inputmode="email" maxlength="60" placeholder="예: dkslek123@google.com" autocomplete="username" name="username" list="idList"><datalist id="idList"></datalist></div><div class="cred">
  <label for="ppw" style="font-weight:700;color:var(--navy);display:block;margin-top:10px">비밀번호</label>
- <input id="ppw" type="password" maxlength="32" placeholder="4자 이상 · 처음 접속이면 지금 정한 비밀번호로 가입돼요" autocomplete="current-password">
+ <input id="ppw" type="password" maxlength="32" placeholder="4자 이상 · 처음 접속이면 지금 정한 비밀번호로 가입돼요" autocomplete="current-password"></div></div>
  <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:14px;font-weight:700;color:var(--navy)"><input type="checkbox" id="remember" checked style="width:18px;height:18px"> <span id="lbRemember">아이디 기억하기 <small style="font-weight:500;color:var(--muted)">(다음부터 비밀번호만 입력)</small></span></label>
  <div class="notice" style="font-size:13px;line-height:1.65;margin-top:10px;background:#f4f7fb">
   <span id="pvTitle"><b>📋 개인정보(이메일) 수집·이용 안내</b></span>
@@ -427,13 +433,19 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
  <div id="skins" role="radiogroup" aria-label="피부색"></div>
  <div id="jobInfo" class="notice" style="margin-top:6px;font-size:13px"></div>
  </div>
+ <div id="loginTiles">
+  <button type="button" class="hubtile" data-p="char"><span class="hi">🐕</span><b>내 캐릭터</b><small id="ltChar"></small></button>
+  <button type="button" class="hubtile" data-p="pv"><span class="hi">📋</span><b>필수 동의</b><small id="ltPv"></small></button>
+  <button type="button" class="hubtile" data-p="lrank"><span class="hi">🏆</span><b>랭킹</b><small>TOP 100</small></button>
+  <button type="button" class="hubtile" data-p="info"><span class="hi">ℹ️</span><b>게임 소개</b><small>안내·신고 125</small></button>
+ </div>
  <div id="pidErr"></div>
  <div class="agreebox"><label><input type="checkbox" id="agree"> <span id="agreeTxt">✅ 게임 이용 안내에 동의해요 · 친구에게 친절하게, 비밀번호는 비밀! (이 게임은 개인정보를 수집하지 않아요)</span></label><div id="ageTxt">🎮 이용 등급: 전체 이용가 (권장 만 7세 이상 · 자체 기준)</div></div>
  <div class="row"><button class="big" id="btnLogin">접속하기</button><button class="big alt hidden" id="btnGuest">👀 체험하기</button></div>
  <div style="text-align:right;margin-top:4px"><button class="alt" id="btnDelMe" style="font-size:12px;padding:5px 10px;border-radius:9px">🗑 내 정보 삭제</button></div>
 
- <div class="notice" style="background:#13335a;color:#fff;font-size:13px">📢 <b style="color:#f4c542">관세청 공익광고</b> · 마약·총기 밀수 신고는 <b style="color:#f4c542">☎ 125</b> (관세청 밀수신고센터) · 여행자 휴대품은 자진신고하세요</div>
- <div class="notice">※ 관세청 일일 특강용 교육 게임입니다. 세관 업무 이해를 돕기 위해 만들었으며, 등장인물과 사건은 모두 가상입니다.</div>
+ <div class="notice" id="lsAd" style="background:#13335a;color:#fff;font-size:13px">📢 <b style="color:#f4c542">관세청 공익광고</b> · 마약·총기 밀수 신고는 <b style="color:#f4c542">☎ 125</b> (관세청 밀수신고센터) · 여행자 휴대품은 자진신고하세요</div>
+ <div class="notice" id="lsNote">※ 관세청 일일 특강용 교육 게임입니다. 세관 업무 이해를 돕기 위해 만들었으며, 등장인물과 사건은 모두 가상입니다.</div>
 </div></div>
 
 <!-- 맵 선택 -->
@@ -556,7 +568,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261031-1334';
+const BUILD = '20261031-1343';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -4728,7 +4740,7 @@ function restartLevel() {
   toast('🔄 맵을 다시 시작했어요 (흐른 시간은 이어져요)');
 }
 // 허브 타일 → 창 열기
-const PANEL_T = { map: '🗺 맵 선택', shop: '🪙 업그레이드', badges: '🏅 배지', team: '👥 팀 방', ctl: '🎮 조작법' };
+const PANEL_T = { map: '🗺 맵 선택', shop: '🪙 업그레이드', badges: '🏅 배지', team: '👥 팀 방', ctl: '🎮 조작법', char: '🐕 내 캐릭터 만들기', pv: '📋 필수 동의', lrank: '🏆 TOP 100 랭킹', info: 'ℹ️ 게임 소개' };
 function hubSubs() {
   $('hubShopSub').textContent = '보유 ' + wallet.coins + ' 코인';
   $('hubBadgeSub').textContent = ach.earned.length + ' / ' + BADGES.length + ' 획득';
@@ -4736,8 +4748,8 @@ function hubSubs() {
   $('hubTeamSub').textContent = team ? '방 ' + team.code + ' 접속 중' : '최대 5명';
   const p = $('mpanel').dataset.p; if (p) $('mpTitle').textContent = PANEL_T[p] + (p === 'shop' ? ' · 보유 ' + wallet.coins + ' 코인' : p === 'badges' ? ' · ' + ach.earned.length + '/' + BADGES.length : '');
 }
-function openPanel(p) { const m = $('mpanel'); m.dataset.p = p; hubSubs(); m.classList.remove('hidden'); m.querySelector('.card').scrollTop = 0; }
-function closePanel() { $('mpanel').classList.add('hidden'); if (state === 'maps') hubSubs(); }
+function openPanel(p) { const m = $('mpanel'); m.dataset.p = p; $('mpTitle').textContent = PANEL_T[p] || ''; if (state === 'maps') try { hubSubs(); } catch { } m.classList.remove('hidden'); m.querySelector('.card').scrollTop = 0; }
+function closePanel() { $('mpanel').classList.add('hidden'); if (state === 'maps') hubSubs(); else loginTiles(); }
 $('hubTiles').addEventListener('click', e => { const b = e.target.closest('.hubtile[data-p]'); if (b) openPanel(b.dataset.p); });
 $('mpClose').onclick = closePanel;
 $('mpanel').addEventListener('click', e => { if (e.target === $('mpanel')) closePanel(); });
@@ -4781,7 +4793,7 @@ $('jobs').addEventListener('click', e => { const t = e.target.closest('[data-j]'
 $('skins').addEventListener('click', e => { const t = e.target.closest('[data-s]'); if (t) { pickSkin = +t.dataset.s; renderJobs(); } });
 function loadSavedDog(id) {
   const hsave = store.get('k9hand:' + id, null) || store.get('k9hand:last', null); if (hsave) { pickJob = hsave.job; pickSkin = hsave.skin; } renderJobs(); const d = store.get('k9dog:' + id, null) || store.get('k9dog:last', null); if (d) { $('dname').value = d.name; pickBreed = d.breed; } renderBreeds(); }
-function showCharBox(open) { $('charBox').classList.toggle('hidden', !open); $('charSum').classList.toggle('hidden', open); }
+function showCharBox(open, quiet) { $('charBox').classList.remove('hidden'); $('charSum').classList.add('hidden'); if (open && !quiet && state === 'login') openPanel('char'); loginTiles(); }
 function restoreLogin() {
   const id = store.get('k9id', ''); $('pid').value = id; $('remember').checked = true;
   $('idList').innerHTML = store.get('k9ids', id ? [id] : []).map(x => '<option value="' + esc(x) + '">').join('');
@@ -4789,9 +4801,28 @@ function restoreLogin() {
   if (store.get('k9pcons', false)) { $('pread').checked = true; $('pcons').checked = true; $('age14').checked = true; $('pread').disabled = $('pcons').disabled = $('age14').disabled = false; $('pvHint').style.display = 'none'; }
   loadSavedDog(id); $('nick').value = store.get('k9nick:' + id, '') || '';
   const known = id && store.get('k9dog:' + id, null);
-  if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || (id.includes('@') ? '' : id)) + ' ' + t('hd_word') + ' · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true);
+  if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || (id.includes('@') ? '' : id)) + ' ' + t('hd_word') + ' · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true, true);
 }
 $('btnCharEdit').onclick = () => showCharBox(true);
+// 로그인 화면: 캐릭터·동의·랭킹·소개를 타일로 접어 두고 누르면 창으로 연다 (가로 휴대폰에서 스크롤 없이 바로 접속)
+{ const L = $('login').querySelector('.card'), sec = (p, nodes) => { const d = document.createElement('div'); d.className = 'mpsec'; d.dataset.p = p; nodes.forEach(n => n && d.appendChild(n)); $('mpanel').querySelector('.card').appendChild(d); return d; };
+  sec('char', [$('charBox')]).insertAdjacentHTML('beforeend', '<div class="row"><button type="button" class="big" data-close>✅ 다 골랐어요</button></div>');
+  sec('pv', [$('pread').closest('.notice'), L.querySelector('.agreebox')]).insertAdjacentHTML('beforeend', '<div class="row"><button type="button" class="big" data-close>✅ 확인</button></div>');
+  sec('lrank', [$('topTxt').closest('h2'), $('rankMini')]);
+  sec('info', [$('lsIntro'), $('lsAd'), $('lsNote'), $('btnDelMe').parentElement]);
+  $('loginTiles').addEventListener('click', e => { const b = e.target.closest('[data-p]'); if (b) openPanel(b.dataset.p); });
+  $('mpanel').addEventListener('click', e => { if (e.target.closest('[data-close]')) closePanel(); });
+  $('mpanel').addEventListener('change', loginTiles);
+  $('btnRankAll').addEventListener('click', closePanel);
+}
+function loginTiles() {
+  const dn = $('dname').value.trim(), nk = $('nick').value.trim(), n = ['pread', 'pcons', 'age14', 'agree'].filter(id => $(id).checked).length;
+  $('ltChar').textContent = dn ? (nk ? nk + ' · ' : '') + '🐕 ' + dn : '눌러서 만들기';
+  $('ltPv').textContent = n === 4 ? '✅ 모두 동의함' : '눌러서 체크 (' + n + '/4)';
+  $('loginTiles').querySelector('[data-p="char"]').classList.toggle('need', !dn);
+  $('loginTiles').querySelector('[data-p="pv"]').classList.toggle('need', n < 4);
+}
+loginTiles();
 loadSavedDog(store.get('k9id', ''));
 $('pid').addEventListener('change', () => { const id = $('pid').value.trim(), d = store.get('k9dog:' + id, null); if (d) { $('dname').value = d.name; pickBreed = d.breed; renderBreeds(); } $('nick').value = store.get('k9nick:' + id, '') || ''; });
 const rpc = (name, body) => fetch(RANK_CFG.url + '/rest/v1/rpc/' + name, { method: 'POST', headers: sbHeaders(), body: JSON.stringify(body) });
@@ -4856,7 +4887,13 @@ const badWord = v => { const n = String(v || '').toLowerCase().replace(/[\s0-9_.
 { const upd = () => { const ok = $('agree').checked, okAcc = ok && $('pread').checked && $('pcons').checked && $('age14').checked; $('btnLogin').style.opacity = okAcc ? '' : '.45'; $('btnGuest').style.opacity = ok ? '' : '.45'; $('btnLogin').title = okAcc ? '' : '필수 항목 4곳에 체크해야 접속할 수 있어요'; };
   for (const id of ['agree', 'pread', 'pcons', 'age14']) $(id).addEventListener('change', upd); setTimeout(upd, 50); setInterval(upd, 1500); }
 // 시작 화면: 누르면 로그인 화면으로 (휴대폰은 전체 화면·가로 고정 시도 — 아이폰은 고정 불가라 회전 안내로 대신)
-{ const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), standalone = navigator.standalone || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches; if (ios && !standalone) $('iosTip').style.display = 'block'; }
+{ const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), standalone = navigator.standalone || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches; if (ios && !standalone) {
+    // 아이폰은 사파리·크롬 모두 웹사이트가 주소창을 숨길 수 없다 → 홈 화면 아이콘(웹 앱)으로 열어야 전체 화면
+    const tip = $('iosTip'), ua = navigator.userAgent, chrome = /CriOS/.test(ua), other = /FxiOS|EdgiOS|NAVER|Whale/.test(ua);
+    tip.style.display = 'block'; tip.style.cursor = 'pointer';
+    tip.innerHTML = '📲 <b>주소창 없이 꽉 찬 화면</b>으로 하려면: ' + (other ? '<b>Safari</b>로 열고 → <b>공유(⬆)</b>' : chrome ? '주소창 오른쪽 <b>공유(⬆)</b>' : '사파리 <b>공유(⬆)</b> (안 보이면 주소창 옆 <b>⋯</b>)') + ' → <b>홈 화면에 추가</b> → 홈 화면의 <b>탐지견 킁킁</b> 아이콘으로 실행! <u>자세히</u>';
+    tip.onclick = () => alert('📲 아이폰에서 주소창·버튼 없이 게임하는 방법\n\n아이폰은 사파리·크롬 모두 웹사이트가 주소창을 숨길 수 없게 막혀 있어요. 대신 홈 화면 아이콘으로 열면 앱처럼 꽉 찬 화면이 돼요.\n\n1. ' + (chrome ? '주소창 오른쪽 공유(⬆) 버튼' : '공유(⬆) 버튼 — 안 보이면 주소창 옆 ⋯ → 공유') + '\n2. 아래로 내려 [홈 화면에 추가]\n3. [웹 앱으로 열기]가 보이면 켜 두고 [추가]\n4. 홈 화면에 생긴 🐕 탐지견 킁킁 아이콘을 눌러 실행\n\n한 번만 해 두면 다음부터는 아이콘만 누르면 돼요!');
+  } }
 $('btnStart').disabled = false; $('btnStart').textContent = '▶ 게임 시작';
 $('btnStart').onclick = async () => {
   keepAwake();
@@ -4911,9 +4948,9 @@ async function login() {
   const isMail = EMAIL_RE.test(v);
   if (!guest && !isMail && !/^[가-힣A-Za-z0-9_]{2,12}$/.test(v)) return loginErr(t('err_email'));
   if (!guest && !$('pread').checked) { window.__openPv && window.__openPv(); return loginErr('📖 먼저 [자세히 보기]를 눌러 개인정보 안내를 끝까지 읽어 주세요.'); }
-  if (!guest && (!$('pcons').checked || !$('age14').checked)) return loginErr(t('err_consent'));
+  if (!guest && (!$('pcons').checked || !$('age14').checked)) { openPanel('pv'); return loginErr(t('err_consent')); }
   if (!guest && pw.length < 4) return loginErr(t('err_pw'));
-  if (!$('agree').checked) return loginErr(t('err_agree'));
+  if (!$('agree').checked) { openPanel('pv'); return loginErr(t('err_agree')); }
   const dn = $('dname').value.trim(), nk = $('nick').value.trim() || v;
   if (!/^[가-힣A-Za-z0-9 ]{1,8}$/.test(dn)) { showCharBox(true); return loginErr(t('err_dog')); }
   if (badWord(dn) || badWord(nk)) { showCharBox(true); return loginErr('🙅 이름에 쓰면 안 되는 말이 있어요. 친구들이 보기 좋은 이름으로 바꿔 주세요.'); }
@@ -5836,10 +5873,10 @@ loop();
 setMusic(musicOn);
 showLogin();
 const I18N_EL = [
-  [() => $('login').querySelector('.sub'), 'ls_sub'], [() => $('login').querySelector('h1'), 'ls_h1'], [() => $('login').querySelector('p'), 'ls_p'],
+  [() => $('login').querySelector('.sub'), 'ls_sub'], [() => $('login').querySelector('h1'), 'ls_h1'], [() => $('lsIntro'), 'ls_p'],
   [() => $('lbId'), 'ls_id'], [() => $('lbRemember'), 'ls_remember'], [() => $('pvTitle'), 'pv_title'], [() => $('pvMore'), 'pv_more'], [() => $('pvBody'), 'pv_body'], [() => $('pvC1'), 'pv_c1'], [() => $('pvC2'), 'pv_c2'], [() => $('lbNick'), 'ls_nick'], [() => $('btnCharEdit'), 'ls_edit'], [() => $('btnGuest'), 'b_guest'], [() => $('btnDelMe'), 'b_delme'], [() => $('btnRankAll'), 'b_rankall'], [() => $('btnResumeTop'), 'b_resume'], [() => document.querySelector('label[for=ppw]'), 'ls_pw'], [() => document.querySelector('label[for=dname]'), 'ls_dog'],
   [() => $('breeds').previousElementSibling, 'ls_breed'], [() => $('jobs').previousElementSibling, 'ls_hand'], [() => $('btnLogin'), 'ls_login'], [() => $('topTxt'), 'ls_top'],
-  [() => { const n = $('login').querySelectorAll('.notice'); return n[n.length - 2]; }, 'ls_ad'], [() => { const n = $('login').querySelectorAll('.notice'); return n[n.length - 1]; }, 'ls_note'],
+  [() => $('lsAd'), 'ls_ad'], [() => $('lsNote'), 'ls_note'],
   [() => $('agreeTxt'), 'agree'], [() => $('ageTxt'), 'age'],
   [() => $('maps').querySelector('h1'), 'mp_h1'], [() => $('mapsIntro'), 'mp_p'], [() => $('btnRankOpen'), 'b_rank'], [() => $('btnLogout'), 'b_logout'], [() => $('btnResume'), 'b_resume'], [() => $('btnRestartMap'), 'b_restart'],
   [() => $('howto').querySelector('.sub'), 'ht_sub'], [() => $('howto').querySelector('h1'), 'ht_h1'], [() => $('howto').querySelectorAll('p')[0], 'ht_p'], [() => $('howto').querySelectorAll('p')[1], 'ht_rules'], [() => $('btnHowtoOk'), 'ht_ok'],
