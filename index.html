@@ -747,7 +747,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-1754';
+const BUILD = '20261101-1828';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -7663,7 +7663,7 @@ renderer.domElement.addEventListener('webglcontextlost', e => { e.preventDefault
 { let lastErr = 0; const showErr = msg => { if (performance.now() - lastErr < 8000) return; lastErr = performance.now(); let el = document.getElementById('errBar'); if (!el) { el = document.createElement('div'); el.id = 'errBar'; el.style.cssText = 'position:fixed;left:50%;bottom:calc(52px + var(--sb));transform:translateX(-50%);z-index:250;background:rgba(160,30,30,.92);color:#fff;font-size:12px;padding:4px 10px;border-radius:8px;max-width:80vw;pointer-events:none'; document.body.appendChild(el); } el.textContent = '⚠ 오류: ' + String(msg).slice(0, 120); el.style.display = 'block'; clearTimeout(showErr.t); showErr.t = setTimeout(() => el.style.display = 'none', 7000); };
   addEventListener('error', e => showErr((e.message || 'error') + ' @' + (e.lineno || ''))); addEventListener('unhandledrejection', e => { const m = e.reason && (e.reason.message || e.reason); if (m && !/fetch|network|Load failed|abort/i.test(String(m))) showErr(m); }); }
 // 랭킹에 내 닉네임·탐지견 이름이 늘 최신으로 보이게 서버에 다시 알림
-function syncProfile() { try { if (serverOn() && playerPw && playerId && !String(playerId).startsWith('guest_') && /^[가-힣A-Za-z0-9 ]{1,8}$/.test(dogName) && /^[가-힣A-Za-z0-9_ ]{1,10}$/.test(playerNick || '')) rpc('set_profile', { p_id: playerId, p_pw: playerPw, p_nick: playerNick, p_dog: dogName, p_consent: true }).catch(() => { }); } catch { } }
+function syncProfile() { try { if (serverOn() && playerPw && playerId && !String(playerId).startsWith('guest_') && /^[가-힣A-Za-z0-9 ]{1,8}$/.test(dogName) && /^[가-힣A-Za-z0-9_ ]{1,10}$/.test(playerNick || '')) rpc('set_profile', { p_id: playerId, p_pw: playerPw, p_nick: playerNick, p_dog: dogName, p_consent: true }).catch(() => { }); if (serverOn() && playerPw && playerId && myCountry && !String(playerId).startsWith('guest_')) rpc('set_country', { p_id: playerId, p_pw: playerPw, p_cc: myCountry }).catch(() => { }); } catch { } }
 const EMAIL_RE = /^[a-z0-9._%+-]{1,40}@[a-z0-9.-]{1,40}\.[a-z]{2,10}$/;
 async function login() {
   const v = $('pid').value.trim().toLowerCase(), pw = $('ppw').value, guest = login.guest; login.guest = false;
