@@ -14,20 +14,21 @@
     if (kakao) location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
     else if (line) location.href = url + (url.indexOf('?') < 0 ? '?' : '&') + 'openExternalBrowser=1';
     else if (android) location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+    else if (ios) location.href = 'x-safari-' + url.replace(/^http:/, 'https:'); // 아이폰(iOS 17+): 앱 안에서 사파리를 바로 연다
   }
   window.__openExternal = go;
-  try { if (sessionStorage.getItem('k9ext') !== '1') { sessionStorage.setItem('k9ext', '1'); go(); } } catch (e) { go(); }
+  if (!ios || kakao) try { if (sessionStorage.getItem('k9ext') !== '1') { sessionStorage.setItem('k9ext', '1'); go(); } } catch (e) { go(); }
   // 넘어가지 않았을 때(아이폰 인스타 등) 안내 창
   addEventListener('DOMContentLoaded', function () {
     var d = document.createElement('div');
     d.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(8,18,28,.93);color:#fff;display:flex;align-items:center;justify-content:center;padding:16px;font-family:sans-serif;text-align:center';
     d.innerHTML = '<div style="max-width:440px"><div style="font-size:40px">🐕</div><b style="font-size:19px">크게 플레이하려면 크롬·사파리로 열어 주세요</b>' +
-      '<p style="font-size:14px;line-height:1.6;margin:10px 0 14px;opacity:.9">지금은 앱 안 브라우저라 위아래 막대 때문에 게임 화면이 작아요.' + (ios && !kakao ? '<br>오른쪽 아래(또는 위) <b>⋯ / 공유 → Safari로 열기</b>를 눌러 주세요.' : '') + '</p>' +
+      '<p style="font-size:14px;line-height:1.6;margin:10px 0 14px;opacity:.9">지금은 앱 안 브라우저라 위아래 막대 때문에 게임 화면이 작아요.' + (ios && !kakao ? '<br>버튼이 안 되면 화면 <b>오른쪽 위 ⋯</b> 를 누르고<br><b>외부 브라우저에서 열기</b>를 눌러 주세요.' : '') + '</p>' +
       '<button id="xOpen" style="font-size:17px;font-weight:700;padding:12px 22px;border-radius:12px;border:0;background:#ffd54f;color:#13335a;margin:4px">🌐 브라우저로 열기</button>' +
       '<button id="xCopy" style="font-size:15px;padding:12px 16px;border-radius:12px;border:0;background:#fff;color:#13335a;margin:4px">🔗 주소 복사</button><br>' +
       '<button id="xStay" style="font-size:13px;padding:8px 12px;border:0;background:none;color:#cfd8e3;text-decoration:underline;margin-top:8px">그냥 여기서 할게요 (세로로 든 채 플레이)</button></div>';
     document.body.appendChild(d);
-    d.querySelector('#xOpen').onclick = go;
+    d.querySelector('#xOpen').onclick = function () { go(); var p = d.querySelector('p'); setTimeout(function () { if (document.visibilityState === 'visible') { p.style.cssText += ';background:#ffd54f;color:#13335a;border-radius:12px;padding:10px'; p.innerHTML = '👉 화면 <b>오른쪽 위 ⋯</b> 를 누르고 <b>외부 브라우저에서 열기</b>를 눌러 주세요.<br>또는 아래 <b>그냥 여기서 할게요</b>를 누르면 세로로 든 채 할 수 있어요.'; } }, 1500); };
     d.querySelector('#xCopy').onclick = function () { var u = url.split('#')[0]; (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { this.textContent = '✅ 복사됨! 크롬·사파리 주소창에 붙여넣기'; }.bind(this), function () { prompt('이 주소를 복사해 크롬·사파리에 붙여넣으세요', u); }); };
     d.querySelector('#xStay').onclick = function () { d.remove(); };
   });
@@ -741,7 +742,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-1729';
+const BUILD = '20261101-1734';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1018,7 +1019,17 @@ Object.assign(KO, {"err_email":"아이디는 이메일 주소로 입력해 주�
 
 for (const [k, v] of Object.entries({"en":["✅ I agree to the game guide · Be kind to friends, keep your password secret! (No personal data is collected)","🎮 Rating: All ages (recommended 7+ · self-rated)","Please tick the agreement box first."],"zh":["✅ 我同意游戏使用说明 · 友善对待朋友，密码要保密！（本游戏不收集个人信息）","🎮 分级：全年龄（建议7岁以上 · 自定）","请先勾选同意。"],"hi":["✅ मैं खेल नियमों से सहमत हूँ · दोस्तों से अच्छा व्यवहार, पासवर्ड गुप्त रखें! (कोई निजी जानकारी नहीं ली जाती)","🎮 रेटिंग: सभी उम्र (7+ सुझाया · स्व-निर्धारित)","पहले सहमति बॉक्स पर टिक करें।"],"ar":["✅ أوافق على دليل اللعبة · كن لطيفًا مع أصدقائك واحفظ كلمة المرور سرًا! (لا نجمع أي بيانات شخصية)","🎮 التصنيف: لجميع الأعمار (يُنصح من 7 سنوات · تصنيف ذاتي)","يرجى تحديد مربع الموافقة أولًا."],"vi":["✅ Tôi đồng ý hướng dẫn trò chơi · Thân thiện với bạn bè, giữ bí mật mật khẩu! (Không thu thập thông tin cá nhân)","🎮 Phân loại: Mọi lứa tuổi (khuyến nghị từ 7 tuổi · tự đánh giá)","Hãy đánh dấu ô đồng ý trước."],"ja":["✅ ゲームの案内に同意します · 友達にやさしく、パスワードはひみつ！（個人情報は集めません）","🎮 対象年齢：全年齢（推奨7歳以上 · 自主基準）","まず同意にチェックしてね。"],"ru":["✅ Я согласен с правилами игры · Будь добр к друзьям, храни пароль в секрете! (Личные данные не собираются)","🎮 Возраст: для всех (рекомендуется 7+ · самооценка)","Сначала отметь согласие."]})) Object.assign(DICT[k], { agree: v[0], age: v[1], err_agree: v[2] });
 KO.err_agree = '먼저 이용 안내 동의에 체크해 주세요.';
-let lang = (() => { try { return localStorage.getItem('k9lang') || 'ko'; } catch { return 'ko'; } })();
+const autoLang = () => {
+  const has = c => LANGS.some(L => L[0] === c);
+  for (const l of navigator.languages || [navigator.language || '']) { const c = String(l).slice(0, 2).toLowerCase(); if (has(c)) return c; }
+  const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '');
+  const byTz = [[/Seoul|Pyongyang/, 'ko'], [/Tokyo/, 'ja'], [/Shanghai|Chongqing|Harbin|Urumqi|Hong_Kong|Macau|Taipei/, 'zh'], [/Ho_Chi_Minh|Saigon|Hanoi/, 'vi'],
+    [/Moscow|Volgograd|Samara|Yekaterinburg|Omsk|Novosibirsk|Krasnoyarsk|Irkutsk|Yakutsk|Vladivostok|Magadan|Kamchatka|Minsk|Almaty/, 'ru'], [/Kolkata|Calcutta/, 'hi'],
+    [/Riyadh|Dubai|Qatar|Kuwait|Bahrain|Baghdad|Cairo|Amman|Beirut|Damascus|Muscat|Aden|Algiers|Tunis|Tripoli|Casablanca|Khartoum/, 'ar']];
+  for (const [re, c] of byTz) if (re.test(tz) && has(c)) return c;
+  return 'en';
+};
+let lang = (() => { try { return localStorage.getItem('k9lang') || autoLang(); } catch { return autoLang(); } })();
 let CR = {};
 function t(key) {
   if (CR[key]) return lang === 'ko' ? CR[key][0] : CR[key][1];
