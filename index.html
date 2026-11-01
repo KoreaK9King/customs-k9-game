@@ -711,7 +711,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-1136';
+const BUILD = '20261101-1454';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1020,7 +1020,7 @@ const mapName = i => t('m' + i);
 // ================= 렌더러 =================
 const isMobile = matchMedia('(pointer: coarse)').matches;
 let lowGfx = store.get('k9low', false) === true;
-const gfxPR = (mega = false) => lowGfx ? (isMobile ? .7 : 1) : Math.min(devicePixelRatio, isMobile ? 1 : (mega ? 1.25 : 2));
+const gfxPR = (mega = false) => lowGfx ? 1 : Math.min(devicePixelRatio, isMobile ? (mega ? 1.25 : 1.5) : (mega ? 1.25 : 2));
 if (isMobile) document.body.classList.add('touch');
 const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, powerPreference: 'high-performance' });
 renderer.setPixelRatio(gfxPR());
@@ -1147,7 +1147,7 @@ function textSprite(text0, opts0 = {}) {
   g.fillStyle = color; g.textAlign = 'center'; g.textBaseline = 'middle';
   if (!bg) { g.lineWidth = 8; g.strokeStyle = 'rgba(0,0,0,.65)'; g.strokeText(text, cv.width / 2, cv.height / 2 + 2); }
   g.fillText(text, cv.width / 2, cv.height / 2 + 2);
-  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, toneMapped: false }));
   const k = isMobile ? (innerWidth > innerHeight ? .6 : .78) : 1;
   s.renderOrder = 10; s.scale.set(h * k * cv.width / cv.height, h * k, 1); if (/[가-힣]/.test(text0)) s.userData.ko = [String(text0), opts0]; return s;
@@ -7970,6 +7970,8 @@ cvs.addEventListener('pointerdown', e => {
 cvs.addEventListener('pointermove', e => {
   const p = ptrs.get(e.pointerId); if (!p) return;
   if (ptrs.size >= 2 && pinch) { p.x = e.clientX; p.y = e.clientY; const [a, b] = [...ptrs.values()]; camDist = clamp(pinch.cam * pinch.d / Math.max(20, Math.hypot(a.x - b.x, a.y - b.y)), 3.5, 42); return; }
+  // 휴대폰 터치로는 시점이 돌지 않는다 (3인칭 시점 고정, 두 손가락 확대만 허용). 마우스 끌기는 그대로
+  if (e.pointerType !== 'mouse') return;
   yaw -= (e.clientX - p.x) * .006; pitch = clamp(pitch + (e.clientY - p.y) * .004, .12, 1.2); p.x = e.clientX; p.y = e.clientY;
 });
 const ptrEnd = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; };
