@@ -756,7 +756,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-2128';
+const BUILD = '20261101-2218';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1056,6 +1056,7 @@ const flagOf = cc => /^[A-Z]{2}$/.test(cc || '') ? String.fromCodePoint(...[...c
 let lang = (() => { try { return localStorage.getItem('k9lang') || autoLang(); } catch { return autoLang(); } })();
 let CR = {};
 function t(key) {
+  if (typeof key !== 'string') return ''; // 글자 키가 비어 들어와도 게임이 멈추지 않게
   if (CR[key]) return lang === 'ko' ? CR[key][0] : CR[key][1];
   const D = DICT[lang]; let m;
   if (D) {
