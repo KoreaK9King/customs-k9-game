@@ -548,7 +548,8 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
     for (const sh of document.styleSheets) { try { walk(sh.cssRules); } catch { } }
     for (const el of document.querySelectorAll('[style*="vh"],[style*="vw"]')) el.style.cssText = el.style.cssText.replace(/(\dd?v)([hw])\b/g, (m, a, b) => a + (b === 'h' ? 'w' : 'h')); } };
   const fit = () => {
-    const should = want && coarse.matches && !typing && innerHeight > innerWidth;
+    if (typing && on) return; // 입력 중엔 키보드 때문에 높이가 줄어도 크기를 그대로 둔다 (가로 화면 유지)
+    const should = want && coarse.matches && innerHeight > innerWidth;
     if (should !== on) { on = should; H.classList.toggle('rot', on); swapMedia(); }
     const b = document.body.style;
     if (on) { b.width = innerHeight + 'px'; b.height = innerWidth + 'px'; b.transform = 'translateX(' + innerWidth + 'px) rotate(90deg)'; }
@@ -558,10 +559,10 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
   window.__rot = { get on() { return on; }, set(v) { want = v; fit(); } };
   addEventListener('resize', () => setTimeout(fit, 60));
   addEventListener('orientationchange', () => setTimeout(fit, 300));
-  // 글자 입력(아이디·닉네임 등) 중에는 세로 키보드가 올라오며 돌린 화면이 찌그러진다 → 입력하는 동안만 원래 세로 화면으로 보여 준다
+  // 글자 입력(아이디·닉네임 등) 중에는 키보드가 올라와 화면 높이가 줄어도 돌린 가로 화면 크기를 그대로 둔다
   const isField = el => el && el.matches && el.matches('input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=button]),textarea,[contenteditable]');
-  document.addEventListener('focusin', e => { if (!want || !isField(e.target) || typing) return; typing = true; H.classList.add('typing'); const el = e.target; fit(); setTimeout(() => { try { el.scrollIntoView({ block: 'center' }); } catch { } }, 350); });
-  document.addEventListener('focusout', () => setTimeout(() => { if (!typing || isField(document.activeElement)) return; typing = false; H.classList.remove('typing'); setTimeout(fit, 250); }, 80));
+  document.addEventListener('focusin', e => { if (!want || !isField(e.target) || typing) return; typing = true; });
+  document.addEventListener('focusout', () => setTimeout(() => { if (!typing || isField(document.activeElement)) return; typing = false; scrollTo(0, 0); setTimeout(fit, 250); }, 80));
   addEventListener('DOMContentLoaded', () => { fit(); });
 })();
 </script>
@@ -751,7 +752,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-2035';
+const BUILD = '20261101-2041';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -7471,7 +7472,7 @@ function restoreLogin() {
   if (store.get('k9pcons', false)) { $('pread').checked = true; $('pcons').checked = true; $('age14').checked = true; $('pread').disabled = $('pcons').disabled = $('age14').disabled = false; $('pvHint').style.display = 'none'; }
   loadSavedDog(id); $('nick').value = store.get('k9nick:' + id, '') || store.get('k9nick:last', '') || $('nick').value || '';
   const known = id && store.get('k9dog:' + id, null);
-  if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || (id.includes('@') ? '' : id)) + ' ' + t('hd_word') + ' · 🐕 ' + $('dname').value; showCharBox(false); setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true, true);
+  if (known) { $('charSumTxt').textContent = '🧑‍✈️ ' + ($('nick').value || (id.includes('@') ? '' : id)) + ' ' + t('hd_word') + ' · 🐕 ' + $('dname').value; showCharBox(false); if (!(window.__rot && __rot.on)) setTimeout(() => $('ppw').focus(), 50); } else showCharBox(true, true);
 }
 $('btnCharEdit').onclick = () => showCharBox(true);
 // 로그인 화면: 캐릭터·동의·랭킹·소개를 타일로 접어 두고 누르면 창으로 연다 (가로 휴대폰에서 스크롤 없이 바로 접속)
