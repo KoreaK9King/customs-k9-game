@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>개인정보처리방침 · 탐지견 킁킁</title>
+<style>
+  :root { --ink: #1d2733; --muted: #5b6878; --line: #dfe5ec; --navy: #173a5e; --bg: #f7f9fb; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.75 "Noto Sans KR", system-ui, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { color: var(--navy); font-size: 26px; margin: 0 0 4px; }
+  h2 { color: var(--navy); font-size: 19px; margin: 34px 0 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .meta { color: var(--muted); font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; background: #fff; }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #eef3f8; }
+  .box { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+  .todo { background: #fff4c2; padding: 0 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main>
+<h1>🐕 탐지견 킁킁 개인정보처리방침</h1>
+<p class="meta">시행일: 2026년 11월 1일 · 적용 대상: 탐지견 킁킁 웹게임(https://koreak9king.github.io/customs-k9-game/)과 안드로이드 앱</p>
+
+<div class="box">
+  <b>한눈에 보기</b><br>
+  · <b>게스트로 시작</b>하면 서버에 계정·기록을 저장하지 않아요. (팀 방에 들어갈 때만 닉네임이 친구 화면에 실시간으로 전달돼요)<br>
+  · 아이디를 만들면 <b>이메일(아이디)·비밀번호·닉네임·탐지견 이름·게임 기록</b>만 저장해요.<br>
+  · 광고, 광고 ID, 위치 정보, 카메라·마이크, 연락처는 <b>쓰지 않아요</b>.<br>
+  · 게임 안의 <b>🗑 내 정보 삭제</b> 버튼으로 언제든 모두 지울 수 있어요.
+</div>
+
+<h2>1. 수집하는 정보와 쓰는 곳</h2>
+<table>
+  <tr><th>언제</th><th>무엇을</th><th>왜</th></tr>
+  <tr><td>아이디를 만들 때 (선택)</td><td>이메일 주소(아이디), 비밀번호, 핸들러 닉네임, 탐지견 이름, 동의한 시각, 가입 시각</td><td>로그인, 다른 기기에서 기록 이어 하기, 랭킹 표시</td></tr>
+  <tr><td>로그인한 상태로 플레이할 때</td><td>점수, 도달한 단계, 클리어 시간, 칭호, 게임 진행 저장(열린 맵, 간식·코인, 업그레이드, 업적, 가방, 캐릭터 설정, 언어)</td><td>기록 저장, 랭킹, 부정 기록 방지</td></tr>
+  <tr><td>로그인을 틀렸을 때</td><td>틀린 횟수, 잠금 시각</td><td>비밀번호 무차별 대입 막기 (5번 틀리면 5분 잠금)</td></tr>
+  <tr><td>팀 방에서 함께 놀 때</td><td>닉네임, 방 번호, 게임 속 캐릭터 위치·행동</td><td>친구 화면에 내 탐지견을 보여 주기 (실시간 전달만 하고 서버에 저장하지 않음)</td></tr>
+</table>
+<p>· 비밀번호는 <b>되돌릴 수 없는 방식(bcrypt 해시)</b>으로 바꿔 저장하므로 운영자도 원래 비밀번호를 볼 수 없어요.<br>
+· 랭킹에는 <b>닉네임·탐지견 이름·점수·시간·칭호</b>만 공개되고, 이메일(아이디)은 공개되지 않아요.<br>
+· 닉네임에 실제 이름이나 연락처를 쓰지 마세요.</p>
+
+<h2>2. 기기 안에만 저장하는 정보</h2>
+<p>게임 설정, 진행 기록, 언어, (선택한 경우) '아이디 기억하기'의 이메일은 휴대폰·PC 브라우저 저장소(localStorage)에만 저장돼요. 앱을 지우거나 브라우저 데이터를 지우면 함께 지워져요.</p>
+
+<h2>3. 외부 서비스</h2>
+<table>
+  <tr><th>서비스</th><th>하는 일</th><th>보내는 정보</th></tr>
+  <tr><td>Supabase (서버 위치: 대한민국 서울 리전)</td><td>계정·기록·랭킹 저장, 팀 방 실시간 연결</td><td>위 1번의 정보</td></tr>
+  <tr><td>Open-Meteo</td><td>맵 명소의 실제 날씨 보여 주기</td><td>맵 명소의 고정 좌표만 보냄 (내 위치는 보내지 않음)</td></tr>
+  <tr><td>jsDelivr, Google Fonts</td><td>게임 프로그램·글꼴 내려받기</td><td>일반 웹 접속 정보(IP 주소 등, 각 회사 정책에 따름)</td></tr>
+</table>
+<p>위 서비스는 게임을 운영하기 위한 처리 위탁이며, 개인정보를 팔거나 광고·마케팅 목적으로 다른 곳에 제공하지 않아요.</p>
+
+<h2>4. 보관 기간</h2>
+<p>직접 삭제할 때까지 보관해요. 운영을 끝내면 서버의 모든 정보를 지체 없이 지워요.</p>
+
+<h2 id="delete">5. 내 정보 삭제하기 (계정 삭제)</h2>
+<div class="box">
+  <b>방법 1 · 게임 안에서 바로</b><br>
+  게임 첫 화면 → 로그인 화면에서 아이디(이메일)와 비밀번호를 넣고 <b>🗑 내 정보 삭제</b>를 누르세요.
+  계정, 랭킹, 플레이 기록, 저장된 진행 데이터가 서버에서 <b>즉시 모두</b> 지워져요.<br><br>
+  <b>방법 2 · 앱이 없어도 요청 가능</b><br>
+  <span class="todo">[연락 이메일]</span> 로 "탐지견 킁킁 계정 삭제 요청"이라는 제목과 아이디(이메일)를 보내 주세요.
+  본인 확인 후 7일 안에 모두 지우고 답장드려요.
+</div>
+
+<h2>6. 어린이의 개인정보</h2>
+<p>만 14세 미만 어린이가 아이디를 만들려면 보호자(법정대리인)가 함께 안내를 읽고 동의해야 해요. 아이디 없이 <b>게스트로도 플레이</b>할 수 있으니, 어린이는 게스트 플레이를 권장해요. 보호자는 위 5번 방법으로 언제든 자녀의 정보를 확인·삭제 요청할 수 있어요.</p>
+
+<h2>7. 안전하게 지키는 방법</h2>
+<p>모든 통신은 HTTPS로 암호화돼요. 서버 데이터는 행 단위 보안(RLS)으로 막혀 있어, 다른 사람은 내 아이디·비밀번호·저장 데이터를 읽을 수 없어요.</p>
+
+<h2>8. 문의</h2>
+<p>개인정보 보호 책임자: <span class="todo">[이름]</span> · 연락처: <span class="todo">[연락 이메일]</span><br>
+개인정보 침해 신고: 개인정보침해신고센터(국번 없이 118, privacy.kisa.or.kr)</p>
+
+<h2>9. 바뀌는 경우</h2>
+<p>이 방침이 바뀌면 시행 7일 전에 이 페이지와 게임 공지로 알려요.</p>
+<p class="meta">※ 탐지견 킁킁은 마약 예방 교육용 게임이며, 등장인물과 사건은 모두 가상입니다.</p>
+</main>
+</body>
+</html>

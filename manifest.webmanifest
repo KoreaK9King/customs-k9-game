@@ -1,6 +1,9 @@
 {
+  "id": "./",
   "name": "탐지견 킁킁 게임 · 관세청 K9",
   "short_name": "탐지견 킁킁",
+  "description": "탐지견이 되어 공항·항구·우편센터에서 숨은 마약과 밀수품을 찾는 어린이 마약예방 3D 게임",
+  "lang": "ko",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
@@ -8,16 +11,10 @@
   "background_color": "#173a5e",
   "theme_color": "#173a5e",
   "icons": [
-    {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-180.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" }
   ]
 }
