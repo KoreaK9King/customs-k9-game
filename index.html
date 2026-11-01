@@ -167,7 +167,7 @@ button.big:focus-visible,#topbar button:focus-visible,.mapcard:focus-visible{out
 .skin{width:34px;height:34px;border-radius:50%;border:3px solid #d6cdb8;cursor:pointer}.skin.on{border-color:var(--navy);transform:scale(1.12)}
 .langs{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:10px;direction:ltr}
 .langbtn{border:2px solid #d6cdb8;border-radius:8px;background:#fff;padding:3px 7px;display:flex;gap:5px;align-items:center;font-size:12px;cursor:pointer;color:var(--ink);font-family:inherit}
-.langbtn.on{border-color:var(--navy);background:#eaf2fb;box-shadow:inset 0 0 0 1px var(--navy)}.langbtn svg{width:22px;height:15px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.langbtn.on{border-color:var(--navy);background:#eaf2fb;box-shadow:inset 0 0 0 1px var(--navy)}.langbtn{padding:3px 5px}.langbtn svg{width:28px;height:19px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
 .agreebox{margin-top:12px;background:#eef6ea;border-radius:10px;padding:10px;font-size:13.5px;line-height:1.5}.agreebox input{width:20px;height:20px;vertical-align:middle}#ageTxt{margin-top:6px;font-weight:700;color:#2e7d32}
 #pid,#ppw,#dname,#nick,input#nick{font-size:20px;padding:10px 14px;border-radius:12px;border:2px solid #c9bfa8;width:100%;box-sizing:border-box;font-family:inherit;background:#fff;color:var(--ink)}
 #pidErr{color:#c0392b;font-size:13px;min-height:18px;margin-top:4px}
@@ -747,7 +747,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-1744';
+const BUILD = '20261101-1754';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1034,6 +1034,16 @@ const autoLang = () => {
   for (const [re, c] of byTz) if (re.test(tz) && has(c)) return c;
   return 'en';
 };
+// 랭킹에 보일 국적: 폰 지역 설정(ko-KR → KR) → 시간대 순으로 정한다
+const myCountry = (() => {
+  for (const l of navigator.languages || [navigator.language || '']) { const m = /^[a-z]{2,3}[-_](?:[A-Za-z]{4}[-_])?([A-Z]{2})/.exec(String(l)); if (m) return m[1]; }
+  const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '');
+  const T = { Seoul: 'KR', Pyongyang: 'KP', Tokyo: 'JP', Shanghai: 'CN', Chongqing: 'CN', Urumqi: 'CN', Hong_Kong: 'HK', Macau: 'MO', Taipei: 'TW', Ho_Chi_Minh: 'VN', Saigon: 'VN', Bangkok: 'TH', Manila: 'PH', Jakarta: 'ID', Singapore: 'SG', Kuala_Lumpur: 'MY', Kolkata: 'IN', Calcutta: 'IN', Ulaanbaatar: 'MN', Tashkent: 'UZ', Almaty: 'KZ',
+    Moscow: 'RU', Vladivostok: 'RU', Novosibirsk: 'RU', Yekaterinburg: 'RU', Riyadh: 'SA', Dubai: 'AE', Qatar: 'QA', Kuwait: 'KW', Cairo: 'EG', Istanbul: 'TR', London: 'GB', Paris: 'FR', Berlin: 'DE', Madrid: 'ES', Rome: 'IT',
+    New_York: 'US', Chicago: 'US', Denver: 'US', Los_Angeles: 'US', Phoenix: 'US', Anchorage: 'US', Honolulu: 'US', Toronto: 'CA', Vancouver: 'CA', Sydney: 'AU', Melbourne: 'AU', Auckland: 'NZ', Sao_Paulo: 'BR', Mexico_City: 'MX' };
+  return T[tz.split('/').pop()] || '';
+})();
+const flagOf = cc => /^[A-Z]{2}$/.test(cc || '') ? String.fromCodePoint(...[...cc].map(c => 0x1F1A5 + c.charCodeAt(0))) : '';
 let lang = (() => { try { return localStorage.getItem('k9lang') || autoLang(); } catch { return autoLang(); } })();
 let CR = {};
 function t(key) {
@@ -7267,14 +7277,14 @@ async function reportClear(stage, stageScore, score, reached, secs) {
 async function fetchRanking(max = 100) {
   if (serverOn()) {
     try {
-      const r = await fetch(RANK_CFG.url + '/rest/v1/rankings?select=nick,dog,score,stage,secs,title&order=score.desc,secs.asc&limit=' + max, { headers: sbHeaders() });
+      const r = await fetch(RANK_CFG.url + '/rest/v1/rankings?select=nick,dog,score,stage,secs,title,country&order=score.desc,secs.asc&limit=' + max, { headers: sbHeaders() });
       if (r.ok) return { list: await r.json(), online: true };
     } catch { }
   }
   return { list: store.get('k9rank', []).sort((a, b) => b.score - a.score || a.secs - b.secs), online: false };
 }
 function renderRanking(el, { list, online }, limit = 1e9) {
-  const rows = list.slice(0, limit).map((r, i) => `<tr class="${(r.player_id ? r.player_id === playerId : r.nick === playerNick && r.dog === dogName) ? 'me' : ''}"><td>${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${r.title ? `<small style="color:#b07a00">${esc(r.title)}</small> ` : ''}${r.nick ? '<span class="notr">' + esc(r.nick) + '</span>' : '핸들러'} ${r.dog ? '<small class="notr" style="color:#8a6d3b">🐕 ' + esc(r.dog) + '</small>' : ''}</td><td class="n">${r.stage}/6</td><td class="n">${fmtTime(r.secs)}</td><td class="n">${r.score}</td></tr>`).join('');
+  const rows = list.slice(0, limit).map((r, i) => `<tr class="${(r.player_id ? r.player_id === playerId : r.nick === playerNick && r.dog === dogName) ? 'me' : ''}"><td>${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${r.title ? `<small style="color:#b07a00">${esc(r.title)}</small> ` : ''}${(f => f ? `<span class="notr" title="${esc(r.country || myCountry)}">${f}</span> ` : '')(flagOf(r.country || ((r.player_id ? r.player_id === playerId : r.nick === playerNick && r.dog === dogName) ? myCountry : '')))}${r.nick ? '<span class="notr">' + esc(r.nick) + '</span>' : '핸들러'} ${r.dog ? '<small class="notr" style="color:#8a6d3b">🐕 ' + esc(r.dog) + '</small>' : ''}</td><td class="n">${r.stage}/6</td><td class="n">${fmtTime(r.secs)}</td><td class="n">${r.score}</td></tr>`).join('');
   el.innerHTML = list.length ? `<table class="rank"><tr>${t('rk_cols').split('|').map((h, i) => `<th${i > 1 ? ' class="n"' : ''}>${h}</th>`).join('')}</tr>${rows}</table>` : '<p style="font-size:14px;color:var(--muted)">아직 기록이 없어요. 첫 번째 주인공이 되어보세요!</p>';
   if (el.id === 'rankFull') $('rankSrv').textContent = online ? `🌐 온라인 랭킹 — 1위부터 전체 ${list.length}명` : '📱 이 기기에 저장된 기록만 표시 중 (온라인 랭킹 서버 미연결)';
 }
@@ -7678,6 +7688,7 @@ async function login() {
   const freshDevice = !guest && !store.get('k9dog:' + v, null);
   playerId = guest ? 'guest_' + nk : v; playerNick = nk; await checkVip(guest ? '' : v); store.set('k9nick:' + v, nk); if (!guest) store.set('k9nick:last', nk); setDog(pickBreed, dn); setHandlerLook(pickJob, pickSkin); store.set('k9hand:' + v, { job: pickJob, skin: pickSkin }); store.set('k9hand:last', { job: pickJob, skin: pickSkin }); loadAch(); loadWallet(); loadBag(); store.set('k9dog:' + v, { name: dn, breed: pickBreed }); store.set('k9dog:last', { name: dn, breed: pickBreed }); playerPw = res === 'offline' ? '' : pw; if (!guest) { store.set('k9id', $('remember').checked ? v : ''); if ($('remember').checked) store.set('k9ids', [v, ...store.get('k9ids', []).filter(x => x !== v)].slice(0, 5)); } store.set('k9agree', $('agree').checked); if (!guest) store.set('k9pcons', true); runScore = 0; runActive = false;
   if (serverOn() && playerPw) rpc('set_profile', { p_id: v, p_pw: pw, p_nick: nk, p_dog: dn, p_consent: true }).catch(() => { });
+  if (serverOn() && playerPw && myCountry) rpc('set_country', { p_id: v, p_pw: pw, p_cc: myCountry }).catch(() => { });
   if (serverOn() && playerPw) { const fresh = await cloudLoad(v, pw, freshDevice); if (fresh) { setTimeout(syncProfile, 500); const dd = store.get('k9dog:' + v, null), hh = store.get('k9hand:' + v, null); if (dd) setDog(dd.breed, dd.name); if (hh) setHandlerLook(hh.job, hh.skin); playerNick = store.get('k9nick:' + v, playerNick) || playerNick; setHandlerLabel(playerNick); applyLang(); toast('☁ 다른 기기에서 쓰던 탐지견과 기록을 불러왔어요'); } loadAch(); loadWallet(); loadBag(); cloudSave(); }
   if (guest) toast(t('ts_guest'));
   if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
@@ -8889,7 +8900,7 @@ function applyLang() {
 }
 trObs.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: TR_ATTR });
 function renderLangs() {
-  document.querySelectorAll('.langs').forEach(box => box.innerHTML = LANGS.map(([k, n, svg]) => `<button type="button" class="langbtn ${k === lang ? 'on' : ''}" data-lang="${k}" aria-label="${n}"><svg viewBox="0 0 30 20">${svg}</svg>${n}</button>`).join(''));
+  document.querySelectorAll('.langs').forEach(box => box.innerHTML = LANGS.map(([k, n, svg]) => `<button type="button" class="langbtn ${k === lang ? 'on' : ''}" data-lang="${k}" aria-label="${n}" title="${n}"><svg viewBox="0 0 30 20">${svg}</svg></button>`).join(''));
 }
 document.addEventListener('click', e => { const b = e.target.closest('.langbtn'); if (!b) return; lang = b.dataset.lang; try { localStorage.setItem('k9lang', lang); } catch { } applyLang(); });
 applyLang();
