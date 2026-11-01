@@ -747,7 +747,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-1828';
+const BUILD = '20261101-1838';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -7078,6 +7078,9 @@ function loadLevel(i) {
   const spreadPick = () => { let bi = pool.length - 1, bd = -1; for (let q = 0; q < Math.min(14, pool.length); q++) { const i = Math.floor(rnd() * pool.length), p = center(pool[i]), d = hidden.length ? Math.min(...hidden.map(h => { const o = center(h); return Math.hypot(o.x - p.x, o.z - p.z); })) : rnd(); if (d > bd) { bd = d; bi = i; } } return pool.splice(bi, 1)[0]; };
   for (const [type, n0] of Object.entries(def.hide)) for (let k = 0, n = Math.max((level.need[type] || 0) + 1, Math.ceil(n0 * (1 + (level.sz - 1) * .55))); k < n && pool.length; k++) { const c = spreadPick(); c.hidden = type; hidden.push(c); }
   if (!def.relax && level.swimSea && level.poly) seaDrugs();
+  // 어느 난이도든 클리어할 수 있게: 목표 개수가 맵에 실제로 있는 개수를 넘지 않게 한다 (통합 도시는 85%까지)
+  { const have = { boss: 0, smuggler: 0 }; for (const h of hidden) have[h.hidden] = (have[h.hidden] || 0) + 1; for (const p of people) if (p.kind === 'smuggler' || p.kind === 'boss') have[p.kind]++;
+    for (const k in level.need) { const cap = def.mega && k !== 'boss' ? Math.ceil((have[k] || 0) * .85) : (have[k] || 0); if (level.need[k] > cap) level.need[k] = Math.max(k === 'boss' ? 1 : 0, cap); } }
   // 초기화
   lvStats = { drug: 0, gun: 0, smuggler: 0, boss: 0 };
   Object.assign(dog, { x: spawn.x, z: spawn.z, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, barkCd: 0, tackleCd: 0, hp: Math.min(DIFFS[diffMode].hpMax, Math.max(DIFFS[diffMode].hp + Math.ceil((UPL().heart || 0) / 2), dog.hp || 0)), boost: 0, hurt: 0, fetch: null, idleT: 0, jumps: 0, prop: null, prevIdle: null });
