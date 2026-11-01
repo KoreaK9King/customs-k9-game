@@ -756,7 +756,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-2124';
+const BUILD = '20261101-2128';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -7824,11 +7824,11 @@ function useHelp0(kind) {
   const hpMax = Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7);
   // 하트가 꽉 찼을 때 누른 구급상자·하트 공은 방탄 보호막으로 바꿔 쓴다 (눌러도 아무 일 없던 문제)
   if ((kind === 'heal' || kind === 'ball') && dog.hp >= hpMax) {
-    bag[kind]--; renderBag(); saveBag(); SFX.found(); $('bagBox').classList.remove('open');
+    bag[kind]--; renderBag(); saveBag(); SFX.found();
     dog.shield = Math.min(2, (dog.shield || 0) + 1); floatText('🛡 하트 가득 → 보호막!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#9fd3ff' });
     toastNow('🛡 하트가 꽉 차서 방탄 보호막으로 바꿨어요! 공격 한 번을 막아 줘요'); return;
   }
-  bag[kind]--; renderBag(); saveBag(); SFX.found(); $('bagBox').classList.remove('open');
+  bag[kind]--; renderBag(); saveBag(); SFX.found();
   floatText(HELP_KINDS[kind].emoji + ' ' + HELP_KINDS[kind].name + ' 사용!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#ffe08a' }); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(HELP_KINDS[kind].col), WHITE], 25, 3);
   if (kind === 'ball') { dog.hp = Math.min(hpMax, dog.hp + 1); dog.boost = 6; floatText('🎾 ❤️ +1', dog.x, dog.y + 2, dog.z, { h: .55, color: '#ff8a80' }); toast('🎾 하트 공! 하트 +1, 잠깐 빨라져요'); return; }
   applyHelp(kind);
