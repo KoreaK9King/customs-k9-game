@@ -542,7 +542,12 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
   // 가로 전용 CSS(@media orientation:landscape, max-height…)를 세로 화면에서도 쓰이도록 바꾼다
   const swapMedia = () => { for (const sh of document.styleSheets) { let rules; try { rules = sh.cssRules; } catch { continue; } for (const r of rules) if (r.media && r.media.mediaText) {
     const t = r.media.mediaText, n = t.replace(/landscape|portrait|height|width/g, w => ({ landscape: 'portrait', portrait: 'landscape', height: 'width', width: 'height' })[w]);
-    if (n !== t) r.media.mediaText = n; } } };
+    if (n !== t) r.media.mediaText = n; }
+    // vh·vw 단위도 서로 바꾼다 (안 바꾸면 창 높이가 세로 화면 기준으로 커져서 아래쪽 버튼이 잘린다)
+    const walk = rs => { for (const r of rs) { if (r.cssRules) walk(r.cssRules); const st = r.style; if (!st) continue;
+      for (let k = st.length - 1; k >= 0; k--) { const p = st[k], v = st.getPropertyValue(p); if (!/\dd?v[hw]\b/.test(v)) continue; st.setProperty(p, v.replace(/(\dd?v)([hw])\b/g, (m, a, b) => a + (b === 'h' ? 'w' : 'h')), st.getPropertyPriority(p)); } } };
+    for (const sh of document.styleSheets) { try { walk(sh.cssRules); } catch { } }
+    for (const el of document.querySelectorAll('[style*="vh"],[style*="vw"]')) el.style.cssText = el.style.cssText.replace(/(\dd?v)([hw])\b/g, (m, a, b) => a + (b === 'h' ? 'w' : 'h')); } };
   const fit = () => {
     const should = want && coarse.matches && !typing && innerHeight > innerWidth;
     if (should !== on) { on = should; H.classList.toggle('rot', on); swapMedia(); }
@@ -747,7 +752,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-1838';
+const BUILD = '20261101-2030';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1205,7 +1210,7 @@ function textSprite(text0, opts0 = {}) {
   g.fillText(text, cv.width / 2, cv.height / 2 + 2);
   const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, toneMapped: false }));
-  const k = isMobile ? (innerWidth > innerHeight ? .6 : .78) : 1;
+  const k = isMobile ? (innerWidth > innerHeight || document.documentElement.classList.contains('rot') ? .6 : .78) : 1;
   s.renderOrder = 10; s.scale.set(h * k * cv.width / cv.height, h * k, 1); if (/[가-힣]/.test(text0)) s.userData.ko = [String(text0), opts0]; return s;
 }
 function disposeSprite(s) { s.parent && s.parent.remove(s); s.material.map.dispose(); s.material.dispose(); }
@@ -7596,7 +7601,8 @@ if (isMobile && canFull) addEventListener('pointerup', e => { if (e.target.close
 if (!isMobile) document.body.classList.add('pc');
 $('bars').appendChild($('info')); $('bars').prepend($('qsum'));
 // 메뉴를 펼치면 오른쪽 아래 조작 버튼(킁킁·왕왕·뼈다귀·점프)에 닿기 전까지만 세로로 놓고, 넘치면 왼쪽으로 줄을 바꾼다
-function fitMenu() { const tb = $('topbar'); if (!tb.classList.contains('open')) { tb.style.maxHeight = ''; return; } const top = tb.getBoundingClientRect().top; let lim = innerHeight; for (const id of ['bSniff', 'bBone', 'bBark', 'bJump']) { const el = $(id); if (el && el.getClientRects().length) lim = Math.min(lim, el.getBoundingClientRect().top); } tb.style.maxHeight = Math.max(80, lim - top - 10) + 'px'; }
+function fitMenu() { const tb = $('topbar'); if (!tb.classList.contains('open')) { tb.style.maxHeight = ''; return; } const rot = document.documentElement.classList.contains('rot'); // 화면을 돌려 놓았으면 화면 좌표 대신 게임 화면 안의 위치로 잰다
+  const top = rot ? tb.offsetTop : tb.getBoundingClientRect().top; let lim = rot ? document.body.clientHeight : innerHeight; for (const id of ['bSniff', 'bBone', 'bBark', 'bJump']) { const el = $(id); if (el && el.getClientRects().length) lim = Math.min(lim, rot ? el.offsetTop : el.getBoundingClientRect().top); } tb.style.maxHeight = Math.max(80, lim - top - 10) + 'px'; }
 function setLowGfx(on) {
   lowGfx = on; store.set('k9low', on); $('tbLow').classList.toggle('on', on);
   renderer.setPixelRatio(gfxPR(level && level.mega)); renderer.setSize(innerWidth, innerHeight); sun.castShadow = !on;
