@@ -406,6 +406,7 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 @keyframes rmTurn{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
 @media (pointer:coarse) and (orientation:portrait){#rotateMsg{display:flex}}
 #rmPlay{margin-top:18px;padding:10px 20px;border-radius:999px;border:0;background:#ffd23f;color:#0b1f33;font:17px Jua,sans-serif}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 html.rot,html.rot body{overflow:hidden}
 html.rot body{position:fixed;top:0;left:0;transform-origin:0 0}
 html.rot #rotateMsg,html.typing #rotateMsg{display:none!important}
@@ -746,7 +747,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-1738';
+const BUILD = '20261101-1744';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
