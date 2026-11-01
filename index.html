@@ -25,7 +25,7 @@
       '<p style="font-size:14px;line-height:1.6;margin:10px 0 14px;opacity:.9">지금은 앱 안 브라우저라 위아래 막대 때문에 게임 화면이 작아요.' + (ios && !kakao ? '<br>오른쪽 아래(또는 위) <b>⋯ / 공유 → Safari로 열기</b>를 눌러 주세요.' : '') + '</p>' +
       '<button id="xOpen" style="font-size:17px;font-weight:700;padding:12px 22px;border-radius:12px;border:0;background:#ffd54f;color:#13335a;margin:4px">🌐 브라우저로 열기</button>' +
       '<button id="xCopy" style="font-size:15px;padding:12px 16px;border-radius:12px;border:0;background:#fff;color:#13335a;margin:4px">🔗 주소 복사</button><br>' +
-      '<button id="xStay" style="font-size:13px;padding:8px 12px;border:0;background:none;color:#cfd8e3;text-decoration:underline;margin-top:8px">그냥 여기서 할게요</button></div>';
+      '<button id="xStay" style="font-size:13px;padding:8px 12px;border:0;background:none;color:#cfd8e3;text-decoration:underline;margin-top:8px">그냥 여기서 할게요 (세로로 든 채 플레이)</button></div>';
     document.body.appendChild(d);
     d.querySelector('#xOpen').onclick = go;
     d.querySelector('#xCopy').onclick = function () { var u = url.split('#')[0]; (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { this.textContent = '✅ 복사됨! 크롬·사파리 주소창에 붙여넣기'; }.bind(this), function () { prompt('이 주소를 복사해 크롬·사파리에 붙여넣으세요', u); }); };
@@ -404,6 +404,10 @@ body.touch #joy{bottom:calc(64px + var(--sb))}
 .rm-ic{font-size:64px;animation:rmTurn 1.8s ease-in-out infinite}.rm-t{font-size:26px;margin-top:10px}.rm-s{font-family:'Noto Sans KR',sans-serif;font-size:14px;opacity:.85;margin-top:6px}
 @keyframes rmTurn{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
 @media (pointer:coarse) and (orientation:portrait){#rotateMsg{display:flex}}
+#rmPlay{margin-top:18px;padding:10px 20px;border-radius:999px;border:0;background:#ffd23f;color:#0b1f33;font:17px Jua,sans-serif}
+html.rot,html.rot body{overflow:hidden}
+html.rot body{position:fixed;top:0;left:0;transform-origin:0 0}
+html.rot #rotateMsg{display:none!important}
 #tbMenu{display:none}
 /* 휴대폰 게임 화면: 정보는 아래 가운데, 상단은 ☰ 메뉴 하나 */
 :is(body.touch,body.pc) #tbMenu{display:block}
@@ -524,7 +528,33 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
  <button id="btnIntentOk" type="button">약속할게요! 🐕</button>
 </div></div>
 <div id="loadingScreen" class="hidden"><div class="ld-in"><div class="ld-ic" id="ldIcon">🗺</div><div class="ld-t" id="ldTitle">출동 준비 중…</div><div class="ld-bar"><div class="ld-fill" id="ldFill"></div></div><div class="ld-paw">🐾 🐾 🐾</div><div class="ld-tip" id="ldTip"></div></div></div>
-<div id="rotateMsg"><div><div class="rm-ic">📱↻</div><div class="rm-t">휴대폰을 <b>가로로</b> 돌려 주세요</div><div class="rm-s">탐지견 킁킁은 가로 화면에서만 플레이할 수 있어요</div></div></div>
+<div id="rotateMsg"><div><div class="rm-ic">📱↻</div><div class="rm-t">휴대폰을 <b>가로로</b> 돌려 주세요</div><div class="rm-s">탐지견 킁킁은 가로 화면에서만 플레이할 수 있어요</div>
+<button id="rmPlay" type="button">📱 세로로 든 채 할게요</button></div></div>
+<script>
+// 앱 안 브라우저(인스타·카톡 등)나 화면 회전 잠금일 때는 휴대폰이 가로로 돌지 않는다 → 게임 화면을 90도 돌려 세로로 든 채 가로 화면처럼 플레이
+(() => {
+  const H = document.documentElement, ua = navigator.userAgent;
+  const inApp = /Instagram|FBAN|FBAV|FB_IAB|KAKAOTALK|NAVER\(inapp|everytimeApp|DaumApps|Threads|; wv\)|\bLine\//i.test(ua);
+  let want = inApp, on = false;
+  const coarse = matchMedia('(pointer:coarse)');
+  // 가로 전용 CSS(@media orientation:landscape, max-height…)를 세로 화면에서도 쓰이도록 바꾼다
+  const swapMedia = () => { for (const sh of document.styleSheets) { let rules; try { rules = sh.cssRules; } catch { continue; } for (const r of rules) if (r.media && r.media.mediaText) {
+    const t = r.media.mediaText, n = t.replace(/landscape|portrait|height|width/g, w => ({ landscape: 'portrait', portrait: 'landscape', height: 'width', width: 'height' })[w]);
+    if (n !== t) r.media.mediaText = n; } } };
+  const fit = () => {
+    const should = want && coarse.matches && innerHeight > innerWidth;
+    if (should !== on) { on = should; H.classList.toggle('rot', on); swapMedia(); }
+    const b = document.body.style;
+    if (on) { b.width = innerHeight + 'px'; b.height = innerWidth + 'px'; b.transform = 'translateX(' + innerWidth + 'px) rotate(90deg)'; }
+    else { b.width = b.height = b.transform = ''; }
+    dispatchEvent(new Event('k9rot'));
+  };
+  window.__rot = { get on() { return on; }, set(v) { want = v; fit(); } };
+  addEventListener('resize', () => setTimeout(fit, 60));
+  addEventListener('orientationchange', () => setTimeout(fit, 300));
+  addEventListener('DOMContentLoaded', () => { document.getElementById('rmPlay').onclick = () => window.__rot.set(true); fit(); });
+})();
+</script>
 <div id="pvModal" class="overlay hidden" style="z-index:30"><div class="card" style="max-width:860px">
  <h2 style="margin:0 0 6px">📋 개인정보(이메일) 수집·이용 안내</h2>
  <div id="pvModalBody" style="font-size:14px;line-height:1.6;background:#fff;border:2px solid #e6dcc4;border-radius:10px;padding:10px 12px"></div>
@@ -711,7 +741,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-1454';
+const BUILD = '20261101-1729';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -7526,7 +7556,7 @@ $('btnStart').onclick = async () => {
   $('startScreen').classList.add('hidden'); try { renderer.setSize(innerWidth, innerHeight); } catch { }
 };
 // 게임 중 세로로 돌리면 자동 일시정지
-{ const mq = matchMedia('(orientation: portrait)'); const onRot = () => { if (isMobile && mq.matches && (state === 'play' || state === 'dialog')) { showMaps(true); } }; mq.addEventListener ? mq.addEventListener('change', onRot) : mq.addListener(onRot); }
+{ const mq = matchMedia('(orientation: portrait)'); const onRot = () => { if (isMobile && mq.matches && !(window.__rot && __rot.on) && (state === 'play' || state === 'dialog')) { showMaps(true); } }; mq.addEventListener ? mq.addEventListener('change', onRot) : mq.addListener(onRot); }
 // 전체 화면: 지원하는 기기(안드로이드·PC)는 버튼·첫 터치로 전체 화면, 아이폰 사파리는 홈 화면 실행이 유일한 방법
 const canFull = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
 async function goFull() { const el = document.documentElement; try { if (!document.fullscreenElement && !document.webkitFullscreenElement) await (el.requestFullscreen ? el.requestFullscreen({ navigationUI: 'hide' }) : el.webkitRequestFullscreen()); } catch { } try { await screen.orientation?.lock?.('landscape'); } catch { } }
@@ -7997,6 +8027,7 @@ addEventListener('blur', () => { keys.KeyE = false; });
 const joy = $('joy'), knob = $('knob'); let joyId = null;
 function joyMove(e) {
   const r = joy.getBoundingClientRect(); let dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+  if (window.__rot && __rot.on) [dx, dy] = [dy, -dx]; // 화면을 90도 돌려 놓았을 때는 손가락 방향도 돌려서 읽는다
   const l = Math.hypot(dx, dy), m = 50; if (l > m) { dx *= m / l; dy *= m / l; }
   knob.style.transform = `translate(${dx}px,${dy}px)`; touchIn.x = dx / m; touchIn.y = -dy / m;
 }
