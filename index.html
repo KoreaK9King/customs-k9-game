@@ -561,7 +561,24 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
   addEventListener('orientationchange', () => setTimeout(fit, 300));
   // 글자 입력(아이디·닉네임 등) 중에는 키보드가 올라와 화면 높이가 줄어도 돌린 가로 화면 크기를 그대로 둔다
   const isField = el => el && el.matches && el.matches('input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=button]),textarea,[contenteditable]');
-  document.addEventListener('focusin', e => { if (!want || !isField(e.target) || typing) return; typing = true; });
+  // 돌린 화면에서 칸을 누르면 키보드(세로)와 글자 방향이 어긋난다 → 화면 위쪽에 똑바로 읽히는 입력 창을 따로 띄워 거기서 입력받는다
+  let sheet = null;
+  const labelOf = el => { const l = el.id && document.querySelector('label[for="' + el.id + '"]'); const t = (l && l.textContent) || (el.closest('label') && el.closest('label').textContent) || ''; let p = el.previousElementSibling; while (!t && p && !/LABEL|B|H3|H4|DIV|SPAN/.test(p.tagName)) p = p.previousElementSibling; return (t || (p && p.textContent) || el.placeholder || '').replace(/\s+/g, ' ').trim().slice(0, 40); };
+  const openSheet = el => {
+    if (sheet) sheet.remove();
+    sheet = document.createElement('div'); sheet.id = 'rotSheet'; sheet.className = 'notr';
+    sheet.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:2147483000;background:#13335a;color:#fff;padding:12px 14px calc(12px + env(safe-area-inset-top));font-family:"Noto Sans KR",sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.4)';
+    sheet.innerHTML = '<div style="font-size:14px;margin-bottom:6px;opacity:.9"></div><div style="display:flex;gap:8px"><input style="flex:1;min-width:0;font-size:17px;padding:10px 12px;border-radius:10px;border:0;color:#13335a;background:#fff"><button type="button" style="font-size:16px;font-weight:700;padding:0 16px;border-radius:10px;border:0;background:#ffd23f;color:#13335a">확인</button></div>';
+    const lab = sheet.firstChild, inp = sheet.querySelector('input'), ok = sheet.querySelector('button');
+    lab.textContent = '✏️ ' + (labelOf(el) || '입력');
+    inp.type = el.type === 'password' ? 'password' : el.type === 'email' ? 'email' : 'text'; inp.value = el.value; inp.placeholder = el.placeholder || ''; if (el.maxLength > 0) inp.maxLength = el.maxLength; if (el.inputMode) inp.inputMode = el.inputMode; inp.autocomplete = el.autocomplete || 'off'; inp.dir = el.dir || 'auto';
+    const done = () => { if (!sheet) return; el.value = inp.value; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); sheet.remove(); sheet = null; typing = false; scrollTo(0, 0); setTimeout(fit, 250); };
+    ok.addEventListener('pointerdown', e => { e.preventDefault(); done(); });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); done(); } });
+    inp.addEventListener('blur', () => setTimeout(done, 120));
+    H.appendChild(sheet); typing = true; inp.focus(); try { inp.setSelectionRange(inp.value.length, inp.value.length); } catch { }
+  };
+  document.addEventListener('focusin', e => { if (!want || !isField(e.target) || (sheet && sheet.contains(e.target))) return; if (on) { e.target.blur(); openSheet(e.target); return; } typing = true; });
   document.addEventListener('focusout', () => setTimeout(() => { if (!typing || isField(document.activeElement)) return; typing = false; scrollTo(0, 0); setTimeout(fit, 250); }, 80));
   addEventListener('DOMContentLoaded', () => { fit(); });
 })();
@@ -752,7 +769,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-2041';
+const BUILD = '20261101-2053';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -7116,7 +7133,10 @@ function seaDrugs() {
   made.sort(() => rnd() - .5).slice(0, nDrug).forEach(m => { m.c.hidden = 'drug'; hidden.push(m.c); });
   if (made.length) setTimeout(() => { if (level && state === 'play') toast('🌊 바다에 수상한 꾸러미가 떠 있어요! 헤엄쳐 가서 킁킁 맡아 보세요'); }, 6000);
 }
-const scaleNums = t => level && level.sz > 1.05 ? t.replace(/(\d+)(개|정|명)/g, (m, n, u) => Math.ceil(+n * (1 + (level.sz - 1) * .42)) + u) : t;
+// 안내 창의 목표 개수는 이번 판의 실제 목표(맵 크기·난이도 반영)로 바꾼다. 계단·기둥 같은 다른 숫자는 그대로 둔다
+const scaleNums = t => { if (!level || !level.need) return t; const N = level.need;
+  return t.replace(/(마약|총기|무기|밀수범|범인|부하)([^\d\n.!?]{0,10}?)(\d+)(개|정|명)/g, (m, k, mid, n, u) => { const key = k === '마약' ? 'drug' : (k === '총기' || k === '무기') ? 'gun' : 'smuggler'; return N[key] != null ? k + mid + N[key] + u : m; })
+    .replace(/보스\(체력 \d+\)/g, m => level.diff && level.diff.bossHp ? `보스(체력 ${level.diff.bossHp})` : m); };
 const LOAD_TIPS = ['💥 점프를 3번 하면 공중 덤블링! 착지하면 쿵! 주변 범인을 공격해요', '👃 [E]·[킁킁]을 누르고 있으면 숨긴 물건 냄새가 길을 알려 줘요', '🪙 맵 곳곳의 코인을 모아 업그레이드 상점에서 탐지견을 키워요', '👥 팀 방은 최대 20명! 통합 도시는 한 반 20명이 모두 함께, 일반 맵은 5명씩 함께 수색해요', '🦴 뼈다귀를 던지면 도망가는 범인을 멈출 수 있어요', '❤️ 하트 공을 먹으면 체력이 회복돼요', '📞 실제로 수상한 밀수품을 보면 ☎ 125 (관세청 밀수신고센터)', '🏊 바다가 있는 맵에서는 탐지견과 핸들러가 함께 수영할 수 있어요', '🛃 해외여행에서 산 물건이 면세 한도를 넘으면 세관에 자진신고해요', '🐕 진짜 관세청 탐지견은 마약·총기 냄새를 찾도록 훈련받아요'];
 fetchWeather().then(() => { if (level && !level.wxApplied && !level.sunset) { level.wxApplied = true; applyTimeOfDay(true); } });
 setInterval(() => { const el = $('wx'); if (el) el.classList.add('hidden'); }, 700);
