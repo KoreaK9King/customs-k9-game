@@ -756,7 +756,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261101-2107';
+const BUILD = '20261101-2124';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -7652,7 +7652,8 @@ for (const b of document.querySelectorAll('#topbar button:not(#tbMenu)')) b.addE
   // 화면이 느리면 손가락을 뗀 뒤 click이 0.6초보다 늦게 와서 메뉴가 열렸다 바로 닫힌다: 방금 누른 그 버튼에 오는 click은 한 번 더 버린다
   document.addEventListener('click', e => {
     if (!e.isTrusted) return;
-    if (tapEl && performance.now() - tapT < 2500 && tapEl.contains(e.target)) { tapEl = null; e.stopPropagation(); e.preventDefault(); return; }
+    // 손가락 한 번에 click은 한 번만 온다: 그 사이 메뉴가 움직여 옆 버튼(🔊 위의 🗺 등) 위에 떨어져도 버린다
+    if (tapEl && performance.now() - tapT < 2500 && (tapEl.contains(e.target) || (e.target.closest && e.target.closest(TAP)))) { tapEl = null; e.stopPropagation(); e.preventDefault(); return; }
     if (performance.now() - tapT < 600 && e.target.closest && e.target.closest(TAP)) { e.stopPropagation(); e.preventDefault(); }
   }, true); }
 // 랭킹은 늘 최신으로: 화면에 보이는 랭킹을 15초마다·새 사람이 들어올 때 새로 받아온다
