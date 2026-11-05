@@ -68,6 +68,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 #topbar{position:fixed;z-index:6;top:calc(186px + var(--st));right:calc(12px + var(--sr));display:flex;flex-direction:column;gap:6px}
 @media (max-width:1000px){#keys{display:none}}
 #topbar button{pointer-events:auto;border:none;border-radius:10px;background:var(--panel);color:#fff;font-size:18px;width:40px;height:36px;cursor:pointer}
+#dogLv{display:flex;align-items:center;gap:4px;color:#7dff6a;font-size:13px;font-weight:700;white-space:nowrap}#dogLv .bar{width:46px}#dogLv .bar i{background:#7dff6a}
 #bars{bottom:calc(16px + var(--sb));left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;background:var(--panel);padding:8px 14px;border-radius:12px}
 .bar{width:120px;height:10px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden}
 .bar i{display:block;height:100%;width:100%;border-radius:6px}
@@ -474,7 +475,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 <div id="quest" class="hud mini"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><div id="qsum"></div><p id="qdesc"></p><div id="qgoals"></div></div>
 <div id="mmwrap" class="hud mini"><button id="mmToggle" type="button">🗺 지도 보기</button><button id="mmFold" type="button">✕ 접기</button><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
 <div id="wx" class="hud hidden"></div><div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><div id="bagBox"><button id="bagBtn" title="아이템 가방 (B)" aria-label="아이템 가방">🎒<span id="bagN">0</span></button><div id="bagPanel"><div class="bagHead">🎒 아이템 가방 <small>눌러서 사용 · B 키</small></div><div id="bagList"></div></div></div><div id="autoBox"><button id="tbAutoMenu" title="자동 사냥 (누르면 3가지)" aria-label="자동 사냥">🤖</button><div id="autoList"><button id="tbAuto" title="자동 플레이 (P)">🤖 자동 플레이</button><button id="tbCoin" title="코인 자동 사냥 (C)">💰 코인 사냥</button><button id="tbItem" title="아이템 자동 사냥 (I)">🎁 아이템 사냥</button></div></div><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbLow" title="저사양 모드 (버벅일 때)" aria-label="저사양 모드">🐢</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
-<div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
+<div id="bars" class="hud"><span id="dogLv"></span><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div><div id="annBanner"></div>
 <div id="mission" class="hud hidden"></div>
 <div id="mpCount" class="hud"></div><div id="sniffLegend" class="hud hidden"></div><div id="autoBadge" class="hud hidden">🤖 자동 플레이 중 · 누르면 끄기</div><div id="guide" class="hud hidden"></div><div id="goalBig" class="hud hidden"></div>
@@ -756,7 +757,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261105-2340';
+const BUILD = '20261105-2344';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1842,10 +1843,13 @@ function groundSlam(gy) {
   for (const v of [...vehicles]) if (!v.broken && v.distTo(dog.x, dog.z) < R * .7) v.hit('💥 쿵!');
   if (hit > 1) floatText('🔥 ' + hit + '명 동시 타격!', dog.x, gy + 3, dog.z, { h: .5, color: '#ffd54f' });
 }
+// 맞힐 때마다 데미지 숫자(공격력)를 띄운다. 치명타면 데미지 2배
+function dmgText(n, crit, x, y, z) { floatText((crit ? '💥 치명타! -' : '-') + n, x + (Math.random() - .5) * .8, y, z, { h: crit ? 1.3 : 1, color: crit ? '#ff3b3b' : '#ff6b4a' }); }
 function hitVillain(p, label) {
-  p.hp--; p.stun = Math.max(p.stun, p.kind === "boss" ? 1.1 : 1.6 * (1.24 - .08 * (p.lv || 3))); p.glow = 4; shake = .2; SFX.hit(); addScore(30);
+  const crit = Math.random() < dogCrit(), dmg = crit ? 2 : 1; p.hp0 = p.hp0 || p.hp; dmgText(dogAtk() * dmg, crit, p.x, 3.5, p.z);
+  p.hp -= dmg; p.stun = Math.max(p.stun, p.kind === "boss" ? 1.1 : 1.6 * (1.24 - .08 * (p.lv || 3))); p.glow = 4; shake = .2; SFX.hit(); addScore(30);
   burst(p.x, 1.2, p.z, [WHITE, new THREE.Color(0xffd54f)], 20, 4);
-  if (p.hp <= 0) { if (p.cow) cowDown(p); else arrest(p); } else floatText(`${label} +30 · 남은 체력 ${p.hp}`, p.x, 2.8, p.z, { h: .5, color: '#ffd54f' });
+  if (p.hp <= 0) { if (p.cow) cowDown(p); else arrest(p); } else floatText(`${label} +30 · ${'▰'.repeat(p.hp)}${'▱'.repeat(Math.max(0, p.hp0 - p.hp))}`, p.x, 2.8, p.z, { h: .5, color: '#ffd54f' });
 }
 const dog = { x: 0, z: 0, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, phase: 0, speed: 0, barkCd: 0, tackleCd: 0, sniffing: false, sniffTick: 0, barkAnim: 0, hp: 3, boost: 0, hurt: 0 };
 
@@ -6423,7 +6427,23 @@ function renderBadges() {
 }
 // 간식 상점
 const walletKey = () => 'k9wallet:' + playerId;
-function loadWallet() { wallet = Object.assign({ coins: 0 }, store.get(walletKey(), {})); wallet.up = Object.assign({ ...UP0 }, wallet.up); }
+function loadWallet() { wallet = Object.assign({ coins: 0 }, store.get(walletKey(), {})); wallet.up = Object.assign({ ...UP0 }, wallet.up); renderLv(); }
+// 🐕 탐지견 레벨: 점수를 얻으면 경험치(점수의 1/5)가 쌓이고, 레벨이 오를수록 공격력·치명타(데미지 2배) 확률이 오른다 (최대 Lv 99)
+function lvNeed(lv) { return 100 + (lv - 1) * 50; }
+function dogLv() { return Math.max(1, (wallet && wallet.lv) || 1); }
+function dogAtk() { return 10 + (dogLv() - 1) * 2; }
+function dogCrit() { return Math.min(.4, .05 + .02 * (dogLv() - 1)); }
+function gainXp(n) {
+  if (!wallet || !playerId || n <= 0) return;
+  let lv = dogLv(), xp = (wallet.xp || 0) + n, up = false;
+  while (lv < 99 && xp >= lvNeed(lv)) { xp -= lvNeed(lv); lv++; up = true; }
+  wallet.lv = lv; wallet.xp = lv >= 99 ? 0 : xp; store.set(walletKey(), wallet); renderLv();
+  if (!up) return;
+  floatText('⬆ LEVEL UP! Lv ' + lv, dog.x, dog.y + 3.2, dog.z, { h: .9, color: '#7dff6a' }); burst(dog.x, dog.y + 1, dog.z, [new THREE.Color(0x7dff6a), WHITE], 40, 5);
+  tone(523, .1, 'square', .07); tone(659, .1, 'square', .07, 0, .1); tone(784, .1, 'square', .07, 0, .2); tone(1047, .25, 'square', .07, 0, .3);
+  toastNow('🐕 ' + dogName + ' 레벨 업! Lv ' + lv + ' · 공격력 ' + dogAtk() + ' · 치명타 ' + Math.round(dogCrit() * 100) + '%'); try { cloudSave(); } catch { }
+}
+function renderLv() { const el = document.getElementById('dogLv'); if (!el || !wallet) return; const lv = dogLv(); el.innerHTML = '🐕 Lv ' + lv + '<div class="bar"><i style="width:' + (lv >= 99 ? 100 : Math.min(100, (wallet.xp || 0) / lvNeed(lv) * 100)) + '%"></i></div>'; }
 function renderShop() {
   const u = wallet.up, spent = UPG.reduce((t, [k, , , , c]) => t + c.slice(0, u[k] || 0).reduce((x, y) => x + y, 0), 0), all = UPG.reduce((t, [, , , , c]) => t + c.reduce((x, y) => x + y, 0), 0);
   $('shop').innerHTML = '<h2 style="font-size:20px;margin:14px 0 4px">🪙 업그레이드 상점 · 보유 ' + wallet.coins + ' 코인</h2><p style="font-size:13px;margin:0 0 6px">맵을 돌아다니며 코인(1~50)을 줍고, 맵을 클리어하면 보너스 코인도 받아요. 업그레이드는 내 계정에 저장돼 다른 기기에서도 그대로예요. (전체 진행 ' + Math.round(spent / all * 100) + '%)</p><div class="shoprow">' +
@@ -7236,7 +7256,7 @@ function stackTopHud() {
     e.style.top = y + 'px'; y += e.offsetHeight + 4;
   }
 }
-function addScore(n) { levelScore = Math.max(-500, levelScore + n); }
+function addScore(n) { levelScore = Math.max(-500, levelScore + n); if (n > 0) gainXp(Math.round(n / 5)); }
 function damage() {
   if (dog.hurt > 0 || state !== 'play') return;
   if (dog.starT > 0) { dog.hurt = .3; return; }
@@ -7574,7 +7594,8 @@ async function cloudLoad(id, pw, freshDevice) {
     const lw = store.get('k9wallet:' + id, null), cw = d['k9wallet:'];
     if (cw || lw) { const a = lw || {}, b = cw || {}, up = { ...(a.up || {}) }; for (const [k, v] of Object.entries(b.up || {})) up[k] = Math.max(up[k] || 0, v || 0);
       const newer = (b.t || 0) > (a.t || 0) ? b : (a.t || 0) > (b.t || 0) ? a : ((b.coins || 0) > (a.coins || 0) ? b : a);
-      store.set('k9wallet:' + id, { ...a, ...b, coins: newer.coins || 0, up }); }
+      const hi = ((b.lv || 1) > (a.lv || 1) || ((b.lv || 1) === (a.lv || 1) && (b.xp || 0) > (a.xp || 0))) ? b : a;
+      store.set('k9wallet:' + id, { ...a, ...b, coins: newer.coins || 0, up, lv: hi.lv || 1, xp: hi.xp || 0 }); }
     const lb = store.get('k9bag:' + id, null), cb = d['k9bag:']; if (cb && (!lb || (cb.t || 0) > (lb.t || 0))) store.set('k9bag:' + id, cb);
     const la = store.get('k9ach:' + id, null), ca = d['k9ach:']; if (ca && (!la || (ca.earned || []).length >= (la.earned || []).length)) store.set('k9ach:' + id, ca);
     // 처음 쓰는 기기라면 탐지견·핸들러·닉네임·언어도 그대로 가져온다
@@ -8057,10 +8078,10 @@ function bark() {
   for (const v of vehicles) if (!v.broken && dog.y < 2.5 && v.distTo(hx, hz) < 1.6 * BR && !(v.barkHit > time)) { v.barkHit = time + .5 * AS; if (v.carry) seizeVehicle(v); else if (!(v.stopT > 0)) v.hit('🐕 왕왕!'); }
   let best = null, bd = 1.8 * (1 + .06 * (UPL().bark || 0));
   for (const c of hidden) { if (c.revealed) continue; const d = distToBox(dog.x, dog.z, c); if (d < bd) { bd = d; best = c; } }
-  if (best) return reveal(best);
+  if (best) { const q = center(best); dmgText(dogAtk(), false, q.x, (best.topY || 1) + 1.6, q.z); return reveal(best); }
   for (const c of colliders) {
     if (!c.search || c.checked || c.revealed) continue;
-    if (distToBox(dog.x, dog.z, c) < 1.1) { c.checked = true; if (['bag', 'crate', 'parcel', 'item'].includes(c.kind)) shatter(c); addScore(-10); totals.mistakes++; toast(lang === 'ko' ? `🤔 깨끗한 물건(${placeOf(c)})이에요! 오탐 (-10)` : t('ts_false')); SFX.error(); if (handlerJob !== 'customs' || Math.random() < .5) damage(); break; }
+    if (distToBox(dog.x, dog.z, c) < 1.1) { c.checked = true; { const q = center(c); dmgText(dogAtk(), false, q.x, (c.topY || 1) + 1.6, q.z); } if (['bag', 'crate', 'parcel', 'item'].includes(c.kind)) shatter(c); addScore(-10); totals.mistakes++; toast(lang === 'ko' ? `🤔 깨끗한 물건(${placeOf(c)})이에요! 오탐 (-10)` : t('ts_false')); SFX.error(); if (handlerJob !== 'customs' || Math.random() < .5) damage(); break; }
   }
 }
 
