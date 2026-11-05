@@ -756,7 +756,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261105-2338';
+const BUILD = '20261105-2340';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1629,7 +1629,7 @@ const UPG = [
   ['spd', '🏃 속도', '이동·달리기 속도 +3%', 10, P10], ['nose', '👃 후각', '냄새 맡는 거리 +4%', 10, P10], ['sta', '💪 지구력', '기력 소모 감소·회복 증가', 10, P10],
   ['bark', '📢 짖기', '왕왕 공격 범위 +10% · 물건 찾는 거리 +6%', 10, P10], ['jump', '🦘 점프', '점프 높이 +2.5%', 10, [30, 50, 80, 120, 170, 230, 300, 380, 470, 580]],
   ['heart', '❤️ 시작 하트', '2레벨마다 시작 하트 +1 · 맞은 뒤 무적 시간 +5%', 10, [150, 250, 350, 450, 550, 650, 750, 850, 950, 1050]], ['armor', '🦺 방탄 조끼', '총알·부딪힘 막을 확률 +5%', 10, [50, 90, 140, 200, 270, 350, 440, 540, 650, 780]],
-  ['magnet', '🧲 코인 자석', '코인 줍는 거리 +1m', 10, [30, 60, 100, 150, 210, 280, 360, 450, 550, 660]], ['bone', '🦴 뼈다귀 연사', 'Lv5까지 한 번에 뼈다귀 +1개 · 던지는 간격 -5%', 10, [50, 90, 140, 200, 270, 350, 440, 540, 650, 780]], ['leak', '⏳ 반출 지연', '밀수품이 빠져나가는 시간 +8%', 10, [60, 110, 170, 240, 320, 410, 510, 620, 740, 870]],
+  ['magnet', '🧲 자석', '코인·아이템 끌어오는 거리 +1m', 10, [30, 60, 100, 150, 210, 280, 360, 450, 550, 660]], ['bone', '🦴 뼈다귀 연사', 'Lv5까지 한 번에 뼈다귀 +1개 · 던지는 간격 -5%', 10, [50, 90, 140, 200, 270, 350, 440, 540, 650, 780]], ['leak', '⏳ 반출 지연', '밀수품이 빠져나가는 시간 +8%', 10, [60, 110, 170, 240, 320, 410, 510, 620, 740, 870]],
 ];
 // 카우존 전용 스킬 레벨 (최대 20). 카우존에서는 상점 업그레이드 대신 이 레벨을 쓴다
 const COW_MAX = 20;
@@ -7824,9 +7824,12 @@ function updateHelpItems(dt) {
   for (const h of helps) {
     if (h.got) continue;
     h.g.position.y = .55 + Math.sin(time * 3 + h.x) * .15; h.g.rotation.y += dt * 2;
-    if (Math.hypot(h.x - dog.x, h.z - dog.z) < 1.1 && dog.y < 1.5) {
+    // 🧲 자석: 코인처럼 아이템도 끌어와서 줍는다
+    const mg = (UPL().magnet || 0) + (dog.magT > 0 ? 6 : 0), d = Math.hypot(h.x - dog.x, h.z - dog.z);
+    if (mg > 0 && d < 1.1 + mg + 2 && d > .5) { h.x += (dog.x - h.x) * Math.min(1, dt * 4); h.z += (dog.z - h.z) * Math.min(1, dt * 4); h.g.position.x = h.x; h.g.position.z = h.z; }
+    if (d < 1.1 + mg && dog.y < 1.5) {
       h.got = true; world.remove(h.g); SFX.found(); burst(h.x, .8, h.z, [new THREE.Color(HELP_KINDS[h.kind].col), WHITE], 25, 3);
-      if (level.cow) useNow(h.kind); else bagAdd(h.kind);
+      useNow(h.kind); // 모든 맵: 주운 아이템은 바로 쓴다
     }
   }
   dog.noseT = Math.max(0, (dog.noseT || 0) - dt); dog.boneT = Math.max(0, (dog.boneT || 0) - dt); dog.autoSniffT = Math.max(0, (dog.autoSniffT || 0) - dt); dog.staT = Math.max(0, (dog.staT || 0) - dt); dog.magT = Math.max(0, (dog.magT || 0) - dt);
@@ -7838,10 +7841,10 @@ const bagKey = () => 'k9bag:' + playerId;
 function saveBag() { if (playerId) store.set(bagKey(), { t: Date.now(), items: { ...bag } }); }
 function loadBag() { for (const k in bag) delete bag[k]; const o = playerId ? store.get(bagKey(), null) : null; for (const [k, v] of Object.entries((o && o.items) || {})) if (HELP_KINDS[k] && v > 0) bag[k] = Math.min(BAG_MAX, v | 0); renderBag(); }
 HELP_KINDS.ball = { name: '하트 공', emoji: '🎾', col: 0xc8e632 };
-// 주운 아이템은 바로 쓴다. 하트가 꽉 찼을 때 주운 구급상자만 가방에 넣어 둔다
+// 주운 아이템은 바로 쓴다. 하트가 꽉 찼을 때 주운 구급상자는 방탄 보호막으로 바로 바꿔 쓴다
 function useNow(kind) {
   const hpMax = hpCap();
-  if (kind === 'heal' && dog.hp >= hpMax) return bagAdd(kind);
+  if (kind === 'heal' && dog.hp >= hpMax) { dog.shield = Math.min(2, (dog.shield || 0) + 1); floatText('🛡 하트 가득 → 보호막!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#9fd3ff' }); toastNow('🛡 하트가 꽉 차서 방탄 보호막으로 바꿨어요! 공격 한 번을 막아 줘요'); return; }
   const q0 = toastQ.length; applyHelp(kind);
   if (toastQ.length > q0) { const fresh = toastQ.splice(q0); toastQ.unshift(...fresh); toastT = 0; }
   floatText(HELP_KINDS[kind].emoji + ' ' + HELP_KINDS[kind].name + '!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#ffe08a' });
