@@ -758,7 +758,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261105-2346';
+const BUILD = '20261105-2356';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -1850,7 +1850,7 @@ function hitVillain(p, label) {
   const crit = Math.random() < dogCrit(), dmg = crit ? 2 : 1; p.hp0 = p.hp0 || p.hp; dmgText(dogAtk() * dmg, crit, p.x, 3.5, p.z);
   p.hp -= dmg; p.stun = Math.max(p.stun, p.kind === "boss" ? 1.1 : 1.6 * (1.24 - .08 * (p.lv || 3))); p.glow = 4; shake = .2; SFX.hit(); addScore(30);
   burst(p.x, 1.2, p.z, [WHITE, new THREE.Color(0xffd54f)], 20, 4);
-  if (p.hp <= 0) { if (p.cow) cowDown(p); else arrest(p); } else floatText(`${label} +30 · ${'▰'.repeat(p.hp)}${'▱'.repeat(Math.max(0, p.hp0 - p.hp))}`, p.x, 2.8, p.z, { h: .5, color: '#ffd54f' });
+  if (p.hp <= 0) { if (p.cow) cowDown(p); else arrest(p); } else floatText(`${label} +30 · ${'▰'.repeat(Math.ceil(p.hp))}${'▱'.repeat(Math.max(0, Math.ceil(p.hp0) - Math.ceil(p.hp)))}`, p.x, 2.8, p.z, { h: .5, color: '#ffd54f' });
 }
 const dog = { x: 0, z: 0, y: 0, vy: 0, vx: 0, vz: 0, grounded: true, dir: Math.PI, stamina: 100, phase: 0, speed: 0, barkCd: 0, tackleCd: 0, sniffing: false, sniffTick: 0, barkAnim: 0, hp: 3, boost: 0, hurt: 0 };
 
@@ -2470,6 +2470,8 @@ function handProp(p, kind, emoji) {
 function dropProp(p) { if (!p.prop) return; p.prop.parent && p.prop.parent.remove(p.prop); if (p.propSprite) disposeSprite(p.prop); p.prop = null; p.propSprite = false; }
 const ACT_PROP = new Set(['eat', 'coffee', 'photo']);
 const PHONE = ['여보세요? 지금 도착했어', '응, 짐 찾고 있어', '조금만 기다려 줘~', '방금 내렸어!'];
+// 악당 강화: 모든 맵·모든 난이도(카우존 포함)에서 체력 30%↑, 공격 간격 30% 짧게
+const VK = 1.3;
 class Person {
   constructor(kind, x, z, look) {
     Object.assign(this, makePerson(look || kind)); this.look = look;
@@ -2480,6 +2482,7 @@ class Person {
       const Q = DIFFS[level.dm || 'normal'] || DIFFS.normal, lo = Q.lvOff > 1 ? 3 : Q.lvOff > 0 ? 2 : 1;
       this.lv = kind === 'boss' ? Q.lvMax + 1 : Math.max(lo, Math.min(Q.lvMax, Math.ceil(level.diff.stars / 2) + Q.lvOff + (Math.random() < .35 ? 1 : 0)));
       if (kind !== 'boss' && this.lv >= (Q.lvOff > 1 ? 3 : 4) && Q.lvOff > 0) this.hp = 2; // 어려움·극강에서만 두 번 맞혀야 체포
+      this.hp *= VK;
     }
     this.stun = 0; this.glow = 0; this.target = null; this.wait = mr(0, 2); this.dir = mr(0, 6);
     this.phase = mr(0, 6); this.blocked = 0; this.turn = 0; this.turnT = 0; this.alerted = false;
@@ -2631,7 +2634,7 @@ class Person {
         if (this.aim <= 0) { this.gun.visible = false; fireShot(this); this.ammo--; if (this.ammo <= 0) floatText(t('ts_noammo'), this.x, 2.8, this.z, { h: .45, color: '#ffd54f' }); else if (this.ammo <= 2) floatText('🔫 ' + this.ammo, this.x, 2.6, this.z, { h: .35, color: '#ffd54f' }); }
       } else if (mode !== 'flee' && mode !== 'melee' && this.gunCd <= 0 && d < 16 && !(this.windup > 0) && this.ammo > 0) {
         this.aim = this.kind === 'boss' ? .45 : .78 - .05 * this.lv; this.gun.visible = true;
-        this.gunCd = 1.07 * (this.kind === 'boss' ? mr(1.6, 2.6) : mr(3.2, 5)) / (.7 + .12 * level.diff.stars) * (1 + (level.fav || 0));
+        this.gunCd = 1.07 / VK * (this.kind === 'boss' ? mr(1.6, 2.6) : mr(3.2, 5)) / (.7 + .12 * level.diff.stars) * (1 + (level.fav || 0));
         floatText('🔫 !', this.x, 2.7, this.z, { h: .45, color: '#ff4d4d' }); tone(1200, .08, 'square', .04);
       }
       // 주먹: 붙으면 도망 대신 맞선다
@@ -2642,7 +2645,7 @@ class Person {
           floatText('👊', this.x, 2.2, this.z, { h: .6 });
           if (Math.hypot(this.x - dog.x, this.z - dog.z) < 2.1 && dog.y < 1.5) { moveCircle(dog, -dx / d * 1.6, -dz / d * 1.6, .5, false, dog.y); toast(this.kind === 'boss' ? '👊 보스의 공격! 조심하세요' : '👊 밀수범의 반격!'); damage(); }
         }
-      } else if ((mode === 'melee' || (mode === 'flee' && !this.fighter && d < 1.8 && this.escT > 0 && Math.random() < .3)) && this.atkCd <= 0 && !(this.aim > 0)) { this.windup = this.kind === 'boss' ? .5 : .72 - .05 * this.lv; this.atkCd = this.kind === 'boss' ? 1.8 : 3.3 - .22 * this.lv; floatText('😠 !', this.x, 2.6, this.z, { h: .45, color: '#ff6b6b' }); if (Math.random() < .3) this.say(pick2(['덤벼라!', '잡을 수 있으면 잡아봐!', '저리 가, 멍멍이!'])); }
+      } else if ((mode === 'melee' || (mode === 'flee' && !this.fighter && d < 1.8 && this.escT > 0 && Math.random() < .3)) && this.atkCd <= 0 && !(this.aim > 0)) { this.windup = this.kind === 'boss' ? .5 : .72 - .05 * this.lv; this.atkCd = (this.kind === 'boss' ? 1.8 : 3.3 - .22 * this.lv) / VK; floatText('😠 !', this.x, 2.6, this.z, { h: .45, color: '#ff6b6b' }); if (Math.random() < .3) this.say(pick2(['덤벼라!', '잡을 수 있으면 잡아봐!', '저리 가, 멍멍이!'])); }
     } else {
       if (d > fleeR + 4) this.alerted = false;
       const LD = this.leader && !this.leader.dead && !this.leader.arrested ? this.leader : null; if (this.leader && !LD) { this.leader = null; this.mate = null; }
@@ -4048,9 +4051,9 @@ const LEVELS = [
   },
   {
     diff: { stars: 5, speed: 1.3, flee: 1.3, hp: 3, bossHp: 7, sniff: 19, vehicle: 1.2 }, extras: { decor: [['sealedCage', 1], ['weighScale', 1]], items: [["statue",2],["wine",3],["vase",2],["machine",2]] }, name: '마약 제조공장 (보스전)', icon: '🏭', w: 60, d: 44, outdoor: true, bg: 0x5c5f66, dim: true, music: 6,
-    staff: [{ kind: 'handler', route: [[-30, 12], [30, 12]], wait: 1.5 }, { kind: 'handler', route: [[-28, 30], [28, 30]], wait: 2 }],
+    staff: [], // 마약 제조공장: 사람은 모두 악당 (작업자·하역 인부도 조직원)
     vehicles: [{ type: 'forklift', route: [[40, 2], [58, 2], [58, 30], [40, 30]] }],
-    people: { worker: 1, smuggler: 4, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 3, boss: 1 },
+    people: { smuggler: 7, boss: 1 }, hide: { drug: 2, gun: 2 }, need: { smuggler: 3, boss: 1 },
     who: '한지호 보세구역세관장', short: '포항 제철소처럼 거대한 조직의 마약 제조공장! 용광로·굴뚝·제조 라인 사이에서 부하 3명과 보스(체력 7)를 체포하세요! 💣 빨간 원이 뜨면 폭탄이 떨어져요, 피하세요!',
     intro: '🚨 마지막 작전이다!\n바닷가에 숨어 있는 밀수 조직의 거대한 마약 제조공장을 찾아냈어! (포항 제철소처럼 생긴 가상의 공장이야)\n굴뚝마다 시커먼 연기가 솟고, 용광로 옆 제조 라인에선 몰래 들여온 원료 화학물질로 마약을 만들고 있대.\n\n보스는 발이 빠르고 튼튼해서 한 번에 안 잡혀.\n왕왕 짖어 멈추게 하고, 뼈다귀를 여러 번 맞혀!\n조심해! 보스가 숨겨 둔 💣 폭탄이 여기저기서 터진다.\n바닥에 빨간 원이 보이면 재빨리 피해!\n부하 3명도 함께 체포하면 작전 끝이다!',
     build(L) {
@@ -6000,7 +6003,7 @@ function spawnCow(boss) {
     const a = Math.random() * Math.PI * 2, rad = mr(13, 30), x = clamp(dog.x + Math.cos(a) * rad, b.minX + 2, b.maxX - 2), z = clamp(dog.z + Math.sin(a) * rad, b.minZ + 2, b.maxZ - 2);
     if (colliders.some(c => !c.disabled && c.topY > .5 && distToBox(x, z, c) < 1.2)) continue;
     const p = new Person('smuggler', x, z); p.cow = true; p.cowBoss = boss; p.lv = boss ? 5 : Math.min(5, 1 + Math.floor((cow.wave - 1) / 2) + (Math.random() < .3 ? 1 : 0));
-    p.hp = boss ? 15 + cow.wave * 2 : 3 + Math.floor(cow.wave / 4); p.hpMax = p.hp; p.riseT = 1.2; p.atkCd = mr(.4, 1.4); p.windup = 0; p.aim = 0; p.ammo = 0; p.skillCd = mr(3, 5); p.regenT = 0;
+    p.hp = (boss ? 15 + cow.wave * 2 : 3 + Math.floor(cow.wave / 4)) * VK; p.hpMax = p.hp; p.riseT = 1.2; p.atkCd = mr(.4, 1.4); p.windup = 0; p.aim = 0; p.ammo = 0; p.skillCd = mr(3, 5); p.regenT = 0;
     if (!boss && p.lv >= 2) { const tx = textSprite('Lv' + p.lv, { h: .26, bg: 'rgba(120,10,10,.85)' }); tx.position.y = 2.75; p.g.add(tx); }
     cowify(p, boss); p.g.position.set(x, -2.2, z);
     burst(x, .3, z, [DUST, new THREE.Color(0x5b3a2a), RED], 24, 4);
@@ -6026,7 +6029,7 @@ function cowUpdate(p, dt) {
   p.body.rotation.z = 0;
   const dx = dog.x - p.x, dz = dog.z - p.z, d = Math.hypot(dx, dz) || .01, reach = p.cowBoss ? 3.4 : 2.3;
   p.dir += angDiff(p.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 6); p.atkCd -= dt;
-  if (p.windup > 0) { p.windup -= dt; p.arms[1].rotation.x = -.6 + p.windup * 2; if (p.windup <= 0) { p.arms[1].rotation.x = -1.7; if (d < reach + .4 && dog.y < 1.6) cowStrike(p); p.atkCd = p.cowBoss ? 1.2 : 1.6; } }
+  if (p.windup > 0) { p.windup -= dt; p.arms[1].rotation.x = -.6 + p.windup * 2; if (p.windup <= 0) { p.arms[1].rotation.x = -1.7; if (d < reach + .4 && dog.y < 1.6) cowStrike(p); p.atkCd = (p.cowBoss ? 1.2 : 1.6) / VK; } }
   else if (d < reach && p.atkCd <= 0) { p.windup = .5; }
   else if (d > 1.2) { const spd = (p.cowBoss ? 3.8 : 4.4) * DQ().spd * (1 + Math.min(.5, cow.wave * .04)) * (cowInMud(p.x, p.z) ? .6 : 1); moveCircle(p, dx / d * spd * dt, dz / d * spd * dt, p.r, false, 0); p.phase += dt * 9; }
   p.legs[0].rotation.x = Math.sin(p.phase) * .7; p.legs[1].rotation.x = -Math.sin(p.phase) * .7; p.arms[0].rotation.x = -Math.sin(p.phase) * .6; if (!(p.windup > 0)) p.arms[1].rotation.x = -.9;
