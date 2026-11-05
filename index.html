@@ -756,7 +756,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261105-2135';
+const BUILD = '20261105-2335';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -5802,23 +5802,23 @@ LEVELS.push({
   who: '카우존 경보 방송', short: '끝없는 전투! 땅에서 솟아나는 창 든 젖소와 젖소 대장 무리를 막아요. 클리어 없음 · 오래 버티기',
   intro: '🐄 경고! 폭격 맞은 옛 도시 거리에 창을 든 젖소 군단이 나타났어요.\n\n· 젖소는 땅에서 계속 솟아나요 (탐지견보다 3배 강함: 체력 3배, 창 한 방에 하트 3개)\n· 👑 젖소 대장 무리가 주기적으로 몰려와요\n· 💣 폭탄이 계속 떨어지고, 🔥 불붙은 기름 웅덩이와 포탄 구덩이(느려짐)·바리케이드·철조망·무너진 집이 길을 막아요\n· 젖소를 물리치면 경험치! 레벨업마다 카우존 전용 스킬을 Lv20까지 올려요\n\n클리어는 없어요. 얼마나 오래 버티는지 도전!',
   build(L) { cowField(L); } });
-// 첫 맵: 천안 관세국경인재개발원. 여기서 튜토리얼을 하고, 클리어하면 다음 맵이 차례로 열린다 (기존 맵 번호가 밀리지 않게 맨 끝에 붙인다)
+// 첫 맵: 관세청 (공항 입국장 앞). 여기서 튜토리얼을 하고, 클리어하면 다음 맵이 차례로 열린다 (기존 맵 번호가 밀리지 않게 맨 끝에 붙인다)
 const ACAD = LEVELS.length;
-LEVELS.push((() => { const d = LMDEF({ n: 0, music: 1, name: '천안 관세국경인재개발원', icon: '🎓', sc: 1, w: 110, d: 80, fill: 'park', floor: FLOOR(() => TEX.grass('academy', '#86b46a', [.25, .25])), mmCol: 0x8cb870, obj: luggage, ns: 16, st: 1, sky: [0x5aa8ef, 0xeaf4fb],
+LEVELS.push((() => { const d = LMDEF({ n: 0, music: 1, name: '관세청', icon: '🎓', sc: 1, w: 110, d: 80, fill: 'park', floor: FLOOR(() => TEX.grass('academy', '#86b46a', [.25, .25])), mmCol: 0x8cb870, obj: luggage, ns: 16, st: 1, sky: [0x5aa8ef, 0xeaf4fb],
   people: { civ: 6, student: 3, smuggler: 1 }, hide: { drug: 3, gun: 1 }, need: { drug: 2, smuggler: 1 },
   items: [['backpack', 3], ['dutyBag', 2], ['shampoo', 2]],
   staff: [{ kind: 'customs', route: [[-20, -14], [20, -14]], wait: 2 }, { kind: 'customs', route: [[-36, 8], [-36, 26]], wait: 2 }, { kind: 'customs', route: [[24, 12], [44, 12]], wait: 2 }],
-  who: '관세국경인재개발원 탐지견 교관', short: '🎓 첫 출동 전 교육! 충남 천안의 관세국경인재개발원 본관·탐지견 훈련센터·모의 여행자 검사장에서 마약 2개를 찾고, 훈련용 밀수범 1명을 체포하세요.',
-  intro: '어서 와, 신입 탐지견! 여기는 충남 천안의 관세국경인재개발원이야.\n세관 직원과 탐지견이 현장에 나가기 전에 훈련받는 곳이지.\n\n모의 여행자 검사장의 가방 사이에 훈련용 마약을 숨겨 뒀어.\n냄새를 따라가 짖어서 찾고, 훈련용 밀수범도 체포해 봐!\n여기를 마치면 다음 근무지가 열려.',
+  who: '관세청 탐지견 교관', short: '🎓 첫 출동 전 교육! 관세청 본관·탐지견 훈련센터·모의 여행자 검사장에서 마약 2개를 찾고, 훈련용 밀수범 1명을 체포하세요.',
+  intro: '어서 와, 신입 탐지견! 여기는 관세청이야.\n세관 직원과 탐지견이 현장에 나가기 전에 훈련받는 곳이지.\n\n모의 여행자 검사장의 가방 사이에 훈련용 마약을 숨겨 뒀어.\n냄새를 따라가 짖어서 찾고, 훈련용 밀수범도 체포해 봐!\n여기를 마치면 다음 근무지가 열려.',
   build(L) {
     // 가운데 길과 본관 앞 광장
     floorPlane(8, 56, MAT.col(0x9a9fa4, .9), 0, 10, .011); floorPlane(52, 16, MAT.col(0xcfc8b8, .9), 0, -19, .012);
-    building(0, -31, 44, 10, 13, 0xeae6dc, { sign: '🏛 관세국경인재개발원 본관', sh: .9 });
+    building(0, -31, 44, 10, 13, 0xeae6dc, { sign: '🏛 관세청 본관', sh: .9 });
     for (const [x, c] of [[-6, 0xffffff], [0, 0x1f4e8c], [6, 0x2f9e5a]]) { bx(x, 0, -22, .25, 9, .25, 0xdfe3e8); mesh(BOX(.06, 1.2, 1.8), LMC(c), x, 8.3, -21.05); }
     bench(-14, -12); bench(14, -12);
     // 남쪽 정문
     for (const x of [-6, 6]) bx(x, 0, 38, 1.2, 4, 1.2, 0x9aa3ab);
-    sign('🛃 관세청 관세국경인재개발원 (충남 천안)', 0, 6, 38, .9);
+    sign('🛃 관세청', 0, 6, 38, .9);
     // 서쪽: 탐지견 훈련센터 (견사 · 장애물 훈련장) · 강의동
     for (let k = 0; k < 6; k++) { bx(-49, 0, -14 + k * 4, 3, 2.2, 3, 0xd9d2c4); mesh(BOX(.05, 1.2, 1), LMC(0x6b4f35), -47.47, .6, -14 + k * 4); }
     sign('🐕 탐지견 훈련센터 · 견사', -44, 4.5, -4, .7);
@@ -7394,7 +7394,7 @@ function tutShow() {
   $('tutBar').firstChild.style.width = '0'; tutPulse(S.pulse); $('tut').classList.remove('hidden');
 }
 function tutStart() {
-  if (tut.on || tutDone() || !level || !level.academy) return; // 튜토리얼은 인재개발원에서만
+  if (tut.on || tutDone() || !level || !level.academy) return; // 튜토리얼은 관세청 맵에서만
   Object.assign(tut, { on: true, k: 0, t: 0, moved: 0, sniff: 0, px: dog.x, pz: dog.z }); tutShow();
 }
 function tutEnd(skipped) {
@@ -7418,13 +7418,13 @@ $('tutSkip').onclick = e => { e.stopPropagation(); tutEnd(true); toast('🎓 튜
 $('btnTutAgain').onclick = () => { store.set('k9tut', 0); toast('🎓 다음 출동 때 튜토리얼이 다시 나와요'); };
 function showHowto(cb) { state = 'howto'; howtoCb = cb; $('howto').classList.remove('hidden'); keys = {}; }
 $('btnHowtoOk').onclick = () => { seenHowto = true; $('howto').classList.add('hidden'); const cb = howtoCb; howtoCb = null; if (cb) cb(); else state = 'play'; };
-// 맵 순서: 인재개발원(튜토리얼) → 관세 작전 → 명소. seq는 차례대로 여는 순서 (통합 도시·히든은 따로)
+// 맵 순서: 관세청(튜토리얼, 관세 작전 맨 앞) → 관세 작전 → 명소. seq는 차례대로 여는 순서 (통합 도시·히든은 따로)
 function mapOrder() {
   const isOp = i => LEVELS[i].gate || LEVELS[i].name === 'KTX';
   const lmGate = LEVELS.map((L, i) => i).filter(i => LEVELS[i].gate), opX = LEVELS.map((L, i) => i).filter(i => isOp(i) && !LEVELS[i].gate), lmRest = LEVELS.map((L, i) => i).filter(i => LEVELS[i].landmark && !isOp(i) && !LEVELS[i].mega && !LEVELS[i].academy), megaI = LEVELS.findIndex(L => L.mega);
   const byName = n => LEVELS.findIndex(L => L.name === n), WORK = ['공항 입국장', '공항 출국장', '공항 화물터미널', '국제우편·특송센터', '부두 컨테이너 야적장', '인천항 국제여객터미널', '국제 여객선', '비행기', '우체국', '버스터미널', 'KTX', '교도소'].map(byName).filter(i => i >= 0);
   // 관세청 업무량이 많은 곳부터: 여행자 휴대품 → 항공·특송·우편 화물 → 해상 화물 → 여객선 → 그 밖의 관문
-  const ops = [...WORK, ...[0, 1, 2, 3, 4, ...lmGate, ...opX].filter(i => !WORK.includes(i)), 5, 6, megaI], order = [ACAD, ...ops, ...lmRest];
+  const ops = [ACAD, ...WORK, ...[0, 1, 2, 3, 4, ...lmGate, ...opX].filter(i => !WORK.includes(i)), 5, 6, megaI], order = [...ops, ...lmRest];
   const seq = order.filter(i => !LEVELS[i].mega && !LEVELS[i].hidden);
   return { lmGate, lmRest, megaI, ops, order, seq };
 }
@@ -7434,7 +7434,7 @@ function showMaps(paused = false) {
   const prog = getProg();
   $('mapsWho').textContent = t('who_fmt').replace('{nick}', dispName()).replace('{score}', runScore) + (runActive ? t('run_fmt').replace('{n}', runCleared.size) : '') + ' · 🗺 ' + LEVELS.filter((L, i) => prog.best[i] !== undefined).length + '/' + LEVELS.length;
   const { lmGate, lmRest, megaI, ops, order, seq } = mapOrder();
-  const megaNeed = order.filter(i => i !== megaI && !LEVELS[i].relax), SEC = { [ACAD]: ['🎓 교육', '첫 출동 전 튜토리얼 · 클리어하면 다음 맵이 차례로 열려요'], [ops[0]]: ['🛃 관세 작전', ops.length + '곳 · 마지막 🏙 통합 도시는 모든 맵을 클리어하면 열려요 (팀 방 전용)'], [lmRest[0]]: ['🏯 대한민국 명소', lmRest.length + '곳 · 앞 맵을 클리어하면 하나씩 열려요'] };
+  const megaNeed = order.filter(i => i !== megaI && !LEVELS[i].relax), SEC = { [ops[0]]: ['🛃 관세 작전', ops.length + '곳 · 마지막 🏙 통합 도시는 모든 맵을 클리어하면 열려요 (팀 방 전용)'], [lmRest[0]]: ['🏯 대한민국 명소', lmRest.length + '곳 · 앞 맵을 클리어하면 하나씩 열려요'] };
   // 차례대로 열기: 바로 앞 맵을 클리어해야 열린다 (이미 클리어한 맵은 그대로 열림)
   const seqLock = i => { const p = seq.indexOf(i); if (p <= 0 || prog.best[i] !== undefined) return false; const q = seq[p - 1]; return prog.best[q] === undefined && !runCleared.has(q); };
   const card = ([L, i]) => {
@@ -7447,7 +7447,7 @@ function showMaps(paused = false) {
   };
   // 구역마다 줄을 꽉 채우는 카드 묶음
   const grp = (h, ids, cls) => `<div class="mapsep">${h[0]} <small>${h[1]}</small></div><div class="mapflex ${cls}">${ids.map(i => card([LEVELS[i], i])).join('')}</div>`;
-  $('mapGrid').innerHTML = grp(SEC[ACAD], [ACAD], 'ops') + grp(SEC[ops[0]], ops, 'ops') + grp(SEC[lmRest[0]], lmRest, 'lm');
+  $('mapGrid').innerHTML = grp(SEC[ops[0]], ops, 'ops') + grp(SEC[lmRest[0]], lmRest, 'lm');
   renderBadges(); renderShop(); hubSubs();
   $('btnRestartMap').classList.toggle('hidden', !pausedGame); $('maps').classList.toggle('paused', pausedGame);
   if (playerId) lobbyJoin(); renderRooms(); $('btnResumeTop').classList.toggle('hidden', !pausedGame);
@@ -7756,7 +7756,7 @@ async function login() {
   if (res === 'new') toast('🎉 새 아이디가 만들어졌어요! 비밀번호를 꼭 기억하세요');
   if (res === 'offline' && !guest) toast('📡 랭킹 서버에 연결하지 못해 이 기기에만 기록돼요');
   showMaps();
-  if (!tutDone() && !Object.keys(getProg().best).length) startLevel(ACAD); // 처음 하는 사람은 인재개발원 튜토리얼부터 바로 시작
+  if (!tutDone() && !Object.keys(getProg().best).length) startLevel(ACAD); // 처음 하는 사람은 관세청 맵 튜토리얼부터 바로 시작
 }
 $('btnLogin').onclick = login;
 $('btnGuest').onclick = () => { login.guest = true; login(); };
