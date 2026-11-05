@@ -758,7 +758,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261106-0007';
+const BUILD = '20261106-0026';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -2472,6 +2472,8 @@ const ACT_PROP = new Set(['eat', 'coffee', 'photo']);
 const PHONE = ['여보세요? 지금 도착했어', '응, 짐 찾고 있어', '조금만 기다려 줘~', '방금 내렸어!'];
 // 악당 강화: 모든 맵·모든 난이도(카우존 포함)에서 체력 30%↑, 공격 간격 30% 짧게
 const VK = 1.3;
+// 공격 비율 50%↑: 싸우는 악당이 될 확률 ×1.5, 총·주먹 공격 간격 ÷1.5 (모든 맵)
+const AK = 1.5;
 class Person {
   constructor(kind, x, z, look) {
     // 모든 맵: 사람(NPC)은 모두 악당. 겉모습은 원래 직업 그대로 두고 속은 밀수범 (휴식 맵·세관장·임무 안내원은 제외)
@@ -2614,7 +2616,7 @@ class Person {
     let face = null;
     if (this.villain && d < fleeR * 1.7) {
       flee = true;
-      if (!this.alerted) { this.alerted = true; this.fighter = this.kind === 'boss' || Math.random() < .12 + .09 * this.lv; if (!this.lvTag) { this.lvTag = textSprite('Lv' + this.lv, { h: .26, bg: ['', 'rgba(60,140,80,.9)', 'rgba(60,140,80,.9)', 'rgba(200,140,30,.92)', 'rgba(200,60,40,.92)', 'rgba(150,30,120,.92)', 'rgba(150,30,120,.92)'][this.lv] || 'rgba(150,30,120,.92)' }); this.lvTag.position.y = this.kind === 'boss' ? 3.1 : 2.4; this.g.add(this.lvTag); } floatText(this.fighter ? '😠!' : '!?', this.x, 2.6, this.z, { color: '#ff6b6b' }); if (!this.look || Math.random() < .5) this.say(pick2(LINES[this.kind === 'boss' ? 'bossFlee' : 'flee'])); }
+      if (!this.alerted) { this.alerted = true; this.fighter = this.kind === 'boss' || Math.random() < (.12 + .09 * this.lv) * AK; if (!this.lvTag) { this.lvTag = textSprite('Lv' + this.lv, { h: .26, bg: ['', 'rgba(60,140,80,.9)', 'rgba(60,140,80,.9)', 'rgba(200,140,30,.92)', 'rgba(200,60,40,.92)', 'rgba(150,30,120,.92)', 'rgba(150,30,120,.92)'][this.lv] || 'rgba(150,30,120,.92)' }); this.lvTag.position.y = this.kind === 'boss' ? 3.1 : 2.4; this.g.add(this.lvTag); } floatText(this.fighter ? '😠!' : '!?', this.x, 2.6, this.z, { color: '#ff6b6b' }); if (!this.look || Math.random() < .5) this.say(pick2(LINES[this.kind === 'boss' ? 'bossFlee' : 'flee'])); }
       let ax = dx / d, az = dz / d;
       this.fleeT = (this.fleeT || 0) - dt;
       // 맞으면 잠깐 물러나고, 아니면 버티며 싸운다: 가까우면 주먹, 멀면 총
@@ -2636,7 +2638,7 @@ class Person {
         if (this.aim <= 0) { this.gun.visible = false; fireShot(this); this.ammo--; if (this.ammo <= 0) floatText(t('ts_noammo'), this.x, 2.8, this.z, { h: .45, color: '#ffd54f' }); else if (this.ammo <= 2) floatText('🔫 ' + this.ammo, this.x, 2.6, this.z, { h: .35, color: '#ffd54f' }); }
       } else if (mode !== 'flee' && mode !== 'melee' && this.gunCd <= 0 && d < 16 && !(this.windup > 0) && this.ammo > 0) {
         this.aim = this.kind === 'boss' ? .45 : .78 - .05 * this.lv; this.gun.visible = true;
-        this.gunCd = 1.07 / VK * (this.kind === 'boss' ? mr(1.6, 2.6) : mr(3.2, 5)) / (.7 + .12 * level.diff.stars) * (1 + (level.fav || 0));
+        this.gunCd = 1.07 / VK / AK * (this.kind === 'boss' ? mr(1.6, 2.6) : mr(3.2, 5)) / (.7 + .12 * level.diff.stars) * (1 + (level.fav || 0));
         floatText('🔫 !', this.x, 2.7, this.z, { h: .45, color: '#ff4d4d' }); tone(1200, .08, 'square', .04);
       }
       // 주먹: 붙으면 도망 대신 맞선다
@@ -2647,7 +2649,7 @@ class Person {
           floatText('👊', this.x, 2.2, this.z, { h: .6 });
           if (Math.hypot(this.x - dog.x, this.z - dog.z) < 2.1 && dog.y < 1.5) { moveCircle(dog, -dx / d * 1.6, -dz / d * 1.6, .5, false, dog.y); toast(this.kind === 'boss' ? '👊 보스의 공격! 조심하세요' : '👊 밀수범의 반격!'); damage(); }
         }
-      } else if ((mode === 'melee' || (mode === 'flee' && !this.fighter && d < 1.8 && this.escT > 0 && Math.random() < .3)) && this.atkCd <= 0 && !(this.aim > 0)) { this.windup = this.kind === 'boss' ? .5 : .72 - .05 * this.lv; this.atkCd = (this.kind === 'boss' ? 1.8 : 3.3 - .22 * this.lv) / VK; floatText('😠 !', this.x, 2.6, this.z, { h: .45, color: '#ff6b6b' }); if (Math.random() < .3) this.say(pick2(['덤벼라!', '잡을 수 있으면 잡아봐!', '저리 가, 멍멍이!'])); }
+      } else if ((mode === 'melee' || (mode === 'flee' && !this.fighter && d < 1.8 && this.escT > 0 && Math.random() < .3)) && this.atkCd <= 0 && !(this.aim > 0)) { this.windup = this.kind === 'boss' ? .5 : .72 - .05 * this.lv; this.atkCd = (this.kind === 'boss' ? 1.8 : 3.3 - .22 * this.lv) / VK / AK; floatText('😠 !', this.x, 2.6, this.z, { h: .45, color: '#ff6b6b' }); if (Math.random() < .3) this.say(pick2(['덤벼라!', '잡을 수 있으면 잡아봐!', '저리 가, 멍멍이!'])); }
     } else {
       if (d > fleeR + 4) this.alerted = false;
       const LD = this.leader && !this.leader.dead && !this.leader.arrested ? this.leader : null; if (this.leader && !LD) { this.leader = null; this.mate = null; }
@@ -6031,7 +6033,7 @@ function cowUpdate(p, dt) {
   p.body.rotation.z = 0;
   const dx = dog.x - p.x, dz = dog.z - p.z, d = Math.hypot(dx, dz) || .01, reach = p.cowBoss ? 3.4 : 2.3;
   p.dir += angDiff(p.dir, Math.atan2(dx, dz)) * Math.min(1, dt * 6); p.atkCd -= dt;
-  if (p.windup > 0) { p.windup -= dt; p.arms[1].rotation.x = -.6 + p.windup * 2; if (p.windup <= 0) { p.arms[1].rotation.x = -1.7; if (d < reach + .4 && dog.y < 1.6) cowStrike(p); p.atkCd = (p.cowBoss ? 1.2 : 1.6) / VK; } }
+  if (p.windup > 0) { p.windup -= dt; p.arms[1].rotation.x = -.6 + p.windup * 2; if (p.windup <= 0) { p.arms[1].rotation.x = -1.7; if (d < reach + .4 && dog.y < 1.6) cowStrike(p); p.atkCd = (p.cowBoss ? 1.2 : 1.6) / VK / AK; } }
   else if (d < reach && p.atkCd <= 0) { p.windup = .5; }
   else if (d > 1.2) { const spd = (p.cowBoss ? 3.8 : 4.4) * DQ().spd * (1 + Math.min(.5, cow.wave * .04)) * (cowInMud(p.x, p.z) ? .6 : 1); moveCircle(p, dx / d * spd * dt, dz / d * spd * dt, p.r, false, 0); p.phase += dt * 9; }
   p.legs[0].rotation.x = Math.sin(p.phase) * .7; p.legs[1].rotation.x = -Math.sin(p.phase) * .7; p.arms[0].rotation.x = -Math.sin(p.phase) * .6; if (!(p.windup > 0)) p.arms[1].rotation.x = -.9;
