@@ -411,6 +411,7 @@ body.touch #topbar>#tbAuto,body.touch #topbar>#tbCoin{position:fixed;top:calc(6p
 #autoBox{position:fixed;top:calc(6px + var(--st));left:calc(8px + var(--sl));z-index:12;display:flex;flex-direction:column;gap:4px;align-items:flex-start}
 #topbar #autoBox button{display:block!important;position:static!important}
 #topbar #tbAutoMenu{width:44px!important;height:38px!important;font-size:19px!important}
+#bagBox{display:none!important} /* 아이템 가방 없음: 주운 아이템은 바로 쓴다 */
 #bagBox{position:fixed;top:calc(6px + var(--st));left:calc(58px + var(--sl));z-index:12}
 #topbar #bagBox #bagBtn{display:block!important;position:relative!important;width:44px!important;height:38px!important;font-size:19px!important}
 #bagN{position:absolute;right:-4px;top:-4px;min-width:17px;height:17px;border-radius:9px;background:#e74c3c;color:#fff;font-size:11px;line-height:17px;font-weight:800;padding:0 3px}#bagN.zero{display:none}
@@ -757,7 +758,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261105-2344';
+const BUILD = '20261105-2346';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -7906,7 +7907,7 @@ function useHelp0(kind) {
 }
 $('bagBtn').addEventListener('click', e => { e.stopPropagation(); $('bagBox').classList.toggle('open'); renderBag(); });
 $('bagList').addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) { e.stopPropagation(); useHelp(b.dataset.k); } });
-addEventListener('keydown', e => { if (e.repeat || e.target.tagName === 'INPUT' || state !== 'play') return; if (e.code === 'KeyB') { $('bagBox').classList.toggle('open'); renderBag(); } else if ($('bagBox').classList.contains('open') && /^Digit[1-9]$/.test(e.code)) { const k = Object.keys(bag).filter(q => bag[q] > 0)[+e.code.slice(5) - 1]; if (k) useHelp(k); } });
+// 아이템 가방(B 키)은 없앴다: 주운 아이템은 모든 맵에서 바로 쓴다
 renderBag();
 function applyHelp(kind) {
   const KS = ['noseT', 'boneT', 'autoSniffT', 'staT', 'magT', 'giantT', 'boost'], b0 = KS.map(k => dog[k] || 0), m = DQ().helpDur;
@@ -8457,7 +8458,7 @@ function updateDog(dt) {
     if (d < .85) moveCircle(dog, dx / d * (.85 - d), dz / d * (.85 - d), .5, false, dog.y);
   }
 
-  for (const b of balls) { if (b.got) continue; b.m.position.y = .5 + Math.sin(time * 3 + b.x) * .15; b.m.rotation.y += dt * 3; if (Math.hypot(b.x - dog.x, b.z - dog.z) < 1 && dog.y < 1.2) { b.got = true; ballsGot++; world.remove(b.m); burst(b.x, .6, b.z, [new THREE.Color(0xc8e632), WHITE], 25, 3); if (dog.hp >= Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7)) { SFX.found(); bagAdd('ball'); } else { dog.hp = Math.min(7, dog.hp + 1); dog.boost = 6; SFX.found(); toast(t('ts_ball')); } } }
+  for (const b of balls) { if (b.got) continue; b.m.position.y = .5 + Math.sin(time * 3 + b.x) * .15; b.m.rotation.y += dt * 3; if (Math.hypot(b.x - dog.x, b.z - dog.z) < 1 && dog.y < 1.2) { b.got = true; ballsGot++; world.remove(b.m); burst(b.x, .6, b.z, [new THREE.Color(0xc8e632), WHITE], 25, 3); if (dog.hp >= Math.min(7, DIFFS[level.dm || 'normal'].hpMax || 7)) { SFX.found(); dog.shield = Math.min(2, (dog.shield || 0) + 1); floatText('🛡 하트 가득 → 보호막!', dog.x, dog.y + 2.6, dog.z, { h: .55, color: '#9fd3ff' }); } else { dog.hp = Math.min(7, dog.hp + 1); dog.boost = 6; SFX.found(); toast(t('ts_ball')); } } }
   if (barkQ && dog.barkCd <= 0) bark();
   barkQ = false; dog.barkCd -= dt;
 
