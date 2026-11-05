@@ -68,7 +68,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 #topbar{position:fixed;z-index:6;top:calc(186px + var(--st));right:calc(12px + var(--sr));display:flex;flex-direction:column;gap:6px}
 @media (max-width:1000px){#keys{display:none}}
 #topbar button{pointer-events:auto;border:none;border-radius:10px;background:var(--panel);color:#fff;font-size:18px;width:40px;height:36px;cursor:pointer}
-#dogLv{display:flex;align-items:center;gap:4px;color:#7dff6a;font-size:13px;font-weight:700;white-space:nowrap}#dogLv .bar{width:46px}#dogLv .bar i{background:#7dff6a}
+#dogLv{top:calc(4px + var(--st));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;color:#7dff6a;font-size:13px;font-weight:700;white-space:nowrap;background:rgba(10,25,40,.7);padding:3px 10px;border-radius:10px;z-index:6;pointer-events:none}#dogLv .bar{width:90px}#dogLv .bar i{background:#7dff6a}#dogLv small{color:#cfe;font-weight:400;font-size:11px}
 #bars{bottom:calc(16px + var(--sb));left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;background:var(--panel);padding:8px 14px;border-radius:12px}
 .bar{width:120px;height:10px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden}
 .bar i{display:block;height:100%;width:100%;border-radius:6px}
@@ -476,7 +476,7 @@ body.touch #bars .bar{width:44px!important}body.touch #bars .lbl{display:none}bo
 <div id="quest" class="hud mini"><div id="qzone">MAP 1</div><div id="qtitle">관세청 탐지견</div><div id="qsum"></div><p id="qdesc"></p><div id="qgoals"></div></div>
 <div id="mmwrap" class="hud mini"><button id="mmToggle" type="button">🗺 지도 보기</button><button id="mmFold" type="button">✕ 접기</button><canvas id="mm" width="340" height="248"></canvas><div id="info"><span id="score">⭐ 0</span><span id="clock">⏱ 00:00</span><span id="realClock" style="display:block;font-size:12px;opacity:.9"></span></div></div>
 <div id="wx" class="hud hidden"></div><div id="topbar" class="hidden"><button id="tbMenu" title="메뉴" aria-label="메뉴">☰</button><div id="bagBox"><button id="bagBtn" title="아이템 가방 (B)" aria-label="아이템 가방">🎒<span id="bagN">0</span></button><div id="bagPanel"><div class="bagHead">🎒 아이템 가방 <small>눌러서 사용 · B 키</small></div><div id="bagList"></div></div></div><div id="autoBox"><button id="tbAutoMenu" title="자동 사냥 (누르면 3가지)" aria-label="자동 사냥">🤖</button><div id="autoList"><button id="tbAuto" title="자동 플레이 (P)">🤖 자동 플레이</button><button id="tbCoin" title="코인 자동 사냥 (C)">💰 코인 사냥</button><button id="tbItem" title="아이템 자동 사냥 (I)">🎁 아이템 사냥</button></div></div><button id="tbHome" title="홈으로 (게임 끝내기)" aria-label="홈으로">🏠</button><button id="tbFull" title="전체 화면" aria-label="전체 화면">⛶</button><button id="tbMaps" title="맵 선택" aria-label="맵 선택">🗺</button><button id="tbMusic" title="배경음악 켜기/끄기" aria-label="배경음악">🔊</button><button id="tbRank" title="랭킹" aria-label="랭킹">🏆</button><button id="tbPhoto" title="사진 촬영" aria-label="사진 촬영">📸</button><button id="tbLow" title="저사양 모드 (버벅일 때)" aria-label="저사양 모드">🐢</button><button id="tbHelp" title="조작법" aria-label="조작법">❓</button><button id="tbRestart" title="이 맵 다시 시작" aria-label="이 맵 다시 시작">🔄</button></div>
-<div id="bars" class="hud"><span id="dogLv"></span><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
+<div id="dogLv" class="hud"></div><div id="bars" class="hud"><span id="hp" style="font-size:16px;letter-spacing:2px;white-space:nowrap">❤️❤️❤️</span><span class="lbl">기력</span><div class="bar" id="stam"><i></i></div><span class="lbl">냄새</span><div class="bar" id="scent"><i></i></div></div>
 <div id="toast" class="hud"></div><div id="annBanner"></div>
 <div id="mission" class="hud hidden"></div>
 <div id="mpCount" class="hud"></div><div id="sniffLegend" class="hud hidden"></div><div id="autoBadge" class="hud hidden">🤖 자동 플레이 중 · 누르면 끄기</div><div id="guide" class="hud hidden"></div><div id="goalBig" class="hud hidden"></div>
@@ -758,7 +758,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261105-2356';
+const BUILD = '20261105-2359';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -6447,7 +6447,7 @@ function gainXp(n) {
   tone(523, .1, 'square', .07); tone(659, .1, 'square', .07, 0, .1); tone(784, .1, 'square', .07, 0, .2); tone(1047, .25, 'square', .07, 0, .3);
   toastNow('🐕 ' + dogName + ' 레벨 업! Lv ' + lv + ' · 공격력 ' + dogAtk() + ' · 치명타 ' + Math.round(dogCrit() * 100) + '%'); try { cloudSave(); } catch { }
 }
-function renderLv() { const el = document.getElementById('dogLv'); if (!el || !wallet) return; const lv = dogLv(); el.innerHTML = '🐕 Lv ' + lv + '<div class="bar"><i style="width:' + (lv >= 99 ? 100 : Math.min(100, (wallet.xp || 0) / lvNeed(lv) * 100)) + '%"></i></div>'; }
+function renderLv() { const el = document.getElementById('dogLv'); if (!el || !wallet) return; const lv = dogLv(); el.innerHTML = '🐕 Lv ' + lv + '<div class="bar"><i style="width:' + (lv >= 99 ? 100 : Math.min(100, (wallet.xp || 0) / lvNeed(lv) * 100)) + '%"></i></div><small>' + (lv >= 99 ? 'MAX' : 'EXP ' + (wallet.xp || 0) + ' / ' + lvNeed(lv)) + '</small>'; }
 function renderShop() {
   const u = wallet.up, spent = UPG.reduce((t, [k, , , , c]) => t + c.slice(0, u[k] || 0).reduce((x, y) => x + y, 0), 0), all = UPG.reduce((t, [, , , , c]) => t + c.reduce((x, y) => x + y, 0), 0);
   $('shop').innerHTML = '<h2 style="font-size:20px;margin:14px 0 4px">🪙 업그레이드 상점 · 보유 ' + wallet.coins + ' 코인</h2><p style="font-size:13px;margin:0 0 6px">맵을 돌아다니며 코인(1~50)을 줍고, 맵을 클리어하면 보너스 코인도 받아요. 업그레이드는 내 계정에 저장돼 다른 기기에서도 그대로예요. (전체 진행 ' + Math.round(spent / all * 100) + '%)</p><div class="shoprow">' +
@@ -7250,7 +7250,7 @@ for (const b of document.querySelectorAll('#diffRow button[data-d]')) b.addEvent
 $('btnCow').addEventListener('click', () => { const i = LEVELS.findIndex(L => L.cow); if (i >= 0) { SFX.click && SFX.click(); startLevel(i); } });
 setDiff(diffMode, false);
 // 휴대폰에서 가운데 위 알림이 겹치지 않게 보이는 것만 위에서부터 차례로 쌓는다
-const TOP_HUD = ['mission', 'autoBadge', 'mpCount', 'goalBig', 'toast', 'combo'];
+const TOP_HUD = ['dogLv', 'mission', 'autoBadge', 'mpCount', 'goalBig', 'toast', 'combo'];
 function stackTopHud() {
   if (!document.body.classList.contains('touch')) return;
   let y = 6 + (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--st')) || 0);
