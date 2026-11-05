@@ -756,7 +756,7 @@ const mr = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(rnd() * a.length)];
 const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
 const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const BUILD = '20261105-2335';
+const BUILD = '20261105-2338';
 // 새 버전이 올라왔으면(휴대폰 캐시 포함) 자동으로 새로 불러온다
 window.__checkUpdate = async (quiet) => { try { if (quiet && typeof state !== 'undefined' && !['maps', 'login'].includes(state)) return; const r = await fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }); const m = (await r.text()).match(/const BUILD = '([^']+)'/); if (m && m[1] !== BUILD && !sessionStorage.getItem('k9reload' + m[1])) { sessionStorage.setItem('k9reload' + m[1], '1'); location.replace(location.pathname + '?v=' + m[1]); } } catch { } };
 window.__checkUpdate(); document.addEventListener('visibilitychange', () => { if (!document.hidden) window.__checkUpdate(true); }); setInterval(() => window.__checkUpdate(true), 180000);
@@ -7415,7 +7415,8 @@ function tutTick(dt) {
   if (p >= 1 || tut.t > S.max) tutNext();
 }
 $('tutSkip').onclick = e => { e.stopPropagation(); tutEnd(true); toast('🎓 튜토리얼은 ❓ 조작법에서 다시 할 수 있어요'); };
-$('btnTutAgain').onclick = () => { store.set('k9tut', 0); toast('🎓 다음 출동 때 튜토리얼이 다시 나와요'); };
+// 누르면 바로 튜토리얼: 관세청 맵에 있으면 그 자리에서, 아니면 관세청 맵으로 가서 시작
+$('btnTutAgain').onclick = () => { store.set('k9tut', 0); seenHowto = true; howtoCb = null; $('howto').classList.add('hidden'); if (level && level.academy) { state = 'play'; tut.on = false; tutStart(); } else startLevel(ACAD); };
 function showHowto(cb) { state = 'howto'; howtoCb = cb; $('howto').classList.remove('hidden'); keys = {}; }
 $('btnHowtoOk').onclick = () => { seenHowto = true; $('howto').classList.add('hidden'); const cb = howtoCb; howtoCb = null; if (cb) cb(); else state = 'play'; };
 // 맵 순서: 관세청(튜토리얼, 관세 작전 맨 앞) → 관세 작전 → 명소. seq는 차례대로 여는 순서 (통합 도시·히든은 따로)
